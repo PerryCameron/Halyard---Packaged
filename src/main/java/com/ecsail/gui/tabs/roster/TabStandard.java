@@ -16,9 +16,9 @@ public class TabStandard extends Tab {
 //		Image mainIcon = new Image(getClass().getResourceAsStream("/icons/baseline_change_history_black_18dp.png"));
 //		ImageView imageView = new ImageView();
 		////////////////// ATTRIBUTES ////////////////////////
-		hboxFrame.setId("box-frame");
-		hboxMain.setId("black-box");
-		hboxFrame.setPadding(new Insets(2,2,2,5));
+		hboxMain.setId("box-background-light");
+		hboxFrame.setId("custom-tap-pane-frame");
+		hboxFrame.setPadding(new Insets(2,2,2,2));
 //		imageView.setImage(mainIcon);
 //		this.setGraphic(imageView);
 

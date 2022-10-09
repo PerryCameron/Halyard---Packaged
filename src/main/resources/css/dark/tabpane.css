@@ -31,8 +31,6 @@
     -fx-background-color: #807f7f;
 }
 
-
-
 #custom-mini-tab-pane {
     -fx-tab-min-width: 10px;
 }
@@ -42,7 +40,7 @@
 }
 
 #custom-mini-tab-pane .tab:selected {
-    -fx-background-color: #6c7179;
+    -fx-background-color: #1658e7;
     /*  -fx-background-image: url("background.jpg");*/
 }
 

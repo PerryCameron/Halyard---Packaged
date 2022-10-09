@@ -115,8 +115,6 @@ public class BaseApplication extends Application implements Log {
             }
         }
 
-
-
         statusLabel.setText("(Not Connected) Ready.");
         stage.getIcons().add(mainIcon);
         stage.show();

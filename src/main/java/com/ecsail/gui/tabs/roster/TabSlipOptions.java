@@ -18,9 +18,9 @@ public class TabSlipOptions extends Tab {
 		////////////////// ATTRIBUTES ////////////////////////
 //		imageView.setImage(mainIcon);
 //		this.setGraphic(imageView);
-		hboxFrame.setId("grey-box");
-		hboxFrame.setPadding(new Insets(2,2,2,5));
-		hboxMain.setId("black-box");
+		hboxMain.setId("box-background-light");
+		hboxFrame.setId("custom-tap-pane-frame");
+		hboxFrame.setPadding(new Insets(2,2,2,2));
 		hboxMain.setMinWidth(hboxFrame.getWidth() - 4);
 		vboxRadioButton1.setPrefWidth(160);
 		vboxRadioButton2.setPrefWidth(134);

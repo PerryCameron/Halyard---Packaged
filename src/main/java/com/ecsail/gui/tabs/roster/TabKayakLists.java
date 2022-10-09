@@ -20,15 +20,16 @@ public class TabKayakLists extends Tab {
 		////////////////// ATTRIBUTES ////////////////////////
 //		imageView.setImage(mainIcon);
 //		this.setGraphic(imageView);
-		hboxFrame.setId("grey-box");
-		hboxFrame.setPadding(new Insets(2,2,2,5));
-		hboxMain.setId("black-box");		vboxRadioButton1.setPrefWidth(148);
+		hboxMain.setId("box-background-light");
+		hboxFrame.setId("custom-tap-pane-frame");
+		hboxFrame.setPadding(new Insets(2,2,2,2));
+		vboxRadioButton1.setPrefWidth(148);
 		vboxRadioButton2.setPrefWidth(146);
 		vboxRadioButton1.setSpacing(5);
 		vboxRadioButton2.setSpacing(5);
 		vboxRadioButton1.setPadding(new Insets(8,5,5,5));
 		vboxRadioButton2.setPadding(new Insets(8,5,5,5));
-		setId("rostertab-pane");
+//		setId("custom-tap-pane-frame");
 		//getStyleClass().add("roster-tab-pane");
         ////////////////////SET CONTENT //////////////////////
 		vboxRadioButton1.getChildren().addAll(rb.getRadioKayakRackOwners(),rb.getRadioKayakRackWaitList());

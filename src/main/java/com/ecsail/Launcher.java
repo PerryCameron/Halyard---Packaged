@@ -5,10 +5,7 @@ import com.ecsail.gui.boxes.HBoxWelcome;
 //import com.ecsail.gui.dialogues.Dialogue_RenewalForm;
 import com.ecsail.gui.dialogues.Dialogue_EnvelopePDF;
 import com.ecsail.gui.dialogues.Dialogue_RenewalForm;
-import com.ecsail.gui.tabs.TabLogin;
-import com.ecsail.gui.tabs.TabMembership;
-import com.ecsail.gui.tabs.TabRoster;
-import com.ecsail.gui.tabs.TabWelcome;
+import com.ecsail.gui.tabs.*;
 //import com.ecsail.pdf.PDF_BoatReport;
 //import com.ecsail.pdf.PDF_MembershipReport;
 import com.ecsail.sql.select.SqlMembershipList;
@@ -47,12 +44,12 @@ public class Launcher extends VBox {
 //		tabPane.getSelectionModel().select(getTabIndex("Notes"));
 //	}
 //
-//	public static void openPeopleTab() {
-//		if(!tabOpen("People"))
-//		tabPane.getTabs().add(new TabPeople("People"));
-//		tabPane.getSelectionModel().select(getTabIndex("People"));
-//	}
-//
+	public static void openPeopleTab() {
+		if(!tabOpen("People"))
+		tabPane.getTabs().add(new TabPeople("People"));
+		tabPane.getSelectionModel().select(getTabIndex("People"));
+	}
+
 //	public static void openFeeTab() {
 //		tabPane.getTabs().add(new TabDefinedFee("Fees"));
 //		tabPane.getSelectionModel().select(getTabIndex("Fees"));

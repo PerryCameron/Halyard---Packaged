@@ -49,7 +49,7 @@ public class HBoxWelcome extends HBox {
 //		boatsButton.setOnAction((event) -> Launcher.openBoatsTab());
 //		notesButton.setOnAction((event) -> Launcher.openNotesTab());
 		rosterButton.setOnAction((event) -> {Launcher.openRosterTab();});
-//		peopleListButton.setOnAction((event) -> Launcher.openPeopleTab());
+		peopleListButton.setOnAction((event) -> Launcher.openPeopleTab());
 //		slipListButton.setOnAction((event) -> Launcher.openSlipsTab());
 //		bodButton.setOnAction((event) -> Launcher.openBoardTab());
 //		newButton.setOnAction((event) -> CreateMembership.Create());
