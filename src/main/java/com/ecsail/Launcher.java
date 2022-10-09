@@ -156,12 +156,12 @@ public class Launcher extends VBox {
 //	public static void openTabStub() {
 //		tabPane.getTabs().add(new TabStub("Stub Tab"));
 //	}
-//
-//	public static void openDepositsTab() {
-//		tabPane.getTabs().add(new TabDeposits("Deposits"));
-//		tabPane.getSelectionModel().select(getTabIndex("Deposits"));
-//	}
-//
+
+	public static void openDepositsTab() {
+		tabPane.getTabs().add(new TabDeposits("Deposits"));
+		tabPane.getSelectionModel().select(getTabIndex("Deposits"));
+	}
+
 //	////////////////  UTILITY METHODS ///////////////////////
 //
 	private static void createOrOpenTab(MembershipListDTO membership, String label) {

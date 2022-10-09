@@ -1,6 +1,7 @@
 package com.ecsail.gui.boxes;
 
 import com.ecsail.BaseApplication;
+import com.ecsail.CreateMembership;
 import com.ecsail.Launcher;
 import com.ecsail.customwidgets.BigButton;
 import com.ecsail.gui.tabs.TabRoster;
@@ -51,8 +52,8 @@ public class HBoxWelcome extends HBox {
 		peopleListButton.setOnAction((event) -> Launcher.openPeopleTab());
 		slipListButton.setOnAction((event) -> Launcher.openSlipsTab());
 		bodButton.setOnAction((event) -> Launcher.openBoardTab());
-//		newButton.setOnAction((event) -> CreateMembership.Create());
-//		batchesButton.setOnAction((event) -> Launcher.openDepositsTab());
+		newButton.setOnAction((event) -> CreateMembership.Create());
+		batchesButton.setOnAction((event) -> Launcher.openDepositsTab());
 //		boatsButton.setOnAction((event) -> Launcher.openBoatsTab());
 //		notesButton.setOnAction((event) -> Launcher.openNotesTab());
 //		jotFormButton.setOnAction((event)-> Launcher.openJotFormTab());

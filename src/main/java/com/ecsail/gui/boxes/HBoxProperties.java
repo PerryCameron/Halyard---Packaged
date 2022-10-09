@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 
 import java.util.Optional;
 
+
 ///  this class is for the properties tab in membership view
 public class HBoxProperties extends HBox {
 	private final MembershipListDTO membership;
@@ -38,8 +39,10 @@ public class HBoxProperties extends HBox {
         HBox hbox5 = new HBox();  // holds delete membership
 		Button removeMembershipButton = new Button("Delete");
 		Button printLabelsButton = new Button("Print Card Labels");
-//		HalyardAlert alert = new HalyardAlert(HalyardAlert.AlertType.CONFIRMATION);
-//		DialogPane dialogPane = alert.getDialogPane();
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+
+		DialogPane dialogPane = alert.getDialogPane();
+		dialogPane.getStyleClass().add("css/dark/dialogue.css");
 
 //		HalyardAlert alert = new HalyardAlert(AlertType.INFORMATION);
 
@@ -68,13 +71,13 @@ public class HBoxProperties extends HBox {
 		///////////// LISTENERS ////////////
 
 		removeMembershipButton.setOnAction(e -> {
-//			alert.setTitle("Remove Membership");
-//			alert.setHeaderText("Membership " + membership.getMembershipId());
-//			alert.setContentText("Are sure you want to delete membership " + membership.getMembershipId() + "?");
-//			Optional<ButtonType> result = alert.showAndWait();
-//			if (result.get() == ButtonType.OK){
-//			   deleteMembership(membership.getMsid());
-//			}
+			alert.setTitle("Remove Membership");
+			alert.setHeaderText("Membership " + membership.getMembershipId());
+			alert.setContentText("Are sure you want to delete membership " + membership.getMembershipId() + "?");
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.OK){
+			   deleteMembership(membership.getMsid());
+			}
 		});
 
 		printLabelsButton.setOnAction((actionEvent -> {
