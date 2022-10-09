@@ -1,6 +1,7 @@
 package com.ecsail.gui.tabs;
 
 import com.ecsail.HalyardPaths;
+import com.ecsail.Launcher;
 import com.ecsail.excel.Xls_roster;
 import com.ecsail.gui.tabs.roster.TabKayakLists;
 import com.ecsail.gui.tabs.roster.TabSlipOptions;
@@ -271,13 +272,13 @@ public class TabRoster extends Tab {
 			TableRow<MembershipListDTO> row = new TableRow<>();
 			row.setOnMouseClicked(event -> {
 				if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-//					// int rowIndex = row.getIndex();
-//					MembershipListDTO clickedRow = row.getItem();
-//					Launcher.createMembershipTabForRoster(clickedRow.getMembershipId(), clickedRow.getMsid());
-//				}
+					// int rowIndex = row.getIndex();
+					MembershipListDTO clickedRow = row.getItem();
+					Launcher.createMembershipTabForRoster(clickedRow.getMembershipId(), clickedRow.getMsid());
+				}
 //				if (!row.isEmpty() && event.getButton() == MouseButton.SECONDARY && event.getClickCount() == 1) {
 //				row.setContextMenu(new rosterContextMenu(row.getItem(), selectedYear));
-				}
+//				}
 			});
 			return row;
 		});

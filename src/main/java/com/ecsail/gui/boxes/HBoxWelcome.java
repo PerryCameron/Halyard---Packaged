@@ -1,6 +1,7 @@
 package com.ecsail.gui.boxes;
 
 import com.ecsail.BaseApplication;
+import com.ecsail.Launcher;
 import com.ecsail.customwidgets.BigButton;
 import com.ecsail.gui.tabs.TabRoster;
 import javafx.geometry.Insets;
@@ -47,11 +48,7 @@ public class HBoxWelcome extends HBox {
 
 //		boatsButton.setOnAction((event) -> Launcher.openBoatsTab());
 //		notesButton.setOnAction((event) -> Launcher.openNotesTab());
-		rosterButton.setOnAction((event) -> {
-				if (!tabOpen("Roster")) // is the tab already open??
-					BaseApplication.tabPane.getTabs().add(new TabRoster(BaseApplication.activememberships, BaseApplication.selectedYear));
-					BaseApplication.tabPane.getSelectionModel().select(getTabIndex("Roster"));
-			});
+		rosterButton.setOnAction((event) -> {Launcher.openRosterTab();});
 //		peopleListButton.setOnAction((event) -> Launcher.openPeopleTab());
 //		slipListButton.setOnAction((event) -> Launcher.openSlipsTab());
 //		bodButton.setOnAction((event) -> Launcher.openBoardTab());
