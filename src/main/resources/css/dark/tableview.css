@@ -1,0 +1,17 @@
+.table-view .column-header {
+    -fx-background-color: #1658e7;
+}
+
+.table-row-cell{
+    -fx-background-color: -fx-table-cell-border-color, #ececec; /* the color of the darker row */
+}
+
+.table-row-cell:odd{
+    -fx-background-color: -fx-table-cell-border-color, #d9d9d9;  /* the color of the lighter row */
+}
+
+.table-row-cell:selected {  /* Where you have a row selected */
+    -fx-background-color: #010e11;
+    -fx-background-insets: 0;
+    -fx-background-radius: 1;
+}

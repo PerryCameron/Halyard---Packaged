@@ -54,15 +54,15 @@ public class BaseApplication extends Application implements Log {
         /*
          * Route the debugging output for this application to a log file in your "default" directory.
          * */
-        FileSystemView filesys = FileSystemView.getFileSystemView();
-        try {
-            outputFile = File.createTempFile("debug", ".log", filesys.getDefaultDirectory());
-            PrintStream output = new PrintStream(new BufferedOutputStream(new FileOutputStream(outputFile)), true);
-            System.setOut(output);
-            System.setErr(output);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        FileSystemView filesys = FileSystemView.getFileSystemView();
+//        try {
+//            outputFile = File.createTempFile("debug", ".log", filesys.getDefaultDirectory());
+//            PrintStream output = new PrintStream(new BufferedOutputStream(new FileOutputStream(outputFile)), true);
+//            System.setOut(output);
+//            System.setErr(output);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         logger.info("Starting application...");
         BaseApplication.selectedYear = HalyardPaths.getYear();
         launch(args);
@@ -128,7 +128,11 @@ public class BaseApplication extends Application implements Log {
         connect = new ConnectDatabase(stage);
         scene.getRoot().setStyle("-fx-base:#25292D;");
         ConnectDatabase.logonStage.getScene().getRoot().setStyle("-fx-base:#25292D;");
-        scene.getStylesheets().addAll("css/dark/dark.css","css/dark/tabpane.css");
+        scene.getStylesheets().addAll(
+                "css/dark/dark.css",
+                "css/dark/tabpane.css",
+                "css/dark/tableview.css",
+                "css/dark/chart.css");
     }
 
     public static void closeDatabaseConnection() {
