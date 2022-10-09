@@ -32,11 +32,11 @@ public class Launcher extends VBox {
 
 	}
 	
-//	public static void openBoatsTab() {
-//		if(!tabOpen("Boats"))
-//		tabPane.getTabs().add(new TabBoats("Boats"));
-//		tabPane.getSelectionModel().select(getTabIndex("Boats"));
-//	}
+	public static void openBoatsTab() {
+		if(!tabOpen("Boats"))
+		tabPane.getTabs().add(new TabBoats("Boats"));
+		tabPane.getSelectionModel().select(getTabIndex("Boats"));
+	}
 	
 //	public static void openNotesTab() {
 //		if(!tabOpen("Notes"))
@@ -72,11 +72,11 @@ public class Launcher extends VBox {
 		tabPane.getSelectionModel().select(getTabIndex("Roster"));
 	}
 	
-//	public static void openBoatViewTab(BoatDTO b) {
-//		if(!tabOpen("Boat"))
-//			tabPane.getTabs().add(new TabBoatView("Boat " + b.getBoat_id(), b));
-//			tabPane.getSelectionModel().select(getTabIndex("Boat " + b.getBoat_id()));
-//	}
+	public static void openBoatViewTab(BoatDTO b) {
+		if(!tabOpen("Boat"))
+			tabPane.getTabs().add(new TabBoatView("Boat " + b.getBoat_id(), b));
+			tabPane.getSelectionModel().select(getTabIndex("Boat " + b.getBoat_id()));
+	}
 
 	public static void openWelcomeTab(HBoxWelcome boxWelcome) {
 		tabPane.getTabs().add(new TabWelcome(boxWelcome));

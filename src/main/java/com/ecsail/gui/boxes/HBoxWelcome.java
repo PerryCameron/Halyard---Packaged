@@ -54,7 +54,7 @@ public class HBoxWelcome extends HBox {
 		bodButton.setOnAction((event) -> Launcher.openBoardTab());
 		newButton.setOnAction((event) -> CreateMembership.Create());
 		batchesButton.setOnAction((event) -> Launcher.openDepositsTab());
-//		boatsButton.setOnAction((event) -> Launcher.openBoatsTab());
+		boatsButton.setOnAction((event) -> Launcher.openBoatsTab());
 //		notesButton.setOnAction((event) -> Launcher.openNotesTab());
 //		jotFormButton.setOnAction((event)-> Launcher.openJotFormTab());
 
