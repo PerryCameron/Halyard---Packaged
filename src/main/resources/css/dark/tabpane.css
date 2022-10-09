@@ -4,6 +4,11 @@
     -fx-tab-min-width:90px;
 }
 
+.tab:selected {
+    -fx-background-color: #1658e7;
+    /*  -fx-background-image: url("background.jpg");*/
+}
+
 /* Custom Options */
 
 

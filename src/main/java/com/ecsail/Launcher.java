@@ -59,12 +59,12 @@ public class Launcher extends VBox {
 //		tabPane.getTabs().add(new TabFee("Fees"));
 //		tabPane.getSelectionModel().select(getTabIndex("Fees"));
 //	}
-//
-//	public static void openSlipsTab() {
-//		if(!tabOpen("Slips"))
-//		tabPane.getTabs().add(new TabSlips("Slips"));
-//		tabPane.getSelectionModel().select(getTabIndex("Slips"));
-//	}
+
+	public static void openSlipsTab() {
+		if(!tabOpen("Slips"))
+		tabPane.getTabs().add(new TabSlips("Slips"));
+		tabPane.getSelectionModel().select(getTabIndex("Slips"));
+	}
 	
 	public static void openRosterTab() {
 		if(!tabOpen("Roster")) // is the tab already open??
