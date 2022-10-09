@@ -1,0 +1,31 @@
+.board-general {
+    -fx-font-size: 14px;
+    -fx-alignment: CENTER;
+
+}
+.title-bod-box {
+    -fx-alignment: CENTER;
+}
+
+.title-text-bod {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-fill: #1658e7;
+}
+
+.year-bod-text {
+    -fx-fill: WHITE;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.bod-names-text {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.bod-position-titles-text {
+    -fx-fill: WHITE;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}

@@ -1,5 +1,8 @@
 
-
+.root{
+    -fx-font-size: 9pt;
+    -fx-font-family: "Verdana";
+}
 
 
 .button:hover {
@@ -53,3 +56,19 @@
 #sub-box-background-light {
     -fx-background-color: #ececec;
 }
+
+.separator *.line {
+    -fx-border-style: solid;
+    -fx-border-width: 0 0 2 0; /* its make really one-pixel-border */
+    -fx-border-color: black;
+}
+
+#labels {
+    -fx-font-weight: bold;
+}
+
+
+
+/*#committee-title {*/
+/*    -fx-text-fill: #ffffff;*/
+/*}*/

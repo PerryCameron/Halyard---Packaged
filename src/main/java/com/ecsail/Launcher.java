@@ -142,17 +142,17 @@ public class Launcher extends VBox {
 	public static void createInactiveMemberTab(MembershipListDTO membership) {
 		createOrOpenTab(membership, "MSID");
 	}
-//
-//	public static void createMembershipTabForBOD(int msid, String selectedYear) {
-//		MembershipListDTO membership = SqlMembershipList.getMembershipList(msid, selectedYear);
-//		createOrOpenTab(membership, "Membership");
-//	}
-//
-//	public static void openBoardTab() {
-//		tabPane.getTabs().add(new TabBoardMembers("Board"));
-//		tabPane.getSelectionModel().select(getTabIndex("Board"));
-//	}
-//
+
+	public static void createMembershipTabForBOD(int msid, String selectedYear) {
+		MembershipListDTO membership = SqlMembershipList.getMembershipList(msid, selectedYear);
+		createOrOpenTab(membership, "Membership");
+	}
+
+	public static void openBoardTab() {
+		tabPane.getTabs().add(new TabBoardMembers("Board"));
+		tabPane.getSelectionModel().select(getTabIndex("Board"));
+	}
+
 //	public static void openTabStub() {
 //		tabPane.getTabs().add(new TabStub("Stub Tab"));
 //	}
