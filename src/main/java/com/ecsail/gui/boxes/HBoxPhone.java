@@ -74,8 +74,10 @@ public class HBoxPhone extends HBox {
         VBox.setVgrow(phoneTableView, Priority.ALWAYS);
         
         hboxGrey.setSpacing(10);  // spacing in between table and buttons
-        hboxGrey.setId("box-grey");
-        vboxPink.setId("box-pink");
+        this.setId("custom-tap-pane-frame");
+        hboxGrey.setId("box-background-light");
+//        vboxPink.setId("box-pink");
+
         hboxGrey.setPadding(new Insets(5,5,5,5));  // spacing around table and buttons
         vboxPink.setPadding(new Insets(2,2,2,2)); // spacing to make pink fram around table
         VBox.setVgrow(phoneTableView, Priority.ALWAYS);
@@ -209,7 +211,7 @@ public class HBoxPhone extends HBox {
         phoneAdd.setOnAction((event) -> {
                 // return next key id for phone table
                 int phone_id = SqlSelect.getNextAvailablePrimaryKey("phone", "phone_id");
-                // attempt to add a new record and return if it is sucessful
+                // attempt to add a new record and return if it is successful
                 if (SqlInsert.addPhoneRecord(phone_id, person.getP_id(), true, "new phone", ""))
                     // if sucessfully added to SQL then add a new row in the tableview
                     phone.add(new PhoneDTO(phone_id, person.getP_id(), true, "new phone", ""));

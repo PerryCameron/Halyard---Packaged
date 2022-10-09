@@ -20,7 +20,7 @@ public class TabWelcome extends Tab {
 		vboxBlue.setPadding(new Insets(10,10,10,10));
 		vboxPink.setPadding(new Insets(3,3,3,3)); // spacing to make pink from around table
 		vboxPink.setId("box-pink");
-		vboxBlue.setId("box-blue");
+		vboxBlue.setId("box-frame-dark");
 		VBox.setVgrow(boxWelcome, Priority.ALWAYS);
 		VBox.setVgrow(vboxPink, Priority.ALWAYS);
 		VBox.setVgrow(vboxBlue, Priority.ALWAYS);		

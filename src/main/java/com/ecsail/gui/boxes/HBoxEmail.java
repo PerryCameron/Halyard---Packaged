@@ -61,9 +61,9 @@ public class HBoxEmail extends HBox {
 		hboxGrey.setSpacing(10);  // spacing in between table and buttons
 		vboxButtons.setSpacing(5);
 		
-		hboxGrey.setId("box-grey");
+		hboxGrey.setId("box-background-light");
 		vboxPink.setId("box-pink");
-		this.setId("box-blue");		
+		this.setId("box-background-light");
 		
 		hboxGrey.setPadding(new Insets(5,5,5,5));  // spacing around table and buttons
 		vboxPink.setPadding(new Insets(2,2,2,2)); // spacing to make pink frame around table

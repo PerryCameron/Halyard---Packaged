@@ -85,9 +85,9 @@ public class HBoxHistory extends HBox {
 		vboxPink.setPadding(new Insets(2, 2, 2, 2)); // spacing to make pink fram around table
 		setPadding(new Insets(5, 5, 5, 5));  // creates space for blue frame
 		
-		vboxGrey.setId("box-grey");
-		vboxPink.setId("box-pink");
-		this.setId("box-blue");
+		vboxGrey.setId("box-background-light");
+//		vboxPink.setId("box-pink");
+		this.setId("custom-tap-pane-frame");
 		
 		VBox.setVgrow(idTableView, Priority.ALWAYS);
 		HBox.setHgrow(idTableView, Priority.ALWAYS);

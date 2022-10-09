@@ -103,8 +103,8 @@ public class HBoxAddress extends HBox {
 		
 		secondaryHBox.setId("box-pink");
 		primaryHBox.setId("box-pink");
-		hboxGrey.setId("box-grey");
-		this.setId("box-blue");
+		hboxGrey.setId("custom-tap-pane-frame");
+		this.setId("box-frame-dark");
 		titledPane1.setId("titled");
 		titledPane2.setId("titled");
 		

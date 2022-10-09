@@ -69,7 +69,7 @@ public class Dialogue_EnvelopePDF extends Stage {
         memberidTextField.setPrefWidth(50);
         vboxColumn1.setSpacing(5);
         vboxColumn2.setSpacing(15);
-		vboxBlue.setId("box-blue");
+		vboxBlue.setId("box-frame-dark");
 		vboxBlue.setPadding(new Insets(10, 10, 10, 10));
 		vboxPink.setPadding(new Insets(3, 3, 3, 3)); // spacing to make pink from around table
 		vboxPink.setId("box-pink");

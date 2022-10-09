@@ -132,11 +132,11 @@ public class HBoxSlip extends HBox {
 		rb2.setUserData("Reassign");
 		rb3.setUserData("Release");
 
-		vboxGrey.setId("box-grey");
-		this.setId("box-blue");
-		vboxWaitFrame.setId("box-blue");
-		vboxWaitA.setId("box-grey");
-		vboxWaitB.setId("box-grey");
+		vboxGrey.setId("box-background-light");
+		this.setId("custom-tap-pane-frame");
+		vboxWaitFrame.setId("box-frame-dark");
+		vboxWaitA.setId("box-background-light");
+		vboxWaitB.setId("box-background-light");
 		////////////// LISTENERS //////////////////////////
 
 		/// this is for auto screen refreshing

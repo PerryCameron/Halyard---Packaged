@@ -124,8 +124,8 @@ public class VBoxAddPerson extends VBox {
 		hbox8.setPadding(new Insets(60, 5, 5, 5));  // Populate title
 		hbox9.setPadding(new Insets(20, 15, 5, 5));  // populate field and button
 		setPadding(new Insets(5, 5, 5, 5));
-		setId("box-blue");
-		vboxGrey.setId("box-grey");
+		setId("custom-tap-pane-frame");
+		vboxGrey.setId("box-background-light");
 		
 		vboxFnameLabel.setAlignment(Pos.CENTER_LEFT);
 		vboxLnameLabel.setAlignment(Pos.CENTER_LEFT);

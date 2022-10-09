@@ -223,7 +223,7 @@ public class ConnectDatabase {
 		}
 //		secondScene.getStylesheets().add("login.css");
 		mainHBox.setId("box-pink");
-		vboxBlue.setId("box-blue");
+		vboxBlue.setId("box-frame-dark");
 		
 		Platform.runLater(() -> userName.requestFocus());
 		

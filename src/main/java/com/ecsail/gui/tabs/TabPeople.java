@@ -55,7 +55,7 @@ public class TabPeople extends Tab {
 		VBox vbox2 = new VBox(); // sepearates box search and box people
 		HBox hboxPink = new HBox();  // main hbox
 
-		vboxBlue.setId("box-blue");
+		vboxBlue.setId("box-frame-dark");
 		hboxPink.setId("box-pink");
 		vboxBlue.setPadding(new Insets(12,12,15,12));
 		hboxPink.setPadding(new Insets(3,3,5,3));

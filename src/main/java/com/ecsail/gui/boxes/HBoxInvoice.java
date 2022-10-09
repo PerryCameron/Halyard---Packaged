@@ -177,8 +177,9 @@ public class HBoxInvoice extends HBox {
 		vboxGrey.setPadding(new Insets(8, 5, 0, 15));
 		hboxButtonCommit.setPadding(new Insets(5, 0, 5, 170));
 		
-		setId("box-blue");
-		vboxGrey.setId("box-grey");
+		setId("custom-tap-pane-frame");
+		vboxGrey.setId("box-background-light");
+		mainVbox.setId("box-background-light");
 		HBox.setHgrow(vboxGrey, Priority.ALWAYS);
 
 		// not editable if record is committed
@@ -525,10 +526,10 @@ public class HBoxInvoice extends HBox {
 
 	//////////////////////  CLASS METHODS ///////////////////////////
 	private int getInitialWetSlipValue(String wet_slip) {
-		int startpoint = 1;
+		int startPoint = 1;
 		BigDecimal wetSlip = new BigDecimal(wet_slip);
-		if(wetSlip.compareTo(BigDecimal.ZERO) == 0) startpoint = 0;
-		return startpoint;
+		if(wetSlip.compareTo(BigDecimal.ZERO) == 0) startPoint = 0;
+		return startPoint;
 	}
 
 	private void getPayment() {

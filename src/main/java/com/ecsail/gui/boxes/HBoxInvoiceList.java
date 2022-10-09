@@ -108,9 +108,9 @@ public class HBoxInvoiceList extends HBox {
         vboxGrey.setSpacing(10);
         hbox1.setAlignment(Pos.CENTER_LEFT);
         
-		vboxPink.setId("box-pink");
-		vboxGrey.setId("box-grey");
-		setId("box-blue");
+//		vboxPink.setId("box-pink");
+		vboxGrey.setId("box-background-light");
+		setId("custom-tap-pane-frame");
 		VBox.setVgrow(vboxPink, Priority.ALWAYS);
 		VBox.setVgrow(fiscalTableView, Priority.ALWAYS);
 		HBox.setHgrow(fiscalTableView, Priority.ALWAYS);

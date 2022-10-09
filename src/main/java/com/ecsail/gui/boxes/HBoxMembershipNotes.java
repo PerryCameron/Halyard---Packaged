@@ -54,9 +54,8 @@ public class HBoxMembershipNotes extends HBox {
 		vboxPink.setPadding(new Insets(2,2,2,2)); // spacing to make pink fram around table
 		this.setPadding(new Insets(5, 5, 5, 5));  // creates space for blue frame
 		
-		hboxGrey.setId("box-grey");
-		vboxPink.setId("box-pink");
-		this.setId("box-blue");
+		hboxGrey.setId("box-background-light");
+		this.setId("custom-tap-pane-frame");
 		memoTableView.setEditable(true);
 		memoTableView.setItems(note.getMemos());
 		memoTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY );

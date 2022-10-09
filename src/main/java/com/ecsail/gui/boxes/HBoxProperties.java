@@ -62,8 +62,8 @@ public class HBoxProperties extends HBox {
 		
 		HBox.setHgrow(hboxGrey, Priority.ALWAYS);
 		
-		this.setId("box-blue");
-		hboxGrey.setId("box-grey");
+		this.setId("custom-tap-pane-frame");
+		hboxGrey.setId("box-background-light");
 		
 		///////////// LISTENERS ////////////
 

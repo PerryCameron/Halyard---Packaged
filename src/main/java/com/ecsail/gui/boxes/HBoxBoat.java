@@ -74,9 +74,9 @@ private final TableView<BoatDTO> boatTableView;
 	vboxPink.setPadding(new Insets(2,2,2,2)); // spacing to make pink frame around table
 	setPadding(new Insets(5, 5, 5, 5));  // creates space for blue frame
 	
-	hboxGrey.setId("box-grey");
+	hboxGrey.setId("box-background-light");
 	vboxPink.setId("box-pink");
-	this.setId("box-blue");
+	this.setId("custom-tap-pane-frame");
 	
 	///////////////// TABLE VIEW ///////////////////////
 	

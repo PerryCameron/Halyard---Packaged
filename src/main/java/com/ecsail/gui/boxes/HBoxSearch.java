@@ -28,11 +28,11 @@ public class HBoxSearch extends HBox {
 		hboxGrey.setPrefWidth(463);
 		hboxGrey.setSpacing(10);  // spacing in between table and buttons
 		vbox1.setSpacing(5);
-		hboxGrey.setId("box-grey");
+		hboxGrey.setId("box-background-light");
 		vboxPink.setId("box-pink");
 		hboxGrey.setPadding(new Insets(5,5,5,5));  // spacing around table and buttons
 		vboxPink.setPadding(new Insets(2,2,2,2)); // spacing to make pink fram around table
-		setId("box-blue");
+		setId("box-frame-dark");
 		setPadding(new Insets(5, 5, 5, 5));
 		HBox.setHgrow(hboxGrey, Priority.ALWAYS);
 		

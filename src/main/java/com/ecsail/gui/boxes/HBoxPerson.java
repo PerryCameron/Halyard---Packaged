@@ -155,13 +155,13 @@ public class HBoxPerson extends HBox {
 		hboxOfficer.setSpacing(5);
 		hboxAward.setSpacing(5);
 		
-		hboxPhone.setId("box-blue");
-		hboxEmail.setId("box-blue");
-		hboxOfficer.setId("box-blue");
-		hboxAward.setId("box-blue");
-		hboxPictureFrame.setId("box-blue");
-		this.setId("box-blue");
-		vboxGrey.setId("box-grey");
+		hboxPhone.setId("custom-tap-pane-frame");
+		hboxEmail.setId("custom-tap-pane-frame");
+		hboxOfficer.setId("custom-tap-pane-frame");
+		hboxAward.setId("custom-tap-pane-frame");
+		hboxPictureFrame.setId("box-frame-dark");
+		this.setId("custom-tap-pane-frame");
+		vboxGrey.setId("box-background-light");
 
 		if(person.getBirthday() != null) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

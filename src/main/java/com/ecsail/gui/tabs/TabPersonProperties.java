@@ -40,9 +40,9 @@ public class TabPersonProperties extends Tab {
         activeCheckBox.setSelected(person.isActive());
 		
         HBox.setHgrow(hboxGrey, Priority.ALWAYS);
-		hboxMain.setId("box-blue");
-		hboxGrey.setId("box-grey");
-
+		hboxMain.setId("custom-tap-pane-frame");
+		hboxGrey.setId("box-background-light");
+		vBoxLeft.setId("box-pink");
 		hboxMain.setPadding(new Insets(5, 5, 5, 5));
 		
 		hboxMain.setSpacing(5);
@@ -53,7 +53,7 @@ public class TabPersonProperties extends Tab {
 		hboxMain.setAlignment(Pos.CENTER);
 		hboxMemberType.setAlignment(Pos.CENTER_LEFT);
 
-		vBoxLeft.setId("box-pink");
+
 		vBoxLeft.setPadding(new Insets(5,5,5,5));
 		//////////  LISTENERS /////
          
@@ -75,7 +75,6 @@ public class TabPersonProperties extends Tab {
 		vBoxRight.getChildren().add(personMove);
 		hboxGrey.getChildren().addAll(vBoxLeft,vBoxRight);
 		hboxMain.getChildren().add(hboxGrey);
-		hboxMain.setId("box-blue");
 		setContent(hboxMain);
 	}
 	///////////////// CLASS METHODS /////////////////////

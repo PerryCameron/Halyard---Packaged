@@ -62,12 +62,12 @@ public class HBoxOfficer extends HBox {
 		
 		hboxGrey.setSpacing(10);  // spacing in between table and buttons
 		vboxButton.setSpacing(5);
-		hboxGrey.setId("box-grey");
+		hboxGrey.setId("box-background-light");
 		vboxPink.setId("box-pink");
 		hboxGrey.setPadding(new Insets(5,5,5,5));  // spacing around table and buttons
 		vboxPink.setPadding(new Insets(2,2,2,2)); // spacing to make pink frame around table
 		
-		this.setId("box-blue");
+		this.setId("box-frame-dark");
 		
 		///////////////// TABLE VIEW ///////////////////////
 			

@@ -29,8 +29,8 @@ public class HBoxAttachment extends HBox {
 		
 		//vboxPink.setPadding(new Insets(2,2,2,2)); // spacing to make pink fram around table
 		//yearSpinner.setPrefWidth(80);
-		this.setId("box-blue");
-		hboxGrey.setId("box-grey");
+		this.setId("custom-tap-pane-frame");
+		hboxGrey.setId("box-background-light");
 		//vboxPink.setId("box-pink");
 
 		//hboxGrey.setPrefWidth(942);

@@ -32,7 +32,7 @@ public class DarkMode implements Plugin {
         } else {
             scene.getRoot().setStyle("-fx-base:#25292D;");
             ConnectDatabase.logonStage.getScene().getRoot().setStyle("-fx-base:#25292D;");
-            scene.getStylesheets().add("dark.css");
+            scene.getStylesheets().add("css/dark/dark.css");
             toggleDark.setText("Dark");
         }
         isDark = !isDark;

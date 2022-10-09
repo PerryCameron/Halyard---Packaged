@@ -103,7 +103,7 @@ public class TabRoster extends Tab {
 		c2.setSelected(true);
 		c3.setSelected(true);
 		
-		tabPane.setId("roster-tab-pane");
+		tabPane.setId("custom-mini-tab-pane");
 //		vboxBlue.setId("hboxExport"); // outside frame around tableview and TitledPane
 //		vboxPink.setId("hboxExport");  // inside frame around tableview and TitledPane
 		hboxExportFrame.setId("hboxExport");
@@ -182,7 +182,7 @@ public class TabRoster extends Tab {
 			comboBox.getItems().add(i);
 		}
 		comboBox.getSelectionModel().select(1);
-		comboBox.getStyleClass().add("bigbox");
+
 		//////////////////// LISTENERS //////////////////////////
 
 		/// this listens for a focus on the slips tab and refreshes data everytime.

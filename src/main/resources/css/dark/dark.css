@@ -1,9 +1,14 @@
-.tab-pane{
-    -fx-tab-min-width:90px;
-}
 
 .button:hover {
     -fx-background-color: #1658e7;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
 }
 
 .combo-box-base:hover
@@ -43,30 +48,23 @@
     -fx-background-radius: 1;
 }
 
-#roster-tab-pane {
-    -fx-tab-min-width: 10px;
-}
-
-#roster-tab-pane .tab {
-    -fx-background-insets: 0 0 0 0,0,0;
-}
-
-#roster-tab-pane .tab:selected {
-    -fx-background-color: #6c7179;
-    /*  -fx-background-image: url("background.jpg");*/
-}
-
-#roster-tab-pane .tab-label {
-    -fx-alignment: CENTER;
-    -fx-text-fill: #828282;
-    -fx-font-size: 10px;
-    -fx-font-weight: bold;
-}
-
-#grey-box {
+/*box-grey*/
+#box-frame-light {
     -fx-background-color: #6c7179 /* #dfdada*/
 }
 
-#black-box {
+#box-background-light {
+    -fx-background-color: #6c7179 /* #dfdada*/
+}
+/*black box*/
+#box-frame-dark {
     -fx-background-color: #383f45
+}
+
+#box-background-dark {
+    -fx-background-color: #383f45
+}
+
+#sub-box-background-light {
+    -fx-background-color: #ececec;
 }

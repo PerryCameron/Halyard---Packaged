@@ -59,8 +59,11 @@ public class TabMembership extends Tab {
         hbox1.setSpacing(100);  // membership HBox
         hbox2.setSpacing(10);   // holds PersonVBox
         
-        vboxBlue.setId("box-blue");
+        vboxBlue.setId("box-frame-dark");
         containerVBox.setId("box-pink");
+		peopleTabPane.setId("custom-tab-pane");
+		informationTabPane.setId("custom-tab-pane");
+		fiscalTabPane.setId("custom-tab-pane");
         hbox1.setAlignment(Pos.TOP_CENTER);
         hbox2.setAlignment(Pos.TOP_CENTER);
         hbox3.setAlignment(Pos.TOP_CENTER);
