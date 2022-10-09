@@ -1,0 +1,30 @@
+.myDialog{
+    -fx-background-color: #dfdada;
+}
+.myDialog > *.button-bar > *.container{
+    -fx-background-color: #dfdada;
+}
+.myDialog > *.label.content{
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+.myDialog *.header-panel{
+    -fx-background-color: #dfdada;
+}
+.myDialog *.header-panel *.label{
+    -fx-font-size: 18px;
+    -fx-font-style: italic;
+    -fx-fill: #292929;
+}
+.myDialog *.button {
+    -fx-text-fill: white;
+    -fx-font-family: "Arial Narrow";
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#9fc0c7, #a8bbbf);
+    -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.6) , 2, 0.0 , 0 , 1 );
+    -fx-background-radius: 12px;
+}
+
+.myDialog *.button:hover {
+    -fx-background-color: linear-gradient(#2A5058, #61a2b1);
+}
