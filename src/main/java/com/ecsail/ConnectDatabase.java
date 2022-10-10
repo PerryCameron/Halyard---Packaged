@@ -29,7 +29,7 @@ import java.sql.*;
 public class ConnectDatabase {
 
 	public static Connection sqlConnection;
-//	public PortForwardingL sshConnection;
+	public PortForwardingL sshConnection;
 	private double titleBarHeight;
 	private Object_Login currentLogon;
 	private String port; 
@@ -222,7 +222,6 @@ public class ConnectDatabase {
 		if(currentLogon != null) {  // only true if starting for first time
 			populateFields();
 		}
-//		secondScene.getStylesheets().add("login.css");
 		mainHBox.setId("box-pink");
 		vboxBlue.setId("box-frame-dark");
 		
@@ -310,13 +309,13 @@ public class ConnectDatabase {
         		String sPass = sshPass.getText();
         		String loopback = "127.0.0.1";
         		// create ssh tunnel
-//        		if(currentLogon.isSshForward()) {
-//        			BaseApplication.logger.info("SSH tunnel enabled");
-//        			this.sshConnection = new PortForwardingL(host,loopback,3306,3306,sUser,sPass);
-////					setServerAliveInterval();
-//        			BaseApplication.logger.info("Server Alive interval: " + sshConnection.getSession().getServerAliveInterval());
-//        		} else
-//        			BaseApplication.logger.info("SSH connection is not being used");
+        		if(currentLogon.isSshForward()) {
+        			BaseApplication.logger.info("SSH tunnel enabled");
+        			this.sshConnection = new PortForwardingL(host,loopback,3306,3306,sUser,sPass);
+//					setServerAliveInterval();
+        			BaseApplication.logger.info("Server Alive interval: " + sshConnection.getSession().getServerAliveInterval());
+        		} else
+        			BaseApplication.logger.info("SSH connection is not being used");
         		// create mysql login
         		if(createConnection(user, pass, loopback, port)) {
 					// will get a null pointer when opening rosters if this is not here
@@ -539,12 +538,12 @@ public class ConnectDatabase {
 	public ResultSet executeSelectQuery(String query) throws SQLException {
 		Statement stmt = ConnectDatabase.sqlConnection.createStatement();
 		System.out.println(colorCode(query));
-//		if (currentLogon.isSshForward()) {
-//			if (!sshConnection.getSession().isConnected()) {
-//				BaseApplication.logger.error("SSH Connection is no longer connected");
-//				closeConnection();
-//			}
-//		}
+		if (currentLogon.isSshForward()) {
+			if (!sshConnection.getSession().isConnected()) {
+				BaseApplication.logger.error("SSH Connection is no longer connected");
+				closeConnection();
+			}
+		}
 		ResultSet rs = stmt.executeQuery(query);
 		return rs;
 	}
@@ -553,14 +552,14 @@ public class ConnectDatabase {
 		Statement stmt = ConnectDatabase.sqlConnection.createStatement();
 		BaseApplication.logger.info(query);
 		System.out.println(colorCode(query));
-//		if (currentLogon.isSshForward()) {
-//			if (!sshConnection.getSession().isConnected()) {
-//				BaseApplication.logger.error("SSH Connection is no longer connected");
-//				closeConnection();
-//			}
-//		}
-//		if(sshConnection.checkSSHConnection())
-//			BaseApplication.logger.info("SSH Connection is still good");
+		if (currentLogon.isSshForward()) {
+			if (!sshConnection.getSession().isConnected()) {
+				BaseApplication.logger.error("SSH Connection is no longer connected");
+				closeConnection();
+			}
+		}
+		if(sshConnection.checkSSHConnection())
+			BaseApplication.logger.info("SSH Connection is still good");
 		stmt.execute(query);
 		stmt.close();
 	}
@@ -595,23 +594,23 @@ public class ConnectDatabase {
 		rs.close();
 	}
 
-	public boolean isConnectionSucess() {
-		return connectionSucess;
-	}
-
-	public void setConnectionSucess(boolean connectionSucess) {
-		this.connectionSucess = connectionSucess;
-	}
-
-	public static Connection getConnection() {
-		return sqlConnection;
-	}
-
-	public static void setConnection(Connection connection) {
-		ConnectDatabase.sqlConnection = connection;
-	}
-
-
+//	public boolean isConnectionSucess() {
+//		return connectionSucess;
+//	}
+//
+//	public void setConnectionSucess(boolean connectionSucess) {
+//		this.connectionSucess = connectionSucess;
+//	}
+//
+//	public static Connection getConnection() {
+//		return sqlConnection;
+//	}
+//
+//	public static void setConnection(Connection connection) {
+//		ConnectDatabase.sqlConnection = connection;
+//	}
+//
+//
 //	public PortForwardingL getForwardedConnection() {
 //		return sshConnection;
 //	}
