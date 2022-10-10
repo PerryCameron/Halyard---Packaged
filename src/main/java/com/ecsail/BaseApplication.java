@@ -4,6 +4,7 @@ import com.ecsail.plugin.*;
 import com.ecsail.structures.MembershipListDTO;
 //import com.jcraft.jsch.JSchException;
 
+import com.jcraft.jsch.JSchException;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -54,15 +55,15 @@ public class BaseApplication extends Application implements Log {
         /*
          * Route the debugging output for this application to a log file in your "default" directory.
          * */
-        FileSystemView filesys = FileSystemView.getFileSystemView();
-        try {
-            outputFile = File.createTempFile("debug", ".log", filesys.getDefaultDirectory());
-            PrintStream output = new PrintStream(new BufferedOutputStream(new FileOutputStream(outputFile)), true);
-            System.setOut(output);
-            System.setErr(output);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        FileSystemView filesys = FileSystemView.getFileSystemView();
+//        try {
+//            outputFile = File.createTempFile("debug", ".log", filesys.getDefaultDirectory());
+//            PrintStream output = new PrintStream(new BufferedOutputStream(new FileOutputStream(outputFile)), true);
+//            System.setOut(output);
+//            System.setErr(output);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         logger.info("Starting application...");
         BaseApplication.selectedYear = HalyardPaths.getYear();
         launch(args);
@@ -142,16 +143,20 @@ public class BaseApplication extends Application implements Log {
             e.printStackTrace();
         }
         // if ssh is connected then disconnect
-//        if(connect.getSshConnection() != null)
-//            if(connect.getSshConnection().getSession().isConnected()) {
-//                try {
-//                    connect.getSshConnection().getSession().delPortForwardingL(3306);
-//                    connect.getSshConnection().getSession().disconnect();
-//                    logger.info("SSH: port forwarding closed");
-//                } catch (JSchException e) {
-//                    e.printStackTrace();
-//                }
-//            }
+        if(connect.getSshConnection() != null)
+            if(connect.getSshConnection().getSession().isConnected()) {
+                try {
+                    connect.getSshConnection().getSession().delPortForwardingL(3306);
+                    connect.getSshConnection().getSession().disconnect();
+                    logger.info("SSH: port forwarding closed");
+                } catch (JSchException e) {
+                    e.printStackTrace();
+                }
+            }
+    }
+
+    public static void connectDatabase() {
+        connect = new ConnectDatabase(stage);
     }
 
 }

@@ -1,8 +1,5 @@
 package com.ecsail;
 
-//import com.ecsail.gui.boxes.HBoxWelcome;
-//import com.ecsail.sql.select.SqlMembershipList;
-
 import com.ecsail.gui.boxes.HBoxWelcome;
 import com.ecsail.gui.tabs.TabLogin;
 import com.ecsail.gui.tabs.TabWelcome;
@@ -70,16 +67,16 @@ public class ConnectDatabase {
 		displayLogOn(primaryStage);
 	}
 	
-	public ConnectDatabase() { // default constructor
-	}
+//	public ConnectDatabase() { // default constructor
+//	}
 
 	public static Connection getSqlConnection() {
 		return sqlConnection;
 	}
 
-//	public PortForwardingL getSshConnection() {
-//		return sshConnection;
-//	}
+	public PortForwardingL getSshConnection() {
+		return sshConnection;
+	}
 
 
 	public void displayLogOn(Stage primaryStage) {
@@ -594,27 +591,27 @@ public class ConnectDatabase {
 		rs.close();
 	}
 
-//	public boolean isConnectionSucess() {
-//		return connectionSucess;
-//	}
-//
-//	public void setConnectionSucess(boolean connectionSucess) {
-//		this.connectionSucess = connectionSucess;
-//	}
-//
-//	public static Connection getConnection() {
-//		return sqlConnection;
-//	}
-//
-//	public static void setConnection(Connection connection) {
-//		ConnectDatabase.sqlConnection = connection;
-//	}
-//
-//
-//	public PortForwardingL getForwardedConnection() {
-//		return sshConnection;
-//	}
-//
+	public boolean isConnectionSucess() {
+		return connectionSucess;
+	}
+
+	public void setConnectionSucess(boolean connectionSucess) {
+		this.connectionSucess = connectionSucess;
+	}
+
+	public static Connection getConnection() {
+		return sqlConnection;
+	}
+
+	public static void setConnection(Connection connection) {
+		ConnectDatabase.sqlConnection = connection;
+	}
+
+
+	public PortForwardingL getForwardedConnection() {
+		return sshConnection;
+	}
+
 //	public void setForwardedConnection(PortForwardingL forwardedConnection) {
 //		this.sshConnection = forwardedConnection;
 //	}

@@ -3,6 +3,7 @@ package com.ecsail.gui.tabs;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.Launcher;
+import com.ecsail.pdf.PDF_SlipChart;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.sql.select.SqlSlip;
 import com.ecsail.structures.MembershipListDTO;
@@ -63,7 +64,7 @@ public class TabSlips extends Tab {
 		    }
 		});
 		
-//		createPdfButton.setOnAction((event) -> new PDF_SlipChart(HalyardPaths.getYear()));
+		createPdfButton.setOnAction((event) -> new PDF_SlipChart(BaseApplication.selectedYear));
 				
 		///////////////// ATTRIBUTES /////////////////
 		

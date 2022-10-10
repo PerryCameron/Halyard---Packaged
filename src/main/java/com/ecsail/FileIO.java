@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ecsail.structures.Object_Login;
-
+import com.ecsail.structures.Object_TupleCount;
 
 
 public class FileIO {
@@ -31,43 +31,43 @@ public static List<Object_Login> logins = new ArrayList<Object_Login>();
 		BaseApplication.logger.info(HalyardPaths.HOSTS + " saved");
 	}
 	
-//	public static void saveTupleCountObjects(List<Object_TupleCount> tuples) {  // saves user file to disk
-//		File g = new File(HalyardPaths.TUPLECOUNTS);
-//		try	{
-//			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(g));
-//			out.writeObject(tuples); 
-//			out.close();
-//		} catch (Exception e) {
-//			Halyard.getLogger().error(e.getMessage());
-//			e.printStackTrace();
-//			System.exit(0);
-//		}
-//		Halyard.getLogger().info(HalyardPaths.TUPLECOUNTS + " saved");
-//	}
-	
-//	public static ArrayList<Object_TupleCount> openTupleCountObjects() {
-//		ArrayList<Object_TupleCount> tuples = new ArrayList<Object_TupleCount>();
-//		File g = new File(HalyardPaths.TUPLECOUNTS);
-//		if (g.exists()) {
-//			try {
-//				ObjectInputStream in = new ObjectInputStream(new FileInputStream(g));
-//				Object obj = in.readObject();
-//				ArrayList<?> ar = (ArrayList<?>) obj;
-//				tuples.clear();
-//				for (Object x : ar) {
-//				    tuples.add((Object_TupleCount) x);
-//				}
-//				in.close();
-//			} catch (Exception e) {
-//				Halyard.getLogger().error("Error occurred during reading of " + HalyardPaths.TUPLECOUNTS);
-//				Halyard.getLogger().error(e.getMessage());
-//				e.printStackTrace();
-//			}			  
-//		} else {
-//			Halyard.getLogger().error("No such file exists: " + HalyardPaths.TUPLECOUNTS);
-//		}
-//		return tuples;
-//	}
+	public static void saveTupleCountObjects(List<Object_TupleCount> tuples) {  // saves user file to disk
+		File g = new File(HalyardPaths.TUPLECOUNTS);
+		try	{
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(g));
+			out.writeObject(tuples);
+			out.close();
+		} catch (Exception e) {
+			BaseApplication.logger.error(e.getMessage());
+			e.printStackTrace();
+			System.exit(0);
+		}
+		BaseApplication.logger.info(HalyardPaths.TUPLECOUNTS + " saved");
+	}
+
+	public static ArrayList<Object_TupleCount> openTupleCountObjects() {
+		ArrayList<Object_TupleCount> tuples = new ArrayList<Object_TupleCount>();
+		File g = new File(HalyardPaths.TUPLECOUNTS);
+		if (g.exists()) {
+			try {
+				ObjectInputStream in = new ObjectInputStream(new FileInputStream(g));
+				Object obj = in.readObject();
+				ArrayList<?> ar = (ArrayList<?>) obj;
+				tuples.clear();
+				for (Object x : ar) {
+				    tuples.add((Object_TupleCount) x);
+				}
+				in.close();
+			} catch (Exception e) {
+				BaseApplication.logger.error("Error occurred during reading of " + HalyardPaths.TUPLECOUNTS);
+				BaseApplication.logger.error(e.getMessage());
+				e.printStackTrace();
+			}
+		} else {
+			BaseApplication.logger.error("No such file exists: " + HalyardPaths.TUPLECOUNTS);
+		}
+		return tuples;
+	}
 	
 //	public static Object_TupleCount openTupleCountObject() {
 //		ArrayList<Object_TupleCount> tuples = new ArrayList<Object_TupleCount>();

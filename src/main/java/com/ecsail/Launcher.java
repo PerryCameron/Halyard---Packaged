@@ -50,11 +50,11 @@ public class Launcher extends VBox {
 		tabPane.getSelectionModel().select(getTabIndex("People"));
 	}
 
-//	public static void openFeeTab() {
+	public static void openFeeTab() {
 //		tabPane.getTabs().add(new TabDefinedFee("Fees"));
 //		tabPane.getSelectionModel().select(getTabIndex("Fees"));
-//	}
-//
+	}
+
 //	public static void openFeeTab2() {
 //		tabPane.getTabs().add(new TabFee("Fees"));
 //		tabPane.getSelectionModel().select(getTabIndex("Fees"));
@@ -212,23 +212,23 @@ public class Launcher extends VBox {
 		return membership;
 	}
 
-//	public static MembershipListDTO getSubleaser(int ms_id) {  // ms_id here is the subleasee
-//		MembershipListDTO membership = null;
-//		int element = 0;
-//		for(MembershipListDTO mem: Halyard.activememberships) {
-//			if(mem.getSubleaser() == ms_id) membership = Halyard.activememberships.get(element);
-//			element++;
-//		}
-//		return membership;  // returns membership of subleaser
-//	 }
-//
-//	public static TabPane getTabPane() {
-//		return tabPane;
-//	}
-//
-//	public static void setTabPane(TabPane tabPane) {
-//		Launcher.tabPane = tabPane;
-//	}
+	public static MembershipListDTO getSubleaser(int ms_id) {  // ms_id here is the subleasee
+		MembershipListDTO membership = null;
+		int element = 0;
+		for(MembershipListDTO mem: BaseApplication.activememberships) {
+			if(mem.getSubleaser() == ms_id) membership = BaseApplication.activememberships.get(element);
+			element++;
+		}
+		return membership;  // returns membership of subleaser
+	 }
+
+	public static TabPane getTabPane() {
+		return tabPane;
+	}
+
+	public static void setTabPane(TabPane tabPane) {
+		BaseApplication.tabPane = tabPane;
+	}
 
 	public static int getTabIndex(String tabName) {
 		int result = 0;
@@ -241,32 +241,32 @@ public class Launcher extends VBox {
 		return result;
 	}
 
-//	public static void closeTab(String tabName) {
-//		for(Tab tab: tabPane.getTabs()) {
-//			if(tab.getText().equals(tabName))
-//				tabPane.getTabs().remove(tab);
-//		}
-//	}
-//
+	public static void closeTab(String tabName) {
+		for(Tab tab: tabPane.getTabs()) {
+			if(tab.getText().equals(tabName))
+				tabPane.getTabs().remove(tab);
+		}
+	}
+
 	public static void closeActiveTab() {
 		tabPane.getTabs().remove(tabPane.getSelectionModel().getSelectedIndex());
 	}
-//
-//    public static void createBoatReport() {
+
+    public static void createBoatReport() {
 //		new PDF_BoatReport();
-//    }
-//
-//    public static void createNonRenews() {
+    }
+
+    public static void createNonRenews() {
 //		tabPane.getTabs().add(new TabNonRenewCreator("Non Renew Creator"));
 //		tabPane.getSelectionModel().select(getTabIndex("Non Renew Creator"));
-//    }
+    }
 
     public static void openJotFormTab() {
 		tabPane.getTabs().add(new TabJotForm("JotForm"));
 		tabPane.getSelectionModel().select(getTabIndex("JotForm"));
     }
 
-//    public static void createMembershipReport() {
+    public static void createMembershipReport() {
 //		new PDF_MembershipReport();
-//    }
+    }
 }

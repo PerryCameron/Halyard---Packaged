@@ -2,6 +2,7 @@ package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
+import com.ecsail.pdf.directory.Object_SlipInfo;
 import com.ecsail.structures.SlipDTO;
 
 import java.sql.ResultSet;
@@ -70,26 +71,26 @@ public class SqlSlip {
         return thisSlip;
     }
 
-//    public static ArrayList<Object_SlipInfo> getSlipsForDock(String dock) {
-//        ArrayList<Object_SlipInfo> thisSlipInfo = new ArrayList<>();
-//        String query = "SELECT slip_num,subleased_to,f_name,l_name  FROM slip s \n"
-//                + "LEFT JOIN membership m ON s.ms_id=m.ms_id \n"
-//                + "LEFT JOIN person p ON m.p_id=p.p_id \n"
-//                + "WHERE slip_num LIKE '" +dock + "%'";
-//        try {
-//            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-//            while (rs.next()) {
-//                thisSlipInfo.add(new Object_SlipInfo(
-//                        rs.getString("slip_num"),
-//                        rs.getInt("subleased_to"),
-//                        rs.getString("f_name"),
-//                        rs.getString("l_name")
-//                        ));
-//            }
-//            BaseApplication.connect.closeResultSet(rs);
-//        } catch (SQLException e) {
-//            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
-//        }
-//        return thisSlipInfo;
-//    }
+    public static ArrayList<Object_SlipInfo> getSlipsForDock(String dock) {
+        ArrayList<Object_SlipInfo> thisSlipInfo = new ArrayList<>();
+        String query = "SELECT slip_num,subleased_to,f_name,l_name  FROM slip s \n"
+                + "LEFT JOIN membership m ON s.ms_id=m.ms_id \n"
+                + "LEFT JOIN person p ON m.p_id=p.p_id \n"
+                + "WHERE slip_num LIKE '" +dock + "%'";
+        try {
+            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+            while (rs.next()) {
+                thisSlipInfo.add(new Object_SlipInfo(
+                        rs.getString("slip_num"),
+                        rs.getInt("subleased_to"),
+                        rs.getString("f_name"),
+                        rs.getString("l_name")
+                        ));
+            }
+            BaseApplication.connect.closeResultSet(rs);
+        } catch (SQLException e) {
+            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
+        }
+        return thisSlipInfo;
+    }
 }

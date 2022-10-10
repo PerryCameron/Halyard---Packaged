@@ -2,6 +2,7 @@ package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
+import com.ecsail.pdf.directory.PDF_Object_Officer;
 import com.ecsail.structures.OfficerDTO;
 import com.ecsail.structures.OfficerWithNameDTO;
 import javafx.collections.FXCollections;
@@ -33,25 +34,25 @@ public class SqlOfficer {
         return thisOfficer;
     }
 
-//    public static ArrayList<PDF_Object_Officer> getOfficersByYear(String selectedYear) {
-//        ArrayList<PDF_Object_Officer> officers = new ArrayList<>();
-//        String query = "SELECT * FROM officer o LEFT JOIN person p ON o.p_id=p.p_id WHERE off_year=" + selectedYear;
-//        try {
-//            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-//            while (rs.next()) {
-//                officers.add(new PDF_Object_Officer(
-//                        rs.getString("f_name"),
-//                        rs.getString("L_NAME"),
-//                        rs.getString("off_type"),
-//                        rs.getString("BOARD_YEAR"), // beginning of board term
-//                        rs.getString("off_year")));
-//            }
-//            BaseApplication.connect.closeResultSet(rs);
-//        } catch (SQLException e) {
-//            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
-//        }
-//        return officers;
-//    }
+    public static ArrayList<PDF_Object_Officer> getOfficersByYear(String selectedYear) {
+        ArrayList<PDF_Object_Officer> officers = new ArrayList<>();
+        String query = "SELECT * FROM officer o LEFT JOIN person p ON o.p_id=p.p_id WHERE off_year=" + selectedYear;
+        try {
+            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+            while (rs.next()) {
+                officers.add(new PDF_Object_Officer(
+                        rs.getString("f_name"),
+                        rs.getString("L_NAME"),
+                        rs.getString("off_type"),
+                        rs.getString("BOARD_YEAR"), // beginning of board term
+                        rs.getString("off_year")));
+            }
+            BaseApplication.connect.closeResultSet(rs);
+        } catch (SQLException e) {
+            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
+        }
+        return officers;
+    }
 
     public static ObservableList<OfficerDTO> getOfficer(String field, int attribute) {  //p_id
         ObservableList<OfficerDTO> thisOfficer = FXCollections.observableArrayList();
