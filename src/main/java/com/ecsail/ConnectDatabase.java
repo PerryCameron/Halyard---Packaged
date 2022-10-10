@@ -87,12 +87,13 @@ public class ConnectDatabase {
 		int height = 200;
 		logonStage = new Stage();
 		logonStage.setTitle("Login");
-		Image ecscLogo = new Image(getClass().getResourceAsStream("/ECSClogo4.png"));
+		Image ecscLogo = new Image(getClass().getResourceAsStream("/ecscloginlogo.png"));
 		ImageView logo = new ImageView(ecscLogo);
 		VBox vboxBlue = new VBox();
 		VBox vboxLeft = new VBox(); // this creates a pink border around the table
 		Pane loginPane = new Pane();
 		Scene secondScene = new Scene(loginPane, width, height);
+		secondScene.getStylesheets().add("css/dark/dark.css");
 		
 		HBox errorHBox = new HBox();  // for displaying errors above
 		HBox vboxUserLabel = new HBox();

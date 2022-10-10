@@ -38,12 +38,12 @@ public class Launcher extends VBox {
 		tabPane.getSelectionModel().select(getTabIndex("Boats"));
 	}
 	
-//	public static void openNotesTab() {
-//		if(!tabOpen("Notes"))
-//		tabPane.getTabs().add(new TabNotes("Notes"));
-//		tabPane.getSelectionModel().select(getTabIndex("Notes"));
-//	}
-//
+	public static void openNotesTab() {
+		if(!tabOpen("Notes"))
+		tabPane.getTabs().add(new TabNotes("Notes"));
+		tabPane.getSelectionModel().select(getTabIndex("Notes"));
+	}
+
 	public static void openPeopleTab() {
 		if(!tabOpen("People"))
 		tabPane.getTabs().add(new TabPeople("People"));
@@ -260,12 +260,12 @@ public class Launcher extends VBox {
 //		tabPane.getTabs().add(new TabNonRenewCreator("Non Renew Creator"));
 //		tabPane.getSelectionModel().select(getTabIndex("Non Renew Creator"));
 //    }
-//
-//    public static void openJotFormTab() {
-//		tabPane.getTabs().add(new TabJotForm("JotForm"));
-//		tabPane.getSelectionModel().select(getTabIndex("JotForm"));
-//    }
-//
+
+    public static void openJotFormTab() {
+		tabPane.getTabs().add(new TabJotForm("JotForm"));
+		tabPane.getSelectionModel().select(getTabIndex("JotForm"));
+    }
+
 //    public static void createMembershipReport() {
 //		new PDF_MembershipReport();
 //    }
