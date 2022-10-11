@@ -3,6 +3,7 @@ package com.ecsail.pdf.directory;
 import com.itextpdf.io.font.FontProgram;
 import com.itextpdf.io.font.FontProgramFactory;
 import com.itextpdf.io.font.PdfEncodings;
+import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.colors.DeviceCmyk;
@@ -19,7 +20,6 @@ import java.io.IOException;
 // 3.5 inch x 72 points = 252 points (the height)
 
 public class PDF_Object_Settings {
-//	public static final String HEADINGS = "src/main/resources/Fredoka_One/FredokaOne-Regular.ttf";
 
 	private String logoPath;
 	private String selectedYear;
@@ -47,7 +47,7 @@ public class PDF_Object_Settings {
 		this.fixedLeading = 25;
 		this.fixedLeadingNarrow = 10;
 		this.titleBoxHeight =20;
-//		this.columnHead = constructFontHeading();
+		this.columnHead = constructFontHeading();
 //		this.mainColor = new DeviceCmyk(.93f, 0, 0.7f, 0.62f);  // green color in document 2021
 		this.mainColor = new DeviceCmyk(0f, .24f, .60f, 0f);  // green color in document 2021
 		this.dockColor  = new DeviceRgb(237, 237, 237);
@@ -66,21 +66,21 @@ public class PDF_Object_Settings {
 		return sheet;
 	}
 
-//	private PdfFont constructFontHeading() {
-//		PdfFont pdfFont = null;
-//
-//		try {
-//			FontProgram fontProgram = FontProgramFactory.createFont(HEADINGS);
-//			// updating library forced me to remove the true below to work
-//			// pdfFont = PdfFontFactory.createFont(fontProgram, PdfEncodings.WINANSI, true);
-//			pdfFont = PdfFontFactory.createFont(fontProgram, PdfEncodings.WINANSI);
-//
-//		} catch (IOException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//		return pdfFont;
-//	}
+	private PdfFont constructFontHeading() {
+		PdfFont pdfFont = null;
+
+		try {
+			FontProgram fontProgram = FontProgramFactory.createFont(StandardFonts.HELVETICA);
+			// updating library forced me to remove the true below to work
+			// pdfFont = PdfFontFactory.createFont(fontProgram, PdfEncodings.WINANSI, true);
+			pdfFont = PdfFontFactory.createFont(fontProgram, PdfEncodings.WINANSI);
+
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return pdfFont;
+	}
 
 	public String getLogoPath() {
 		return logoPath;

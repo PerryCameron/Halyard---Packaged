@@ -89,7 +89,7 @@ public class PDF_Cover extends Table {
 			cell.setBorder(Border.NO_BORDER);
 			p = new Paragraph(heading);
 			p.setFontSize(set.getNormalFontSize() + 25);
-			p.setFont(set.getColumnHead());
+//			p.setFont(set.getColumnHead());
 			p.setFixedLeading(set.getFixedLeading() + 7);  // sets spacing between lines of text
 			p.setTextAlignment(TextAlignment.CENTER);
 			cell.add(p);

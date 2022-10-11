@@ -65,7 +65,9 @@
     -fx-font-weight: bold;
 }
 
-
+#slip-fonts {
+    -fx-font-size: 11px;
+}
 
 /*#committee-title {*/
 /*    -fx-text-fill: #ffffff;*/

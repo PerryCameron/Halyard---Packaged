@@ -62,26 +62,25 @@ public class StandardMenus implements Plugin {
 
 //        edit.getItems().addAll(undo, redo, editSeparator, cut, copy, paste);
 
-        Menu menu3 = new Menu("Membership");
+        Menu reports = new Menu("Reports");
 
         Menu subMenuCreate = new Menu("Create");
-
         MenuItem boatReport = Configure("Boat Report", (event) -> Launcher.createBoatReport(), KeyCode.C);
         MenuItem membershipReport = Configure("Membership Report", (event) -> Launcher.createMembershipReport(), KeyCode.V);
         MenuItem emailListReport = Configure("Email List", (event) -> Xls_email_list.createSpreadSheet(), KeyCode.N);
         MenuItem renewalForms = Configure("Renewal Forms", (event) -> Launcher.createRenewalForms(), KeyCode.M);
         MenuItem directory = Configure("Directory", (event) -> new Dialogue_DirectoryCreation(), KeyCode.Z);
+        subMenuCreate.getItems().addAll(boatReport,membershipReport,emailListReport,renewalForms,directory);
+        reports.getItems().add(subMenuCreate);
 
+        Menu membership = new Menu("Membership");
+        Menu subMenuMembershipCreate = new Menu("Create");
+        MenuItem newMembership = Configure("New Membership", (event) -> CreateMembership.Create(), KeyCode.P);
+        MenuItem envelopes = Configure("Envelopes", (event) -> Launcher.openEnvelopesDialogue(), KeyCode.L);
+        subMenuMembershipCreate.getItems().addAll(newMembership,envelopes);
+        membership.getItems().add(subMenuMembershipCreate);
 
-
-
-        subMenuCreate.getItems().add(boatReport);
-
-
-        menu3.getItems().add(subMenuCreate);
-
-
-        menuBar.getMenus().addAll(file, menu3);
+        menuBar.getMenus().addAll(file, membership, reports);
     }
 
     private void closeConnection(Stage primaryStage) {
