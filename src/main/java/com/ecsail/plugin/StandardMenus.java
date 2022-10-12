@@ -76,9 +76,25 @@ public class StandardMenus implements Plugin {
         Menu membership = new Menu("Membership");
         Menu subMenuMembershipCreate = new Menu("Create");
         MenuItem newMembership = Configure("New Membership", (event) -> CreateMembership.Create(), KeyCode.P);
-        MenuItem envelopes = Configure("Envelopes", (event) -> Launcher.openEnvelopesDialogue(), KeyCode.L);
+        MenuItem envelopes = Configure("Envelopes", (event) -> Launcher.openEnvelopesDialogue(), KeyCode.SHIFT.L);
         subMenuMembershipCreate.getItems().addAll(newMembership,envelopes);
-        membership.getItems().add(subMenuMembershipCreate);
+
+        Menu subMenuTabs = new Menu("Tabs");
+        MenuItem rosters = Configure("Rosters", (event) -> Launcher.openRosterTab(), null);
+        MenuItem bod = Configure("Board Of Directors", (event) -> Launcher.openBoardTab(), null);
+        MenuItem people = Configure("People", (event) -> Launcher.openPeopleTab(), null);
+        MenuItem boats = Configure("Boats", (event) -> Launcher.openBoatsTab(), null);
+        MenuItem slips = Configure("Slips", (event) -> Launcher.openSlipsTab(), null);
+        MenuItem deposits = Configure("Deposits", (event) -> Launcher.openDepositsTab(), null);
+        MenuItem fees = Configure("Fees", (event) -> Launcher.openFeeTab(), null);
+        MenuItem feesExp = Configure("Fees (experimental)", (event) -> Launcher.openFeeTab2(), null);
+        MenuItem notes = Configure("Notes", (event) -> Launcher.openNotesTab(), null);
+        MenuItem jotform = Configure("Jotform", (event) -> Launcher.openJotFormTab(), null);
+        subMenuTabs.getItems().addAll(rosters,bod,people,boats,slips,deposits,fees,feesExp,notes,jotform);
+
+        membership.getItems().addAll(subMenuMembershipCreate, subMenuTabs);
+
+
 
         menuBar.getMenus().addAll(file, membership, reports);
     }

@@ -51,14 +51,14 @@ public class Launcher extends VBox {
 	}
 
 	public static void openFeeTab() {
-//		tabPane.getTabs().add(new TabDefinedFee("Fees"));
-//		tabPane.getSelectionModel().select(getTabIndex("Fees"));
+		tabPane.getTabs().add(new TabDefinedFee("Fees"));
+		tabPane.getSelectionModel().select(getTabIndex("Fees"));
 	}
 
-//	public static void openFeeTab2() {
-//		tabPane.getTabs().add(new TabFee("Fees"));
-//		tabPane.getSelectionModel().select(getTabIndex("Fees"));
-//	}
+	public static void openFeeTab2() {
+		tabPane.getTabs().add(new TabFee("Fees"));
+		tabPane.getSelectionModel().select(getTabIndex("Fees"));
+	}
 
 	public static void openSlipsTab() {
 		if(!tabOpen("Slips"))
