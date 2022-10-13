@@ -46,7 +46,7 @@ public class Dialogue_LoadNewStats extends Stage {
 		
 		vboxBlue.setPadding(new Insets(10, 10, 10, 10));
 		vboxPink.setPadding(new Insets(3, 3, 3, 3)); // spacing to make pink from around table
-		vboxPink.setId("box-pink");
+//		vboxPink.setId("box-pink");
 		vboxBlue.setId("box-frame-dark");
 		// vboxGrey.setId("slip-box");
 		
@@ -54,7 +54,7 @@ public class Dialogue_LoadNewStats extends Stage {
 		vboxGrey.setPrefHeight(688);
 		vboxGrey.setAlignment(Pos.CENTER);
 		hboxYearChoose.setAlignment(Pos.CENTER);
-		scene.getStylesheets().add("stylesheet.css");
+		scene.getStylesheets().add("css/dark/dialogue.css");
 
 		setTitle("Updating Statistics");
 		Image mainIcon = new Image(getClass().getResourceAsStream("/icon_24.png"));

@@ -26,7 +26,7 @@ public class Dialogue_CustomErrorMessage extends Stage {
 		vboxBlue.setId("box-frame-dark");
 		vboxBlue.setPadding(new Insets(10, 10, 10, 10));
 		vboxPink.setPadding(new Insets(3, 3, 3, 3)); // spacing to make pink from around table
-		vboxPink.setId("box-pink");
+//		vboxPink.setId("box-pink");
 		// vboxGrey.setId("slip-box");
 		vboxGrey.setSpacing(15);
 		vboxGrey.setPadding(new Insets(5,5,0,5));
@@ -36,12 +36,12 @@ public class Dialogue_CustomErrorMessage extends Stage {
 		VBox.setVgrow(vboxGrey, Priority.ALWAYS);
 		VBox.setVgrow(vboxPink, Priority.ALWAYS);
 		HBox.setHgrow(vboxPink, Priority.ALWAYS);
-		scene.getStylesheets().add("stylesheet.css");
+		scene.getStylesheets().add("css/dark/dialogue.css");
 		vboxGrey.getChildren().addAll(textArea, closeButton);
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
 		setTitle(title);
-		Image mainIcon = new Image(getClass().getResourceAsStream("/ECSC64.png"));
+		Image mainIcon = new Image(getClass().getResourceAsStream("/logo_24.png"));
 
 		//////////////// LISTENERS ////////////////
 

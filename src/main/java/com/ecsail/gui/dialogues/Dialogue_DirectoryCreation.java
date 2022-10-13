@@ -23,18 +23,18 @@ public class Dialogue_DirectoryCreation extends Stage {
 		
 		
 		/////////////////// ATTRIBUTES ///////////////////
-		vboxBlue.setId("box-blue");
+//		vboxBlue.setId("box-blue");
 		vboxBlue.setPadding(new Insets(10, 10, 10, 10));
 		vboxPink.setPadding(new Insets(3, 3, 3, 3)); // spacing to make pink from around table
-		vboxPink.setId("box-pink");
+//		vboxPink.setId("box-pink");
 		// vboxGrey.setId("slip-box");
 		vboxGrey.setPrefHeight(688);
-		scene.getStylesheets().add("stylesheet.css");
+		scene.getStylesheets().add("css/dark/dialogue.css");
 		vboxGrey.getChildren().addAll(textArea, createDirectory);
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
 		setTitle("Create Directory");
-		Image mainIcon = new Image(getClass().getResourceAsStream("/ECSC64.png"));
+		Image mainIcon = new Image(getClass().getResourceAsStream("/icon_24.png"));
 		
 		//////////////// LISTENERS ////////////////
 		createDirectory.setOnAction((event) -> new PDF_Directory(BaseApplication.selectedYear,textArea));

@@ -22,6 +22,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.sql.*;
+import java.util.Arrays;
 
 public class ConnectDatabase {
 
@@ -555,8 +556,6 @@ public class ConnectDatabase {
 				closeConnection();
 			}
 		}
-		if(sshConnection.checkSSHConnection())
-			BaseApplication.logger.info("SSH Connection is still good");
 		stmt.execute(query);
 		stmt.close();
 	}

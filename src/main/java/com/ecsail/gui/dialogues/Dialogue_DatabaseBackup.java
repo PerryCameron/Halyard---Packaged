@@ -30,15 +30,15 @@ public class Dialogue_DatabaseBackup extends Stage {
 		Scene scene = new Scene(vboxBlue, 400, 300);
 		
 		/////////////////// ATTRIBUTES ///////////////////
-		vboxBlue.setId("box-blue");
+//		vboxBlue.setId("box-blue");
 		vboxBlue.setPadding(new Insets(10, 10, 10, 10));
 		vboxPink.setPadding(new Insets(3, 3, 3, 3)); // spacing to make pink from around table
-		vboxPink.setId("box-pink");
+//		vboxPink.setId("box-pink");
 		// vboxGrey.setId("slip-box");
 		vboxGrey.setPrefHeight(688);
-		scene.getStylesheets().add("stylesheet.css");
+		scene.getStylesheets().add("css/dark/dialogue.css");
 		setTitle("Database BackUp");
-		Image mainIcon = new Image(getClass().getResourceAsStream("/ECSC64.png"));
+		Image mainIcon = new Image(getClass().getResourceAsStream("/icon_24.png"));
 		
 		//////////////// ADD CONTENT ///////////////////
 		

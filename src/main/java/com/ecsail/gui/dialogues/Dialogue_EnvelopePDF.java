@@ -73,7 +73,7 @@ public class Dialogue_EnvelopePDF extends Stage {
 		vboxBlue.setId("box-frame-dark");
 		vboxBlue.setPadding(new Insets(10, 10, 10, 10));
 		vboxPink.setPadding(new Insets(3, 3, 3, 3)); // spacing to make pink from around table
-		vboxPink.setId("box-pink");
+//		vboxPink.setId("box-pink");
 		// vboxGrey.setId("slip-box");
 		hboxGrey.setPrefHeight(688);
 		scene.getStylesheets().add("css/dark/dialogue.css");

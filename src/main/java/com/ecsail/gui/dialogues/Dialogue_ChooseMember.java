@@ -65,18 +65,18 @@ public class Dialogue_ChooseMember extends Stage {
         
         buttonHBox.setAlignment(Pos.CENTER);
         
-		vboxBlue.setId("box-blue");
+//		vboxBlue.setId("box-blue");
 		vboxGrey.setPadding(new Insets(20, 20, 20, 20));
 		vboxBlue.setPadding(new Insets(10, 10, 10, 10));
 		vboxPink.setPadding(new Insets(3, 3, 3, 3)); // spacing to make pink from around table
-		vboxPink.setId("box-pink");
+//		vboxPink.setId("box-pink");
 		VBox.setVgrow(vboxGrey, Priority.ALWAYS);
 		VBox.setVgrow(vboxPink, Priority.ALWAYS);
 		HBox.setHgrow(vboxPink, Priority.ALWAYS);
-		scene.getStylesheets().add("stylesheet.css");
+		scene.getStylesheets().add("css/dark/dialogue.css");
 
 		this.setTitle("Choose Member");
-		Image mainIcon = new Image(getClass().getResourceAsStream("/ECSC64.png"));
+		Image mainIcon = new Image(getClass().getResourceAsStream("/logo_24.png"));
 		
 		//////////////// LISTENERS   ///////////////////
 		
