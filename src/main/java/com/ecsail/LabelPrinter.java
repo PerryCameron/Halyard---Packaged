@@ -1,18 +1,28 @@
 package com.ecsail;
 
+import javafx.concurrent.Task;
+
 import javax.print.PrintService;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.print.*;
+import java.util.Arrays;
 
-public class LabelPrinter {
+public class LabelPrinter extends Thread {
     static String[] labelLines;
+    @Override
+    public void run() {
+
+    }
     public static void printMembershipLabel(String[] lines) {
         labelLines = lines;
 
         PrintService[] ps = PrinterJob.lookupPrintServices();
         if (ps.length == 0) {
             throw new IllegalStateException("No Printer found");
+
+        } else {
+            BaseApplication.logger.info("Print Services found: " + Arrays.asList(labelLines));
         }
 
         PrintService myService = null;
@@ -23,8 +33,15 @@ public class LabelPrinter {
             }
         }
         if (myService == null) {
-            System.out.println("myService is null");
+            BaseApplication.logger.info("Print Service is null");
         }
+
+        PrintService finalMyService = myService;
+        Thread t = new Thread(() -> printLabel(finalMyService));
+        t.start();
+    }
+
+    private static void printLabel(PrintService myService) {
         PrinterJob pj = PrinterJob.getPrinterJob();
         try {
             pj.setPrintService(myService);
@@ -32,25 +49,25 @@ public class LabelPrinter {
             ex.printStackTrace();
         }
 
-            PageFormat pf = pj.defaultPage();
-            Paper paper = pf.getPaper();
-            double width = fromCMToPPI(3.5);
-            double height = fromCMToPPI(8.8);
-            paper.setSize(width, height);
-            paper.setImageableArea(
-                    fromCMToPPI(0.25),
-                    fromCMToPPI(0.5),
-                    width - fromCMToPPI(0.35),
-                    height - fromCMToPPI(1));
-            pf.setOrientation(PageFormat.LANDSCAPE);
-            pf.setPaper(paper);
-            PageFormat validatePage = pj.validatePage(pf);
-            pj.setPrintable(new MyLabelPrintable(), pf);
-            try {
-                pj.print();
-            } catch (PrinterException ex) {
-                ex.printStackTrace();
-            }
+        PageFormat pf = pj.defaultPage();
+        Paper paper = pf.getPaper();
+        double width = fromCMToPPI(3.5);
+        double height = fromCMToPPI(8.8);
+        paper.setSize(width, height);
+        paper.setImageableArea(
+                fromCMToPPI(0.25),
+                fromCMToPPI(0.5),
+                width - fromCMToPPI(0.35),
+                height - fromCMToPPI(1));
+        pf.setOrientation(PageFormat.LANDSCAPE);
+        pf.setPaper(paper);
+//        PageFormat validatePage = pj.validatePage(pf);
+        pj.setPrintable(new MyLabelPrintable(), pf);
+        try {
+            pj.print();
+        } catch (PrinterException ex) {
+            ex.printStackTrace();
+        }
     }
 
 
@@ -61,6 +78,8 @@ public class LabelPrinter {
     protected static double toPPI(double inch) {
         return inch * 72d;
     }
+
+
 
 
     public static class MyLabelPrintable implements Printable {
