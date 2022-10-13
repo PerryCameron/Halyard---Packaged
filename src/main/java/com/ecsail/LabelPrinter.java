@@ -8,12 +8,9 @@ import java.awt.geom.Rectangle2D;
 import java.awt.print.*;
 import java.util.Arrays;
 
-public class LabelPrinter extends Thread {
+public class LabelPrinter {
     static String[] labelLines;
-    @Override
-    public void run() {
 
-    }
     public static void printMembershipLabel(String[] lines) {
         labelLines = lines;
 
@@ -25,21 +22,18 @@ public class LabelPrinter extends Thread {
             BaseApplication.logger.info("Print Services found: " + Arrays.asList(labelLines));
         }
 
-        PrintService myService = null;
-        for (PrintService printService : ps) {
-            if (printService.getName().equals("DYMO LabelWriter 450")) {
-                myService = printService;
-                break;
-            }
-        }
-        if (myService == null) {
-            BaseApplication.logger.info("Print Service is null");
-        }
+        PrintService myService = Arrays.stream(ps)
+                .filter((p) -> p.getName().equals("DYMO LabelWriter 450"))
+                .findFirst().orElse(null);
 
-        PrintService finalMyService = myService;
-        Thread t = new Thread(() -> printLabel(finalMyService));
-        t.start();
+        if (myService == null) {
+            BaseApplication.logger.info("Printer: DYMO LabelWriter 450 not found, check printer ");
+        } else {
+            Thread t = new Thread(() -> printLabel(myService));
+            t.start();
+        }
     }
+
 
     private static void printLabel(PrintService myService) {
         PrinterJob pj = PrinterJob.getPrinterJob();
@@ -78,9 +72,6 @@ public class LabelPrinter extends Thread {
     protected static double toPPI(double inch) {
         return inch * 72d;
     }
-
-
-
 
     public static class MyLabelPrintable implements Printable {
 

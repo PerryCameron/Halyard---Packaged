@@ -38,7 +38,7 @@ public class HBoxProperties extends HBox {
         HBox hbox4 = new HBox();  // holds membership type
         HBox hbox5 = new HBox();  // holds delete membership
 		Button removeMembershipButton = new Button("Delete");
-		Button printLabelsButton = new Button("Print Card Labels");
+		Button printLabelsButton = new Button("Print");
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 
 		DialogPane dialogPane = alert.getDialogPane();
@@ -51,12 +51,14 @@ public class HBoxProperties extends HBox {
         hbox1.setSpacing(5);  // membership HBox
         hbox2.setSpacing(5);  // membership HBox
         hbox4.setSpacing(5);  // membership HBox
+		hbox3.setSpacing(5);  // membership HBox
         hbox5.setSpacing(5);  // membership HBox
         leftVBox.setSpacing(10);
         this.setSpacing(10);
         
         hbox1.setAlignment(Pos.CENTER_LEFT);
         hbox2.setAlignment(Pos.CENTER_LEFT);
+		hbox3.setAlignment(Pos.CENTER_LEFT);
         hbox4.setAlignment(Pos.CENTER_LEFT);
         hbox5.setAlignment(Pos.CENTER_LEFT);
 
@@ -71,7 +73,7 @@ public class HBoxProperties extends HBox {
 		///////////// LISTENERS ////////////
 
 		removeMembershipButton.setOnAction(e -> {
-			alert.setTitle("Remove Membership");
+			alert.setTitle("Delete Membership");
 			alert.setHeaderText("Membership " + membership.getMembershipId());
 			alert.setContentText("Are sure you want to delete membership " + membership.getMembershipId() + "?");
 			Optional<ButtonType> result = alert.showAndWait();
@@ -94,8 +96,9 @@ public class HBoxProperties extends HBox {
 		}));
 		
 		///////////// SET CONTENT ////////////////////
+		hbox3.getChildren().addAll(new Label("Print Membership Card Labels"), printLabelsButton);
+		hbox5.getChildren().addAll(new Label("Delete Membership"),removeMembershipButton);
 
-		hbox5.getChildren().addAll(new Label("Remove Membership"),removeMembershipButton, printLabelsButton);
 		leftVBox.getChildren().addAll(hbox2,hbox3,hbox5);
 		hboxGrey.getChildren().addAll(leftVBox,rightVBox);
 		getChildren().add(hboxGrey);
