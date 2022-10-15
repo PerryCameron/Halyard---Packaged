@@ -125,8 +125,6 @@ public class BaseApplication extends Application implements Log {
         stage.toFront();
         stage.setAlwaysOnTop(false);
         connect = new ConnectDatabase(stage);
-        scene.getRoot().setStyle("-fx-base:#25292D;");
-        ConnectDatabase.logonStage.getScene().getRoot().setStyle("-fx-base:#25292D;");
         scene.getStylesheets().addAll(
                 "css/dark/dark.css",
                 "css/dark/tabpane.css",

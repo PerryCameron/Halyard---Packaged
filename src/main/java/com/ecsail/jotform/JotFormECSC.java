@@ -1,5 +1,6 @@
 package com.ecsail.jotform;
 
+import com.ecsail.BaseApplication;
 import com.ecsail.structures.jotform.JotFormSubmissionListDTO;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -66,6 +67,7 @@ public class JotFormECSC {
     public ArrayList<JSONObject> addFormSubmissionsIntoArray(JSONObject submissions) {
         ArrayList<JSONObject> formSubmissions = new ArrayList<>();
         JSONArray content = (JSONArray) submissions.get("content");
+//        BaseApplication.logger.info("JSONArray content= " + submissions.get("content"));
         for(int i =0; i < content.length(); i++) {
             formSubmissions.add((JSONObject) content.get(i));
         }

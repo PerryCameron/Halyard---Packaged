@@ -1,11 +1,13 @@
 package com.ecsail.gui.tabs;
 
+import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.Launcher;
 import com.ecsail.excel.Xls_roster;
 import com.ecsail.gui.tabs.roster.TabKayakLists;
 import com.ecsail.gui.tabs.roster.TabSlipOptions;
 import com.ecsail.gui.tabs.roster.TabStandard;
+import com.ecsail.rosterContextMenu;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.structures.MembershipListDTO;
 import com.ecsail.structures.RosterRadioButtonsDTO;
@@ -178,7 +180,7 @@ public class TabRoster extends Tab {
 				.addAll(Arrays.asList(Col1, Col2, Col3, Col4, Col5, Col6, Col7, Col8, Col9, Col10, Col11));
 
 		ComboBox<Integer> comboBox = new ComboBox<>();
-		for(int i = Integer.parseInt(HalyardPaths.getYear()) + 1; i > 1969; i--) {
+		for(int i = Integer.parseInt(BaseApplication.selectedYear) + 1; i > 1969; i--) {
 			comboBox.getItems().add(i);
 		}
 		comboBox.getSelectionModel().select(1);

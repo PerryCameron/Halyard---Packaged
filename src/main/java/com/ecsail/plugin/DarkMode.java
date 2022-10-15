@@ -27,13 +27,13 @@ public class DarkMode implements Plugin {
 
     private void toggleDark() {
         if (isDark) {
-            scene.getRoot().setStyle("");
-            toggleDark.setText("Light");
+//            scene.getRoot().setStyle("");
+//            toggleDark.setText("Light");
         } else {
-            scene.getRoot().setStyle("-fx-base:#25292D;");
-            ConnectDatabase.logonStage.getScene().getRoot().setStyle("-fx-base:#25292D;");
-            scene.getStylesheets().add("css/dark/dark.css");
-            toggleDark.setText("Dark");
+//            scene.getRoot().setStyle("-fx-base:#25292D;");
+//            ConnectDatabase.logonStage.getScene().getRoot().setStyle("-fx-base:#25292D;");
+//            scene.getStylesheets().add("css/dark/dark.css");
+//            toggleDark.setText("Dark");
         }
         isDark = !isDark;
     }

@@ -10,6 +10,7 @@
 package com.ecsail.jotform;
 
 
+import com.ecsail.BaseApplication;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -77,6 +78,7 @@ public class JotForm {
         HttpResponse resp;
 
         if (method.equals("GET")){
+            BaseApplication.logger.info("Performing GET request");
         	req = new HttpGet(JotForm.baseUrl + JotForm.version + path);
             req.addHeader("apiKey", this.apiKey);
             
@@ -95,6 +97,7 @@ public class JotForm {
             	((HttpRequestBase) req).setURI(uri);
             }
         } else if (method.equals("POST")) {
+            BaseApplication.logger.info("Performing POST request");
             req = new HttpPost(JotForm.baseUrl + JotForm.version + path);
             req.addHeader("apiKey", this.apiKey);
 
@@ -111,6 +114,7 @@ public class JotForm {
 	            ((HttpPost) req).setEntity(entity);
             }
         } else if (method.equals("DELETE")) {
+            BaseApplication.logger.info("Performing DELETE request");
             req = new HttpDelete(JotForm.baseUrl + JotForm.version + path);
             req.addHeader("apiKey", this.apiKey);
         } else {
@@ -118,14 +122,18 @@ public class JotForm {
         }
         
         try {
+            BaseApplication.logger.info("Attempting Request...");
+            BaseApplication.logger.info(req.toString());
             resp = client.execute(req);
             
             int statusCode = resp.getStatusLine().getStatusCode();
+            BaseApplication.logger.info("Status Code: " + statusCode);
 
             if (statusCode != HttpStatus.SC_OK) {
+                BaseApplication.logger.error(resp.getStatusLine().getReasonPhrase());
                 this.Log(resp.getStatusLine().getReasonPhrase());
             }
-            
+//            BaseApplication.logger.info(readInput(resp.getEntity().getContent()));
             return new JSONObject(readInput(resp.getEntity().getContent()));
 
         } catch (IOException e) {
