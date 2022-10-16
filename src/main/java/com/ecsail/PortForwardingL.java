@@ -4,6 +4,7 @@ import com.jcraft.jsch.*;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.net.BindException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 

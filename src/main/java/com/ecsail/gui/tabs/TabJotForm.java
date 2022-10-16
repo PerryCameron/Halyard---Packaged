@@ -42,11 +42,14 @@ public class TabJotForm extends Tab {
 
 		TableViewNewMembership tableViewNewMembership = new TableViewNewMembership(list, client);
 		TableView<JotFormSubmissionListDTO> tableView;
-		JSONObject submissions = client.getFormSubmissions(213494856046160L);
-		ArrayList<JSONObject> formSubmissions = jotFormECSC.addFormSubmissionsIntoArray(submissions);
-		for(JSONObject a: formSubmissions) {
-			list.add(jotFormECSC.addSubmissionAnswersIntoDTO(a));
-		}
+		Thread t = new Thread(() -> {
+			JSONObject submissions = client.getFormSubmissions(213494856046160L);
+			ArrayList<JSONObject> formSubmissions = jotFormECSC.addFormSubmissionsIntoArray(submissions);
+			for (JSONObject a : formSubmissions) {
+				list.add(jotFormECSC.addSubmissionAnswersIntoDTO(a));
+			}
+		});
+		t.start();
 		tableView = tableViewNewMembership.getContent();
 		vboxGrey.getChildren().add(tableView);
 

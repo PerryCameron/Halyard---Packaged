@@ -11,6 +11,10 @@ package com.ecsail.jotform;
 
 
 import com.ecsail.BaseApplication;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -71,70 +75,95 @@ public class JotForm {
         }
     }
 
-    private JSONObject executeHttpRequest(String path, HashMap<String,String> params, String method) throws UnsupportedEncodingException {
-        HttpClient client = HttpClientBuilder.create().build();
-        
-        HttpUriRequest req;
-        HttpResponse resp;
+    private JSONObject executeHttpRequest(String path, HashMap<String,String> params, String method) throws IOException {
+//        HttpClient client = HttpClientBuilder.create().build();
+        OkHttpClient client = new OkHttpClient();
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(JotForm.baseUrl + JotForm.version + path).newBuilder();
+        urlBuilder.addQueryParameter("apiKey", this.apiKey);
+
+//        Request request = new Request.Builder()
+//                .url(JotForm.baseUrl + JotForm.version + path)
+//                .addHeader("apiKey", this.apiKey)
+//                .build();
+//        Response response = client.newCall(request).execute();
+
+//        HttpUriRequest req;
+//        HttpResponse resp;
+        Request request = null;
+        Response response = null;
+
 
         if (method.equals("GET")){
-            BaseApplication.logger.info("Performing GET request");
-        	req = new HttpGet(JotForm.baseUrl + JotForm.version + path);
-            req.addHeader("apiKey", this.apiKey);
+            BaseApplication.logger.info("Performing GET request...");
+//        	req = new HttpGet(JotForm.baseUrl + JotForm.version + path);
+//            req.addHeader("apiKey", this.apiKey);
             
             if(params != null) {
-                URI uri = null;
-                URIBuilder ub = new URIBuilder(req.getURI());
+//                URI uri = null;
+//                URIBuilder ub = new URIBuilder(req.getURI());
                 
             	Set<String> keys = params.keySet();
             	for(String key: keys) {
-            		try {
-						uri = ub.addParameter(key,params.get(key)).build();
-					} catch (URISyntaxException e) {
-						e.printStackTrace();
-					}
+                    urlBuilder.addQueryParameter(key,params.get(key));
+//            		try {
+//
+//						uri = ub.addParameter(key,params.get(key)).build();
+//					} catch (URISyntaxException e) {
+//						e.printStackTrace();
+//					}
             	}
-            	((HttpRequestBase) req).setURI(uri);
             }
-        } else if (method.equals("POST")) {
-            BaseApplication.logger.info("Performing POST request");
-            req = new HttpPost(JotForm.baseUrl + JotForm.version + path);
-            req.addHeader("apiKey", this.apiKey);
+//            	((HttpRequestBase) req).setURI(uri);
+                String url = urlBuilder.build().toString();
+                BaseApplication.logger.info(url);
+                request = new Request.Builder()
+                        .url(url)
+                        .build();
 
-            if (params != null) {
-	            Set<String> keys = params.keySet();
-	            
-	            List<NameValuePair> parameters = new ArrayList<NameValuePair>(params.size());
-	            
-	            for(String key : keys) {
-	            	parameters.add(new BasicNameValuePair(key, params.get(key)));
-	            }
-	            
-	            UrlEncodedFormEntity entity = new UrlEncodedFormEntity(parameters, "UTF-8");
-	            ((HttpPost) req).setEntity(entity);
-            }
-        } else if (method.equals("DELETE")) {
-            BaseApplication.logger.info("Performing DELETE request");
-            req = new HttpDelete(JotForm.baseUrl + JotForm.version + path);
-            req.addHeader("apiKey", this.apiKey);
+
+//        } else if (method.equals("POST")) {
+//            BaseApplication.logger.info("Performing POST request");
+//            req = new HttpPost(JotForm.baseUrl + JotForm.version + path);
+//            req.addHeader("apiKey", this.apiKey);
+//
+//            if (params != null) {
+//	            Set<String> keys = params.keySet();
+//
+//	            List<NameValuePair> parameters = new ArrayList<NameValuePair>(params.size());
+//
+//	            for(String key : keys) {
+//	            	parameters.add(new BasicNameValuePair(key, params.get(key)));
+//	            }
+//
+//	            UrlEncodedFormEntity entity = new UrlEncodedFormEntity(parameters, "UTF-8");
+//	            ((HttpPost) req).setEntity(entity);
+//            }
+//        } else if (method.equals("DELETE")) {
+//            BaseApplication.logger.info("Performing DELETE request");
+//            req = new HttpDelete(JotForm.baseUrl + JotForm.version + path);
+//            req.addHeader("apiKey", this.apiKey);
         } else {
-        	req = null;
+        	request = null;
         }
         
         try {
             BaseApplication.logger.info("Attempting Request...");
-            BaseApplication.logger.info(req.toString());
-            resp = client.execute(req);
-            
-            int statusCode = resp.getStatusLine().getStatusCode();
+
+//            resp = client.execute(req);
+            response = client.newCall(request).execute();
+
+//            int statusCode = resp.getStatusLine().getStatusCode();
+            int statusCode = response.code();
             BaseApplication.logger.info("Status Code: " + statusCode);
 
-            if (statusCode != HttpStatus.SC_OK) {
-                BaseApplication.logger.error(resp.getStatusLine().getReasonPhrase());
-                this.Log(resp.getStatusLine().getReasonPhrase());
-            }
+//            if (statusCode != HttpStatus.SC_OK) {
+//                BaseApplication.logger.error(resp.getStatusLine().getReasonPhrase());
+//                this.Log(resp.getStatusLine().getReasonPhrase());
+//            }
 //            BaseApplication.logger.info(readInput(resp.getEntity().getContent()));
-            return new JSONObject(readInput(resp.getEntity().getContent()));
+//            return new JSONObject(readInput(resp.getEntity().getContent()));
+            String responseData = response.body().string();
+            return new JSONObject(responseData);
 
         } catch (IOException e) {
         	
@@ -202,7 +231,7 @@ public class JotForm {
     private JSONObject executeGetRequest(String path, HashMap<String,String> params) {
         try {
 			return executeHttpRequest(path, params, "GET");
-		} catch (UnsupportedEncodingException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -211,7 +240,7 @@ public class JotForm {
     private JSONObject executePostRequest(String path, HashMap<String,String> params) {
         try {
 			return executeHttpRequest(path, params, "POST");
-		} catch (UnsupportedEncodingException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -231,8 +260,10 @@ public class JotForm {
 			return executeHttpRequest(path, params, "DELETE");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
-		}
-		return null;
+		} catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
     
     private HashMap<String, String> createConditions(String offset, String limit, HashMap<String, String> filter, String orderBy) {

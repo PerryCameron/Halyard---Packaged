@@ -534,8 +534,8 @@ public class ConnectDatabase {
 	}
 
 	public ResultSet executeSelectQuery(String query) throws SQLException {
+		BaseApplication.logger.info(query);
 		Statement stmt = ConnectDatabase.sqlConnection.createStatement();
-		System.out.println(colorCode(query));
 		if (currentLogon.isSshForward()) {
 			if (!sshConnection.getSession().isConnected()) {
 				BaseApplication.logger.error("SSH Connection is no longer connected");
@@ -547,9 +547,8 @@ public class ConnectDatabase {
 	}
 
 	public void executeQuery(String query) throws SQLException {
-		Statement stmt = ConnectDatabase.sqlConnection.createStatement();
 		BaseApplication.logger.info(query);
-		System.out.println(colorCode(query));
+		Statement stmt = ConnectDatabase.sqlConnection.createStatement();
 		if (currentLogon.isSshForward()) {
 			if (!sshConnection.getSession().isConnected()) {
 				BaseApplication.logger.error("SSH Connection is no longer connected");
@@ -560,28 +559,28 @@ public class ConnectDatabase {
 		stmt.close();
 	}
 
-	public String colorCode(String query) {
-		String result = "";
-		String[] parts = query.split(" ");
-		for(String p: parts) {
-			if(isUpperCase(p)) {
-				result += BLUE + p + RESET + " ";
-			} else {
-				result += p + " ";
-			}
-		}
-		return result;
-	}
+//	public String colorCode(String query) {
+//		String result = "";
+//		String[] parts = query.split(" ");
+//		for(String p: parts) {
+//			if(isUpperCase(p)) {
+//				result += BLUE + p + RESET + " ";
+//			} else {
+//				result += p + " ";
+//			}
+//		}
+//		return result;
+//	}
 
-	public boolean isUpperCase(String queryWord) {
-		char[] charArray = queryWord.toCharArray();
-		for(int i=0; i < charArray.length; i++){
-			//if any character is not in upper case, return false
-			if( !Character.isUpperCase( charArray[i] ))
-				return false;
-		}
-		return true;
-	}
+//	public boolean isUpperCase(String queryWord) {
+//		char[] charArray = queryWord.toCharArray();
+//		for(int i=0; i < charArray.length; i++){
+//			//if any character is not in upper case, return false
+//			if( !Character.isUpperCase( charArray[i] ))
+//				return false;
+//		}
+//		return true;
+//	}
 
 	public void closeResultSet(ResultSet rs) throws SQLException {
 		if (rs.getStatement() != null) {

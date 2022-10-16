@@ -28,6 +28,8 @@ import javax.swing.filechooser.FileSystemView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.ecsail.HalyardPaths.LOGFILEDIR;
+
 public class BaseApplication extends Application implements Log {
 
     public static File outputFile;
@@ -55,18 +57,23 @@ public class BaseApplication extends Application implements Log {
         /*
          * Route the debugging output for this application to a log file in your "default" directory.
          * */
+        setUpForFirstTime();
+        startFileLogger();
+        logger.info("Starting application...");
+        BaseApplication.selectedYear = HalyardPaths.getYear();
+        launch(args);
+    }
+
+    private static void startFileLogger() {
         FileSystemView filesys = FileSystemView.getFileSystemView();
         try {
-            outputFile = File.createTempFile("debug", ".log", filesys.getDefaultDirectory());
+            outputFile = File.createTempFile("debug", ".log", new File(LOGFILEDIR));
             PrintStream output = new PrintStream(new BufferedOutputStream(new FileOutputStream(outputFile)), true);
             System.setOut(output);
             System.setErr(output);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.info("Starting application...");
-        BaseApplication.selectedYear = HalyardPaths.getYear();
-        launch(args);
     }
 
     public void log(String s) {
@@ -157,4 +164,8 @@ public class BaseApplication extends Application implements Log {
         connect = new ConnectDatabase(stage);
     }
 
+    public static void setUpForFirstTime() {
+        HalyardPaths.checkPath(System.getProperty("user.home") + "/.ecsc/scripts");
+        HalyardPaths.checkPath(System.getProperty("user.home") + "/.ecsc/logs");
+    }
 }

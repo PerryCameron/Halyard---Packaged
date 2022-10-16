@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <!-- This description text is included in the Windows installer by default, see windows-jpackage.txt -->
-    <description>Sample JavaFX Application</description>
+    <description>ECSC Membership Database</description>
 
     <properties>
         <!-- Set this to the class with the main method for your application -->
@@ -392,7 +392,7 @@
             <properties>
                 <macos.sign>--mac-sign</macos.sign>
                 <!-- You will have to replace this with your own dev information from your Apple identity -->
-                <macos.sign.identity>--mac-signing-key-user-name "Company Name, Inc. (BXPXTXC35S)"</macos.sign.identity>
+                <macos.sign.identity>--parrish.cameron@schneider-electric.com "ECSC, Inc. (BXPXTXC35S)"</macos.sign.identity>
             </properties>
         </profile>
 

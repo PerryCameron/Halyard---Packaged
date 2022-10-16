@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class HalyardPaths {
+
+	public static final String LOGFILEDIR = System.getProperty("user.home") + "/.ecsc/logs";
 	public static final String DEPOSITREPORTPATH = System.getProperty("user.home") + "/Documents/ECSC/Depost_Reports";
 	public static final String RENEWALFORM = System.getProperty("user.home") + "/Documents/ECSC/Renewal_Forms";
 	public static final String SQLBACKUP = System.getProperty("user.home") + "/Documents/ECSC/SQL_Backup";
