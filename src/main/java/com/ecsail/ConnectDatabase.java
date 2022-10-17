@@ -22,7 +22,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.sql.*;
-import java.util.Arrays;
+import java.util.Objects;
 
 public class ConnectDatabase {
 
@@ -30,8 +30,7 @@ public class ConnectDatabase {
 	public PortForwardingL sshConnection;
 	private double titleBarHeight;
 	private Object_Login currentLogon;
-	private String port; 
-	private boolean connectionSucess; 
+	private String port;
 	private ObservableList<String> choices = FXCollections.observableArrayList();
 	private String exception = "";
 	// used in class methods
@@ -45,7 +44,6 @@ public class ConnectDatabase {
 	TextField userName;
 	TextField passWord;
 	public static final String BLUE = "\033[0;34m";    // BLUE
-	public static final String RESET = "\033[0m";  // Text Reset
 
 	public static Stage logonStage;
 	Stage primaryStage;
@@ -59,17 +57,14 @@ public class ConnectDatabase {
 		else
 			// we are starting application for the first time
 			FileIO.logins.add(new Object_Login("", "", "", "", "", "", false, false));
-			// our default login will be the first in the array
-			this.currentLogon = FileIO.logins.get(0);
-			this.port = currentLogon.getPort();
-			loadHostsInComboBox();
+		// our default login will be the first in the array
+		this.currentLogon = FileIO.logins.get(0);
+		this.port = currentLogon.getPort();
+		loadHostsInComboBox();
 		// makes it look nice, tab not for anything useful
 			BaseApplication.tabPane.getTabs().add(new TabLogin("Log in"));
 		displayLogOn(primaryStage);
 	}
-	
-//	public ConnectDatabase() { // default constructor
-//	}
 
 	public static Connection getSqlConnection() {
 		return sqlConnection;
@@ -85,7 +80,7 @@ public class ConnectDatabase {
 		int height = 200;
 		logonStage = new Stage();
 		logonStage.setTitle("Login");
-		Image ecscLogo = new Image(getClass().getResourceAsStream("/ecscloginlogo.png"));
+		Image ecscLogo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/ecscloginlogo.png")));
 		ImageView logo = new ImageView(ecscLogo);
 		VBox vboxBlue = new VBox();
 		VBox vboxLeft = new VBox(); // this creates a pink border around the table
@@ -123,7 +118,7 @@ public class ConnectDatabase {
 		HBox mainHBox = new HBox();
 		VBox vboxRight = new VBox();
 		
-		this.hostName = new ComboBox<String>(choices);
+		this.hostName = new ComboBox<>(choices);
 		this.defaultCheck = new CheckBox("Default Login");
 		this.useSshTunnel = new CheckBox("Use ssh tunnel");
 		this.portText = new TextField();
@@ -154,23 +149,23 @@ public class ConnectDatabase {
 		infoBox6.setStyle("-fx-background-color: #15e8e4;");  // light blue
 		infoBox7.setStyle("-fx-background-color: #e89715;");  // orange
 		*/
-		
+		Insets fivePad = new Insets(5,5,5,5);
 		infoBox1.setPadding(new Insets(20,5,5,5));
-		infoBox2.setPadding(new Insets(5,5,5,5));
-		infoBox3.setPadding(new Insets(5,5,5,5));
+		infoBox2.setPadding(fivePad);
+		infoBox3.setPadding(fivePad);
 		infoBox8.setPadding(new Insets(15,5,25,5));
 		buttonBox1.setPadding(new Insets(0,0,0,35));
 		buttonBox2.setPadding(new Insets(0,0,0,60));
 		vboxRight.setPadding(new Insets(20,20,0,20));
 		vboxLeft.setPadding(new Insets(0,0,0,15));
 		vboxBlue.setPadding(new Insets(10,10,10,10));
-		infoBox5.setPadding(new Insets(5,5,5,5));  
-		vboxSshUserLable.setPadding(new Insets(5,5,5,5));
-		vboxSshUserText.setPadding(new Insets(5,5,5,5));
-		vboxSshPassLable.setPadding(new Insets(5,5,5,5));
-		vboxSshPassText.setPadding(new Insets(5,5,5,5));
+		infoBox5.setPadding(fivePad);
+		vboxSshUserLable.setPadding(fivePad);
+		vboxSshUserText.setPadding(fivePad);
+		vboxSshPassLable.setPadding(fivePad);
+		vboxSshPassText.setPadding(fivePad);
 		vboxPortText.setPadding(new Insets(5,5,5,0));
-		vboxPortLabel.setPadding(new Insets(5,5,5,5));
+		vboxPortLabel.setPadding(fivePad);
 		
 		vboxUserLabel.setAlignment(Pos.CENTER_LEFT);
 		vboxPassLabel.setAlignment(Pos.CENTER_LEFT);
@@ -188,7 +183,7 @@ public class ConnectDatabase {
 		passWord.setPromptText("Password");
 
 		//Pane secondaryLayout = new Pane();
-		Image mainIcon = new Image(getClass().getResourceAsStream("/ECSClogo4.png"));
+		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/ECSClogo4.png")));
 
 		portText.setText("3306");
 		vboxUserLabel.setPrefWidth(90);
@@ -227,9 +222,7 @@ public class ConnectDatabase {
 		
 		///////////////////// LISTENERS //////////////////////////  
 		
-		vboxBlue.heightProperty().addListener((obs, oldVal, newVal) -> {
-			logonStage.setHeight((double)newVal + titleBarHeight);
-		});
+		vboxBlue.heightProperty().addListener((obs, oldVal, newVal) -> logonStage.setHeight((double)newVal + titleBarHeight));
 		
 		setMouseListener(newConnectText);
 		
@@ -315,13 +308,11 @@ public class ConnectDatabase {
         		} else
         			BaseApplication.logger.info("SSH connection is not being used");
         		// create mysql login
+				primaryStage.setTitle("ECSC Membership Database");
         		if(createConnection(user, pass, loopback, port)) {
-					// will get a null pointer when opening rosters if this is not here
-        		BaseApplication.activememberships = SqlMembershipList.getRoster(BaseApplication.selectedYear, true);
+        		BaseApplication.activeMemberships = SqlMembershipList.getRoster(BaseApplication.selectedYear, true);
         		logonStage.close();
-        		primaryStage.setTitle("ECSC Membership Database (connected) " + host);
         		} else {
-        			primaryStage.setTitle("ECSC Membership Database (not connected)");
 					BaseApplication.logger.error(exception);
         		}
         });
@@ -477,7 +468,7 @@ public class ConnectDatabase {
 	}
 
 	protected Boolean createConnection(String user, String password, String ip, String port) {
-		Boolean successful = false;
+		boolean successful = false;
 		String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
 		String DB_URL = "jdbc:mysql://" + ip + ":" + port + "/ECSC_SQL?autoReconnect=true&useSSL=false&serverTimezone=UTC";
 		try {
@@ -504,12 +495,8 @@ public class ConnectDatabase {
 	}
 	
 	private void setMouseListener(Text text) {
-		text.setOnMouseExited(ex -> {
-			text.setFill(Color.CORNFLOWERBLUE);
-		});
-		text.setOnMouseEntered(en -> {
-			text.setFill(Color.RED);
-		});
+		text.setOnMouseExited(ex -> text.setFill(Color.CORNFLOWERBLUE));
+		text.setOnMouseEntered(en -> text.setFill(Color.RED));
 	}
 	
 	private void showStatus() {
@@ -542,8 +529,7 @@ public class ConnectDatabase {
 				closeConnection();
 			}
 		}
-		ResultSet rs = stmt.executeQuery(query);
-		return rs;
+		return stmt.executeQuery(query);
 	}
 
 	public void executeQuery(String query) throws SQLException {
@@ -588,29 +574,4 @@ public class ConnectDatabase {
 		}
 		rs.close();
 	}
-
-	public boolean isConnectionSucess() {
-		return connectionSucess;
-	}
-
-	public void setConnectionSucess(boolean connectionSucess) {
-		this.connectionSucess = connectionSucess;
-	}
-
-	public static Connection getConnection() {
-		return sqlConnection;
-	}
-
-	public static void setConnection(Connection connection) {
-		ConnectDatabase.sqlConnection = connection;
-	}
-
-
-	public PortForwardingL getForwardedConnection() {
-		return sshConnection;
-	}
-
-//	public void setForwardedConnection(PortForwardingL forwardedConnection) {
-//		this.sshConnection = forwardedConnection;
-//	}
 }

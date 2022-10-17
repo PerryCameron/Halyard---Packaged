@@ -1,6 +1,7 @@
 package com.ecsail.pdf;
 
 
+import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.sql.select.SqlBoat;
 import com.ecsail.sql.select.SqlMembershipList;
@@ -29,7 +30,7 @@ public class PDF_BoatReport {
     private ObservableList<MembershipListDTO> membershipLists;
 
     public PDF_BoatReport() {
-        this.membershipLists = SqlMembershipList.getRoster(HalyardPaths.getYear(), true);
+        this.membershipLists = SqlMembershipList.getRoster(BaseApplication.selectedYear, true);
 
         // Initialize PDF writer
         PdfWriter writer = null;
@@ -40,7 +41,6 @@ public class PDF_BoatReport {
         try {
             writer = new PdfWriter(dest);
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -64,30 +64,14 @@ public class PDF_BoatReport {
         try {
             desktop.open(file);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-
-    }
-
-    private void removeKayaksAndCanoes(List<BoatDTO> boats) {
-        boats.removeIf(b -> b.getModel().equals("Kayak"));
-        boats.removeIf(b -> b.getModel().equals("Canoe"));
-        boats.removeIf(b -> b.getModel().equals("Paddle Board"));
-        boats.stream().filter(b -> b.getRegistration_num() == null).forEach(b -> b.setRegistration_num(""));
-        boats.stream().filter(b -> b.getBoat_name() == null).forEach(b -> b.setBoat_name(""));
-        boats.stream().filter(b -> b.getManufacturer() == null).forEach(b -> b.setManufacturer(""));
-        boats.stream().filter(b -> b.getManufacture_year() == null).forEach(b -> b.setManufacture_year(""));
     }
 
     public void membershipTable(MembershipListDTO ml, Document document) {
-        List<BoatDTO> boats = SqlBoat.getBoats(ml.getMsid());
+        List<BoatDTO> boats = SqlBoat.getOnlySailboats(ml.getMsid());
         if(boats.size() > 0) {
             System.out.println("Creating Entry for mebership " + ml.getMsid() + " " + ml.getLname());
-            removeKayaksAndCanoes(boats);
-            System.out.println("-------------------");
-//            System.out.println("creating " + ml.getLname());
             Table detailTable = new Table(6);
             // mainTable.setKeepTogether(true);
             Cell cell;
@@ -182,8 +166,6 @@ public class PDF_BoatReport {
         }
     }
 
-
-
     public Table titlePdfTable() {
         com.itextpdf.layout.element.Image ecscLogo = new Image(ImageDataFactory.create(toByteArray(getClass().getResourceAsStream("/EagleCreekLogoForPDF.png"))));
         Table mainTable = new Table(3);
@@ -235,7 +217,6 @@ public class PDF_BoatReport {
                 os.write(buffer, 0, len);
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return os.toByteArray();

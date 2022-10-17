@@ -8,6 +8,7 @@ import com.ecsail.gui.dialogues.Dialogue_RenewalForm;
 import com.ecsail.gui.tabs.*;
 //import com.ecsail.pdf.PDF_BoatReport;
 //import com.ecsail.pdf.PDF_MembershipReport;
+import com.ecsail.pdf.PDF_BoatReport;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.sql.select.SqlMembership_Id;
 import com.ecsail.structures.BoatDTO;
@@ -68,7 +69,7 @@ public class Launcher extends VBox {
 	
 	public static void openRosterTab() {
 		if(!tabOpen("Roster")) // is the tab already open??
-		tabPane.getTabs().add(new TabRoster(BaseApplication.activememberships, BaseApplication.selectedYear));
+		tabPane.getTabs().add(new TabRoster(BaseApplication.activeMemberships, BaseApplication.selectedYear));
 		tabPane.getSelectionModel().select(getTabIndex("Roster"));
 	}
 	
@@ -194,19 +195,19 @@ public class Launcher extends VBox {
 	public static void removeMembershipRow(int ms_id) {
 		int count = 0;
 		int element = 0;
-		for(MembershipListDTO mem: BaseApplication.activememberships) {
+		for(MembershipListDTO mem: BaseApplication.activeMemberships) {
 			if(mem.getMsid() == ms_id) element = count;
 			count++;
 		}
-		BaseApplication.activememberships.remove(element);
+		BaseApplication.activeMemberships.remove(element);
 	}
 //
 //	// gets a specific membership with and ms_id
 	public static MembershipListDTO getMembership(int ms_id) {
 		MembershipListDTO membership = null;
 		int element = 0;
-		for(MembershipListDTO mem: BaseApplication.activememberships) {
-			if(mem.getMsid() == ms_id) membership = BaseApplication.activememberships.get(element);
+		for(MembershipListDTO mem: BaseApplication.activeMemberships) {
+			if(mem.getMsid() == ms_id) membership = BaseApplication.activeMemberships.get(element);
 			element++;
 		}
 		return membership;
@@ -215,8 +216,8 @@ public class Launcher extends VBox {
 	public static MembershipListDTO getSubleaser(int ms_id) {  // ms_id here is the subleasee
 		MembershipListDTO membership = null;
 		int element = 0;
-		for(MembershipListDTO mem: BaseApplication.activememberships) {
-			if(mem.getSubleaser() == ms_id) membership = BaseApplication.activememberships.get(element);
+		for(MembershipListDTO mem: BaseApplication.activeMemberships) {
+			if(mem.getSubleaser() == ms_id) membership = BaseApplication.activeMemberships.get(element);
 			element++;
 		}
 		return membership;  // returns membership of subleaser
@@ -253,7 +254,10 @@ public class Launcher extends VBox {
 	}
 
     public static void createBoatReport() {
-//		new PDF_BoatReport();
+		Thread t = new Thread(()  -> {
+			new PDF_BoatReport();
+		});
+		t.start();
     }
 
     public static void createNonRenews() {

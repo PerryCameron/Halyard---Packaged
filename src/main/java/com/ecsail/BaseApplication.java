@@ -2,7 +2,6 @@ package com.ecsail;
 
 import com.ecsail.plugin.*;
 import com.ecsail.structures.MembershipListDTO;
-//import com.jcraft.jsch.JSchException;
 
 import com.jcraft.jsch.JSchException;
 import javafx.application.Application;
@@ -21,9 +20,8 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.sql.SQLException;
+import java.util.Objects;
 
-
-import javax.swing.filechooser.FileSystemView;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,16 +45,13 @@ public class BaseApplication extends Application implements Log {
 
     public static TabPane tabPane;
     public static Logger logger = LoggerFactory.getLogger(BaseApplication.class);
-    public static ObservableList<MembershipListDTO> activememberships;
+    public static ObservableList<MembershipListDTO> activeMemberships;
     public static ConnectDatabase connect;
     public static String selectedYear;
     public static Stage stage;
     public static Label statusLabel;
 
     public static void main(String[] args) {
-        /*
-         * Route the debugging output for this application to a log file in your "default" directory.
-         * */
         setUpForFirstTime();
         startFileLogger();
         logger.info("Starting application...");
@@ -65,7 +60,6 @@ public class BaseApplication extends Application implements Log {
     }
 
     private static void startFileLogger() {
-        FileSystemView filesys = FileSystemView.getFileSystemView();
         try {
             outputFile = File.createTempFile("debug", ".log", new File(LOGFILEDIR));
             PrintStream output = new PrintStream(new BufferedOutputStream(new FileOutputStream(outputFile)), true);
@@ -104,11 +98,11 @@ public class BaseApplication extends Application implements Log {
         borderPane.setBottom(statusLabel);
         borderPane.setCenter(tabPane);
 
-        Image mainIcon = new Image(getClass().getResourceAsStream("/icon_24.png"));
+        Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon_24.png")));
         Scene scene = new Scene(borderPane, 1028, 830);
 
         // closing program with x button
-        stage.setOnHiding(event -> Platform.runLater(() -> closeDatabaseConnection()));
+        stage.setOnHiding(event -> Platform.runLater(BaseApplication::closeDatabaseConnection));
 
         stage.setTitle("ECSC Membership Database");
         stage.setScene(scene);
@@ -126,7 +120,7 @@ public class BaseApplication extends Application implements Log {
         statusLabel.setText("(Not Connected) Ready.");
         stage.getIcons().add(mainIcon);
         stage.show();
-        //put window to front to avoid it to be hide behind other.
+        //put window to front to avoid it to being hidden behind another.
         stage.setAlwaysOnTop(true);
         stage.requestFocus();
         stage.toFront();

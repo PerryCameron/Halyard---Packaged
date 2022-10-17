@@ -104,6 +104,45 @@ public class SqlBoat {
         return thisBoat;
     }
 
+    public static List<BoatDTO> getOnlySailboats(int ms_id) { // overload but must be separate
+        List<BoatDTO> thisBoat = new ArrayList<>();
+        String query = "Select BOAT_ID, MS_ID, ifnull(MANUFACTURER,'') AS MANUFACTURER, ifnull(MANUFACTURE_YEAR,'') AS " +
+                "MANUFACTURE_YEAR, ifnull(REGISTRATION_NUM,'') AS REGISTRATION_NUM, ifnull(MODEL,'') AS MODEL, " +
+                "ifnull(BOAT_NAME,'') AS BOAT_NAME, ifnull(SAIL_NUMBER,'') AS SAIL_NUMBER, HAS_TRAILER, " +
+                "ifnull(LENGTH,'') AS LENGTH, ifnull(WEIGHT,'') AS WEIGHT, KEEL, ifnull(PHRF,'') AS PHRF, ifnull(DRAFT,'') AS DRAFT, " +
+                "ifnull(BEAM,'') AS BEAM, ifnull(LWL,'') AS LWL, AUX from boat " +
+                "INNER JOIN boat_owner USING (boat_id) WHERE ms_id=" + ms_id + " and " +
+                "MODEL NOT LIKE 'Kayak' and MODEL NOT LIKE 'Canoe' and MODEL NOT LIKE 'Row Boat' and " +
+                "MODEL NOT LIKE 'Paddle Board'";
+        try {
+            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+            while (rs.next()) {
+                thisBoat.add(new BoatDTO(
+                        rs.getInt("boat_id"),
+                        rs.getInt("ms_id"),
+                        rs.getString("manufacturer"),
+                        rs.getString("manufacture_year"),
+                        rs.getString("registration_num"),
+                        rs.getString("model"),
+                        rs.getString("boat_name"),
+                        rs.getString("sail_number"),
+                        rs.getBoolean("has_trailer"),
+                        rs.getString("length"),
+                        rs.getString("weight"),
+                        rs.getString("keel"),
+                        rs.getString("phrf"),
+                        rs.getString("draft"),
+                        rs.getString("beam"),
+                        rs.getString("lwl"),
+                        rs.getBoolean("aux")));
+            }
+            BaseApplication.connect.closeResultSet(rs);
+        } catch (SQLException e) {
+            BaseApplication.logger.error(e.getMessage());
+        }
+        BaseApplication.logger.info("Boat size: " + thisBoat.size());
+        return thisBoat;
+    }
     public static List<BoatDTO> getBoats(int ms_id) { // overload but must be separate
         List<BoatDTO> thisBoat = new ArrayList<>();
         String query = "SELECT b.boat_id, bo.ms_id, b.manufacturer"
