@@ -1,5 +1,6 @@
 package com.ecsail.gui.boxes;
 
+import com.ecsail.BaseApplication;
 import com.ecsail.EditCell;
 import com.ecsail.FixInput;
 import com.ecsail.Note;
@@ -33,9 +34,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.function.Function;
-
-
-// replaces tabCredit, tabBalance, tabPayment, BoxFiscal2 also need to delete Object_Integer
 
 public class HBoxInvoice extends HBox {
 	private final ObservableList<MoneyDTO> fiscals;
@@ -72,9 +70,6 @@ public class HBoxInvoice extends HBox {
 
 		ScrollPane scrollPane = new ScrollPane();
 
-//		scrollPane.setMaxHeight(500);
-
-
 		VBox vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
 		VBox mainVbox = new VBox();
 		HBox mainHbox = new HBox();
@@ -93,7 +88,6 @@ public class HBoxInvoice extends HBox {
 					int pay_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getPay_id();
 					BigDecimal amount = new BigDecimal(t.getNewValue());
 					SqlUpdate.updatePayment(pay_id, "amount", String.valueOf(amount.setScale(2, RoundingMode.HALF_UP)));
-					// SQL Query getTotalAmount() adds all the payments for us
 					BigDecimal totalPaidAmount = BigDecimal.valueOf(SqlMoney.getTotalAmount(fiscals.get(rowIndex).getMoney_id()));
 					invoiceDTO.getTotalPaymentText().setText(String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP)));
 					fiscals.get(rowIndex).setPaid(String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP)));
@@ -160,10 +154,6 @@ public class HBoxInvoice extends HBox {
 		//////////////// ATTRIBUTES ///////////////////
 
 		paymentTableView.setItems(payments);
-
-
-
-
 		paymentTableView.setPrefHeight(115);
 		paymentTableView.setFixedCellSize(30);
 		paymentTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY );
@@ -206,7 +196,6 @@ public class HBoxInvoice extends HBox {
 			if (selectedIndex >= 0) // is something selected?
 				SqlDelete.deletePayment(payments.get(selectedIndex));
 			paymentTableView.getItems().remove(selectedIndex); // remove it from our GUI
-			// SQL Query getTotalAmount() recalculates the payments for us
 			BigDecimal totalPaidAmount = BigDecimal.valueOf(SqlMoney.getTotalAmount(fiscals.get(rowIndex).getMoney_id()));
 			invoiceDTO.getTotalPaymentText().setText(String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP)));
 			fiscals.get(rowIndex).setPaid(String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP)));
@@ -404,8 +393,6 @@ public class HBoxInvoice extends HBox {
 			updateBalance();
 		});
 
-
-
 		invoiceDTO.getOtherCreditTextField().focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 			//focus out
 			if (oldValue) {  // we have focused and unfocused
@@ -502,9 +489,7 @@ public class HBoxInvoice extends HBox {
 
 
 		setEditable(!fiscals.get(rowIndex).isCommitted());
-
 		updateBalance();
-
 		paymentTableView.getColumns().addAll(Arrays.asList(col1,col2,col3,col4));
 		scrollPane.setContent(invoiceDTO.getGridPane());
 		mainVbox.getChildren().addAll(scrollPane);  // add error HBox in first
@@ -516,17 +501,17 @@ public class HBoxInvoice extends HBox {
 		if (fiscals.get(rowIndex).isSupplemental()) { // have we already created a record for this year?
 			invoiceDTO.getDuesTextField().setEditable(true);
 			//duesTextField.setText("0");
-		} else {
+		} else { // this is the first invoice record created for this year
 			if (hasOfficer) { // has officer and not
-				System.out.println("Member is an officer");
 				fiscals.get(rowIndex).setOfficer_credit(String.valueOf(definedFees.getDues_regular()));
 				if(!SqlMoney.isCommitted(fiscals.get(rowIndex).getMoney_id()))	{	// is not committed
-					System.out.println("Record is not committed");
+					BaseApplication.logger.info("This record has not been committed");
 				}
 			} else {
-				System.out.println("Member is not an officer of the club");
+
 				fiscals.get(rowIndex).setOfficer_credit("0.00");
 			}
+			BaseApplication.logger.info("Membership officer or chairman: " + hasOfficer);
 		}
 	}
 
@@ -563,7 +548,6 @@ public class HBoxInvoice extends HBox {
 			case "wetslip" -> fiscals.get(rowIndex).setWet_slip(String.valueOf(newTotalValue));
 			case "other_credit" -> fiscals.get(rowIndex).setOther_credit(String.valueOf(newTotalValue));
 		}
-
 		fiscals.get(rowIndex).setTotal(String.valueOf(updateTotalFeeField()));
 	}
 	
@@ -580,12 +564,9 @@ public class HBoxInvoice extends HBox {
 			invoiceDTO.getVboxCommitButton().getChildren().clear();
 			HBox hboxButtons = new HBox();
 			hboxButtons.setSpacing(5);
-//			hboxButtons.getChildren().addAll(invoiceDTO.getButtonAddNote(), invoiceDTO.getCommitButton());
 			hboxButtons.getChildren().addAll(invoiceDTO.getCommitButton());
-
 			invoiceDTO.getVboxCommitButton().getChildren().addAll(hboxButtons);
 		}
-		System.out.println("setting committed");
 	}
 	
 	private void updateBalance() {
@@ -660,18 +641,8 @@ public class HBoxInvoice extends HBox {
 	}
 
 	private Boolean membershipHasOfficer() {
-		Boolean isOfficer;
-		boolean finalResult = false;
-		// list of primary and secondary members
-		for (PersonDTO per : people) {
-			// check database if person is an officer
-			isOfficer = SqlExists.isOfficer(per, fiscals.get(rowIndex).getFiscal_year());
-			// if the primary or secondary member is an officer this flags true
-			if(isOfficer) {
-				finalResult = true;
-			}
-		}
-		return finalResult;
+		return people.stream()
+				.anyMatch(personDTO -> SqlExists.isOfficer(personDTO, fiscals.get(rowIndex).getFiscal_year()));
 	}
 
 	private <T> TableColumn<T, String> createColumn(String title, Function<T, StringProperty> property) {

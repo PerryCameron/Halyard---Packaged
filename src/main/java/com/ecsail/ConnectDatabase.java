@@ -97,9 +97,9 @@ public class ConnectDatabase {
 		HBox vboxHostText = new HBox();
 		HBox vboxHostLabel2 = new HBox();
 		HBox vboxHostText2 = new HBox();
-		HBox vboxSshUserLable = new HBox();
+		HBox vboxSshUserLabel = new HBox();
 		HBox vboxSshUserText = new HBox();
-		HBox vboxSshPassLable = new HBox();
+		HBox vboxSshPassLabel = new HBox();
 		HBox vboxSshPassText = new HBox();
 		HBox vboxPortLabel = new HBox();
 		HBox vboxPortText = new HBox();
@@ -145,7 +145,7 @@ public class ConnectDatabase {
 		infoBox2.setStyle("-fx-background-color: #feffab;");  // yellow
 		infoBox3.setStyle("-fx-background-color: #e83115;");  // red
 		infoBox4.setStyle("-fx-background-color: #201ac9;");  // blue
-		infoBox5.setStyle("-fx-background-color: #e83115;");  // purble
+		infoBox5.setStyle("-fx-background-color: #e83115;");  // purple
 		infoBox6.setStyle("-fx-background-color: #15e8e4;");  // light blue
 		infoBox7.setStyle("-fx-background-color: #e89715;");  // orange
 		*/
@@ -160,9 +160,9 @@ public class ConnectDatabase {
 		vboxLeft.setPadding(new Insets(0,0,0,15));
 		vboxBlue.setPadding(new Insets(10,10,10,10));
 		infoBox5.setPadding(fivePad);
-		vboxSshUserLable.setPadding(fivePad);
+		vboxSshUserLabel.setPadding(fivePad);
 		vboxSshUserText.setPadding(fivePad);
-		vboxSshPassLable.setPadding(fivePad);
+		vboxSshPassLabel.setPadding(fivePad);
 		vboxSshPassText.setPadding(fivePad);
 		vboxPortText.setPadding(new Insets(5,5,5,0));
 		vboxPortLabel.setPadding(fivePad);
@@ -171,8 +171,8 @@ public class ConnectDatabase {
 		vboxPassLabel.setAlignment(Pos.CENTER_LEFT);
 		vboxHostLabel.setAlignment(Pos.CENTER_LEFT);
 		vboxHostLabel2.setAlignment(Pos.CENTER_LEFT);
-		vboxSshUserLable.setAlignment(Pos.CENTER_LEFT);
-		vboxSshPassLable.setAlignment(Pos.CENTER_LEFT);
+		vboxSshUserLabel.setAlignment(Pos.CENTER_LEFT);
+		vboxSshPassLabel.setAlignment(Pos.CENTER_LEFT);
 		vboxPortLabel.setAlignment(Pos.CENTER_LEFT);
 		vboxPortText.setAlignment(Pos.CENTER_LEFT);
 		infoBox4.setAlignment(Pos.CENTER_LEFT);
@@ -190,8 +190,8 @@ public class ConnectDatabase {
 		vboxPassLabel.setPrefWidth(90);
 		vboxHostLabel.setPrefWidth(90);
 		vboxHostLabel2.setPrefWidth(90);
-		vboxSshUserLable.setPrefWidth(90);
-		vboxSshPassLable.setPrefWidth(90);
+		vboxSshUserLabel.setPrefWidth(90);
+		vboxSshPassLabel.setPrefWidth(90);
 		vboxPortLabel.setPrefWidth(90);
 		portText.setPrefWidth(60);
 		
@@ -242,8 +242,8 @@ public class ConnectDatabase {
 				infoBox3.getChildren().addAll(vboxHostLabel2, vboxHostText2);
 				infoBox4.getChildren().addAll(vboxPortLabel, vboxPortText);
 				infoBox5.getChildren().add(useSshTunnel);
-				infoBox6.getChildren().addAll(vboxSshUserLable,vboxSshUserText);
-				infoBox7.getChildren().addAll(vboxSshPassLable,vboxSshPassText);
+				infoBox6.getChildren().addAll(vboxSshUserLabel,vboxSshUserText);
+				infoBox7.getChildren().addAll(vboxSshPassLabel,vboxSshPassText);
 				infoBox8.getChildren().clear();
 				infoBox8.getChildren().add(buttonBox3);
 			}
@@ -257,8 +257,8 @@ public class ConnectDatabase {
 					infoBox3.getChildren().addAll(vboxHostLabel2, vboxHostText2);
 					infoBox4.getChildren().addAll(vboxPortLabel, vboxPortText);
 					infoBox5.getChildren().add(useSshTunnel);
-					infoBox6.getChildren().addAll(vboxSshUserLable,vboxSshUserText);
-					infoBox7.getChildren().addAll(vboxSshPassLable,vboxSshPassText);
+					infoBox6.getChildren().addAll(vboxSshUserLabel,vboxSshUserText);
+					infoBox7.getChildren().addAll(vboxSshPassLabel,vboxSshPassText);
 					infoBox8.getChildren().clear();
 					infoBox8.getChildren().add(buttonBox2);
 			}
@@ -377,8 +377,8 @@ public class ConnectDatabase {
         vboxPassLabel.getChildren().add(new Label("Password:"));
         vboxHostLabel.getChildren().add(new Label("Hostname:"));
         vboxHostLabel2.getChildren().add(new Label("Hostname:"));
-        vboxSshUserLable.getChildren().add(new Label("ssh user:"));
-        vboxSshPassLable.getChildren().add(new Label("ssh pass:"));
+        vboxSshUserLabel.getChildren().add(new Label("ssh user:"));
+        vboxSshPassLabel.getChildren().add(new Label("ssh pass:"));
 		vboxPortLabel.getChildren().add(new Label("Port:"));
 		vboxPortText.getChildren().addAll(portText, defaultCheck);
         vboxUserText.getChildren().add(userName);
@@ -482,9 +482,7 @@ public class ConnectDatabase {
 			showStatus();
 			successful = true;
 			// Creating a Statement object
-		} catch (ClassNotFoundException e) {
-			BaseApplication.logger.error(e.getMessage());
-		} catch (SQLException e) {
+		} catch (ClassNotFoundException | SQLException e) {
 			BaseApplication.logger.error(e.getMessage());
 		}
 		return successful;
@@ -517,7 +515,7 @@ public class ConnectDatabase {
 	}
 
 	public ResultSet executeSelectQuery(String query) throws SQLException {
-		BaseApplication.logger.info(query);
+//		BaseApplication.logger.info(query);
 		Statement stmt = ConnectDatabase.sqlConnection.createStatement();
 		if (currentLogon.isSshForward()) {
 			if (!sshConnection.getSession().isConnected()) {
@@ -540,29 +538,6 @@ public class ConnectDatabase {
 		stmt.execute(query);
 		stmt.close();
 	}
-
-//	public String colorCode(String query) {
-//		String result = "";
-//		String[] parts = query.split(" ");
-//		for(String p: parts) {
-//			if(isUpperCase(p)) {
-//				result += BLUE + p + RESET + " ";
-//			} else {
-//				result += p + " ";
-//			}
-//		}
-//		return result;
-//	}
-
-//	public boolean isUpperCase(String queryWord) {
-//		char[] charArray = queryWord.toCharArray();
-//		for(int i=0; i < charArray.length; i++){
-//			//if any character is not in upper case, return false
-//			if( !Character.isUpperCase( charArray[i] ))
-//				return false;
-//		}
-//		return true;
-//	}
 
 	public void closeResultSet(ResultSet rs) throws SQLException {
 		if (rs.getStatement() != null) {

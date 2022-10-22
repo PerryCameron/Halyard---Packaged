@@ -1,6 +1,7 @@
 package com.ecsail.gui.tabs;
 
 
+import com.ecsail.BaseApplication;
 import com.ecsail.Note;
 import com.ecsail.gui.boxes.*;
 import com.ecsail.sql.SqlInsert;
@@ -37,7 +38,13 @@ public class TabMembership extends Tab {
         this.labels = new MemLabelsDTO();
         this.people = SqlPerson.getPeople(membership.getMsid());
 		this.setText(setTabLabel());
-		
+		BaseApplication.logger.info("Opening Membership tab for Membership "
+				+ membership.getMembershipId() + " - (msid "
+				+ membership.getMsid() + ") "
+				+ people.get(getPerson(PRIMARY)).getFname() + " "
+				+ people.get(getPerson(PRIMARY)).getLname() + " "
+		);
+
 		////////// OBJECTS /////////////
         Note note = new Note(memos,membership.getMsid());
 		TextField duesText = new TextField();
@@ -138,11 +145,11 @@ public class TabMembership extends Tab {
 		}
 	}
 	
-	private int getPerson(int membertype) {  /// selects a person by membertype
+	private int getPerson(int memberType) {  /// selects a person by memberType
 		int element = 0;
 		int loop = 0;
 		for(PersonDTO per : people) {
-			if(per.getMemberType() == membertype) 
+			if(per.getMemberType() == memberType)
 				element=loop;
 			loop++;
 		}
