@@ -13,111 +13,112 @@ import javafx.scene.text.Text;
 
 public class InvoiceDTO {
     private final MoneyDTO invoice;
-    private GridPane gridPane;
-    private TextField yscTextField;
-    private TextField duesTextField;
-    private TextField otherTextField;
-    private TextField initiationTextField;
-    private TextField wetslipTextField;
-    private TextField otherCreditTextField;
+    private final GridPane gridPane;
+    private final TextField yscTextField;
+    private final TextField duesTextField;
+    private final TextField otherTextField;
+    private final TextField initiationTextField;
+    private final TextField wetslipTextField;
+    private final TextField otherCreditTextField;
 
-    private Spinner<Integer> beachSpinner;
-    private Spinner<Integer> kayakRackSpinner;
-    private Spinner<Integer> kayakBeachRackSpinner; // new
-    private Spinner<Integer> kayakShedSpinner;
-    private Spinner<Integer> sailLoftSpinner;
-    private Spinner<Integer> sailSchoolLoftSpinner;
-    private Spinner<Integer> winterStorageSpinner;
-    private Spinner<Integer> wetSlipSpinner;
+    private final Spinner<Integer> beachSpinner;
+    private final Spinner<Integer> kayakRackSpinner;
+    private final Spinner<Integer> kayakBeachRackSpinner; // new
+    private final Spinner<Integer> kayakShedSpinner;
+    private final Spinner<Integer> sailLoftSpinner;
+    private final Spinner<Integer> sailSchoolLoftSpinner;
+    private final Spinner<Integer> winterStorageSpinner;
+    private final Spinner<Integer> wetSlipSpinner;
 //    private Spinner<Integer> workCreditSpinner;
-    private Spinner<Integer> gateKeySpinner;
-    private Spinner<Integer> sailLKeySpinner;
-    private Spinner<Integer> kayakSKeySpinner;
-    private Spinner<Integer> sailSSLKeySpinner;
+    private final Spinner<Integer> gateKeySpinner;
+    private final Spinner<Integer> sailLKeySpinner;
+    private final Spinner<Integer> kayakSKeySpinner;
+    private final Spinner<Integer> sailSSLKeySpinner;
 
-    private Text duesText;
-    private Text beachText;
-    private Text kayakRackText;
-    private Text kayakBeachRackText;
-    private Text kayakShedText;
-    private Text sailLoftText;
-    private Text sailSchoolLoftText;
-    private Text wetSlipText;
-    private Text winterStorageText;
-    private Text yspText;
-    private Text initiationText;
-    private Text otherFeeText;
-    private Text workCreditsText;
-    private Text gateKeyText;
-    private Text sailLKeyText;
-    private Text kayakSKeyText;
-    private Text sailSSLKeyText;
-    private Text otherCreditText;
-    private Text positionCreditText;
-    private Text wetslipTextFee;
+    private final Text duesText;
+    private final Text beachText;
+    private final Text kayakRackText;
+    private final Text kayakBeachRackText;
+    private final Text kayakShedText;
+    private final Text sailLoftText;
+    private final Text sailSchoolLoftText;
+    private final Text wetSlipText;
+    private final Text winterStorageText;
+    private final Text yspText;
+    private final Text initiationText;
+    private final Text otherFeeText;
+    private final Text workCreditsText;
+    private final Text gateKeyText;
+    private final Text sailLKeyText;
+    private final Text kayakSKeyText;
+    private final Text sailSSLKeyText;
+    private final Text otherCreditText;
+    private final Text positionCreditText;
+    private final Text wetslipTextFee;
 
-    private Text totalFeesText;
-    private Text totalCreditText;
-    private Text totalPaymentText;
-    private Text totalBalanceText;
+    private final Text totalFeesText;
+    private final Text totalCreditText;
+    private final Text totalPaymentText;
+    private final Text totalBalanceText;
 
     // VBoxes for totals
-    private VBox vboxDues;
-    private VBox vboxBeach;
-    private VBox vboxKayak;
-    private VBox vboxBeachKayak;
-    private VBox vboxKayakShed;
-    private VBox vboxSailLoft;
-    private VBox vboxSailSchoolLoft;
-    private VBox vboxWetSlip;
-    private VBox vboxWinterStorage;
-    private VBox vboxGateKey;
-    private VBox vboxSailLoftKey;
-    private VBox vboxKayakShedKey;
-    private VBox vboxSailSchoolLoftKey;
-    private VBox vboxWorkCredits;
-    private VBox vboxYSC;
-    private VBox vboxInitiation;
-    private VBox vboxOther;
-    private VBox vboxOtherCredit;
-    private VBox vboxPositionCredit;
+    private final VBox vboxDues;
+    private final VBox vboxBeach;
+    private final VBox vboxKayak;
+    private final VBox vboxBeachKayak;
+    private final VBox vboxKayakShed;
+    private final VBox vboxSailLoft;
+    private final VBox vboxSailSchoolLoft;
+    private final VBox vboxWetSlip;
+    private final VBox vboxWinterStorage;
+    private final VBox vboxGateKey;
+    private final VBox vboxSailLoftKey;
+    private final VBox vboxKayakShedKey;
+    private final VBox vboxSailSchoolLoftKey;
+    private final VBox vboxWorkCredits;
+    private final VBox vboxYSC;
+    private final VBox vboxInitiation;
+    private final VBox vboxOther;
+    private final VBox vboxOtherCredit;
+    private final VBox vboxPositionCredit;
 
     // VBoxes for multipliers
-    private VBox vboxBeachFee;
-    private VBox vboxKayakFee;
-    private VBox vboxBeachKayakFee;
-    private VBox vboxKayakShedFee;
-    private VBox vboxSailLoftFee;
-    private VBox vboxSailSchoolLoftFee;
-    private VBox vboxWetSlipFee;
-    private VBox vboxWinterStorageFee;
-    private VBox vboxGateKeyFee;
-    private VBox vboxSailLoftKeyFee;
-    private VBox vboxKayakShedKeyFee;
-    private VBox vboxSailSchoolLoftKeyFee;
-    private VBox vboxWorkCreditsFee;
+    private final VBox vboxBeachFee;
+    private final VBox vboxKayakFee;
+    private final VBox vboxBeachKayakFee;
+    private final VBox vboxKayakShedFee;
+    private final VBox vboxSailLoftFee;
+    private final VBox vboxSailSchoolLoftFee;
+    private final VBox vboxWetSlipFee;
+    private final VBox vboxWinterStorageFee;
+    private final VBox vboxGateKeyFee;
+    private final VBox vboxSailLoftKeyFee;
+    private final VBox vboxKayakShedKeyFee;
+    private final VBox vboxSailSchoolLoftKeyFee;
+    private final VBox vboxWorkCreditsFee;
 
-    private VBox vboxTitlePrice;
-    private VBox vboxTitleTotal;
+    private final VBox vboxTitlePrice;
+    private final VBox vboxTitleTotal;
     private final VBox vboxTitleFee;
     private final VBox vboxTitleQty;
 
-    private VBox vboxTotalFee;
-    private VBox vboxTotalCredit;
-    private VBox vboxTotalPayment;
-    private VBox vboxTotalBalance;
+    private final VBox vboxTotalFee;
+    private final VBox vboxTotalCredit;
+    private final VBox vboxTotalPayment;
+    private final VBox vboxTotalBalance;
 
-    private VBox vboxButtons;
+    private final VBox vboxButtons;
     private VBox vboxPink; // this creates a pink border around the table
-    private VBox vboxCommitButton;
-    private Button buttonAdd;
-    private Button buttonDelete;
-    private Button commitButton;
-    private Button buttonAddNote;
-    private CheckBox renewCheckBox;
-    private ComboBox<Integer> comboBox;
+    private final VBox vboxCommitButton;
 
-    private DefinedFeeDTO definedFees;
+    private final Button buttonAdd;
+    private final Button buttonDelete;
+    private final Button commitButton;
+    private final Button buttonAddNote;
+    private final CheckBox renewCheckBox;
+    private final ComboBox<Integer> comboBox;
+
+//    private final DefinedFeeDTO definedFees;
     Separator separator = new Separator(Orientation.HORIZONTAL);
 
     public InvoiceDTO(MoneyDTO invoice, DefinedFeeDTO definedFees, TableView<PaymentDTO> paymentTableView) {
@@ -132,7 +133,7 @@ public class InvoiceDTO {
         this.commitButton = new Button("Commit");
         this.buttonAddNote = new Button("Add Note");
         this.renewCheckBox = new CheckBox("Renew");
-        this.definedFees = definedFees;
+//        this.definedFees = definedFees;
         this.gridPane = new GridPane();
         this.yscTextField = new TextField();
         this.duesTextField = new TextField();
@@ -370,361 +371,31 @@ public class InvoiceDTO {
         return comboBox;
     }
 
-    public void setComboBox(ComboBox<Integer> comboBox) {
-        this.comboBox = comboBox;
-    }
-
-    public MoneyDTO getInvoice() {
-        return invoice;
-    }
-
-    public VBox getVboxTitleQty() {
-        return vboxTitleQty;
-    }
-
-    public VBox getVboxTotalFee() {
-        return vboxTotalFee;
-    }
-
-    public void setVboxTotalFee(VBox vboxTotalFee) {
-        this.vboxTotalFee = vboxTotalFee;
-    }
-
-    public VBox getVboxTotalCredit() {
-        return vboxTotalCredit;
-    }
-
-    public void setVboxTotalCredit(VBox vboxTotalCredit) {
-        this.vboxTotalCredit = vboxTotalCredit;
-    }
-
-    public VBox getVboxTotalPayment() {
-        return vboxTotalPayment;
-    }
-
-    public void setVboxTotalPayment(VBox vboxTotalPayment) {
-        this.vboxTotalPayment = vboxTotalPayment;
-    }
-
-    public VBox getVboxTotalBalance() {
-        return vboxTotalBalance;
-    }
-
-    public void setVboxTotalBalance(VBox vboxTotalBalance) {
-        this.vboxTotalBalance = vboxTotalBalance;
-    }
 
     public GridPane getGridPane() {
         return gridPane;
-    }
-
-    public void setGridPane(GridPane gridPane) {
-        this.gridPane = gridPane;
     }
 
     public Button getButtonAdd() {
         return buttonAdd;
     }
 
-    public void setButtonAdd(Button buttonAdd) {
-        this.buttonAdd = buttonAdd;
-    }
-
     public Button getButtonDelete() {
         return buttonDelete;
-    }
-
-    public void setButtonDelete(Button buttonDelete) {
-        this.buttonDelete = buttonDelete;
     }
 
     public Button getCommitButton() {
         return commitButton;
     }
 
-    public void setCommitButton(Button commitButton) {
-        this.commitButton = commitButton;
-    }
-
     public CheckBox getRenewCheckBox() {
         return renewCheckBox;
-    }
-
-    public void setRenewCheckBox(CheckBox renewCheckBox) {
-        this.renewCheckBox = renewCheckBox;
-    }
-
-    public DefinedFeeDTO getDefinedFees() {
-        return definedFees;
-    }
-
-    public void setDefinedFees(DefinedFeeDTO definedFees) {
-        this.definedFees = definedFees;
-    }
-
-    public VBox getVboxDues() {
-        return vboxDues;
-    }
-
-    public void setVboxDues(VBox vboxDues) {
-        this.vboxDues = vboxDues;
-    }
-
-    public VBox getVboxBeach() {
-        return vboxBeach;
-    }
-
-    public void setVboxBeach(VBox vboxBeach) {
-        this.vboxBeach = vboxBeach;
-    }
-
-    public VBox getVboxKayak() {
-        return vboxKayak;
-    }
-
-    public void setVboxKayak(VBox vboxKayak) {
-        this.vboxKayak = vboxKayak;
-    }
-
-    public VBox getVboxKayakShed() {
-        return vboxKayakShed;
-    }
-
-    public void setVboxKayakShed(VBox vboxKayakShed) {
-        this.vboxKayakShed = vboxKayakShed;
-    }
-
-    public VBox getVboxSailLoft() {
-        return vboxSailLoft;
-    }
-
-    public void setVboxSailLoft(VBox vboxSailLoft) {
-        this.vboxSailLoft = vboxSailLoft;
-    }
-
-    public VBox getVboxSailSchoolLoft() {
-        return vboxSailSchoolLoft;
-    }
-
-    public void setVboxSailSchoolLoft(VBox vboxSailSchoolLoft) {
-        this.vboxSailSchoolLoft = vboxSailSchoolLoft;
-    }
-
-    public VBox getVboxWetSlip() {
-        return vboxWetSlip;
-    }
-
-    public void setVboxWetSlip(VBox vboxWetSlip) {
-        this.vboxWetSlip = vboxWetSlip;
-    }
-
-    public VBox getVboxWinterStorage() {
-        return vboxWinterStorage;
-    }
-
-    public void setVboxWinterStorage(VBox vboxWinterStorage) {
-        this.vboxWinterStorage = vboxWinterStorage;
-    }
-
-    public VBox getVboxGateKey() {
-        return vboxGateKey;
-    }
-
-    public void setVboxGateKey(VBox vboxGateKey) {
-        this.vboxGateKey = vboxGateKey;
-    }
-
-    public VBox getVboxSailLoftKey() {
-        return vboxSailLoftKey;
-    }
-
-    public void setVboxSailLoftKey(VBox vboxSailLoftKey) {
-        this.vboxSailLoftKey = vboxSailLoftKey;
-    }
-
-    public VBox getVboxKayakShedKey() {
-        return vboxKayakShedKey;
-    }
-
-    public void setVboxKayakShedKey(VBox vboxKayakShedKey) {
-        this.vboxKayakShedKey = vboxKayakShedKey;
-    }
-
-    public VBox getVboxSailSchoolLoftKey() {
-        return vboxSailSchoolLoftKey;
-    }
-
-    public void setVboxSailSchoolLoftKey(VBox vboxSailSchoolLoftKey) {
-        this.vboxSailSchoolLoftKey = vboxSailSchoolLoftKey;
-    }
-
-    public VBox getVboxWorkCredits() {
-        return vboxWorkCredits;
-    }
-
-    public void setVboxWorkCredits(VBox vboxWorkCredits) {
-        this.vboxWorkCredits = vboxWorkCredits;
-    }
-
-    public VBox getVboxYSC() {
-        return vboxYSC;
-    }
-
-    public void setVboxYSC(VBox vboxYSC) {
-        this.vboxYSC = vboxYSC;
-    }
-
-    public VBox getVboxInitiation() {
-        return vboxInitiation;
-    }
-
-    public void setVboxInitiation(VBox vboxInitiation) {
-        this.vboxInitiation = vboxInitiation;
-    }
-
-    public VBox getVboxOther() {
-        return vboxOther;
-    }
-
-    public void setVboxOther(VBox vboxOther) {
-        this.vboxOther = vboxOther;
-    }
-
-    public VBox getVboxOtherCredit() {
-        return vboxOtherCredit;
-    }
-
-    public void setVboxOtherCredit(VBox vboxOtherCredit) {
-        this.vboxOtherCredit = vboxOtherCredit;
-    }
-
-    public VBox getVboxPositionCredit() {
-        return vboxPositionCredit;
-    }
-
-    public void setVboxPositionCredit(VBox vboxPositionCredit) {
-        this.vboxPositionCredit = vboxPositionCredit;
-    }
-
-    public VBox getVboxBeachFee() {
-        return vboxBeachFee;
-    }
-
-    public void setVboxBeachFee(VBox vboxBeachFee) {
-        this.vboxBeachFee = vboxBeachFee;
-    }
-
-    public VBox getVboxKayakFee() {
-        return vboxKayakFee;
-    }
-
-    public void setVboxKayakFee(VBox vboxKayakFee) {
-        this.vboxKayakFee = vboxKayakFee;
-    }
-
-    public VBox getVboxKayakShedFee() {
-        return vboxKayakShedFee;
-    }
-
-    public void setVboxKayakShedFee(VBox vboxKayakShedFee) {
-        this.vboxKayakShedFee = vboxKayakShedFee;
-    }
-
-    public VBox getVboxSailLoftFee() {
-        return vboxSailLoftFee;
-    }
-
-    public void setVboxSailLoftFee(VBox vboxSailLoftFee) {
-        this.vboxSailLoftFee = vboxSailLoftFee;
-    }
-
-    public VBox getVboxSailSchoolLoftFee() {
-        return vboxSailSchoolLoftFee;
-    }
-
-    public void setVboxSailSchoolLoftFee(VBox vboxSailSchoolLoftFee) {
-        this.vboxSailSchoolLoftFee = vboxSailSchoolLoftFee;
     }
 
     public VBox getVboxWetSlipFee() {
         return vboxWetSlipFee;
     }
 
-    public void setVboxWetSlipFee(VBox vboxWetSlipFee) {
-        this.vboxWetSlipFee = vboxWetSlipFee;
-    }
-
-    public VBox getVboxWinterStorageFee() {
-        return vboxWinterStorageFee;
-    }
-
-    public void setVboxWinterStorageFee(VBox vboxWinterStorageFee) {
-        this.vboxWinterStorageFee = vboxWinterStorageFee;
-    }
-
-    public VBox getVboxGateKeyFee() {
-        return vboxGateKeyFee;
-    }
-
-    public void setVboxGateKeyFee(VBox vboxGateKeyFee) {
-        this.vboxGateKeyFee = vboxGateKeyFee;
-    }
-
-    public VBox getVboxSailLoftKeyFee() {
-        return vboxSailLoftKeyFee;
-    }
-
-    public void setVboxSailLoftKeyFee(VBox vboxSailLoftKeyFee) {
-        this.vboxSailLoftKeyFee = vboxSailLoftKeyFee;
-    }
-
-    public VBox getVboxKayakShedKeyFee() {
-        return vboxKayakShedKeyFee;
-    }
-
-    public void setVboxKayakShedKeyFee(VBox vboxKayakShedKeyFee) {
-        this.vboxKayakShedKeyFee = vboxKayakShedKeyFee;
-    }
-
-    public VBox getVboxSailSchoolLoftKeyFee() {
-        return vboxSailSchoolLoftKeyFee;
-    }
-
-    public void setVboxSailSchoolLoftKeyFee(VBox vboxSailSchoolLoftKeyFee) {
-        this.vboxSailSchoolLoftKeyFee = vboxSailSchoolLoftKeyFee;
-    }
-
-    public VBox getVboxWorkCreditsFee() {
-        return vboxWorkCreditsFee;
-    }
-
-    public void setVboxWorkCreditsFee(VBox vboxWorkCreditsFee) {
-        this.vboxWorkCreditsFee = vboxWorkCreditsFee;
-    }
-
-    public VBox getVboxTitlePrice() {
-        return vboxTitlePrice;
-    }
-
-    public void setVboxTitlePrice(VBox vboxTitlePrice) {
-        this.vboxTitlePrice = vboxTitlePrice;
-    }
-
-    public VBox getVboxTitleTotal() {
-        return vboxTitleTotal;
-    }
-
-    public void setVboxTitleTotal(VBox vboxTitleTotal) {
-        this.vboxTitleTotal = vboxTitleTotal;
-    }
-
-    public VBox getVboxButtons() {
-        return vboxButtons;
-    }
-
-    public void setVboxButtons(VBox vboxButtons) {
-        this.vboxButtons = vboxButtons;
-    }
 
     public VBox getVboxPink() {
         return vboxPink;
@@ -738,144 +409,77 @@ public class InvoiceDTO {
         return vboxCommitButton;
     }
 
-    public void setVboxCommitButton(VBox vboxCommitButton) {
-        this.vboxCommitButton = vboxCommitButton;
-    }
 
     public TextField getYscTextField() {
         return yscTextField;
-    }
-
-    public void setYscTextField(TextField yscTextField) {
-        this.yscTextField = yscTextField;
     }
 
     public TextField getDuesTextField() {
         return duesTextField;
     }
 
-    public void setDuesTextField(TextField duesTextField) {
-        this.duesTextField = duesTextField;
-    }
-
     public TextField getOtherTextField() {
         return otherTextField;
-    }
-
-    public void setOtherTextField(TextField otherTextField) {
-        this.otherTextField = otherTextField;
     }
 
     public TextField getInitiationTextField() {
         return initiationTextField;
     }
 
-    public void setInitiationTextField(TextField initiationTextField) {
-        this.initiationTextField = initiationTextField;
-    }
-
     public TextField getWetslipTextField() {
         return wetslipTextField;
     }
 
-    public void setWetslipTextField(TextField wetslipTextField) {
-        this.wetslipTextField = wetslipTextField;
-    }
 
     public TextField getOtherCreditTextField() {
         return otherCreditTextField;
     }
 
-    public void setOtherCreditTextField(TextField otherCreditTextField) {
-        this.otherCreditTextField = otherCreditTextField;
-    }
 
     public Spinner<Integer> getBeachSpinner() {
         return beachSpinner;
-    }
-
-    public void setBeachSpinner(Spinner<Integer> beachSpinner) {
-        this.beachSpinner = beachSpinner;
     }
 
     public Spinner<Integer> getKayakRackSpinner() {
         return kayakRackSpinner;
     }
 
-    public void setKayakRackSpinner(Spinner<Integer> kayakRackSpinner) {
-        this.kayakRackSpinner = kayakRackSpinner;
-    }
-
     public Spinner<Integer> getKayakShedSpinner() {
         return kayakShedSpinner;
-    }
-
-    public void setKayakShedSpinner(Spinner<Integer> kayakShedSpinner) {
-        this.kayakShedSpinner = kayakShedSpinner;
     }
 
     public Spinner<Integer> getSailLoftSpinner() {
         return sailLoftSpinner;
     }
 
-    public void setSailLoftSpinner(Spinner<Integer> sailLoftSpinner) {
-        this.sailLoftSpinner = sailLoftSpinner;
-    }
-
     public Spinner<Integer> getSailSchoolLoftSpinner() {
         return sailSchoolLoftSpinner;
     }
 
-    public void setSailSchoolLoftSpinner(Spinner<Integer> sailSchoolLoftSpinner) {
-        this.sailSchoolLoftSpinner = sailSchoolLoftSpinner;
-    }
 
     public Spinner<Integer> getWinterStorageSpinner() {
         return winterStorageSpinner;
     }
 
-    public void setWinterStorageSpinner(Spinner<Integer> winterStorageSpinner) {
-        this.winterStorageSpinner = winterStorageSpinner;
-    }
 
     public Spinner<Integer> getWetSlipSpinner() {
         return wetSlipSpinner;
-    }
-
-    public void setWetSlipSpinner(Spinner<Integer> wetSlipSpinner) {
-        this.wetSlipSpinner = wetSlipSpinner;
     }
 
     public Spinner<Integer> getGateKeySpinner() {
         return gateKeySpinner;
     }
 
-    public void setGateKeySpinner(Spinner<Integer> gateKeySpinner) {
-        this.gateKeySpinner = gateKeySpinner;
-    }
-
     public Spinner<Integer> getSailLKeySpinner() {
         return sailLKeySpinner;
-    }
-
-    public void setSailLKeySpinner(Spinner<Integer> sailLKeySpinner) {
-        this.sailLKeySpinner = sailLKeySpinner;
     }
 
     public Spinner<Integer> getKayakSKeySpinner() {
         return kayakSKeySpinner;
     }
 
-    public void setKayakSKeySpinner(Spinner<Integer> kayakSKeySpinner) {
-        this.kayakSKeySpinner = kayakSKeySpinner;
-    }
-
     public Spinner<Integer> getSailSSLKeySpinner() {
         return sailSSLKeySpinner;
-    }
-
-    public void setSailSSLKeySpinner(Spinner<Integer> sailSSLKeySpinner) {
-        this.sailSSLKeySpinner = sailSSLKeySpinner;
     }
 
     public Text getDuesText() {
@@ -1051,7 +655,8 @@ public class InvoiceDTO {
         gridPane.add(new Text("Payment Date: " + thisPayment.getPaymentDate()), 0,row,3,1);
         row++;
         // TODO Make it so if you click on the deposit number the deposit window will open up to that deposit
-        gridPane.add(new Text("Deposit Number: " + invoice.getBatch()) , 0, row, 1, 2);
+        gridPane.add(new Text("Deposit Number: " + invoice.getBatch()) , 0, row, 1, 1);
+        gridPane.add(buttonAddNote, 1, row,1, 1);
         gridPane.add(vboxCommitButton , 2, row, 1, 1);
     }
 
@@ -1074,9 +679,7 @@ public class InvoiceDTO {
         row = addUnCommittedRow(row, gridPane, new Label("Dues:"), duesTextField, new Text(""), new Label(""), vboxDues);
         row = addUnCommittedRow(row, gridPane, new Label("Beach Spot:"), beachSpinner, new Label("X"), vboxBeachFee, vboxBeach);
         row = addUnCommittedRow(row, gridPane, new Label("Kayak Rack:"), kayakRackSpinner, new Label("X"), vboxKayakFee, vboxKayak);
-
         row = addUnCommittedRow(row, gridPane, new Label("Kayak Beach Rack:"), kayakBeachRackSpinner, new Label("X"), vboxBeachKayakFee, vboxBeachKayak);
-
         row = addUnCommittedRow(row, gridPane, new Label("Kayak Shed:"), kayakShedSpinner, new Label("X"), vboxKayakShedFee, vboxKayakShed);
         row = addUnCommittedRow(row, gridPane, new Label("Sail Loft:"), sailLoftSpinner,new Label("X"), vboxSailLoftFee, vboxSailLoft);
         row = addUnCommittedRow(row, gridPane, new Label("Sail School Loft:"), sailSchoolLoftSpinner, new Label("X"), vboxSailSchoolLoftFee, vboxSailSchoolLoft);

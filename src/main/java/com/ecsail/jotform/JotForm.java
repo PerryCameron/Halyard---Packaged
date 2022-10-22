@@ -28,6 +28,7 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.net.ssl.SSLHandshakeException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -165,8 +166,10 @@ public class JotForm {
             String responseData = response.body().string();
             return new JSONObject(responseData);
 
+        } catch (SSLHandshakeException e) {
+            e.printStackTrace();
         } catch (IOException e) {
-        	
+        	e.printStackTrace();
         } catch (IllegalStateException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {

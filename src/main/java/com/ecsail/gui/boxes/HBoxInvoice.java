@@ -45,7 +45,6 @@ public class HBoxInvoice extends HBox {
 	MembershipDTO membership;
 	DefinedFeeDTO definedFees;
 	WorkCreditDTO selectedWorkCreditYear;
-//	OfficerDTO officer;
 	final private ObservableList<PersonDTO> people;
 	boolean hasOfficer;
 	final private int rowIndex;
@@ -73,7 +72,8 @@ public class HBoxInvoice extends HBox {
 
 		ScrollPane scrollPane = new ScrollPane();
 
-		scrollPane.setMaxHeight(500);
+//		scrollPane.setMaxHeight(500);
+
 
 		VBox vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
 		VBox mainVbox = new VBox();
@@ -160,7 +160,10 @@ public class HBoxInvoice extends HBox {
 		//////////////// ATTRIBUTES ///////////////////
 
 		paymentTableView.setItems(payments);
-		HBox.setHgrow(paymentTableView,Priority.ALWAYS);
+
+
+
+
 		paymentTableView.setPrefHeight(115);
 		paymentTableView.setFixedCellSize(30);
 		paymentTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY );
@@ -180,7 +183,11 @@ public class HBoxInvoice extends HBox {
 		setId("custom-tap-pane-frame");
 		vboxGrey.setId("box-background-light");
 		mainVbox.setId("box-background-light");
+		VBox.setVgrow(mainVbox,Priority.ALWAYS);
 		HBox.setHgrow(vboxGrey, Priority.ALWAYS);
+		HBox.setHgrow(paymentTableView,Priority.ALWAYS);
+		HBox.setHgrow(scrollPane,Priority.ALWAYS);
+		VBox.setVgrow(scrollPane,Priority.ALWAYS);
 
 		// not editable if record is committed
 		paymentTableView.setEditable(!fiscals.get(rowIndex).isCommitted());
@@ -196,8 +203,8 @@ public class HBoxInvoice extends HBox {
 
 		invoiceDTO.getButtonDelete().setOnAction(e -> {
 			int selectedIndex = paymentTableView.getSelectionModel().getSelectedIndex();
-			if(selectedIndex >= 0) // is something selected?
-			SqlDelete.deletePayment(payments.get(selectedIndex));
+			if (selectedIndex >= 0) // is something selected?
+				SqlDelete.deletePayment(payments.get(selectedIndex));
 			paymentTableView.getItems().remove(selectedIndex); // remove it from our GUI
 			// SQL Query getTotalAmount() recalculates the payments for us
 			BigDecimal totalPaidAmount = BigDecimal.valueOf(SqlMoney.getTotalAmount(fiscals.get(rowIndex).getMoney_id()));
@@ -210,7 +217,6 @@ public class HBoxInvoice extends HBox {
 		invoiceDTO.getDuesTextField().textProperty().addListener((observable, oldValue, newValue) -> {
 			if (!SqlMoney.isCommitted(fiscals.get(rowIndex).getMoney_id())) {
 				invoiceDTO.getDuesText().setText(newValue);
-//				System.out.println("Dues text field set to " + newValue);
 				fiscals.get(rowIndex).setDues(newValue);
 				updateBalance();
 			} else {
@@ -549,25 +555,13 @@ public class HBoxInvoice extends HBox {
 	}
 
 	private void updateItem(BigDecimal newTotalValue, String type) {
-		switch(type) {
-		case "initiation":
-			fiscals.get(rowIndex).setInitiation(String.valueOf(newTotalValue));
-			break;
-		case "other":
-			fiscals.get(rowIndex).setOther(String.valueOf(newTotalValue));
-			break;
-		case "ysc":
-			fiscals.get(rowIndex).setYsc_donation(String.valueOf(newTotalValue));
-			break;
-		case "dues":
-			fiscals.get(rowIndex).setDues(String.valueOf(newTotalValue));
-			break;
-		case "wetslip":
-			fiscals.get(rowIndex).setWet_slip(String.valueOf(newTotalValue));
-			break;
-		case "other_credit":
-			fiscals.get(rowIndex).setOther_credit(String.valueOf(newTotalValue));
-			break;
+		switch (type) {
+			case "initiation" -> fiscals.get(rowIndex).setInitiation(String.valueOf(newTotalValue));
+			case "other" -> fiscals.get(rowIndex).setOther(String.valueOf(newTotalValue));
+			case "ysc" -> fiscals.get(rowIndex).setYsc_donation(String.valueOf(newTotalValue));
+			case "dues" -> fiscals.get(rowIndex).setDues(String.valueOf(newTotalValue));
+			case "wetslip" -> fiscals.get(rowIndex).setWet_slip(String.valueOf(newTotalValue));
+			case "other_credit" -> fiscals.get(rowIndex).setOther_credit(String.valueOf(newTotalValue));
 		}
 
 		fiscals.get(rowIndex).setTotal(String.valueOf(updateTotalFeeField()));
@@ -586,7 +580,9 @@ public class HBoxInvoice extends HBox {
 			invoiceDTO.getVboxCommitButton().getChildren().clear();
 			HBox hboxButtons = new HBox();
 			hboxButtons.setSpacing(5);
-			hboxButtons.getChildren().addAll(invoiceDTO.getButtonAddNote(), invoiceDTO.getCommitButton());
+//			hboxButtons.getChildren().addAll(invoiceDTO.getButtonAddNote(), invoiceDTO.getCommitButton());
+			hboxButtons.getChildren().addAll(invoiceDTO.getCommitButton());
+
 			invoiceDTO.getVboxCommitButton().getChildren().addAll(hboxButtons);
 		}
 		System.out.println("setting committed");

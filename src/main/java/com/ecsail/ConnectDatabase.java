@@ -483,13 +483,9 @@ public class ConnectDatabase {
 			successful = true;
 			// Creating a Statement object
 		} catch (ClassNotFoundException e) {
-//			Logger.getLogger(Halyard.class.getName()).log(Level.SEVERE, null, e);
-			exception = e.toString();
-
+			BaseApplication.logger.error(e.getMessage());
 		} catch (SQLException e) {
-//			BaseApplication.logger.error(BaseApplication.class.getName()).log(Level.SEVERE, null, e);
-			//e.printStackTrace();
-			exception = e.toString();
+			BaseApplication.logger.error(e.getMessage());
 		}
 		return successful;
 	}

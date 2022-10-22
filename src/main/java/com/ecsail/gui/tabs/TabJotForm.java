@@ -32,10 +32,10 @@ public class TabJotForm extends Tab {
 		ObservableList<JotFormSubmissionListDTO> list = FXCollections.observableArrayList();
 
 		JotFormECSC jotFormECSC = new JotFormECSC();
-		vboxBlue.setId("box-blue");
+//		vboxBlue.setId("box-blue");
 		vboxBlue.setPadding(new Insets(10,10,10,10));
 		vboxPink.setPadding(new Insets(3,3,3,3)); // spacing to make pink from around table
-		vboxPink.setId("box-pink");
+//		vboxPink.setId("box-pink");
 		VBox.setVgrow(vboxPink, Priority.ALWAYS);
 		vboxGrey.setPrefHeight(688);
 		Button listButton = new Button("List");

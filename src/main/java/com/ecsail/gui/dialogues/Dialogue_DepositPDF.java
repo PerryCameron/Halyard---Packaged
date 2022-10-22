@@ -1,5 +1,6 @@
 package com.ecsail.gui.dialogues;
 
+import com.ecsail.pdf.PDF_DepositReport;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.select.SqlDeposit;
 import com.ecsail.structures.DefinedFeeDTO;
@@ -42,7 +43,7 @@ public class Dialogue_DepositPDF extends Stage {
 		
 		Scene scene = new Scene(vboxBlue, 600, 300);
 		final Spinner<Integer> batchSpinner = new Spinner<Integer>();
-		Image mainIcon = new Image(getClass().getResourceAsStream("/ECSC64.png"));
+		Image mainIcon = new Image(getClass().getResourceAsStream("/icon_24.png"));
 		Image pdf = new Image(getClass().getResourceAsStream("/pdf.png"));
 		ImageView pdfImage = new ImageView(pdf);
 		
@@ -76,7 +77,7 @@ public class Dialogue_DepositPDF extends Stage {
 		vboxPink.setId("box-pink");
 		// vboxGrey.setId("slip-box");
 		hboxGrey.setPrefHeight(688);
-		scene.getStylesheets().add("stylesheet.css");
+		scene.getStylesheets().add("css/dark/dialogue.css");
 		setTitle("Print to PDF");
 		////////////  Check to see if batch exists first////////////
 		
@@ -100,7 +101,7 @@ public class Dialogue_DepositPDF extends Stage {
 				if(r2.isSelected()) pdfOptions.setSingleDeposit(true);
 				if(!r2.isSelected()) pdfOptions.setSingleDeposit(false);
 				pdfOptions.setDepositNumber(currentDeposit.getBatch());
-//				new PDF_DepositReport(currentDeposit, currentDefinedFee, pdfOptions);  // makes the PDF
+				new PDF_DepositReport(currentDeposit, currentDefinedFee, pdfOptions);  // makes the PDF
  			}
 		});
 		
