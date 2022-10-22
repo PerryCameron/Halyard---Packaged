@@ -1,0 +1,23 @@
+.root{
+    -fx-font-size: 9pt;
+    -fx-font-family: "Verdana";
+    -fx-base:#25292D;
+}
+
+.button:hover {
+    -fx-background-color: #1658e7;
+}
+
+.combo-box-base:hover
+{
+    -fx-color: #1658e7;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: #1658e7;
+}
+
+.radio-button:selected .radio .dot {
+    -fx-background-color: #1658e7;
+    -fx-background-insets: 0;
+}

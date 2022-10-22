@@ -42,7 +42,7 @@ public class HBoxProperties extends HBox {
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 
 		DialogPane dialogPane = alert.getDialogPane();
-		dialogPane.getStyleClass().add("css/dark/dialogue.css");
+		dialogPane.getStyleClass().add("css/dark/customdialogue.css");
 
 //		HalyardAlert alert = new HalyardAlert(AlertType.INFORMATION);
 

@@ -36,7 +36,7 @@ public class Dialogue_DatabaseBackup extends Stage {
 //		vboxPink.setId("box-pink");
 		// vboxGrey.setId("slip-box");
 		vboxGrey.setPrefHeight(688);
-		scene.getStylesheets().add("css/dark/dialogue.css");
+		scene.getStylesheets().add("css/dark/customdialogue.css");
 		setTitle("Database BackUp");
 		Image mainIcon = new Image(getClass().getResourceAsStream("/icon_24.png"));
 		

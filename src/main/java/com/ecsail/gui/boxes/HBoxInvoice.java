@@ -486,8 +486,6 @@ public class HBoxInvoice extends HBox {
 		invoiceDTO.getKayakSKeyText().setText(String.valueOf(BigDecimal.valueOf(fiscals.get(rowIndex).getKayac_shed_key()).multiply(definedFees.getKayak_shed_key())));
 		invoiceDTO.getSailSSLKeyText().setText(String.valueOf(BigDecimal.valueOf(fiscals.get(rowIndex).getSail_school_loft_key()).multiply(definedFees.getSail_school_loft_key())));
 		invoiceDTO.getPositionCreditText().setText(fiscals.get(rowIndex).getOfficer_credit());
-
-
 		setEditable(!fiscals.get(rowIndex).isCommitted());
 		updateBalance();
 		paymentTableView.getColumns().addAll(Arrays.asList(col1,col2,col3,col4));
@@ -620,7 +618,7 @@ public class HBoxInvoice extends HBox {
 	private BigDecimal countCredit() {
 		BigDecimal credit;
 		// if an officer we are going to use this
-		if(membershipHasOfficer()) credit = new BigDecimal(fiscals.get(rowIndex).getOfficer_credit());
+		if(hasOfficer) credit = new BigDecimal(fiscals.get(rowIndex).getOfficer_credit());
 		// else we are going to calculate work credits
 		else credit = countWorkCredits();
 		return credit;

@@ -1,5 +1,6 @@
 package com.ecsail.gui.boxes;
 
+import com.ecsail.BaseApplication;
 import com.ecsail.EditCell;
 import com.ecsail.enums.PhoneType;
 import com.ecsail.sql.SqlDelete;
@@ -33,6 +34,7 @@ import javafx.util.Callback;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -224,10 +226,24 @@ public class HBoxPhone extends HBox {
             });
         
         phoneDelete.setOnAction((event) -> {
-                int selectedIndex = phoneTableView.getSelectionModel().getSelectedIndex();
-                    if(selectedIndex >= 0)
-                        if(SqlDelete.deletePhone(phone.get(selectedIndex)))  // if it is properly deleted in our database
-                            phoneTableView.getItems().remove(selectedIndex); // remove it from our GUI
+                    int selectedIndex = phoneTableView.getSelectionModel().getSelectedIndex();
+                    PhoneDTO ph = phone.get(selectedIndex);
+                    Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
+                    conformation.setTitle("Delete Phone Entry");
+                    conformation.setHeaderText(PhoneType.getByCode(ph.getPhoneType()) + " phone");
+                    conformation.setContentText("Are sure you want to delete the number " + ph.getPhoneNumber());
+                    DialogPane dialogPane = conformation.getDialogPane();
+                    dialogPane.getStylesheets().add("css/dark/dialogue.css");
+                    dialogPane.getStyleClass().add("dialog");
+                    Optional<ButtonType> result = conformation.showAndWait();
+                    if (result.get() == ButtonType.OK) {
+                        if (selectedIndex >= 0)
+                            if (SqlDelete.deletePhone(ph))  // if it is properly deleted in our database
+                                phoneTableView.getItems().remove(selectedIndex); // remove it from our GUI
+                        BaseApplication.logger.info("Deleted " + PhoneType.getByCode(ph.getPhoneType())
+                                + " phone number " + ph.getPhoneNumber()
+                                + " from " + person.getFname() + " " + person.getLname());
+                    }
         });
         
         ///////////////////  SET CONTENT  ///////////////////////

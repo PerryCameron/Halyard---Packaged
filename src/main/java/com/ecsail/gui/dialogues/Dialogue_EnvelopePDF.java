@@ -76,7 +76,7 @@ public class Dialogue_EnvelopePDF extends Stage {
 //		vboxPink.setId("box-pink");
 		// vboxGrey.setId("slip-box");
 		hboxGrey.setPrefHeight(688);
-		scene.getStylesheets().add("css/dark/dialogue.css");
+		scene.getStylesheets().add("css/dark/customdialogue.css");
 		setTitle("Print to PDF");
 		hboxMembershipID.setAlignment(Pos.CENTER_LEFT);
 		vboxColumn1.setPrefWidth(300);

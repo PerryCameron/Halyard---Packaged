@@ -36,7 +36,7 @@ public class Dialogue_CustomErrorMessage extends Stage {
 		VBox.setVgrow(vboxGrey, Priority.ALWAYS);
 		VBox.setVgrow(vboxPink, Priority.ALWAYS);
 		HBox.setHgrow(vboxPink, Priority.ALWAYS);
-		scene.getStylesheets().add("css/dark/dialogue.css");
+		scene.getStylesheets().add("css/dark/customdialogue.css");
 		vboxGrey.getChildren().addAll(textArea, closeButton);
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);

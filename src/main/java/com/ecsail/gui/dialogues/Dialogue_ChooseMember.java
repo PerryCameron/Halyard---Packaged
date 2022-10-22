@@ -73,7 +73,7 @@ public class Dialogue_ChooseMember extends Stage {
 		VBox.setVgrow(vboxGrey, Priority.ALWAYS);
 		VBox.setVgrow(vboxPink, Priority.ALWAYS);
 		HBox.setHgrow(vboxPink, Priority.ALWAYS);
-		scene.getStylesheets().add("css/dark/dialogue.css");
+		scene.getStylesheets().add("css/dark/customdialogue.css");
 
 		this.setTitle("Choose Member");
 		Image mainIcon = new Image(getClass().getResourceAsStream("/logo_24.png"));

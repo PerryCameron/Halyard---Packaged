@@ -2,8 +2,6 @@ package com.ecsail.gui.dialogues;
 
 import com.ecsail.BaseApplication;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -12,8 +10,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.io.IOException;
 
 public class Dialogue_RenewalForm extends Stage {
 
@@ -68,7 +64,7 @@ public class Dialogue_RenewalForm extends Stage {
 		vboxPink.setId("box-pink");
 		// vboxGrey.setId("slip-box");
 		hboxGrey.setPrefHeight(688);
-		scene.getStylesheets().add("css/dark/dialogue.css");
+		scene.getStylesheets().add("css/dark/customdialogue.css");
 		setTitle("Print to PDF");
 		////////////  Check to see if batch exists first////////////
 		

@@ -4,8 +4,17 @@
     -fx-font-family: "Verdana";
 }
 
+.button {
+    -fx-text-fill:white;
+    -fx-wrap-text: true;
+    -fx-effect: dropshadow( three-pass-box, #1658e7, 2.0, 0.0, 0.0, 0.0);
+    -fx-cursor:hand;
+}
+
 .button:hover {
     -fx-background-color: #1658e7;
+    -fx-text-fill:white;
+    -fx-font-weight:bold;
 }
 
 .scroll-pane > .viewport {

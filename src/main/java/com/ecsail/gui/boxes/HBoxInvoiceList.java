@@ -29,7 +29,6 @@ import java.util.Comparator;
 import java.util.Optional;
 
 public class HBoxInvoiceList extends HBox {
-	
 	private static ObservableList<MoneyDTO> fiscals = null;
 	private static TabPane parentTabPane;
 	private static MembershipDTO membership;
@@ -60,7 +59,10 @@ public class HBoxInvoiceList extends HBox {
 		TableColumn<MoneyDTO, Integer> Col3 = new TableColumn<>("Credit");
 		TableColumn<MoneyDTO, Integer> Col4 = new TableColumn<>("Paid");
 		TableColumn<MoneyDTO, Integer> Col5 = new TableColumn<>("Balance");
-//		HalyardAlert conformation = new HalyardAlert(HalyardAlert.AlertType.CONFIRMATION);
+
+
+
+
 		ComboBox<Integer> comboBox = new ComboBox<>();
 		populateComboBox(comboBox);
 		comboBox.getSelectionModel().select(1);
@@ -147,17 +149,21 @@ public class HBoxInvoiceList extends HBox {
         
 		deleteFiscalRecord.setOnAction((event) -> {
 			int selectedIndex = fiscalTableView.getSelectionModel().getSelectedIndex();
-//			conformation.setTitle("Remove Invoice");
-//			conformation.setHeaderText("Invoice #" + fiscals.get(selectedIndex).getMoney_id());
-//			conformation.setContentText("Are sure you want to delete this " + fiscals.get(selectedIndex).getFiscal_year() + " invoice?");
-//			Optional<ButtonType> result = conformation.showAndWait();
-//			if (result.get() == ButtonType.OK){
-//				System.out.println("deleting fiscal record " + selectedIndex);
-//				SqlDelete.deletePaymentByMoneyID(fiscals.get(selectedIndex).getMoney_id());
-//				SqlDelete.deleteWorkCreditsByMoneyID(fiscals.get(selectedIndex).getMoney_id());
-//				SqlDelete.deleteMoneyByMoneyID(fiscals.get(selectedIndex).getMoney_id());
-//				fiscals.remove(selectedIndex);
-//			}
+			Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
+			conformation.setTitle("Remove Invoice");
+			conformation.setHeaderText("Invoice #" + fiscals.get(selectedIndex).getMoney_id());
+			conformation.setContentText("Are sure you want to delete this invoice from " + fiscals.get(selectedIndex).getFiscal_year() + "?");
+			DialogPane dialogPane = conformation.getDialogPane();
+			dialogPane.getStylesheets().add("css/dark/dialogue.css");
+			dialogPane.getStyleClass().add("dialog");
+			Optional<ButtonType> result = conformation.showAndWait();
+			if (result.get() == ButtonType.OK){
+				BaseApplication.logger.info("deleting fiscal record " + selectedIndex);
+				SqlDelete.deletePaymentByMoneyID(fiscals.get(selectedIndex).getMoney_id());
+				SqlDelete.deleteWorkCreditsByMoneyID(fiscals.get(selectedIndex).getMoney_id());
+				SqlDelete.deleteMoneyByMoneyID(fiscals.get(selectedIndex).getMoney_id());
+				fiscals.remove(selectedIndex);
+			}
 		});
 		
 		fiscalTableView.setRowFactory(tv -> {
