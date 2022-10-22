@@ -26,6 +26,7 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.bouncycastle.jcajce.provider.symmetric.ARC4;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -184,6 +185,7 @@ public class HBoxPhone extends HBox {
         /////////////////// LISTENERS //////////////////////////////
         
         phoneAdd.setOnAction((event) -> {
+            BaseApplication.logger.info("Added new phone entry for " + person.getNameWithInfo());
                 // return next key id for phone table
                 int phone_id = SqlSelect.getNextAvailablePrimaryKey("phone", "phone_id");
                 // attempt to add a new record and return if it is successful
@@ -197,25 +199,27 @@ public class HBoxPhone extends HBox {
                 // edit the phone number cell after creating
                 phoneTableView.edit(0, Col1);
             });
-        
+
         phoneDelete.setOnAction((event) -> {
-                    int selectedIndex = phoneTableView.getSelectionModel().getSelectedIndex();
-                    PhoneDTO ph = phone.get(selectedIndex);
-                    Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
-                    conformation.setTitle("Delete Phone Entry");
-                    conformation.setHeaderText(PhoneType.getByCode(ph.getPhoneType()) + " phone");
-                    conformation.setContentText("Are sure you want to delete the number " + ph.getPhoneNumber());
-                    DialogPane dialogPane = conformation.getDialogPane();
-                    dialogPane.getStylesheets().add("css/dark/dialogue.css");
-                    dialogPane.getStyleClass().add("dialog");
-                    Optional<ButtonType> result = conformation.showAndWait();
-                    if (result.get() == ButtonType.OK) {
-                            if (SqlDelete.deletePhone(ph))  // if it is properly deleted in our database
-                                phoneTableView.getItems().remove(selectedIndex); // remove it from our GUI
-                        BaseApplication.logger.info("Deleted " + PhoneType.getByCode(ph.getPhoneType())
-                                + " phone number " + ph.getPhoneNumber()
-                                + " from " + person.getFname() + " " + person.getLname());
-                    }
+            int selectedIndex = phoneTableView.getSelectionModel().getSelectedIndex();
+            if (selectedIndex >= 0) { // make sure something is selected
+                PhoneDTO ph = phone.get(selectedIndex);
+                Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
+                conformation.setTitle("Delete Phone Entry");
+                conformation.setHeaderText(PhoneType.getByCode(ph.getPhoneType()) + " phone");
+                conformation.setContentText("Are sure you want to delete the number " + ph.getPhoneNumber());
+                DialogPane dialogPane = conformation.getDialogPane();
+                dialogPane.getStylesheets().add("css/dark/dialogue.css");
+                dialogPane.getStyleClass().add("dialog");
+                Optional<ButtonType> result = conformation.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    if (SqlDelete.deletePhone(ph))  // if it is properly deleted in our database
+                        phoneTableView.getItems().remove(selectedIndex); // remove it from our GUI
+                    BaseApplication.logger.info("Deleted " + PhoneType.getByCode(ph.getPhoneType())
+                            + " phone number " + ph.getPhoneNumber()
+                            + " from " + person.getNameWithInfo());
+                }
+            }
         });
         
         ///////////////////  SET CONTENT  ///////////////////////

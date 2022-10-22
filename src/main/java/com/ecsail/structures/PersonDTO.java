@@ -34,6 +34,14 @@ public class PersonDTO {
 
 	}
 
+	public String getFullName() {
+		return getFname() + " " + getLname();
+	}
+
+	public String getNameWithInfo() {
+		return getFullName() + " pid(" + getP_id() + ")";
+	}
+
 	public final IntegerProperty oldMsidProperty( ) {
 		return this.oldMsid;
 	}

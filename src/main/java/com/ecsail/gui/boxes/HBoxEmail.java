@@ -1,7 +1,9 @@
 package com.ecsail.gui.boxes;
 
 
+import com.ecsail.BaseApplication;
 import com.ecsail.EditCell;
+import com.ecsail.enums.PhoneType;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
@@ -16,9 +18,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -26,6 +26,7 @@ import javafx.scene.layout.VBox;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class HBoxEmail extends HBox {
@@ -141,6 +142,7 @@ public class HBoxEmail extends HBox {
 			/////////////////  LISTENERS ////////////////////////
 
 	        emailAdd.setOnAction((event) -> {
+				BaseApplication.logger.info("Added new email entry for " + person.getNameWithInfo());
 				// get the next available primary key for table email
 				int email_id = SqlSelect.getNextAvailablePrimaryKey("email","email_id"); // gets last memo_id number
 				// add record to SQL and return success or not
@@ -154,13 +156,29 @@ public class HBoxEmail extends HBox {
 				// edit the phone number cell after creating
 				emailTableView.edit(0, Col1);
 	        });
-	        
-	        emailDelete.setOnAction((event) -> {
-	        	    int selectedIndex = emailTableView.getSelectionModel().getSelectedIndex();
-	        	    	if(selectedIndex >= 0) // make sure something is selected
-	        	    		if(SqlDelete.deleteEmail(email.get(selectedIndex)))  // if deleted in database
-	        	    			emailTableView.getItems().remove(selectedIndex); // remove from GUI 
-	            });
+
+		emailDelete.setOnAction((event) -> {
+			int selectedIndex = emailTableView.getSelectionModel().getSelectedIndex();
+			if (selectedIndex >= 0) {// make sure something is selected
+				EmailDTO emailDTO = email.get(selectedIndex);
+				Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
+				conformation.setTitle("Delete Email Entry");
+				conformation.setHeaderText(emailDTO.getEmail());
+				conformation.setContentText("Are sure you want to delete this email entry?");
+				DialogPane dialogPane = conformation.getDialogPane();
+				dialogPane.getStylesheets().add("css/dark/dialogue.css");
+				dialogPane.getStyleClass().add("dialog");
+				Optional<ButtonType> result = conformation.showAndWait();
+				if (result.get() == ButtonType.OK) {
+					if (SqlDelete.deleteEmail(emailDTO)) {  // if deleted in database
+						emailTableView.getItems().remove(selectedIndex); // remove from GUI
+						BaseApplication.logger.info("Deleted "
+								+ emailDTO.getEmail() + " from "
+								+ person.getNameWithInfo());
+					}
+				}
+			}
+		});
 	        
 	        ///////////////////  SET CONTENT ////////////////////
 	        
