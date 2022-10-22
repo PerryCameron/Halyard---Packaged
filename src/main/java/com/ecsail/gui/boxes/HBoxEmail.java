@@ -3,7 +3,6 @@ package com.ecsail.gui.boxes;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.EditCell;
-import com.ecsail.enums.PhoneType;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
@@ -78,7 +77,7 @@ public class HBoxEmail extends HBox {
 			emailTableView.setEditable(true);
 			emailTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY );
 			
-			TableColumn<EmailDTO, String> Col1 = createColumn("Email", EmailDTO::emailProperty);
+			TableColumn<EmailDTO, String> Col1 = createColumn(EmailDTO::emailProperty);
 			Col1.setPrefWidth(137);
 			Col1.setOnEditCommit(t -> {
 				t.getTableView().getItems().get(t.getTablePosition().getRow())
@@ -169,7 +168,7 @@ public class HBoxEmail extends HBox {
 				dialogPane.getStylesheets().add("css/dark/dialogue.css");
 				dialogPane.getStyleClass().add("dialog");
 				Optional<ButtonType> result = conformation.showAndWait();
-				if (result.get() == ButtonType.OK) {
+				if (result.isPresent() && result.get() == ButtonType.OK) {
 					if (SqlDelete.deleteEmail(emailDTO)) {  // if deleted in database
 						emailTableView.getItems().remove(selectedIndex); // remove from GUI
 						BaseApplication.logger.info("Deleted "
@@ -192,8 +191,8 @@ public class HBoxEmail extends HBox {
 	
 	///////////////// CLASS METHODS /////////////////
 	
-    private <T> TableColumn<T, String> createColumn(String title, Function<T, StringProperty> property) {
-        TableColumn<T, String> col = new TableColumn<>(title);
+    private <T> TableColumn<T, String> createColumn(Function<T, StringProperty> property) {
+        TableColumn<T, String> col = new TableColumn<>("Email");
         col.setCellValueFactory(cellData -> property.apply(cellData.getValue()));
         col.setCellFactory(column -> EditCell.createStringEditCell());
         return col ;

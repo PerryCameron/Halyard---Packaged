@@ -1,14 +1,14 @@
 package com.ecsail.enums;
 
 public enum Awards {
-	   SPORTSM("SA", "Sportsmanship Award"), 
-	   SAILORO("SY", "Sailor of the Year")
+	   SPORTSMANSHIP_AWARD("SA", "Sportsmanship Award"),
+	   SAILOR_OF_THE_YEAR("SY", "Sailor of the Year")
 	   ;
 	 
-	   private String code;
-	   private String text;
+	   private final String code;
+	   private final String text;
 	 
-	   private Awards(String code, String text) {
+	   Awards(String code, String text) {
 	       this.code = code;
 	       this.text = text;
 	   }
