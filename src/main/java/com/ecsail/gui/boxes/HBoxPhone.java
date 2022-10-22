@@ -14,25 +14,20 @@ import javafx.beans.Observable;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.util.Callback;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Function;
@@ -46,22 +41,16 @@ public class HBoxPhone extends HBox {
     
     public HBoxPhone(PersonDTO p) {
         this.person = p;  // the below callback is to allow commit when focus removed, overrides FX default behavior
-        this.phone = FXCollections.observableArrayList(new Callback<PhoneDTO, Observable[]>() {
-            @Override
-            public Observable[] call(PhoneDTO param) {
-                return new Observable[] { param.isListedProperty() };
-
-            }
-        });
+        this.phone = FXCollections.observableArrayList(param -> new Observable[] { param.isListedProperty() });
         this.phone.addAll(SqlPhone.getPhoneByPid(person.getP_id()));
         
         /////// OBJECT INSTANCE //////  
         VBox vboxButtons = new VBox(); // holds phone buttons
         Button phoneAdd = new Button("Add");
         Button phoneDelete = new Button("Delete");
-        HBox hboxGrey = new HBox(); // this is here for the grey background to make nice apperence
+        HBox hboxGrey = new HBox(); // this is here for the grey background to make nice appearance
         VBox vboxPink = new VBox(); // this creates a pink border around the table
-        phoneTableView = new TableView<PhoneDTO>();
+        phoneTableView = new TableView<>();
 
         //// OBJECT ATTRIBUTES /////
         phoneAdd.setPrefWidth(60);
@@ -81,10 +70,10 @@ public class HBoxPhone extends HBox {
 //        vboxPink.setId("box-pink");
 
         hboxGrey.setPadding(new Insets(5,5,5,5));  // spacing around table and buttons
-        vboxPink.setPadding(new Insets(2,2,2,2)); // spacing to make pink fram around table
+        vboxPink.setPadding(new Insets(2,2,2,2)); // spacing to make pink frame around table
         VBox.setVgrow(phoneTableView, Priority.ALWAYS);
 
-        ///// TABLEVIE INSTANCE CREATION AND ATTRIBUTES /////
+        ///// TABLEVIEW INSTANCE CREATION AND ATTRIBUTES /////
         
         phoneTableView.setItems(phone);
         phoneTableView.setFixedCellSize(30);
@@ -94,15 +83,14 @@ public class HBoxPhone extends HBox {
         // example for this column found at https://gist.github.com/james-d/be5bbd6255a4640a5357#file-editcell-java-L109
         TableColumn<PhoneDTO, String> Col1 = createColumn("Phone", PhoneDTO::phoneNumberProperty);
         Col1.setOnEditCommit(
-                new EventHandler<CellEditEvent<PhoneDTO, String>>() {
+                new EventHandler<>() {
                     @Override
                     public void handle(CellEditEvent<PhoneDTO, String> t) {
-                        ((PhoneDTO) t.getTableView().getItems().get(
-                                t.getTablePosition().getRow())
-                                ).setPhoneNumber(t.getNewValue());
-                        String processedNumber = processNumber(t.getNewValue());        
-                        int phone_id = ((PhoneDTO) t.getTableView().getItems().get(t.getTablePosition().getRow())).getPhone_ID();
-                            SqlUpdate.updatePhone("phone", phone_id, processedNumber);
+                        t.getTableView().getItems().get(
+                                t.getTablePosition().getRow()).setPhoneNumber(t.getNewValue());
+                        String processedNumber = processNumber(t.getNewValue());
+                        int phone_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getPhone_ID();
+                        SqlUpdate.updatePhone("phone", phone_id, processedNumber);
                         phone.stream()
                                 .filter(p -> p.getPhone_ID() == phone_id)
                                 .forEach(s -> s.setPhoneNumber(processedNumber));
@@ -110,33 +98,32 @@ public class HBoxPhone extends HBox {
 
                     private String processNumber(String newValue) {
                         // adds dashes
-                        if(Pattern.matches("\\d{10}", newValue)) {
+                        if (Pattern.matches("\\d{10}", newValue)) {
                             return addDashes(newValue);
                         }
                         // need to add area code
-                        else if(Pattern.matches("\\d{7}", newValue)) {
+                        else if (Pattern.matches("\\d{7}", newValue)) {
                             return addDashes("317" + newValue);
                         }
                         // perfect no need to change anything
-                        else if(Pattern.matches("(?:\\d{3}-){2}\\d{4}", newValue)) {
+                        else if (Pattern.matches("(?:\\d{3}-){2}\\d{4}", newValue)) {
                             return newValue;
                         }
                         // removes all junk as long as there are 10 numbers
-                        else if(keepOnlyNumbers(newValue).length() == 10) {
+                        else if (keepOnlyNumbers(newValue).length() == 10) {
                             return addDashes(keepOnlyNumbers(newValue));
                         }
                         // removes all junk and adds default area code if there are 7 numbers
-                        else if(keepOnlyNumbers(newValue).length() == 7) {
+                        else if (keepOnlyNumbers(newValue).length() == 7) {
                             return addDashes("317" + keepOnlyNumbers(newValue));
-                        }
-                        else {
-                            return "illformatted number";
+                        } else {
+                            return "ill-formatted number";
                         }
                     }
 
                     private String addDashes(String newValue) {
-                        StringBuffer resString = new StringBuffer(newValue);
-                        return resString.insert(3, "-").insert(7,"-").toString();
+                        StringBuilder resString = new StringBuilder(newValue);
+                        return resString.insert(3, "-").insert(7, "-").toString();
                     }
 
                     private String keepOnlyNumbers(String newValue) {
@@ -147,16 +134,12 @@ public class HBoxPhone extends HBox {
         
         // example for this column found at https://o7planning.org/en/11079/javafx-tableview-tutorial
         ObservableList<PhoneType> phoneTypeList = FXCollections.observableArrayList(PhoneType.values());
-        TableColumn<PhoneDTO, PhoneType> Col2 = new TableColumn<PhoneDTO, PhoneType>("Type");
-        Col2.setCellValueFactory(new Callback<CellDataFeatures<PhoneDTO, PhoneType>, ObservableValue<PhoneType>>() {
-             
-            @Override
-            public ObservableValue<PhoneType> call(CellDataFeatures<PhoneDTO, PhoneType> param) {
-                PhoneDTO thisPhone = param.getValue();
-                String phoneCode = thisPhone.getPhoneType();
-                PhoneType phoneType = PhoneType.getByCode(phoneCode);
-                return new SimpleObjectProperty<PhoneType>(phoneType);
-            }
+        TableColumn<PhoneDTO, PhoneType> Col2 = new TableColumn<>("Type");
+        Col2.setCellValueFactory(param -> {
+            PhoneDTO thisPhone = param.getValue();
+            String phoneCode = thisPhone.getPhoneType();
+            PhoneType phoneType = PhoneType.getByCode(phoneCode);
+            return new SimpleObjectProperty<>(phoneType);
         });
  
         Col2.setCellFactory(ComboBoxTableCell.forTableColumn(phoneTypeList));
@@ -171,36 +154,26 @@ public class HBoxPhone extends HBox {
         });
         
         // example for this column found at https://o7planning.org/en/11079/javafx-tableview-tutorial
-        TableColumn<PhoneDTO, Boolean> Col3 = new TableColumn<PhoneDTO, Boolean>("Listed");
-        Col3.setCellValueFactory(new Callback<CellDataFeatures<PhoneDTO, Boolean>, ObservableValue<Boolean>>() {
-                @Override
-                public ObservableValue<Boolean> call(CellDataFeatures<PhoneDTO, Boolean> param) {
-                    PhoneDTO phone = param.getValue();
-                    SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(phone.isIsListed());
-                    // Note: singleCol.setOnEditCommit(): Not work for
-                    // CheckBoxTableCell.
-                    // When "isListed?" column change.
-                    booleanProp.addListener(new ChangeListener<Boolean>() {
-                        @Override
-                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
-                                Boolean newValue) {
-                            phone.setIsListed(newValue);
-                            SqlUpdate.updateListed("phone_listed",phone.getPhone_ID(), newValue);
-                        }
-                    });
-                    return booleanProp;
-                }
+        TableColumn<PhoneDTO, Boolean> Col3 = new TableColumn<>("Listed");
+        Col3.setCellValueFactory(param -> {
+            PhoneDTO phone = param.getValue();
+            SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(phone.isIsListed());
+            // Note: singleCol.setOnEditCommit(): Not work for
+            // CheckBoxTableCell.
+            // When "isListed?" column change.
+            booleanProp.addListener((observable, oldValue, newValue) -> {
+                phone.setIsListed(newValue);
+                SqlUpdate.updateListed("phone_listed",phone.getPhone_ID(), newValue);
             });
-     
-        Col3.setCellFactory(new Callback<TableColumn<PhoneDTO, Boolean>, //
-            TableCell<PhoneDTO, Boolean>>() {
-                @Override
-                public TableCell<PhoneDTO, Boolean> call(TableColumn<PhoneDTO, Boolean> p) {
-                    CheckBoxTableCell<PhoneDTO, Boolean> cell = new CheckBoxTableCell<PhoneDTO, Boolean>();
-                    cell.setAlignment(Pos.CENTER);
-                    return cell;
-                }
-            });
+            return booleanProp;
+        });
+
+        //
+        Col3.setCellFactory(p1 -> {
+            CheckBoxTableCell<PhoneDTO, Boolean> cell = new CheckBoxTableCell<>();
+            cell.setAlignment(Pos.CENTER);
+            return cell;
+        });
         
         /// sets width of columns by percentage
         Col1.setMaxWidth( 1f * Integer.MAX_VALUE * 50);   // Phone
@@ -215,10 +188,10 @@ public class HBoxPhone extends HBox {
                 int phone_id = SqlSelect.getNextAvailablePrimaryKey("phone", "phone_id");
                 // attempt to add a new record and return if it is successful
                 if (SqlInsert.addPhoneRecord(phone_id, person.getP_id(), true, "new phone", ""))
-                    // if sucessfully added to SQL then add a new row in the tableview
+                    // if successfully added to SQL then add a new row in the tableview
                     phone.add(new PhoneDTO(phone_id, person.getP_id(), true, "new phone", ""));
                 // Now we will sort it to the top
-                Collections.sort(phone, Comparator.comparing(PhoneDTO::getPhone_ID).reversed());
+                phone.sort(Comparator.comparing(PhoneDTO::getPhone_ID).reversed());
                 // this line prevents strange buggy behaviour
                 phoneTableView.layout();
                 // edit the phone number cell after creating
@@ -237,7 +210,6 @@ public class HBoxPhone extends HBox {
                     dialogPane.getStyleClass().add("dialog");
                     Optional<ButtonType> result = conformation.showAndWait();
                     if (result.get() == ButtonType.OK) {
-                        if (selectedIndex >= 0)
                             if (SqlDelete.deletePhone(ph))  // if it is properly deleted in our database
                                 phoneTableView.getItems().remove(selectedIndex); // remove it from our GUI
                         BaseApplication.logger.info("Deleted " + PhoneType.getByCode(ph.getPhoneType())
