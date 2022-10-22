@@ -1,5 +1,6 @@
 package com.ecsail.gui.boxes;
 
+import com.ecsail.BaseApplication;
 import com.ecsail.EditCell;
 import com.ecsail.enums.Officer;
 import com.ecsail.sql.SqlDelete;
@@ -14,11 +15,8 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellEditEvent;
-import javafx.scene.control.TablePosition;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -27,6 +25,7 @@ import javafx.scene.layout.VBox;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class HBoxOfficer extends HBox {
@@ -120,28 +119,43 @@ public class HBoxOfficer extends HBox {
 			Col2.setMaxWidth( 1f * Integer.MAX_VALUE * 50 );  // Type
 			Col3.setMaxWidth( 1f * Integer.MAX_VALUE * 20 );  // Listed
 	        ////////////////////// LISTENERS /////////////////////////
-	    	    
-	        officerAdd.setOnAction(e -> {
-				// get next available primary key for officer table
-				int officer_id = SqlSelect.getNextAvailablePrimaryKey("officer","o_id"); // gets last memo_id number
-				// insert a new officer row into SQL and return true on success
-				if(SqlInsert.addOfficerRecord(officer_id,person.getP_id(),"0","new officer",Integer.parseInt(currentYear)))
+
+		officerAdd.setOnAction(e -> {
+			BaseApplication.logger.info("Added new officer entry for " + person.getNameWithInfo());
+			// get next available primary key for officer table
+			int officer_id = SqlSelect.getNextAvailablePrimaryKey("officer", "o_id"); // gets last memo_id number
+			// insert a new officer row into SQL and return true on success
+			if (SqlInsert.addOfficerRecord(officer_id, person.getP_id(), "0", "new officer", Integer.parseInt(currentYear)))
 				// add a new row to the tableView to match new SQL entry
-				officer.add(new OfficerDTO(officer_id,person.getP_id(),"0","new officer",currentYear));
-				// Now we will sort it to the top
-				officer.sort(Comparator.comparing(OfficerDTO::getOfficer_id).reversed());
-				// this line prevents strange buggy behaviour
-				officerTableView.layout();
-				// edit the phone number cell after creating
-				officerTableView.edit(0, Col1);
-			});
-	        
-	        officerDelete.setOnAction(e -> {
-				int selectedIndex = officerTableView.getSelectionModel().getSelectedIndex();
-				if(selectedIndex >= 0)
-					if(SqlDelete.deleteOfficer(officer.get(selectedIndex)))
+				officer.add(new OfficerDTO(officer_id, person.getP_id(), "0", "new officer", currentYear));
+			// Now we will sort it to the top
+			officer.sort(Comparator.comparing(OfficerDTO::getOfficer_id).reversed());
+			// this line prevents strange buggy behaviour
+			officerTableView.layout();
+			// edit the phone number cell after creating
+			officerTableView.edit(0, Col1);
+		});
+
+		officerDelete.setOnAction(e -> {
+			int selectedIndex = officerTableView.getSelectionModel().getSelectedIndex();
+			if (selectedIndex >= 0) {
+				OfficerDTO officerDTO = officer.get(selectedIndex);
+				Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
+				conformation.setTitle("Delete Officer Entry");
+				conformation.setHeaderText(officerDTO.getBoard_year() + " " + Officer.getNameByCode(officerDTO.getOfficer_type()));
+				conformation.setContentText("Are sure you want to delete this officer/chairman entry?");
+				DialogPane dialogPane = conformation.getDialogPane();
+				dialogPane.getStylesheets().add("css/dark/dialogue.css");
+				dialogPane.getStyleClass().add("dialog");
+				Optional<ButtonType> result = conformation.showAndWait();
+				if (result.isPresent() && result.get() == ButtonType.OK) {
+					if (SqlDelete.deleteOfficer(officerDTO)) {
 						officerTableView.getItems().remove(selectedIndex);
-			});
+						BaseApplication.logger.info("Deleted officer entry for " + person.getNameWithInfo());
+					}
+				}
+			}
+		});
 	        
 	        /////////////////// SET CONTENT //////////////////
 	        

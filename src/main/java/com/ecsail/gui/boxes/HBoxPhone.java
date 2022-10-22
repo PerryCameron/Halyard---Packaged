@@ -26,7 +26,6 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.bouncycastle.jcajce.provider.symmetric.ARC4;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -36,9 +35,9 @@ import java.util.regex.Pattern;
 
 public class HBoxPhone extends HBox {
     
-    private PersonDTO person;
-    private TableView<PhoneDTO> phoneTableView;
-    private ObservableList<PhoneDTO> phone;
+    private final PersonDTO person;
+    private final TableView<PhoneDTO> phoneTableView;
+    private final ObservableList<PhoneDTO> phone;
     
     public HBoxPhone(PersonDTO p) {
         this.person = p;  // the below callback is to allow commit when focus removed, overrides FX default behavior
@@ -82,7 +81,7 @@ public class HBoxPhone extends HBox {
         phoneTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY );
             
         // example for this column found at https://gist.github.com/james-d/be5bbd6255a4640a5357#file-editcell-java-L109
-        TableColumn<PhoneDTO, String> Col1 = createColumn("Phone", PhoneDTO::phoneNumberProperty);
+        TableColumn<PhoneDTO, String> Col1 = createColumn(PhoneDTO::phoneNumberProperty);
         Col1.setOnEditCommit(
                 new EventHandler<>() {
                     @Override
@@ -212,7 +211,7 @@ public class HBoxPhone extends HBox {
                 dialogPane.getStylesheets().add("css/dark/dialogue.css");
                 dialogPane.getStyleClass().add("dialog");
                 Optional<ButtonType> result = conformation.showAndWait();
-                if (result.get() == ButtonType.OK) {
+                if (result.isPresent() && result.get() == ButtonType.OK) {
                     if (SqlDelete.deletePhone(ph))  // if it is properly deleted in our database
                         phoneTableView.getItems().remove(selectedIndex); // remove it from our GUI
                     BaseApplication.logger.info("Deleted " + PhoneType.getByCode(ph.getPhoneType())
@@ -233,8 +232,8 @@ public class HBoxPhone extends HBox {
     }  // end of constructor
     
     ////////////////////////  CLASS METHODS //////////////////////////
-    private <T> TableColumn<T, String> createColumn(String title, Function<T, StringProperty> property) {
-        TableColumn<T, String> col = new TableColumn<>(title);
+    private <T> TableColumn<T, String> createColumn(Function<T, StringProperty> property) {
+        TableColumn<T, String> col = new TableColumn<>("Phone");
         col.setCellValueFactory(cellData -> property.apply(cellData.getValue()));
         col.setCellFactory(column -> EditCell.createStringEditCell());
         return col ;
