@@ -4,20 +4,21 @@ import com.ecsail.gui.boxes.VBoxPersonMove;
 import com.ecsail.sql.SqlPerson;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.structures.PersonDTO;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 public class TabPersonProperties extends Tab {
-	private PersonDTO person;  // this is the person we are focused on.
-	private ObservableList<PersonDTO> people;  // this is only for updating people list when in people list mode
-	VBoxPersonMove personMove;
+	private final PersonDTO person;  // this is the person we are focused on.
+	private final ObservableList<PersonDTO> people;  // this is only for updating people list when in people list mode
+	private final VBoxPersonMove personMove;
 
 	public TabPersonProperties(PersonDTO p, ObservableList<PersonDTO> pe, TabPane personTabPane) {
 		super("Properties");
@@ -27,13 +28,12 @@ public class TabPersonProperties extends Tab {
 		int age = SqlPerson.getPersonAge(person);
 
 		//////////// OBJECTS /////////////////
-		HBox hboxMain = new HBox();
-		VBox vBoxLeft = new VBox(); // holds all content
-		VBox vBoxRight = new VBox();
-		HBox hboxGrey = new HBox(); // this is here for the grey background to make nice apperence
-		HBox hboxMemberType = new HBox();
-		Button delButton = new Button("Delete");
-		CheckBox activeCheckBox = new CheckBox("Is Active");
+		var hboxMain = new HBox();
+		var vBoxLeft = new VBox(); // holds all content
+		var vBoxRight = new VBox();
+		var hboxGrey = new HBox(); // this is here for the grey background to make nice appearance
+		var hboxMemberType = new HBox();
+		var activeCheckBox = new CheckBox("Is Active");
 		
 		/////////////////  ATTRIBUTES  /////////////////////
 		
@@ -57,15 +57,12 @@ public class TabPersonProperties extends Tab {
 		vBoxLeft.setPadding(new Insets(5,5,5,5));
 		//////////  LISTENERS /////
          
-        activeCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-               //activeCheckBox.setSelected(!newValue);
-            	SqlUpdate.updatePersonField("IS_ACTIVE",person.getP_id(),newValue);
-            	if(people != null)  // this updates the people list if in people mode
-        			people.get(TabPeople.getIndexByPid(person.getP_id())).setActive(newValue);
-            }
-        });
+        activeCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+		   //activeCheckBox.setSelected(!newValue);
+			SqlUpdate.updatePersonField("IS_ACTIVE",person.getP_id(),newValue);
+			if(people != null)  // this updates the people list if in people mode
+				people.get(TabPeople.getIndexByPid(person.getP_id())).setActive(newValue);
+		});
 
 		//////////////// SET  CONTENT ////////////////
 		vBoxLeft.getChildren().addAll(
