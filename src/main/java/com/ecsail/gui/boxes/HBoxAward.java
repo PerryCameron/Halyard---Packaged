@@ -43,11 +43,11 @@ public class HBoxAward extends HBox {
         this.award = SqlAward.getAwards(person);
 
         ///////////////// OBJECT INSTANCE ///////////////////
-        Button awardAdd = new Button("Add");
-        Button awardDelete = new Button("Delete");
-        VBox vboxButtons = new VBox(); // holds officer buttons
-        HBox hboxGrey = new HBox(); // this is here for the grey background to make nice appearance
-        VBox vboxPink = new VBox(); // this creates a pink border around the table
+        var awardAdd = new Button("Add");
+        var awardDelete = new Button("Delete");
+        var vboxButtons = new VBox(); // holds officer buttons
+        var hboxGrey = new HBox(); // this is here for the grey background to make nice appearance
+        var vboxPink = new VBox(); // this creates a pink border around the table
         awardTableView = new TableView<>();
 
         /////////////////  ATTRIBUTES  /////////////////////

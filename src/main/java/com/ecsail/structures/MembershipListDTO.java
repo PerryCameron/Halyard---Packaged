@@ -25,6 +25,10 @@ public class MembershipListDTO extends MembershipDTO {
 		this.selectedYear = new SimpleStringProperty(selectedYear);
 	}
 
+	public String getMembershipInfo() {
+		return "Membership " + getMembershipId() + " (ms_id " + getMsid() + ") ";
+	}
+
 	public MembershipListDTO() {
 		super();
 	}
@@ -44,13 +48,6 @@ public class MembershipListDTO extends MembershipDTO {
 	public void setSlip(StringProperty slip) {
 		this.slip = slip;
 	}
-
-
-
-	public void setSubleaser(IntegerProperty subleaser) {
-		this.subleaser = subleaser;
-	}
-
 
 
 	public final StringProperty lnameProperty() {

@@ -39,7 +39,7 @@ public class PersonDTO {
 	}
 
 	public String getNameWithInfo() {
-		return getFullName() + " pid(" + getP_id() + ")";
+		return getFullName() + " (p_id " + getP_id() + ")";
 	}
 
 	public final IntegerProperty oldMsidProperty( ) {

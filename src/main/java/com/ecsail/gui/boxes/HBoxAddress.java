@@ -28,36 +28,36 @@ public class HBoxAddress extends HBox {
 		    );
 		
 		////////////////// OBJECTS ///////////////////////////
-        final Label memAddress = new Label("Street");
-        final Label memCity = new Label("City");
+        final var memAddress = new Label("Street");
+        final var memCity = new Label("City");
         //final Label primaryLabel = new Label("Primary Address");
-        final ComboBox<String> stateComboBox = new ComboBox<String>(states);
-        final Label memZipcode = new Label("Zipcode");
-        TextField memAddressTextField = new TextField();
-        TextField memCityTextField = new TextField();
-        TextField memZipcodeTextField = new TextField();
-        TextField smemAddressTextField = new TextField();
-        TextField smemCityTextField = new TextField();
-        TextField smemZipcodeTextField = new TextField();
-        HBox hbox1 = new HBox();
-        HBox hbox2 = new HBox();
-        HBox hbox3 = new HBox();
-        HBox hbox4 = new HBox();
-        HBox shbox1 = new HBox();
-        HBox shbox2 = new HBox();
-        HBox shbox3 = new HBox();
-        HBox shbox4 = new HBox();
-        HBox hboxGrey = new HBox();  // this is the vbox for organizing all the widgets
-		HBox primaryHBox = new HBox();  // contains viewable children
-		HBox secondaryHBox = new HBox();
-		VBox mainVBox = new VBox();
-        final Label smemAddress = new Label("Street");
-        final Label smemCity = new Label("City");
+        final var stateComboBox = new ComboBox<>(states);
+        final var memZipcode = new Label("Zipcode");
+        var memAddressTextField = new TextField();
+        var memCityTextField = new TextField();
+        var memZipcodeTextField = new TextField();
+        var smemAddressTextField = new TextField();
+        var smemCityTextField = new TextField();
+        var smemZipcodeTextField = new TextField();
+        var hbox1 = new HBox();
+        var hbox2 = new HBox();
+        var hbox3 = new HBox();
+        var hbox4 = new HBox();
+        var shbox1 = new HBox();
+        var shbox2 = new HBox();
+        var shbox3 = new HBox();
+        var shbox4 = new HBox();
+        var hboxGrey = new HBox();  // this is the vbox for organizing all the widgets
+        var primaryHBox = new HBox();  // contains viewable children
+        var secondaryHBox = new HBox();
+        var mainVBox = new VBox();
+        final var smemAddress = new Label("Street");
+        final var smemCity = new Label("City");
         //final Label secondaryLabel = new Label("Secondary Address");
-        final ComboBox<String> sstateComboBox = new ComboBox<String>(states);
-        final Label smemZipcode = new Label("Zipcode");
-		TitledPane titledPane1 = new TitledPane();
-		TitledPane titledPane2 = new TitledPane();
+        final var sstateComboBox = new ComboBox<>(states);
+        final var smemZipcode = new Label("Zipcode");
+        var titledPane1 = new TitledPane();
+        var titledPane2 = new TitledPane();
 
         ///////////////// ATTRIBUTES //////////////////////////
         stateComboBox.setValue(membership.getState());
@@ -99,8 +99,6 @@ public class HBoxAddress extends HBox {
         hboxGrey.setPadding(new Insets(5, 5, 5, 5));
 		this.setPadding(new Insets(5, 5, 5, 5));  // creates space for blue frame
 
-        
-		
 		secondaryHBox.setId("box-pink");
 		primaryHBox.setId("box-pink");
 		hboxGrey.setId("custom-tap-pane-frame");

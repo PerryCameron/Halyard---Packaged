@@ -10,7 +10,6 @@ import com.ecsail.sql.SqlPerson;
 import com.ecsail.sql.select.SqlMemos;
 import com.ecsail.structures.MemLabelsDTO;
 import com.ecsail.structures.MembershipListDTO;
-import com.ecsail.structures.MemoDTO;
 import com.ecsail.structures.PersonDTO;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -37,10 +36,9 @@ public class TabMembership extends Tab {
 		var labels = new MemLabelsDTO();
         this.people = SqlPerson.getPeople(membership.getMsid());
 		this.setText(setTabLabel());
-		BaseApplication.logger.info("Opening Membership tab for Membership "
-				+ membership.getMembershipId() + " - (msid "
-				+ membership.getMsid() + ") "
-				+ getPerson(MemberType.PRIMARY.getCode()).getFullName() + " "
+		BaseApplication.logger.info("Opening Membership tab for "
+				+ membership.getMembershipInfo()
+				+ getPerson(MemberType.PRIMARY.getCode()).getNameWithInfo()
 		);
 
 		////////// OBJECTS /////////////

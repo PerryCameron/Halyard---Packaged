@@ -15,15 +15,15 @@ public class HBoxAttachment extends HBox {
 		this.membership = membership;
 
 		//////////// OBJECTS ///////////////
-		HBox hboxGrey = new HBox();  // this is the vbox for organizing all the widgets
+		var hboxGrey = new HBox();  // this is the vbox for organizing all the widgets
 		//VBox vboxPink = new VBox(); // this creates a pink border around the table
-		VBox mainVBox = new VBox(); // contains viewable children
+		var mainVBox = new VBox(); // contains viewable children
 
 		/////////////  ATTRIBUTES /////////////
 
 		hboxGrey.setPadding(new Insets(5, 5, 5, 5));
 		this.setPadding(new Insets(5, 5, 5, 5));  // creates space for blue frame
-		
+
 		HBox.setHgrow(hboxGrey, Priority.ALWAYS);
 		mainVBox.setSpacing(5);
 		
