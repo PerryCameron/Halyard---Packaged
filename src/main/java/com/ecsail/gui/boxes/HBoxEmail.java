@@ -40,12 +40,12 @@ public class HBoxEmail extends HBox {
 		this.email.addAll(SqlEmail.getEmail(person.getP_id()));
 		
 		//////////////// OBJECTS //////////////////////
-		
-		Button emailAdd = new Button("Add");
-		Button emailDelete = new Button("Delete");
-		VBox vboxButtons = new VBox(); // holds email buttons
-		HBox hboxGrey = new HBox(); // this is here for the grey background to make nice appearance
-		VBox vboxPink = new VBox(); // this creates a pink border around the table
+
+		var emailAdd = new Button("Add");
+		var emailDelete = new Button("Delete");
+		var vboxButtons = new VBox(); // holds email buttons
+		var hboxGrey = new HBox(); // this is here for the grey background to make nice appearance
+		var vboxPink = new VBox(); // this creates a pink border around the table
 		emailTableView = new TableView<>();
 
 		/////////////////  ATTRIBUTES  /////////////////////

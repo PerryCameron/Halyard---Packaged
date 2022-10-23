@@ -11,38 +11,36 @@ import javafx.scene.layout.HBox;
 
 public class HBoxMembership extends HBox {
 	
-	private MembershipListDTO membership;
-	private MemLabelsDTO labels;
+	private final MembershipListDTO membership;
 
-	public HBoxMembership(MembershipListDTO m, MemLabelsDTO ml) {
+    public HBoxMembership(MembershipListDTO m, MemLabelsDTO ml) {
 		this.membership =  m;
-		this.labels = ml;
-		
-		//////////// OBJECTS //////////
-		HBox hbox1 = new HBox(); // sub HBox1 a
-        HBox hbox2 = new HBox(); // sub HBox1 b
-        HBox hbox3 = new HBox();
-        HBox hbox4 = new HBox();
-        HBox hbox5 = new HBox();
 
-        labels.getSelectedYear().setText(membership.getSelectedYear());
-        labels.getJoinDate().setText(membership.getJoinDate());
-        labels.getMemberID().setText("" + membership.getMembershipId());
-        labels.getMemberType().setText("" + MembershipType.getByCode(membership.getMemType()));
-        labels.getStatus().setText(getStatus());
+        //////////// OBJECTS //////////
+        var hbox1 = new HBox(); // sub HBox1 a
+        var hbox2 = new HBox(); // sub HBox1 b
+        var hbox3 = new HBox();
+        var hbox4 = new HBox();
+        var hbox5 = new HBox();
+
+        ml.getSelectedYear().setText(membership.getSelectedYear());
+        ml.getJoinDate().setText(membership.getJoinDate());
+        ml.getMemberID().setText("" + membership.getMembershipId());
+        ml.getMemberType().setText("" + MembershipType.getByCode(membership.getMemType()));
+        ml.getStatus().setText(getStatus());
      
         ///////////// ATTRIBUTES ///////////
-        labels.getSelectedYear().setStyle("-fx-font-weight: bold;");
-        labels.getJoinDate().setStyle("-fx-font-weight: bold;");
-        labels.getMemberID().setStyle("-fx-font-weight: bold;");
-        labels.getMemberType().setStyle("-fx-font-weight: bold;");
-        labels.getStatus().setStyle("-fx-font-weight: bold;");
+        ml.getSelectedYear().setStyle("-fx-font-weight: bold;");
+        ml.getJoinDate().setStyle("-fx-font-weight: bold;");
+        ml.getMemberID().setStyle("-fx-font-weight: bold;");
+        ml.getMemberType().setStyle("-fx-font-weight: bold;");
+        ml.getStatus().setStyle("-fx-font-weight: bold;");
         
-        hbox5.getChildren().addAll(new Label("Record Year: "),labels.getSelectedYear());
-        hbox1.getChildren().addAll(new Label("Membership ID: "),labels.getMemberID());
-        hbox2.getChildren().addAll(new Label("Membership Type: "),labels.getMemberType());
-        hbox3.getChildren().addAll(new Label("Join Date: "), labels.getJoinDate());
-        hbox4.getChildren().addAll(new Label("Status: "),labels.getStatus());
+        hbox5.getChildren().addAll(new Label("Record Year: "), ml.getSelectedYear());
+        hbox1.getChildren().addAll(new Label("Membership ID: "), ml.getMemberID());
+        hbox2.getChildren().addAll(new Label("Membership Type: "), ml.getMemberType());
+        hbox3.getChildren().addAll(new Label("Join Date: "), ml.getJoinDate());
+        hbox4.getChildren().addAll(new Label("Status: "), ml.getStatus());
         
         hbox1.setSpacing(5);
         hbox2.setSpacing(5);

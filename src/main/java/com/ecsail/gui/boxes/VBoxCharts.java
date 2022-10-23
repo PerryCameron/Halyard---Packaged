@@ -22,9 +22,9 @@ import java.util.ArrayList;
 
 
 public class VBoxCharts extends VBox {
-    public static final int NONRENEW = 1;
-    public static final int NEWMEMBER = 2;
-    public static final int RETURNMEMBER = 3;
+    public static final int NON_RENEW = 1;
+    public static final int NEW_MEMBER = 2;
+    public static final int RETURN_MEMBER = 3;
     public ArrayList<StatsDTO> stats;
     int currentYear;
     int defaultStartYear;
@@ -42,18 +42,18 @@ public class VBoxCharts extends VBox {
         this.totalNumbOfYears = SqlStats.getNumberOfStatYears();
         final CategoryAxis xAxis = new CategoryAxis();
         final NumberAxis yAxis = new NumberAxis();
-        MembershipStackedBarChart membershipsByYearChart = new MembershipStackedBarChart(stats, xAxis,yAxis);
-        MembershipBarChart membershipBarChart = new MembershipBarChart(new CategoryAxis(),new NumberAxis(),stats,1);
-        HBox hBoxControlBar = new HBox();
-        VBox vBoxCharts = new VBox();
-        Button refreshButton = new Button("Refresh Data");
-        ComboBox<Integer> comboBoxStartYear = new ComboBox<>();
-        ComboBox<Integer> comboBoxYears = new ComboBox<>();
-        ComboBox<String> comboBoxBottomChartSelection = new ComboBox<>();
+        var membershipsByYearChart = new MembershipStackedBarChart(stats, xAxis,yAxis);
+        var membershipBarChart = new MembershipBarChart(new CategoryAxis(),new NumberAxis(),stats,1);
+        var hBoxControlBar = new HBox();
+        var vBoxCharts = new VBox();
+        var refreshButton = new Button("Refresh Data");
+        var comboBoxStartYear = new ComboBox<Integer>();
+        var comboBoxYears = new ComboBox<Integer>();
+        var comboBoxBottomChartSelection = new ComboBox<String>();
 
-        HBox hBoxStart = new HBox();
-        HBox hBoxStop = new HBox();
-        HBox hBoxTop = new HBox();
+        var hBoxStart = new HBox();
+        var hBoxStop = new HBox();
+        var hBoxTop = new HBox();
         comboBoxBottomChartSelection.getItems().addAll("Non-Renew","New","Return");
 
         populateComboBoxWithYears(comboBoxStartYear);
@@ -80,14 +80,9 @@ public class VBoxCharts extends VBox {
 
         comboBoxBottomChartSelection.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             switch (newValue) {
-                case "Non-Renew":
-                    membershipBarChart.changeData(NONRENEW);
-                    break;
-                case "New":
-                    membershipBarChart.changeData(NEWMEMBER);
-                    break;
-                case "Return":
-                    membershipBarChart.changeData(RETURNMEMBER);
+                case "Non-Renew" -> membershipBarChart.changeData(NON_RENEW);
+                case "New" -> membershipBarChart.changeData(NEW_MEMBER);
+                case "Return" -> membershipBarChart.changeData(RETURN_MEMBER);
             }
         });
 
@@ -103,9 +98,7 @@ public class VBoxCharts extends VBox {
             refreshCharts(membershipsByYearChart, membershipBarChart);
         });
 
-        refreshButton.setOnAction((event)-> {
-            new Dialogue_LoadNewStats(dataBaseStatisticsRefreshed);
-        });
+        refreshButton.setOnAction((event)-> new Dialogue_LoadNewStats(dataBaseStatisticsRefreshed));
 
         // this waits for the database to update on another thread then refreshes the charts
         dataBaseStatisticsRefreshed.addListener((observable, oldValue, newValue) -> {

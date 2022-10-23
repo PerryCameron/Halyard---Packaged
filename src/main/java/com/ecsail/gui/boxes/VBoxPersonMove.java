@@ -8,13 +8,11 @@ import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlPerson;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.structures.PersonDTO;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,7 +101,7 @@ public class VBoxPersonMove extends VBox {
                         removeThisTab(personTabPane);
                     }
                 } else
-                createInformation(person.getFname() + " can not be removed because there is no secondary person to " +
+                    createInformation(person.getFname() + " can not be removed because there is no secondary person to " +
                         "take their place");
             }
             if (rb2.isSelected()) {

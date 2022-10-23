@@ -23,7 +23,7 @@ public class HBoxProperties extends HBox {
     private final MembershipListDTO membership;
 
     //private TextField duesText;
-    public HBoxProperties(ObservableList<PersonDTO> people, MembershipListDTO m, Tab membershipTab) {
+    public HBoxProperties(ObservableList<PersonDTO> people, MembershipListDTO m) {
         super();
         this.membership = m;
         //this.duesText = dt;

@@ -51,14 +51,14 @@ public class HBoxHistory extends HBox {
         this.labels = l;
         /////// OBJECT INSTANCE //////
 
-        Button idAdd = new Button("Add");
-        Button idDelete = new Button("Delete");
-        HBox hboxControls = new HBox(); // holds phone buttons
-        VBox vboxGrey = new VBox(); // this is here for the grey background to make nice appearance
-        VBox vboxPink = new VBox(); // this creates a pink border around the table
-        HBox hboxJoinDate = new HBox();
-        HBox hboxButtons = new HBox();
-        DatePicker joinDatePicker = new DatePicker();
+        var idAdd = new Button("Add");
+        var idDelete = new Button("Delete");
+        var hboxControls = new HBox(); // holds phone buttons
+        var vboxGrey = new VBox(); // this is here for the grey background to make nice appearance
+        var vboxPink = new VBox(); // this creates a pink border around the table
+        var hboxJoinDate = new HBox();
+        var hboxButtons = new HBox();
+        var joinDatePicker = new DatePicker();
 
         //// OBJECT ATTRIBUTES /////
         hboxJoinDate.setAlignment(Pos.CENTER_LEFT);
@@ -77,7 +77,6 @@ public class HBoxHistory extends HBox {
         setPadding(new Insets(5, 5, 5, 5));  // creates space for blue frame
 
         vboxGrey.setId("box-background-light");
-//		vboxPink.setId("box-pink");
         this.setId("custom-tap-pane-frame");
 
         VBox.setVgrow(idTableView, Priority.ALWAYS);
@@ -86,9 +85,7 @@ public class HBoxHistory extends HBox {
         HBox.setHgrow(this, Priority.ALWAYS);
         HBox.setHgrow(vboxGrey, Priority.ALWAYS);
 
-
         id.sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year).reversed());
-
 
         idTableView.setItems(id);
         idTableView.setFixedCellSize(30);

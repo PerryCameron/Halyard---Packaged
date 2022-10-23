@@ -1,6 +1,7 @@
 package com.ecsail.gui.boxes;
 ///////////BUG///////  adding a person as secondary changes the pid in the membership to the secondary
 
+import com.ecsail.BaseApplication;
 import com.ecsail.Note;
 import com.ecsail.enums.MemberType;
 import com.ecsail.sql.SqlExists;
@@ -23,12 +24,11 @@ import java.util.Date;
 public class VBoxAddPerson extends VBox {
 	
 	int ms_id;
-	private Label titleLabel;
-	private TabPane peopleTabPane; // a reference so we can open up the newly created pane
-	private Note note;
-	private MembershipListDTO membership;
+	private final Label titleLabel;
+	private final TabPane peopleTabPane; // a reference so we can open up the newly created pane
+	private final Note note;
+	private final MembershipListDTO membership;
 	private PersonDTO person;
-	private final int PRIMARY = 1;
 	private final int SECONDARY = 2;
 	private final int DEPENDANT = 3;
 	private Boolean hasError = false;
@@ -137,16 +137,17 @@ public class VBoxAddPerson extends VBox {
 		
 		/////////////////  LISTENERS  /////////////////////
 		addButton.setOnAction((event) -> {
+			hasError = false;
 			int pid = SqlSelect.getNextAvailablePrimaryKey("person", "p_id");
 			person = new PersonDTO(pid, ms_id, memberType.getValue().getCode(), fnameTextField.getText(),
 					lnameTextField.getText(), getBirthday(birthdayDatePicker.getValue()), occupationTextField.getText(),
 					businessTextField.getText(), true, null,0);
+			BaseApplication.logger.info("New Key=" + pid + " new person=" + person.getNameWithInfo());
 
 			// if adding member succeeds, clear the form
 			if (!setNewMember(person)) {
 				String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
-				note.addMemoAndReturnId("New person: " + fnameTextField.getText() + " " + lnameTextField.getText() + " - (PID " + pid
-						+ ") added as " + memberType.getValue().toString() + ".", date, 0, "N");
+				note.addMemoAndReturnId("New person: " + person.getNameWithInfo() + " added as " + memberType.getValue().toString() + ".", date, 0, "N");
 				fnameTextField.setText("");
 				lnameTextField.setText("");
 				businessTextField.setText("");
@@ -194,43 +195,31 @@ public class VBoxAddPerson extends VBox {
 	}
 	
 	private Boolean setNewMember(PersonDTO person) {  // gives the last memo_id number
-		String memberStringType = getMemberType(person,hasError);
+		checkIfCoreMembersExist(person);
+		String memberStringType = String.valueOf(MemberType.getByCode(person.getMemberType()));
 		checkName(person.getFname());
 		checkName(person.getLname());
 		if(!hasError) {
 			addPerson(memberStringType);
+			BaseApplication.logger.info("Added " + person.getNameWithInfo() + " to " + membership.getMembershipInfo());
 		}
 		return hasError;
 	}
-	
+
+	private void checkIfCoreMembersExist(PersonDTO person) {
+		if(person.getMemberType() < 3)
+		if (SqlExists.personExists(person.getMemberType(), ms_id)) {
+			printErrorMessage("A " + MemberType.getByCode(person.getMemberType())
+					+ " member already exists for this account");
+			hasError = true;
+		}
+	}
+
 	private void checkName(String name) {
 		if(name.equals("")) {
 			hasError = true;
 			printErrorMessage("Must have a name");
 		}
-	}
-	
-	private String getMemberType(PersonDTO person, Boolean hasError) {
-		String memberType = null;
-		switch (person.getMemberType()) {
-		case PRIMARY:
-			memberType = "Primary";
-			if (SqlExists.personExists(PRIMARY, ms_id))
-				printErrorMessage("A primary member already exists for this account");
-			break;
-		case SECONDARY:
-			memberType = "Secondary";
-			if (SqlExists.personExists(SECONDARY, ms_id)) {
-				printErrorMessage("A secondary member already exists for this account");
-			}
-			break;
-		case DEPENDANT:
-			memberType = "Dependant";
-			break;
-		default:
-			System.out.println("no match");
-		}
-		return memberType;
 	}
 	
 	private void printErrorMessage(String message) {
@@ -245,6 +234,4 @@ public class VBoxAddPerson extends VBox {
     	titleLabel.setText("Add New Member");
 		titleLabel.setTextFill(Color.BLACK);
 	}
-	
-
 }

@@ -46,24 +46,20 @@ public class HBoxInvoiceList extends HBox {
 		HBoxInvoiceList.people = p;
 		
 		////////////////////////  OBJECTS   ///////////////////////////////
-		VBox vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
-        HBox hbox1 = new HBox();  // holds membershipID, Type and Active
-        VBox vboxPink = new VBox(); // this creates a pink border around the table
-        HBox deleteButtonHBox = new HBox();
-		Button addFiscalRecord = new Button("Add");
-		Button deleteFiscalRecord = new Button("Delete");
+		var vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
+		var hbox1 = new HBox();  // holds membershipID, Type and Active
+		var vboxPink = new VBox(); // this creates a pink border around the table
+		var deleteButtonHBox = new HBox();
+		var addFiscalRecord = new Button("Add");
+		var deleteFiscalRecord = new Button("Delete");
 		HBoxInvoiceList.fiscals = SqlMoney.getMoniesByMsid(membership.getMsid());
-		TableView<MoneyDTO> fiscalTableView = new TableView<>();
-		TableColumn<MoneyDTO, Integer> Col1 = new TableColumn<>("Year");
-		TableColumn<MoneyDTO, Integer> Col2 = new TableColumn<>("Fees");
-		TableColumn<MoneyDTO, Integer> Col3 = new TableColumn<>("Credit");
-		TableColumn<MoneyDTO, Integer> Col4 = new TableColumn<>("Paid");
-		TableColumn<MoneyDTO, Integer> Col5 = new TableColumn<>("Balance");
-
-
-
-
-		ComboBox<Integer> comboBox = new ComboBox<>();
+		var fiscalTableView = new TableView<MoneyDTO>();
+		var Col1 = new TableColumn<MoneyDTO, Integer>("Year");
+		var Col2 = new TableColumn<MoneyDTO, Integer>("Fees");
+		var Col3 = new TableColumn<MoneyDTO, Integer>("Credit");
+		var Col4 = new TableColumn<MoneyDTO, Integer>("Paid");
+		var Col5 = new TableColumn<MoneyDTO, Integer>("Balance");
+		var comboBox = new ComboBox<Integer>();
 		populateComboBox(comboBox);
 		comboBox.getSelectionModel().select(1);
 		///////////////////// SORT ///////////////////////////////////////////
@@ -124,7 +120,7 @@ public class HBoxInvoiceList extends HBox {
 				// get the next available key for money_id table
 				int moneyId = SqlSelect.getNextAvailablePrimaryKey("money","money_id");
 				// create appropriate money object for this membership
-				MoneyDTO newMoney = new MoneyDTO(moneyId, membership.getMsid(),
+				var newMoney = new MoneyDTO(moneyId, membership.getMsid(),
 						comboBox.getValue(), 0, "0.00", 0, 0, 0, 0, 0, "0.00", 0, 0 ,0, 0, 0,0,
 						"0.00", "0.00", "0.00", "0.00", "0.00", String.valueOf(getDues(comboBox.getValue())), false, false, "0.00", "0.00", false,0, "0.00");
 				// if a record already exists for this year then this is a supplemental record
@@ -137,27 +133,24 @@ public class HBoxInvoiceList extends HBox {
 				// insert the work credit information (This may be deprecated. I haven't made up my mind yet)
 				SqlInsert.addWorkCreditRecord(moneyId, membership);
 				// add new money row to tableview
-				System.out.println("the size of the Arraylist before inserting record=" + fiscals.size());
 				fiscals.add(newMoney);
-				System.out.println("the size of the Arraylist after inserting record=" + fiscals.size());
 				// send new money row to top
 				fiscals.sort(Comparator.comparing(MoneyDTO::getFiscal_year).reversed());
 				// open a tab for the year we just created
-				System.out.println("calling method createTabByYear and passing ");
 				createTabByYear(newMoney);
 		});
         
 		deleteFiscalRecord.setOnAction((event) -> {
 			int selectedIndex = fiscalTableView.getSelectionModel().getSelectedIndex();
-			Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
+			var conformation = new Alert(Alert.AlertType.CONFIRMATION);
 			conformation.setTitle("Remove Invoice");
 			conformation.setHeaderText("Invoice #" + fiscals.get(selectedIndex).getMoney_id());
 			conformation.setContentText("Are sure you want to delete this invoice from " + fiscals.get(selectedIndex).getFiscal_year() + "?");
 			DialogPane dialogPane = conformation.getDialogPane();
 			dialogPane.getStylesheets().add("css/dark/dialogue.css");
 			dialogPane.getStyleClass().add("dialog");
-			Optional<ButtonType> result = conformation.showAndWait();
-			if (result.get() == ButtonType.OK){
+			var result = conformation.showAndWait();
+			if (result.isPresent() && result.get() == ButtonType.OK){
 				BaseApplication.logger.info("deleting fiscal record " + selectedIndex);
 				SqlDelete.deletePaymentByMoneyID(fiscals.get(selectedIndex).getMoney_id());
 				SqlDelete.deleteWorkCreditsByMoneyID(fiscals.get(selectedIndex).getMoney_id());
@@ -197,23 +190,13 @@ public class HBoxInvoiceList extends HBox {
 		DefinedFeeDTO selectedDefinedFee = SqlDefinedFee.getDefinedFeeByYear(String.valueOf(year));
 		BigDecimal dues;
 		if(membership.getMemType() != null) {
-		  switch(membership.getMemType()) 
-	        { 
-	            case "RM": 
-	                dues = selectedDefinedFee.getDues_regular();
-	                break; 
-	            case "SO": 
-	            	dues = selectedDefinedFee.getDues_social();
-	                break; 
-	            case "FM": 
-	            	dues = selectedDefinedFee.getDues_family();
-	                break; 
-	            case "LA": 
-	            	dues = selectedDefinedFee.getDues_lake_associate();
-	                break;
-				default:
-	            	dues = BigDecimal.valueOf(0);
-	        } 
+			dues = switch (membership.getMemType()) {
+				case "RM" -> selectedDefinedFee.getDues_regular();
+				case "SO" -> selectedDefinedFee.getDues_social();
+				case "FM" -> selectedDefinedFee.getDues_family();
+				case "LA" -> selectedDefinedFee.getDues_lake_associate();
+				default -> BigDecimal.valueOf(0);
+			};
 		} else dues = BigDecimal.valueOf(0);
 		return dues;
 	}
@@ -227,7 +210,6 @@ public class HBoxInvoiceList extends HBox {
 	}
 
 	private static void createTabByYear(MoneyDTO money) {
-		System.out.println("inside method createTabByYear");
 		// create a tab with the correct year
 		Tab newTab = new Tab(String.valueOf(money.getFiscal_year()));
 		// add tab to pane
@@ -241,13 +223,7 @@ public class HBoxInvoiceList extends HBox {
 	}
 
 	private static int getFiscalIndexByYear(int year) {
-		int index = 0;
-		for(int i =0; i < fiscals.size(); i++) {
-			// find index that matches the year
-			if(fiscals.get(i).getFiscal_year() == year)
-				index = i;
-		}
-		return index;
+		return (int) fiscals.stream().filter(fis -> fis.getFiscal_year() == year).count();
 	}
 
 }

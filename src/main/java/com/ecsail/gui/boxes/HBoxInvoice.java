@@ -70,12 +70,12 @@ public class HBoxInvoice extends HBox {
 
 		ScrollPane scrollPane = new ScrollPane();
 
-		VBox vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
-		VBox mainVbox = new VBox();
-		HBox mainHbox = new HBox();
-		VBox vboxTabPanes = new VBox();
-		VBox vboxSpinners = new VBox();
-		HBox hboxButtonCommit = new HBox();
+		var vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
+		var mainVbox = new VBox();
+		var mainHbox = new HBox();
+		var vboxTabPanes = new VBox();
+		var vboxSpinners = new VBox();
+		var hboxButtonCommit = new HBox();
 
 		/////////////// TABLE ///////////////////
 		TableColumn<PaymentDTO, String> col1 = createColumn("Amount", PaymentDTO::PaymentAmountProperty);
@@ -85,7 +85,7 @@ public class HBoxInvoice extends HBox {
 				t -> {
 					t.getTableView().getItems().get(
 							t.getTablePosition().getRow()).setPaymentAmount(String.valueOf(new BigDecimal(t.getNewValue()).setScale(2, RoundingMode.CEILING)));
-					int pay_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getPay_id();
+					var pay_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getPay_id();
 					BigDecimal amount = new BigDecimal(t.getNewValue());
 					SqlUpdate.updatePayment(pay_id, "amount", String.valueOf(amount.setScale(2, RoundingMode.HALF_UP)));
 					BigDecimal totalPaidAmount = BigDecimal.valueOf(SqlMoney.getTotalAmount(fiscals.get(rowIndex).getMoney_id()));
@@ -102,19 +102,19 @@ public class HBoxInvoice extends HBox {
 		col2.setPrefWidth(55);
 		col2.setStyle( "-fx-alignment: CENTER;");
 		col2.setCellValueFactory(param -> {
-			PaymentDTO thisPayment = param.getValue();
-			String paymentCode = thisPayment.getPaymentType();
-			PaymentType paymentType = PaymentType.getByCode(paymentCode);
+			var thisPayment = param.getValue();
+			var paymentCode = thisPayment.getPaymentType();
+			var paymentType = PaymentType.getByCode(paymentCode);
 			return new SimpleObjectProperty<>(paymentType);
 		});
 
 		col2.setCellFactory(ComboBoxTableCell.forTableColumn(paymentTypeList));
 
 		col2.setOnEditCommit((TableColumn.CellEditEvent<PaymentDTO, PaymentType> event) -> {
-			TablePosition<PaymentDTO, PaymentType> pos = event.getTablePosition();
-			PaymentType newPaymentType = event.getNewValue();
-			int row = pos.getRow();
-			PaymentDTO thisPayment = event.getTableView().getItems().get(row);
+			var pos = event.getTablePosition();
+			var newPaymentType = event.getNewValue();
+			var row = pos.getRow();
+			var thisPayment = event.getTableView().getItems().get(row);
 			SqlUpdate.updatePayment(thisPayment.getPay_id(), "payment_type", newPaymentType.getCode());
 			// need to update paid from here
 			thisPayment.setPaymentType(newPaymentType.getCode());
@@ -127,7 +127,7 @@ public class HBoxInvoice extends HBox {
 				t -> {
 					t.getTableView().getItems().get(
 							t.getTablePosition().getRow()).setCheckNumber(t.getNewValue());
-					int pay_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getPay_id();
+					var pay_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getPay_id();
 					SqlUpdate.updatePayment(pay_id, "CHECKNUMBER", t.getNewValue());
 					//	SqlUpdate.updatePhone("phone", phone_id, t.getNewValue());
 				}
@@ -140,7 +140,7 @@ public class HBoxInvoice extends HBox {
 				t -> {
 					t.getTableView().getItems().get(
 							t.getTablePosition().getRow()).setPaymentDate(t.getNewValue());
-					int pay_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getPay_id();
+					var pay_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getPay_id();
 					SqlUpdate.updatePayment(pay_id, "payment_date", t.getNewValue());
 					//	SqlUpdate.updatePhone("phone", phone_id, t.getNewValue());
 				}
