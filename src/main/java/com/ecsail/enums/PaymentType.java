@@ -1,5 +1,7 @@
 package com.ecsail.enums;
 
+import java.util.Arrays;
+
 public enum PaymentType {
 	 CHECK("CH", "Check"), 
 	 CASH("CA", "Cash"), 
@@ -22,12 +24,9 @@ public enum PaymentType {
 	   }
 	 
 	   public static PaymentType getByCode(String paymentCode) {
-	       for (PaymentType g : PaymentType.values()) {
-	           if (g.code.equals(paymentCode)) {
-	               return g;
-	           }
-	       }
-	       return null;
+		   return Arrays.stream(PaymentType.values())
+				   .filter(g -> g.code.equals(paymentCode))
+				   .findFirst().orElse(null);
 	   }
 	 
 	   @Override

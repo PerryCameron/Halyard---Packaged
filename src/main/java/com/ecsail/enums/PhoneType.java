@@ -1,6 +1,8 @@
 package com.ecsail.enums;
 
 
+import java.util.Arrays;
+
 public enum PhoneType {
 	 HOME("H", "Home"), 
 	 WORK("W", "Work"), 
@@ -24,12 +26,9 @@ public enum PhoneType {
 	   }
 	 
 	   public static PhoneType getByCode(String phoneCode) {
-	       for (PhoneType g : PhoneType.values()) {
-	           if (g.code.equals(phoneCode)) {
-	               return g;
-	           }
-	       }
-	       return null;
+	       return Arrays.stream(PhoneType.values())
+				   .filter(g -> g.code.equals(phoneCode))
+				   .findFirst().orElse(null);
 	   }
 	 
 	   @Override

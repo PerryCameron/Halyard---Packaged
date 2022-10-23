@@ -1,5 +1,7 @@
 package com.ecsail.enums;
 
+import java.util.Arrays;
+
 public enum KeelType {
 	   FIN("FI", "Fin"), 
 	   WING("WI", "Wing"), 
@@ -28,12 +30,9 @@ public enum KeelType {
 	   }
 	 
 	   public static KeelType getByCode(String genderCode) {
-	       for (KeelType g : KeelType.values()) {
-	           if (g.code.equals(genderCode)) {
-	               return g;
-	           }
-	       }
-	       return null;
+		   return Arrays.stream(KeelType.values())
+				   .filter(g -> g.code.equals(genderCode))
+				   .findFirst().orElse(null);
 	   }
 	 
 	   @Override

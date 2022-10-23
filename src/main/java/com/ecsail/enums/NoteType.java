@@ -1,5 +1,7 @@
 package com.ecsail.enums;
 
+import java.util.Arrays;
+
 public enum NoteType {
 	
 	   NOTE("N", "Note"), 
@@ -25,12 +27,9 @@ public enum NoteType {
 	   }
 	 
 	   public static NoteType getByCode(String genderCode) {
-	       for (NoteType g : NoteType.values()) {
-	           if (g.code.equals(genderCode)) {
-	               return g;
-	           }
-	       }
-	       return null;
+		   return Arrays.stream(NoteType.values())
+				   .filter(g -> g.code.equals(genderCode))
+				   .findFirst().orElse(null);
 	   }
 	 
 	   @Override

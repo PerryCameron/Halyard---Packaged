@@ -2,6 +2,7 @@ package com.ecsail.gui.boxes;
 
 
 import com.ecsail.BaseApplication;
+import com.ecsail.enums.MemberType;
 import com.ecsail.gui.tabs.TabMembership;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlExists;
@@ -193,7 +194,7 @@ public class VBoxPersonMove extends VBox {
     }
 
     private void changeToSecondary(TabPane personTabPane) {
-        if (SqlExists.memberTypeExists(2, person.getMs_id())) {
+        if (SqlExists.memberTypeExists(MemberType.SECONDARY.getCode(), person.getMs_id())) {
             Tab secondaryTab = getTab(personTabPane, "Secondary");
             assert secondaryTab != null;
             PersonDTO secondary = getPerson(secondaryTab);
@@ -204,7 +205,7 @@ public class VBoxPersonMove extends VBox {
             secondaryTab.setText("Primary");
         }
         // update person to secondary
-        SqlUpdate.updatePersonChangeMemberType(person, 2);
+        SqlUpdate.updatePersonChangeMemberType(person, MemberType.SECONDARY.getCode());
         // create a variable to use
         Tab thisTab = personTabPane.getSelectionModel().getSelectedItem();
         thisTab.setText("Secondary");
@@ -219,7 +220,7 @@ public class VBoxPersonMove extends VBox {
 
     private void changeToPrimary(TabPane personTabPane) {
         // check if there is already a primary for persons msid
-        if (SqlExists.memberTypeExists(1, person.getMs_id())) {
+        if (SqlExists.memberTypeExists(MemberType.PRIMARY.getCode(), person.getMs_id())) {
             Tab primaryTab = getTab(personTabPane, "Primary");
             assert primaryTab != null;
             PersonDTO primary = getPerson(primaryTab);
@@ -230,7 +231,7 @@ public class VBoxPersonMove extends VBox {
             primaryTab.setText("Secondary");
         }
         // update person to primary
-        SqlUpdate.updatePersonChangeMemberType(person, 1);
+        SqlUpdate.updatePersonChangeMemberType(person, MemberType.PRIMARY.getCode());
         // create a variable to use
         Tab thisTab = personTabPane.getSelectionModel().getSelectedItem();
         thisTab.setText("Primary");

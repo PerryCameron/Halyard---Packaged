@@ -1,5 +1,7 @@
 package com.ecsail.enums;
 
+import java.util.Arrays;
+
 public enum Officer {
 		// Officers
 	   COMMODO("CO", "Commodore"),
@@ -28,9 +30,7 @@ public enum Officer {
 	   ASOCIAL("SA", "Assistant Social"),
 	   SHIPSTO("SS", "Ships Store"),
 	   WINTERA("WA", "Winter Activities"),
-
-	   BDMEMBE("BM", "Board Member")
-	   ;
+	   BDMEMBE("BM", "Board Member");
 	 
 	   private String code;
 	   private String text;
@@ -49,21 +49,16 @@ public enum Officer {
 	   }
 	 
 	   public static Officer getByCode(String officerCode) {
-	       for (Officer g : Officer.values()) {
-	           if (g.code.equals(officerCode)) {
-	               return g;
-	           }
-	       }
-	       return null;
+		   return Arrays.stream(Officer.values())
+				   .filter(g -> g.code.equals(officerCode))
+				   .findFirst().orElse(null);
 	   }
 	   
 	   public static String getNameByCode(String officerCode) {
-	       for (Officer g : Officer.values()) {
-	           if (g.code.equals(officerCode)) {
-	               return g.getText();
-	           }
-	       }
-	       return null;
+		   return Arrays.stream(Officer.values())
+				   .filter(g -> g.code.equals(officerCode))
+				   .map(g -> g.getText())
+				   .findFirst().orElse(null);
 	   }
 	 
 	   @Override

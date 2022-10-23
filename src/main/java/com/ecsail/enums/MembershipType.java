@@ -1,5 +1,7 @@
 package com.ecsail.enums;
 
+import java.util.Arrays;
+
 public enum MembershipType {
 	   FAMILYM("FM", "Family"), 
 	   REGULAR("RM", "Regular"),
@@ -29,12 +31,9 @@ public enum MembershipType {
 	   }
 	 
 	   public static MembershipType getByCode(String memTypeCode) {
-	       for (MembershipType g : MembershipType.values()) {
-	           if (g.code.equals(memTypeCode)) {
-	               return g;
-	           }
-	       }
-	       return null;
+		   return Arrays.stream(MembershipType.values())
+				   .filter(g -> g.code == memTypeCode)
+				   .findFirst().orElse(null);
 	   }
 	 
 	   @Override

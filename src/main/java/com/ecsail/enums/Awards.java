@@ -1,5 +1,7 @@
 package com.ecsail.enums;
 
+import java.util.Arrays;
+
 public enum Awards {
 	   SPORTSMANSHIP_AWARD("SA", "Sportsmanship Award"),
 	   SAILOR_OF_THE_YEAR("SY", "Sailor of the Year")
@@ -22,21 +24,16 @@ public enum Awards {
 	   }
 	 
 	   public static Awards getByCode(String awardCode) {
-	       for (Awards g : Awards.values()) {
-	           if (g.code.equals(awardCode)) {
-	               return g;
-	           }
-	       }
-	       return null;
+		   return Arrays.stream(Awards.values())
+				   .filter(g -> g.code == awardCode)
+				   .findFirst().orElse(null);
 	   }
 	   
 	   public static String getNameByCode(String awardCode) {
-	       for (Awards g : Awards.values()) {
-	           if (g.code.equals(awardCode)) {
-	               return g.getText();
-	           }
-	       }
-	       return null;
+		   return Arrays.stream(Awards.values())
+				   .filter(g -> g.code.equals(awardCode))
+				   .map(g -> g.getText() )
+				   .findFirst().orElse(null);
 	   }
 	 
 	   @Override
