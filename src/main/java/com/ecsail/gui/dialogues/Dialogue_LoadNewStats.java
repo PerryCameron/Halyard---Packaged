@@ -16,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -23,7 +24,7 @@ public class Dialogue_LoadNewStats extends Stage {
 	final ProgressBar pb;
 	private int statId = 0;
 	private int startYear;
-	private int stopYear;
+	private final int stopYear;
 	BooleanProperty dataBaseStatisticsRefreshed;
 
 	public Dialogue_LoadNewStats(BooleanProperty dataBaseStatisticsRefreshed) {
@@ -57,7 +58,7 @@ public class Dialogue_LoadNewStats extends Stage {
 		scene.getStylesheets().add("css/dark/customdialogue.css");
 
 		setTitle("Updating Statistics");
-		Image mainIcon = new Image(getClass().getResourceAsStream("/icon_24.png"));
+		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon_24.png")));
 
 		vboxGrey.getChildren().addAll(pb);
 		vboxBlue.getChildren().add(vboxPink);
@@ -73,8 +74,7 @@ public class Dialogue_LoadNewStats extends Stage {
 		System.out.println("Deleted old statistics");
 		System.out.println("Calculating new statistics...");
 		int numberOfYears = stopYear - startYear + 1;
-		int statNumber = numberOfYears;
-	    Task<String> task = new Task<String>(){
+		var task = new Task<String>(){
 	        @Override
 	        protected String call() {
 	        for (int i = 0; i < numberOfYears; i++) {
@@ -84,7 +84,7 @@ public class Dialogue_LoadNewStats extends Stage {
 			startYear++;
 			statId++;
 			if(statId % 10 == 0) System.out.println();
-			pb.setProgress((double)statId/statNumber);
+			pb.setProgress((double)statId/ numberOfYears);
 		}
 			return null;
 	        }
@@ -96,7 +96,7 @@ public class Dialogue_LoadNewStats extends Stage {
 			this.close();
 		});
 
-	    task.setOnFailed(e -> { System.out.println("Was unable to compile stats"); });
+	    task.setOnFailed(e -> System.out.println("Was unable to compile stats"));
 	    exec.execute(task);
 	}
 	

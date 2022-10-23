@@ -11,6 +11,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 public class Dialogue_RenewalForm extends Stage {
 
 	private String selectedYear;
@@ -31,9 +33,9 @@ public class Dialogue_RenewalForm extends Stage {
 		VBox vboxColumn2 = new VBox();
 		TextField memberidTextField = new TextField();
 		Scene scene = new Scene(vboxBlue, 600, 300);
-		final Spinner<Integer> yearSpinner = new Spinner<Integer>();
-		Image mainIcon = new Image(getClass().getResourceAsStream("/logo_24.png"));
-		Image pdf = new Image(getClass().getResourceAsStream("/pdf.png"));
+		final var yearSpinner = new Spinner<Integer>();
+		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/logo_24.png")));
+		Image pdf = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pdf.png")));
 		ImageView pdfImage = new ImageView(pdf);
 		
 		SpinnerValueFactory<Integer> batchSlipValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1970, 3000, 0);

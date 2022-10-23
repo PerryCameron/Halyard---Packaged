@@ -11,6 +11,8 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 public class Dialogue_DirectoryCreation extends Stage {
 
 	public Dialogue_DirectoryCreation() {
@@ -34,7 +36,7 @@ public class Dialogue_DirectoryCreation extends Stage {
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
 		setTitle("Create Directory");
-		Image mainIcon = new Image(getClass().getResourceAsStream("/icon_24.png"));
+		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon_24.png")));
 		
 		//////////////// LISTENERS ////////////////
 		createDirectory.setOnAction((event) -> new PDF_Directory(BaseApplication.selectedYear,textArea));

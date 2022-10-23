@@ -11,6 +11,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 public class Dialogue_CustomErrorMessage extends Stage {
 
 	public Dialogue_CustomErrorMessage(String message, String title) {
@@ -41,13 +43,11 @@ public class Dialogue_CustomErrorMessage extends Stage {
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
 		setTitle(title);
-		Image mainIcon = new Image(getClass().getResourceAsStream("/logo_24.png"));
+		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/logo_24.png")));
 
 		//////////////// LISTENERS ////////////////
 
-		closeButton.setOnAction((event) -> {
-			this.close();
-		});
+		closeButton.setOnAction((event) -> this.close());
 		
 		//////////////// ADD CONTENT ///////////////////
 		getIcons().add(mainIcon);

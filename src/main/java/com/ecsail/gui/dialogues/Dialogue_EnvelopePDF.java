@@ -2,8 +2,6 @@ package com.ecsail.gui.dialogues;
 
 
 import com.ecsail.pdf.PDF_Envelope;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,12 +13,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Objects;
 
 public class Dialogue_EnvelopePDF extends Stage {
-	int membership_id = 0;
-	boolean isOneMembership;
 	public Dialogue_EnvelopePDF() {
 		
 		Button createPDFbutton = new Button("Create Envelope PDF");
@@ -44,8 +40,8 @@ public class Dialogue_EnvelopePDF extends Stage {
 		TextField memberidTextField = new TextField();
 		
 		Scene scene = new Scene(vboxBlue, 600, 300);
-		Image mainIcon = new Image(getClass().getResourceAsStream("/icon_24.png"));
-		Image pdf = new Image(getClass().getResourceAsStream("/pdf.png"));
+		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon_24.png")));
+		Image pdf = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pdf.png")));
 		ImageView pdfImage = new ImageView(pdf);
 		
 		/////////////////// ATTRIBUTES ///////////////////
@@ -86,19 +82,12 @@ public class Dialogue_EnvelopePDF extends Stage {
   		/////////////// LISTENERS ///////////////////////
   		
   		
-		createPDFbutton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				try {
-					new PDF_Envelope(t1r2.isSelected(), t2r2.isSelected(), memberidTextField.getText());
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
- 			}
+		createPDFbutton.setOnAction(e -> {
+			try {
+				new PDF_Envelope(t1r2.isSelected(), t2r2.isSelected(), memberidTextField.getText());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		});
 		
 		//////////////// ADD CONTENT ///////////////////

@@ -13,9 +13,10 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Dialogue_DatabaseBackup extends Stage {
-	private List<Object_TupleCount> tuples;
+	private final List<Object_TupleCount> tuples;
 	Object_TupleCount addedTuples; // this is to store how many new tuples have been added since last save
 	public Dialogue_DatabaseBackup(Object_TupleCount newTupleCount) {  // newTupleCount is a new object already calculated with the amount of tuples
 		this.tuples = FileIO.openTupleCountObjects();
@@ -38,7 +39,7 @@ public class Dialogue_DatabaseBackup extends Stage {
 		vboxGrey.setPrefHeight(688);
 		scene.getStylesheets().add("css/dark/customdialogue.css");
 		setTitle("Database BackUp");
-		Image mainIcon = new Image(getClass().getResourceAsStream("/icon_24.png"));
+		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon_24.png")));
 		
 		//////////////// ADD CONTENT ///////////////////
 		
