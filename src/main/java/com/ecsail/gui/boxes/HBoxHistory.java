@@ -17,47 +17,36 @@ import javafx.beans.Observable;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.util.Callback;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Function;
 
 public class HBoxHistory extends HBox {
     MembershipListDTO membership;
-    private MemLabelsDTO labels;
-    private TableView<MembershipIdDTO> idTableView;
-    private ObservableList<MembershipIdDTO> id;
+    private final MemLabelsDTO labels;
+    private final TableView<MembershipIdDTO> idTableView;
+    private final ObservableList<MembershipIdDTO> id;
     LocalDate date;
 
     public HBoxHistory(MembershipListDTO m, MemLabelsDTO l) {
         this.membership = m;
-        this.idTableView = new TableView<MembershipIdDTO>();
-        this.id = FXCollections.observableArrayList(new Callback<MembershipIdDTO, Observable[]>() {
-            @Override
-            public Observable[] call(MembershipIdDTO param) {
-                return new Observable[]{param.isRenewProperty()};
-            }
-        });
+        this.idTableView = new TableView<>();
+        this.id = FXCollections.observableArrayList(param -> new Observable[]{param.isRenewProperty()});
         this.id.addAll(SqlMembership_Id.getIds(m.getMsid()));
         this.labels = l;
         /////// OBJECT INSTANCE //////
@@ -65,7 +54,7 @@ public class HBoxHistory extends HBox {
         Button idAdd = new Button("Add");
         Button idDelete = new Button("Delete");
         HBox hboxControls = new HBox(); // holds phone buttons
-        VBox vboxGrey = new VBox(); // this is here for the grey background to make nice apperence
+        VBox vboxGrey = new VBox(); // this is here for the grey background to make nice appearance
         VBox vboxPink = new VBox(); // this creates a pink border around the table
         HBox hboxJoinDate = new HBox();
         HBox hboxButtons = new HBox();
@@ -84,7 +73,7 @@ public class HBoxHistory extends HBox {
         //vboxGrey.setPrefWidth(460);
 
         vboxGrey.setPadding(new Insets(5, 5, 5, 5)); // spacing around table and buttons
-        vboxPink.setPadding(new Insets(2, 2, 2, 2)); // spacing to make pink fram around table
+        vboxPink.setPadding(new Insets(2, 2, 2, 2)); // spacing to make pink frame around table
         setPadding(new Insets(5, 5, 5, 5));  // creates space for blue frame
 
         vboxGrey.setId("box-background-light");
@@ -98,14 +87,12 @@ public class HBoxHistory extends HBox {
         HBox.setHgrow(vboxGrey, Priority.ALWAYS);
 
 
-        Collections.sort(id, Comparator.comparing(MembershipIdDTO::getFiscal_Year).reversed());
+        id.sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year).reversed());
 
 
         idTableView.setItems(id);
         idTableView.setFixedCellSize(30);
         idTableView.setEditable(true);
-        //idTableView.minHeightProperty().bind(vboxGrey.prefHeightProperty());
-        //idTableView.maxHeightProperty().bind(vboxGrey.prefHeightProperty());
         idTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -119,59 +106,48 @@ public class HBoxHistory extends HBox {
         // example for this column found at
         // https://gist.github.com/james-d/be5bbd6255a4640a5357#file-editcell-java-L109
         TableColumn<MembershipIdDTO, String> Col1 = createColumn("Year", MembershipIdDTO::fiscal_YearProperty);
-        Col1.setOnEditCommit(new EventHandler<CellEditEvent<MembershipIdDTO, String>>() {
-            @Override
-            public void handle(CellEditEvent<MembershipIdDTO, String> t) {
-                ((MembershipIdDTO) t.getTableView().getItems().get(t.getTablePosition().getRow()))
-                        .setFiscal_Year(t.getNewValue());
-                MembershipIdDTO thisId = ((MembershipIdDTO) t.getTableView().getItems().get(t.getTablePosition().getRow()));
-                int mid = thisId.getMid();
-                if (!SqlUpdate.updateMembershipId(thisId, "fiscal_year", FixInput.changeEmptyStringToZero(t.getNewValue()))) {
-                    // if it does not update correctly lets set tableview back to defaults
-                    MembershipIdDTO storedId = SqlMembership_Id.getMembershipIdObject(mid);
-                    thisId.setFiscal_Year(storedId.getFiscal_Year());
-                    thisId.setMembership_id(storedId.getMembership_id());
-                }
+        Col1.setOnEditCommit(t -> {
+			t.getTableView().getItems().get(t.getTablePosition().getRow())
+					.setFiscal_Year(t.getNewValue());
+			MembershipIdDTO thisId = t.getTableView().getItems().get(t.getTablePosition().getRow());
+			int mid = thisId.getMid();
+			if (!SqlUpdate.updateMembershipId(thisId, "fiscal_year", FixInput.changeEmptyStringToZero(t.getNewValue()))) {
+				// if it does not update correctly lets set tableview back to defaults
+				MembershipIdDTO storedId = SqlMembership_Id.getMembershipIdObject(mid);
+				thisId.setFiscal_Year(storedId.getFiscal_Year());
+				thisId.setMembership_id(storedId.getMembership_id());
+			}
 
-            }
-        });
+		});
 
         TableColumn<MembershipIdDTO, String> Col2 = createColumn("Mem ID",
                 MembershipIdDTO::membership_idProperty);
-        Col2.setOnEditCommit(new EventHandler<CellEditEvent<MembershipIdDTO, String>>() {
-            @Override
-            public void handle(CellEditEvent<MembershipIdDTO, String> t) {
-                ((MembershipIdDTO) t.getTableView().getItems().get(t.getTablePosition().getRow()))
-                        .setMembership_id(t.getNewValue());
-                MembershipIdDTO thisId = ((MembershipIdDTO) t.getTableView().getItems().get(t.getTablePosition().getRow()));
-                int mid = thisId.getMid();
-                if (!SqlUpdate.updateMembershipId(thisId, "membership_id", FixInput.changeEmptyStringToZero(t.getNewValue()))) {
-                    // if it does not update correctly lets set tableview back to defaults
-                    MembershipIdDTO storedId = SqlMembership_Id.getMembershipIdObject(mid);
-                    thisId.setFiscal_Year(storedId.getFiscal_Year());
-                    thisId.setMembership_id(storedId.getMembership_id());
-                }
-            }
-        });
+        Col2.setOnEditCommit(t -> {
+			t.getTableView().getItems().get(t.getTablePosition().getRow())
+					.setMembership_id(t.getNewValue());
+			MembershipIdDTO thisId = t.getTableView().getItems().get(t.getTablePosition().getRow());
+			int mid = thisId.getMid();
+			if (!SqlUpdate.updateMembershipId(thisId, "membership_id", FixInput.changeEmptyStringToZero(t.getNewValue()))) {
+				// if it does not update correctly lets set tableview back to defaults
+				MembershipIdDTO storedId = SqlMembership_Id.getMembershipIdObject(mid);
+				thisId.setFiscal_Year(storedId.getFiscal_Year());
+				thisId.setMembership_id(storedId.getMembership_id());
+			}
+		});
 
         // example for this column found at
         // https://o7planning.org/en/11079/javafx-tableview-tutorial
         ObservableList<MembershipType> MembershipTypeList = FXCollections.observableArrayList(MembershipType.values());
-        TableColumn<MembershipIdDTO, MembershipType> Col3 = new TableColumn<MembershipIdDTO, MembershipType>(
-                "Mem Type");
+        TableColumn<MembershipIdDTO, MembershipType> Col3 = new TableColumn<>(
+				"Mem Type");
         Col3.setCellValueFactory(
-                new Callback<CellDataFeatures<MembershipIdDTO, MembershipType>, ObservableValue<MembershipType>>() {
-
-                    @Override
-                    public ObservableValue<MembershipType> call(
-                            CellDataFeatures<MembershipIdDTO, MembershipType> param) {
-                        MembershipIdDTO thisId = param.getValue();
-                        String membershipCode = thisId.getMem_type();
-                        /// careful with capitals
-                        MembershipType membershipType = MembershipType.getByCode(membershipCode);
-                        return new SimpleObjectProperty<MembershipType>(membershipType);
-                    }
-                });
+				param -> {
+					MembershipIdDTO thisId = param.getValue();
+					String membershipCode = thisId.getMem_type();
+					/// careful with capitals
+					MembershipType membershipType = MembershipType.getByCode(membershipCode);
+					return new SimpleObjectProperty<>(membershipType);
+				});
 
         Col3.setCellFactory(ComboBoxTableCell.forTableColumn(MembershipTypeList));
 
@@ -186,71 +162,51 @@ public class HBoxHistory extends HBox {
 
         // example for this column found at
         // https://o7planning.org/en/11079/javafx-tableview-tutorial
-        TableColumn<MembershipIdDTO, Boolean> Col4 = new TableColumn<MembershipIdDTO, Boolean>("Renewed");
+        TableColumn<MembershipIdDTO, Boolean> Col4 = new TableColumn<>("Renewed");
         Col4.setCellValueFactory(
-                new Callback<CellDataFeatures<MembershipIdDTO, Boolean>, ObservableValue<Boolean>>() {
-                    @Override
-                    public ObservableValue<Boolean> call(CellDataFeatures<MembershipIdDTO, Boolean> param) {
-                        MembershipIdDTO id = param.getValue();
-                        SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(id.isRenew());
-                        // Note: singleCol.setOnEditCommit(): Not work for
-                        // CheckBoxTableCell.
-                        // When "isListed?" column change.
-                        booleanProp.addListener(new ChangeListener<Boolean>() {
-                            @Override
-                            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
-                                                Boolean newValue) {
-                                id.setIsRenew(newValue);
-                                // SqlUpdate.updateListed("phone_listed",phone.getPhone_ID(), newValue);
-                                SqlUpdate.updateMembershipId(id.getMid(), "RENEW", newValue);
-                            }
-                        });
-                        return booleanProp;
-                    }
-                });
+				param -> {
+					MembershipIdDTO id = param.getValue();
+					SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(id.isRenew());
+					// Note: singleCol.setOnEditCommit(): Not work for
+					// CheckBoxTableCell.
+					// When "isListed?" column change.
+					booleanProp.addListener((observable, oldValue, newValue) -> {
+						id.setIsRenew(newValue);
+						// SqlUpdate.updateListed("phone_listed",phone.getPhone_ID(), newValue);
+						SqlUpdate.updateMembershipId(id.getMid(), "RENEW", newValue);
+					});
+					return booleanProp;
+				});
 
-        Col4.setCellFactory(new Callback<TableColumn<MembershipIdDTO, Boolean>, //
-                TableCell<MembershipIdDTO, Boolean>>() {
-            @Override
-            public TableCell<MembershipIdDTO, Boolean> call(TableColumn<MembershipIdDTO, Boolean> p) {
-                CheckBoxTableCell<MembershipIdDTO, Boolean> cell = new CheckBoxTableCell<MembershipIdDTO, Boolean>();
-                cell.setAlignment(Pos.CENTER);
-                return cell;
-            }
-        });
+		//
+		Col4.setCellFactory(p -> {
+			CheckBoxTableCell<MembershipIdDTO, Boolean> cell = new CheckBoxTableCell<>();
+			cell.setAlignment(Pos.CENTER);
+			return cell;
+		});
 
-        TableColumn<MembershipIdDTO, Boolean> Col5 = new TableColumn<MembershipIdDTO, Boolean>("Renew Late");
+        TableColumn<MembershipIdDTO, Boolean> Col5 = new TableColumn<>("Renew Late");
         Col5.setCellValueFactory(
-                new Callback<CellDataFeatures<MembershipIdDTO, Boolean>, ObservableValue<Boolean>>() {
-                    @Override
-                    public ObservableValue<Boolean> call(CellDataFeatures<MembershipIdDTO, Boolean> param) {
-                        MembershipIdDTO id = param.getValue();
-                        SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(id.isLateRenew());
-                        // Note: singleCol.setOnEditCommit(): Not work for
-                        // CheckBoxTableCell.
-                        // When "isListed?" column change.
-                        booleanProp.addListener(new ChangeListener<Boolean>() {
-                            @Override
-                            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
-                                                Boolean newValue) {
-                                id.setIsLateRenew(newValue);
+				param -> {
+					MembershipIdDTO id = param.getValue();
+					SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(id.isLateRenew());
+					// Note: singleCol.setOnEditCommit(): Not work for
+					// CheckBoxTableCell.
+					// When "isListed?" column change.
+					booleanProp.addListener((observable, oldValue, newValue) -> {
+						id.setIsLateRenew(newValue);
 
-                                SqlUpdate.updateMembershipId(id.getMid(), "LATE_RENEW", newValue);
-                            }
-                        });
-                        return booleanProp;
-                    }
-                });
+						SqlUpdate.updateMembershipId(id.getMid(), "LATE_RENEW", newValue);
+					});
+					return booleanProp;
+				});
 
-        Col5.setCellFactory(new Callback<TableColumn<MembershipIdDTO, Boolean>, //
-                TableCell<MembershipIdDTO, Boolean>>() {
-            @Override
-            public TableCell<MembershipIdDTO, Boolean> call(TableColumn<MembershipIdDTO, Boolean> p) {
-                CheckBoxTableCell<MembershipIdDTO, Boolean> cell = new CheckBoxTableCell<MembershipIdDTO, Boolean>();
-                cell.setAlignment(Pos.CENTER);
-                return cell;
-            }
-        });
+		//
+		Col5.setCellFactory(p -> {
+			CheckBoxTableCell<MembershipIdDTO, Boolean> cell = new CheckBoxTableCell<>();
+			cell.setAlignment(Pos.CENTER);
+			return cell;
+		});
 
         /// sets width of columns by percentage
         Col1.setMaxWidth(1f * Integer.MAX_VALUE * 25);   // Year
@@ -277,7 +233,7 @@ public class HBoxHistory extends HBox {
                 SqlDelete.deleteBlankMembershipIdRow();
             // see if another year=0 and memId=0 row exists in current tableView, bring it to top and edit
             if (blankTupleExistsInTableView()) {
-                Collections.sort(id, Comparator.comparing(MembershipIdDTO::getFiscal_Year));
+                id.sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year));
                 idTableView.edit(0, Col1);
                 // create an appropriate new object to place in list
             } else {
@@ -289,7 +245,7 @@ public class HBoxHistory extends HBox {
                 // add the new tuple to the appropriate history tableView
                 id.add(newIdTuple);
                 // sort so that new membership id entry is at the top
-                Collections.sort(id, Comparator.comparing(MembershipIdDTO::getFiscal_Year));
+                id.sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year));
                 // this line prevents strange buggy behaviour I found the solution here:
                 // https://stackoverflow.com/questions/49531071/insert-row-in-javafx-tableview-and-start-editing-is-not-working-correctly
                 idTableView.layout();
@@ -329,18 +285,6 @@ public class HBoxHistory extends HBox {
 
     } // end of constructor
 
-    // the problem here is the index is wrong
-    private int findBlankTupleIndex() {
-        System.out.println("number of index before=" + id.size());
-        int index = 0;
-        for (int i = 0; i < id.size(); i++) {
-            if (id.get(i).getFiscal_Year().equals("0"))
-                if (id.get(i).getMembership_id().equals("0")) ;
-            index = i;
-        }
-        System.out.println("Blank row has index of " + index + " MID=" + id.get(index).getMid());
-        return index;
-    }
 
     private boolean blankTupleExistsInTableView() {
         boolean tupleExists = false;
