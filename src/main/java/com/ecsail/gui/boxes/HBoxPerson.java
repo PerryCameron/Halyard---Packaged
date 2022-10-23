@@ -1,8 +1,10 @@
 package com.ecsail.gui.boxes;
 
+import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.Launcher;
 
+import com.ecsail.gui.tabs.TabMembership;
 import com.ecsail.gui.tabs.TabPeople;
 import com.ecsail.gui.tabs.TabPersonProperties;
 import com.ecsail.sql.SqlUpdate;
@@ -33,6 +35,7 @@ public class HBoxPerson extends HBox {
     private final MembershipListDTO membership;
     private final ObservableList<PersonDTO> people;  // this is only for updating people list when in people list mode
     TabPersonProperties propertiesTab; // this is here for a getter so I can get to combobox
+
 
     public HBoxPerson(PersonDTO p, MembershipListDTO me, TabPane personTabPane) {
         this.person = p;
