@@ -7,9 +7,6 @@ import com.ecsail.sql.select.SqlBoat;
 import com.ecsail.structures.BoatDTO;
 import com.ecsail.structures.BoatListDTO;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -25,7 +22,7 @@ import javafx.util.Callback;
 import java.util.Arrays;
 
 public class TabBoats extends Tab {
-	ObservableList<BoatListDTO> boats = FXCollections.observableArrayList();
+	ObservableList<BoatListDTO> boats;
 	
 	public TabBoats(String text) {
 		super(text);
@@ -51,65 +48,51 @@ public class TabBoats extends Tab {
 		VBox.setVgrow(boatListTableView, Priority.ALWAYS);
 		HBox.setHgrow(boatListTableView, Priority.ALWAYS);
 		
-		TableColumn<BoatListDTO, Integer> Col1 = new TableColumn<BoatListDTO, Integer>("MEM");
-		TableColumn<BoatListDTO, String> Col2 = new TableColumn<BoatListDTO, String>("Last Name");
-		TableColumn<BoatListDTO, String> Col3 = new TableColumn<BoatListDTO, String>("First Name");
-		TableColumn<BoatListDTO, String> Col4 = new TableColumn<BoatListDTO, String>("Model");
-		TableColumn<BoatListDTO, String> Col5 = new TableColumn<BoatListDTO, String>("Registration");
-		TableColumn<BoatListDTO, String> Col6 = new TableColumn<BoatListDTO, String>("Year");
-		TableColumn<BoatListDTO, String> Col7 = new TableColumn<BoatListDTO, String>("Name");
-		TableColumn<BoatListDTO, Boolean> Col8 = new TableColumn<BoatListDTO, Boolean>("Aux");
-		TableColumn<BoatListDTO, Void> Col9 = new TableColumn<BoatListDTO, Void>("Select");
-		//TableColumn<Object_BoatList, String> Col9 = new TableColumn<Object_BoatList, String>("State");
-		//TableColumn<Object_BoatList, String> Col10 = new TableColumn<Object_BoatList, String>("Zip");
-		//TableColumn<Object_BoatList, String> Col11 = new TableColumn<Object_BoatList, String>("MSID");
+		var Col1 = new TableColumn<BoatListDTO, Integer>("MEM");
+		var Col2 = new TableColumn<BoatListDTO, String>("Last Name");
+		var Col3 = new TableColumn<BoatListDTO, String>("First Name");
+		var Col4 = new TableColumn<BoatListDTO, String>("Model");
+		var Col5 = new TableColumn<BoatListDTO, String>("Registration");
+		var Col6 = new TableColumn<BoatListDTO, String>("Year");
+		var Col7 = new TableColumn<BoatListDTO, String>("Name");
+		var Col8 = new TableColumn<BoatListDTO, Boolean>("Aux");
+		var Col9 = new TableColumn<BoatListDTO, Void>("Select");
 		
-		Col1.setCellValueFactory(new PropertyValueFactory<BoatListDTO, Integer>("membership_id"));
-		Col2.setCellValueFactory(new PropertyValueFactory<BoatListDTO, String>("lname"));
-		Col3.setCellValueFactory(new PropertyValueFactory<BoatListDTO, String>("fname"));
-		Col4.setCellValueFactory(new PropertyValueFactory<BoatListDTO, String>("model"));
-		Col5.setCellValueFactory(new PropertyValueFactory<BoatListDTO, String>("registration_num"));
-		Col6.setCellValueFactory(new PropertyValueFactory<BoatListDTO, String>("manufacture_year"));
-		Col7.setCellValueFactory(new PropertyValueFactory<BoatListDTO, String>("boat_name"));
-		Col8.setCellValueFactory(new PropertyValueFactory<BoatListDTO, Boolean>("aux"));
+		Col1.setCellValueFactory(new PropertyValueFactory<>("membership_id"));
+		Col2.setCellValueFactory(new PropertyValueFactory<>("lname"));
+		Col3.setCellValueFactory(new PropertyValueFactory<>("fname"));
+		Col4.setCellValueFactory(new PropertyValueFactory<>("model"));
+		Col5.setCellValueFactory(new PropertyValueFactory<>("registration_num"));
+		Col6.setCellValueFactory(new PropertyValueFactory<>("manufacture_year"));
+		Col7.setCellValueFactory(new PropertyValueFactory<>("boat_name"));
+		Col8.setCellValueFactory(new PropertyValueFactory<>("aux"));
 
-		Col8.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<BoatListDTO, Boolean>, ObservableValue<Boolean>>() {
-			@Override
-			public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<BoatListDTO, Boolean> param) {
-				BoatListDTO boat = param.getValue();
-				SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(boat.isAux());
-				// Note: singleCol.setOnEditCommit(): Not work for
-				// CheckBoxTableCell.
+		Col8.setCellValueFactory(param -> {
+			BoatListDTO boat = param.getValue();
+			SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(boat.isAux());
+			// Note: singleCol.setOnEditCommit(): Not work for
+			// CheckBoxTableCell.
 
-				// When "Listed?" column change.
-				booleanProp.addListener(new ChangeListener<Boolean>() {
+			// When "Listed?" column change.
+			booleanProp.addListener((observable, oldValue, newValue) -> {
+				boat.setAux(newValue);
+				SqlUpdate.updateAux(String.valueOf(boat.getBoat_id()), newValue);
 
-					@Override
-					public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
-										Boolean newValue) {
-						boat.setAux(newValue);
-						SqlUpdate.updateAux(String.valueOf(boat.getBoat_id()), newValue);
-
-					}
-				});
-				return booleanProp;
-			}
+			});
+			return booleanProp;
 		});
 
-		Col8.setCellFactory(new Callback<TableColumn<BoatListDTO, Boolean>, //
-				TableCell<BoatListDTO, Boolean>>() {
-			@Override
-			public TableCell<BoatListDTO, Boolean> call(TableColumn<BoatListDTO, Boolean> p) {
-				CheckBoxTableCell<BoatListDTO, Boolean> cell = new CheckBoxTableCell<BoatListDTO, Boolean>();
-				cell.setAlignment(Pos.CENTER);
-				return cell;
-			}
+		//
+		Col8.setCellFactory(p -> {
+			CheckBoxTableCell<BoatListDTO, Boolean> cell = new CheckBoxTableCell<>();
+			cell.setAlignment(Pos.CENTER);
+			return cell;
 		});
 
-		Callback<TableColumn<BoatListDTO, Void>, TableCell<BoatListDTO, Void>> cellFactory = new Callback<TableColumn<BoatListDTO, Void>, TableCell<BoatListDTO, Void>>() {
+		Callback<TableColumn<BoatListDTO, Void>, TableCell<BoatListDTO, Void>> cellFactory = new Callback<>() {
 			@Override
 			public TableCell<BoatListDTO, Void> call(final TableColumn<BoatListDTO, Void> param) {
-				final TableCell<BoatListDTO, Void> cell = new TableCell<BoatListDTO, Void>() {
+				return new TableCell<>() {
 
 					private final Button btn = new Button("View");
 
@@ -117,9 +100,9 @@ public class TabBoats extends Tab {
 						btn.setOnAction((ActionEvent event) -> {
 							BoatListDTO BoatListDTO = getTableView().getItems().get(getIndex());
 							System.out.println("selectedBoatListDTO: " + BoatListDTO);
-		//					BoatListDTO clickedRow = row.getItem();
-       						BoatDTO selectedBoat = SqlBoat.getBoatbyBoatId(getTableView().getItems().get(getIndex()).getBoat_id());
-      						Launcher.openBoatViewTab(selectedBoat);
+							//					BoatListDTO clickedRow = row.getItem();
+							BoatDTO selectedBoat = SqlBoat.getBoatbyBoatId(getTableView().getItems().get(getIndex()).getBoat_id());
+							Launcher.openBoatViewTab(selectedBoat);
 						});
 					}
 
@@ -133,7 +116,6 @@ public class TabBoats extends Tab {
 						}
 					}
 				};
-				return cell;
 			}
 		};
 		
@@ -149,11 +131,6 @@ public class TabBoats extends Tab {
 		Col7.setMaxWidth( 1f * Integer.MAX_VALUE * 13 );  // Boat Name
 		Col8.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );   // aux
 		Col9.setMaxWidth( 1f * Integer.MAX_VALUE * 7);	  // view button
-
-		//Col8.setMaxWidth( 1f * Integer.MAX_VALUE * 10 );  // City
-		//Col9.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );  // State
-		//Col10.setMaxWidth( 1f * Integer.MAX_VALUE * 10 ); // Zip
-		//Col11.setMaxWidth( 1f * Integer.MAX_VALUE * 5 ); // MSID
 		
 		/////////////////// LISTENERS  /////////////////////////
 
@@ -178,7 +155,6 @@ public class TabBoats extends Tab {
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
 		setContent(vboxBlue);
-		
 	}
 	
 }

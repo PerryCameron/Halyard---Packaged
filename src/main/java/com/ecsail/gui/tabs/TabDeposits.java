@@ -9,7 +9,6 @@ import com.ecsail.sql.select.*;
 import com.ecsail.structures.*;
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,7 +17,6 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
@@ -27,40 +25,34 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.util.Callback;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Date;
 
 public class TabDeposits extends Tab {
 	// starts with all paid dues for a given year, then can change to dues for a selected deposit
-	private ObservableList<PaidDuesDTO> paidDues;
+	private final ObservableList<PaidDuesDTO> paidDues;
 	// containes all the defined fees for a given year
 	private DefinedFeeDTO currentDefinedFee;
 	// contains deposit number, date, year for a selected deposit
 	private DepositDTO currentDeposit;
 	// object of text objects to simplify method parameters
-	private DepositSummaryTextDTO summaryText = new DepositSummaryTextDTO();
+	private final DepositSummaryTextDTO summaryText = new DepositSummaryTextDTO();
 	// will hold the totals of all at first and then for a selected deposit
-	private DepositSummaryDTO summaryTotals = new DepositSummaryDTO();
+	private final DepositSummaryDTO summaryTotals = new DepositSummaryDTO();
 
 	Text numberOfRecords = new Text("0");
 	String currentDate;
 	String selectedYear;
-	final Spinner<Integer> batchSpinner = new Spinner<Integer>();
+	final Spinner<Integer> batchSpinner = new Spinner<>();
 
 	public TabDeposits(String text) {
 		super(text);
-		this.paidDues = FXCollections.observableArrayList(new Callback<PaidDuesDTO, Observable[]>() {
-			@Override
-			public Observable[] call(PaidDuesDTO param) {
-				return new Observable[] { param.closedProperty() };
-
-			}
-		});
+		this.paidDues = FXCollections.observableArrayList(param -> new Observable[] { param.closedProperty() });
 		this.selectedYear = new SimpleDateFormat("yyyy").format(new Date()); // lets start at the current year
 		this.paidDues.addAll(SqlDeposit.getPaidDues(selectedYear));
 		summaryTotals.setDepositNumber(SqlMoney.getBatchNumber(selectedYear));
@@ -70,31 +62,31 @@ public class TabDeposits extends Tab {
 
 		ObservableList<String> options = FXCollections.observableArrayList("Show All", "Show Selected");
 
-		VBox vboxGrey = new VBox(); // this is the vbox for organizing all the widgets
-		VBox vboxBlue = new VBox();
-		VBox vboxPink = new VBox(); // this creates a pink border around the table
-		HBox mainHBox = new HBox(); // this separates table content from controls
-		VBox controlsVBox = new VBox(); // inner grey box
-		HBox controlsHBox = new HBox(); // outer blue box
-		HBox batchNumberHBox = new HBox(); // holds spinner and label
-		HBox buttonHBox = new HBox(); // holds buttons
-		HBox yearBatchHBox = new HBox(); // holds spinner and batchNumberHBox
-		HBox gridHBox = new HBox(); // holds gridPane
-		HBox remaindingRenewalHBox = new HBox();
-		HBox selectionHBox = new HBox();
-		HBox numberOfRecordsHBox = new HBox();
-		HBox comboBoxHBox = new HBox();
-		Text nonRenewed = new Text("0");
-		TableView<PaidDuesDTO> paidDuesTableView = new TableView<PaidDuesDTO>();
+		var vboxGrey = new VBox(); // this is the vbox for organizing all the widgets
+		var vboxBlue = new VBox();
+		var vboxPink = new VBox(); // this creates a pink border around the table
+		var mainHBox = new HBox(); // this separates table content from controls
+		var controlsVBox = new VBox(); // inner grey box
+		var controlsHBox = new HBox(); // outer blue box
+		var batchNumberHBox = new HBox(); // holds spinner and label
+		var buttonHBox = new HBox(); // holds buttons
+		var yearBatchHBox = new HBox(); // holds spinner and batchNumberHBox
+		var gridHBox = new HBox(); // holds gridPane
+		var remaindingRenewalHBox = new HBox();
+		var selectionHBox = new HBox();
+		var numberOfRecordsHBox = new HBox();
+		var comboBoxHBox = new HBox();
+		var nonRenewed = new Text("0");
+		var paidDuesTableView = new TableView<PaidDuesDTO>();
 		
-		final ComboBox<String> comboBox = new ComboBox<String>(options);
-		GridPane gridPane = new GridPane();
-		Button refreshButton = new Button("Refresh");
-		Button printPdfButton = new Button("Print PDF");
-		DatePicker depositDatePicker = new DatePicker();
+		final var comboBox = new ComboBox<>(options);
+		var gridPane = new GridPane();
+		var refreshButton = new Button("Refresh");
+		var printPdfButton = new Button("Print PDF");
+		var depositDatePicker = new DatePicker();
 
 		//////////////////// OBJECT ATTRIBUTES ///////////////////////////
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		numberOfRecords.setStyle("-fx-font-weight: bold;");
 
 		vboxBlue.setId("box-blue");
@@ -143,8 +135,8 @@ public class TabDeposits extends Tab {
 		
 		comboBox.setValue("Show All");
 
-		final Spinner<Integer> yearSpinner = new Spinner<Integer>();
-		SpinnerValueFactory<Integer> wetSlipValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1970,
+		final var yearSpinner = new Spinner<Integer>();
+		var wetSlipValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1970,
 				Integer.parseInt(selectedYear), Integer.parseInt(selectedYear));
 		yearSpinner.setValueFactory(wetSlipValueFactory);
 		yearSpinner.setPrefWidth(95);
@@ -163,7 +155,7 @@ public class TabDeposits extends Tab {
 		});
 
 		// final Spinner<Integer> batchSpinner = new Spinner<Integer>();
-		SpinnerValueFactory<Integer> batchValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100,
+		var batchValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100,
 				summaryTotals.getDepositNumber()); // 0 to batch, display batch
 		batchSpinner.setValueFactory(batchValueFactory);
 		batchSpinner.setPrefWidth(60);
@@ -179,30 +171,27 @@ public class TabDeposits extends Tab {
 
 		// example for this column found at
 		// https://o7planning.org/en/11079/javafx-tableview-tutorial
-		TableColumn<PaidDuesDTO, Boolean> Col1 = new TableColumn<PaidDuesDTO, Boolean>("Select");
+		var Col1 = new TableColumn<PaidDuesDTO, Boolean>("Select");
 		Col1.setPrefWidth(50);
-		Col1.setCellValueFactory(new Callback<CellDataFeatures<PaidDuesDTO, Boolean>, ObservableValue<Boolean>>() {
-			@Override
-			public ObservableValue<Boolean> call(CellDataFeatures<PaidDuesDTO, Boolean> param) {
-				PaidDuesDTO thisPaidDues = param.getValue();
-				SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(thisPaidDues.isClosed());
-				booleanProp.addListener((observable, oldValue, newValue) -> {
-					thisPaidDues.setClosed(newValue); // sets checkbox value in table
-					if (newValue) { // if checked
-						setBatchAndClose(thisPaidDues, summaryTotals.getDepositNumber(), true);
-						System.out.println("batch=" + thisPaidDues.getBatch());
-						addDepositIdToPayment(thisPaidDues); // does lots of stuff
-					} else { // if unchecked
-						setBatchAndClose(thisPaidDues, 0, false);
-					}
-					summaryTotals.clear();
-					updateSummaryTotals();
-					// updateCurrentMoneyTotals(); // need error check if batch doesn't exist
-					updateMoneyTotals();
-					updateNonRenewed(nonRenewed);
-				});
-				return booleanProp;
-			}
+		Col1.setCellValueFactory(param -> {
+			PaidDuesDTO thisPaidDues = param.getValue();
+			SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(thisPaidDues.isClosed());
+			booleanProp.addListener((observable, oldValue, newValue) -> {
+				thisPaidDues.setClosed(newValue); // sets checkbox value in table
+				if (newValue) { // if checked
+					setBatchAndClose(thisPaidDues, summaryTotals.getDepositNumber(), true);
+					System.out.println("batch=" + thisPaidDues.getBatch());
+					addDepositIdToPayment(thisPaidDues); // does lots of stuff
+				} else { // if unchecked
+					setBatchAndClose(thisPaidDues, 0, false);
+				}
+				summaryTotals.clear();
+				updateSummaryTotals();
+				// updateCurrentMoneyTotals(); // need error check if batch doesn't exist
+				updateMoneyTotals();
+				updateNonRenewed(nonRenewed);
+			});
+			return booleanProp;
 		});
 
 		//
@@ -212,42 +201,42 @@ public class TabDeposits extends Tab {
 			return cell;
 		});
 
-		TableColumn<PaidDuesDTO, Integer> Col2 = new TableColumn<PaidDuesDTO, Integer>("Batch");
-		Col2.setCellValueFactory(new PropertyValueFactory<PaidDuesDTO, Integer>("batch"));
+		var Col2 = new TableColumn<PaidDuesDTO, Integer>("Batch");
+		Col2.setCellValueFactory(new PropertyValueFactory<>("batch"));
 
-		TableColumn<PaidDuesDTO, Integer> Col9 = new TableColumn<PaidDuesDTO, Integer>("Mem ID");
-		Col9.setCellValueFactory(new PropertyValueFactory<PaidDuesDTO, Integer>("membershipId"));
+		var Col9 = new TableColumn<PaidDuesDTO, Integer>("Mem ID");
+		Col9.setCellValueFactory(new PropertyValueFactory<>("membershipId"));
 
-		TableColumn<PaidDuesDTO, String> Col3 = new TableColumn<PaidDuesDTO, String>("Last Name");
-		Col3.setCellValueFactory(new PropertyValueFactory<PaidDuesDTO, String>("l_name"));
+		var Col3 = new TableColumn<PaidDuesDTO, String>("Last Name");
+		Col3.setCellValueFactory(new PropertyValueFactory<>("l_name"));
 		Col3.setPrefWidth(80);
 
-		TableColumn<PaidDuesDTO, String> Col4 = new TableColumn<PaidDuesDTO, String>("First Name");
-		Col4.setCellValueFactory(new PropertyValueFactory<PaidDuesDTO, String>("f_name"));
+		var Col4 = new TableColumn<PaidDuesDTO, String>("First Name");
+		Col4.setCellValueFactory(new PropertyValueFactory<>("f_name"));
 		Col4.setPrefWidth(80);
 
-		TableColumn<PaidDuesDTO, String> Col10 = new TableColumn<PaidDuesDTO, String>("Slip");
-		Col10.setCellValueFactory(new PropertyValueFactory<PaidDuesDTO, String>("wet_slip"));
+		var Col10 = new TableColumn<PaidDuesDTO, String>("Slip");
+		Col10.setCellValueFactory(new PropertyValueFactory<>("wet_slip"));
 		Col10.setPrefWidth(50);
 
-		TableColumn<PaidDuesDTO, Integer> Col5 = new TableColumn<PaidDuesDTO, Integer>("Fees");
-		Col5.setCellValueFactory(new PropertyValueFactory<PaidDuesDTO, Integer>("total"));
+		var Col5 = new TableColumn<PaidDuesDTO, Integer>("Fees");
+		Col5.setCellValueFactory(new PropertyValueFactory<>("total"));
 		Col5.setPrefWidth(50);
 
-		TableColumn<PaidDuesDTO, Integer> Col6 = new TableColumn<PaidDuesDTO, Integer>("Credit");
-		Col6.setCellValueFactory(new PropertyValueFactory<PaidDuesDTO, Integer>("credit"));
+		var Col6 = new TableColumn<PaidDuesDTO, Integer>("Credit");
+		Col6.setCellValueFactory(new PropertyValueFactory<>("credit"));
 		Col6.setPrefWidth(50);
 
-		TableColumn<PaidDuesDTO, Integer> Col7 = new TableColumn<PaidDuesDTO, Integer>("Paid");
-		Col7.setCellValueFactory(new PropertyValueFactory<PaidDuesDTO, Integer>("paid"));
+		var Col7 = new TableColumn<PaidDuesDTO, Integer>("Paid");
+		Col7.setCellValueFactory(new PropertyValueFactory<>("paid"));
 		Col7.setPrefWidth(50);
 
-		TableColumn<PaidDuesDTO, Integer> Col8 = new TableColumn<PaidDuesDTO, Integer>("Balance");
-		Col8.setCellValueFactory(new PropertyValueFactory<PaidDuesDTO, Integer>("balance"));
+		var Col8 = new TableColumn<PaidDuesDTO, Integer>("Balance");
+		Col8.setCellValueFactory(new PropertyValueFactory<>("balance"));
 		Col8.setPrefWidth(50);
 
-		TableColumn<PaidDuesDTO, Integer> Col11 = new TableColumn<PaidDuesDTO, Integer>("Cmit");
-		Col11.setCellValueFactory(new PropertyValueFactory<PaidDuesDTO, Integer>("committed"));
+		var Col11 = new TableColumn<PaidDuesDTO, Integer>("Cmit");
+		Col11.setCellValueFactory(new PropertyValueFactory<>("committed"));
 		Col11.setPrefWidth(50);
 
 		Col6.setStyle( "-fx-alignment: CENTER-RIGHT;");
@@ -271,7 +260,7 @@ public class TabDeposits extends Tab {
 		////////////////// LISTENERS //////////////////////
 
 		paidDuesTableView.setRowFactory(tv -> {
-			TableRow<PaidDuesDTO> row = new TableRow<>();
+			var row = new TableRow<PaidDuesDTO>();
 			row.setOnMouseClicked(event -> {
 				if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
 					PaidDuesDTO clickedRow = row.getItem();
@@ -307,7 +296,7 @@ public class TabDeposits extends Tab {
 
 		comboBox.valueProperty().addListener((change) -> refreshButton.fire());
 
-		EventHandler<ActionEvent> pickerEvent = new EventHandler<ActionEvent>() {
+		var pickerEvent = new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 				LocalDate date = depositDatePicker.getValue();
 				SqlUpdate.updateDeposit("DEPOSIT_DATE", currentDeposit.getDeposit_id(), date);
@@ -412,7 +401,7 @@ public class TabDeposits extends Tab {
 		controlsVBox.getChildren().addAll(yearBatchHBox, selectionHBox, comboBoxHBox, gridHBox, buttonHBox,
 				remaindingRenewalHBox);
 		paidDuesTableView.getColumns()
-				.addAll(Col1, Col2, Col9, Col3, Col4, Col10, Col5, Col6, Col7, Col8, Col11);
+				.addAll(Arrays.asList(Col1, Col2, Col9, Col3, Col4, Col10, Col5, Col6, Col7, Col8, Col11));
 		mainHBox.getChildren().addAll(paidDuesTableView, controlsHBox);
 		vboxGrey.getChildren().add(mainHBox);
 		vboxBlue.getChildren().add(vboxPink);
@@ -441,7 +430,7 @@ public class TabDeposits extends Tab {
 	}
 
 	private int getDepositId(PaidDuesDTO thisPaidDues) {
-		int deposit_id = 0;
+		int deposit_id;
 		if (SqlExists.depositRecordExists(thisPaidDues.getFiscal_year() + "", summaryTotals.getDepositNumber())) { // does
 																														// a
 																							// batch?
@@ -455,7 +444,7 @@ public class TabDeposits extends Tab {
 	}
 
 	private int getPayId(PaidDuesDTO thisPaidDues) {
-		int pay_id = 0;
+		int pay_id;
 		if (!SqlExists.paymentExists(thisPaidDues.getMoney_id())) { // No payment has been recorded, we need to create a
 																	// blank payment record
 			pay_id = createPaymentRecord(thisPaidDues);

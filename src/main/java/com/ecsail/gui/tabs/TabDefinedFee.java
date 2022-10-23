@@ -73,14 +73,14 @@ public class TabDefinedFee extends Tab {
 		this.selectedIndex = getSelectedIndex(selectedYear);
 		copyObjectToFields();
 		
-		VBox vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
-		HBox hboxGrey = new HBox();
-		VBox vboxBlue = new VBox();
-		VBox vboxPink = new VBox(); // this creates a pink border around the table
-		GridPane gridPane = new GridPane();
-		ToggleGroup group = new ToggleGroup();
+		var vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
+		var hboxGrey = new HBox();
+		var vboxBlue = new VBox();
+		var vboxPink = new VBox(); // this creates a pink border around the table
+		var gridPane = new GridPane();
+		var group = new ToggleGroup();
 
-		ComboBox<Integer> comboBox = new ComboBox<>();
+		var comboBox = new ComboBox<Integer>();
 		for(int i = Integer.parseInt(BaseApplication.selectedYear) + 1; i > 1969; i--) {
 			comboBox.getItems().add(i);
 		}

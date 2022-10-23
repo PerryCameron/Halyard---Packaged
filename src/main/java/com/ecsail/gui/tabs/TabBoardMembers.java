@@ -16,8 +16,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 import java.text.SimpleDateFormat;
@@ -42,7 +40,7 @@ public class TabBoardMembers extends Tab {
 	
 	public TabBoardMembers(String text) {
 		super(text);
-		this.selectedYear = new SimpleDateFormat("yyyy").format(new Date());  // lets start at the current year
+		this.selectedYear = new SimpleDateFormat("yyyy").format(new Date());  // let's start at the current year
 		this.board =  SqlBoard.getBoard(selectedYear);
 		this.currentYear = selectedYear;  // save the current year for later
 		this.year = new Text(selectedYear + " Officers");
@@ -72,11 +70,10 @@ public class TabBoardMembers extends Tab {
 	imageView.setFitHeight(300);
 	imageView.setPreserveRatio(true);
 
-	ComboBox comboBox = new ComboBox();
+	var comboBox = new ComboBox<Integer>();
 	for(int i = Integer.parseInt(currentYear) + 1; i > 1969; i--) {
 		comboBox.getItems().add(i);
 	}
-//	comboBox.getStyleClass().add("bigbox");
 
 		comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
 
@@ -86,12 +83,12 @@ public class TabBoardMembers extends Tab {
 			  addOfficers();
 			  addChairmen();
 			  addBoard(boardMembersVBox1,boardMembersVBox2,boardMembersVBox3);
-			  Image newImage = null;
+			  Image newImage;
 			  try {
-				  newImage = new Image(getClass().getResourceAsStream("/Stickers/" + selectedYear + ".png"));
+				  newImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Stickers/" + selectedYear + ".png")));
 			  } catch (NullPointerException e) {
 				  BaseApplication.logger.error("Couldn't locate /Stickers/" + selectedYear + ".png" );
-				  newImage = new Image(getClass().getResourceAsStream("/Stickers/unknown.png"));
+				  newImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Stickers/unknown.png")));
 			  }
 			  imageView.setImage(newImage);
 
@@ -109,7 +106,7 @@ public class TabBoardMembers extends Tab {
 	vboxLeft.setPadding(new Insets(15,0,0,40));
 	boardMembersHBox.setPadding(new Insets(0,0,0,100));
 	vboxBlue.setPadding(new Insets(10,10,10,10));
-	vboxPink.setPadding(new Insets(3,3,3,3)); // spacing to make pink fram around table
+	vboxPink.setPadding(new Insets(3,3,3,3)); // spacing to make pink frame around table
 	
 	officerVBox1.getStyleClass().add("labels");
 	committeeVBox1.getStyleClass().add("labels");
@@ -208,16 +205,16 @@ public class TabBoardMembers extends Tab {
 	private void addChairmen() {
 		Arrays.stream(Officer.values()).skip(8)
 				.filter(offTypes -> !offTypes.getText().equals("Board Member"))
-				.map(offTypes -> new Pair(offTypes.getCode(), getOfficer(offTypes.getCode())))
+				.map(offTypes -> new Pair<>(offTypes.getCode(), getOfficer(offTypes.getCode())))
 				.filter(pair -> !pair.value.equals(""))
 				.forEach(pair -> {
-					Text committeeTitle = new Text(Officer.getNameByCode(pair.key.toString()));
+					Text committeeTitle = new Text(Officer.getNameByCode(pair.key));
 					committeeTitle.getStyleClass().add("bod-position-titles-text");
 					committeeVBox1.getChildren().add(committeeTitle); // this is our labels
-					Text chairmanName = new Text(pair.value.toString());
+					Text chairmanName = new Text(pair.value);
 					chairmanName.getStyleClass().add("bod-names-text");
 					committeeVBox2.getChildren()
-							.add(setMouseListener(chairmanName, getOfficerMSID(pair.key.toString())));
+							.add(setMouseListener(chairmanName, getOfficerMSID(pair.key)));
 				});
 	}
 
@@ -235,7 +232,7 @@ public class TabBoardMembers extends Tab {
 
 	private int getOfficerMSID(String offType) {
 		return board.stream().filter(bm -> offType.equals(bm.getOfficer_type()))
-				.map(bm -> bm.getMs_id())
+				.map(BoardDTO::getMs_id)
 				.findFirst().orElse(0);
 	}
 	
@@ -255,17 +252,11 @@ public class TabBoardMembers extends Tab {
 	private Text setMouseListener(Text text, int msid) {
 		Color color = (Color) text.getFill();
 		if(color == Color.CORNFLOWERBLUE) {
-			text.setOnMouseExited(ex -> {
-				text.setFill(Color.CORNFLOWERBLUE);
-			});
+			text.setOnMouseExited(ex -> text.setFill(Color.CORNFLOWERBLUE));
 		} else {
-			text.setOnMouseExited(ex -> {
-				text.setFill(Color.BLACK);
-			});
+			text.setOnMouseExited(ex -> text.setFill(Color.BLACK));
 		}
-		text.setOnMouseEntered(en -> {
-			text.setFill(Color.RED);
-				});
+		text.setOnMouseEntered(en -> text.setFill(Color.RED));
 
 		text.setOnMouseClicked(e -> {
 			if (e.getClickCount() == 2)  {
@@ -275,7 +266,7 @@ public class TabBoardMembers extends Tab {
 		return text;
 	}
 
-	class Pair<T1, T2> {
+	static class Pair<T1, T2> {
 		private final T1 key;
 		private final T2 value;
 
