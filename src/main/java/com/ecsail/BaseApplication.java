@@ -38,7 +38,7 @@ public class BaseApplication extends Application implements Log {
             new StandardMenus(),
             new HelloWorld(),
             new FileDrop(),
-            new DesktopIntegration(),
+            new SearchToolBar(),
             new LogFile(),
             new DarkMode()};
 

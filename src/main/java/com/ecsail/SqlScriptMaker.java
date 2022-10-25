@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class SqlScriptMaker {
 	static Object_TupleCount newTupleCount;
-	static ArrayList<String> tableCreation = new ArrayList<String>();
+	static ArrayList<String> tableCreation = new ArrayList<>();
 	static ObservableList<MembershipDTO> memberships;
 	static ObservableList<MembershipIdDTO> ids;
 	static ObservableList<PersonDTO> people;
@@ -423,7 +423,7 @@ public class SqlScriptMaker {
 	}
 
 	public static String getCorrectString(String example) {
-		String result = "";
+		String result;
 		if(example == null) {  // if actually null print null
 			result = "null";
 		}  else {
@@ -433,7 +433,7 @@ public class SqlScriptMaker {
 	}
 
 	public static String getCorrectString(int example) {   /// overload the method
-		String result = "";
+		String result;
 		if(example == 0) {  // if actually null print null
 			result = "null";
 		}  else {
@@ -486,6 +486,7 @@ public class SqlScriptMaker {
 	public static String writeSchema() {
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 		InputStream io = classloader.getResourceAsStream("database/ecsc_create.sql");
+		assert io != null;
 		BufferedReader reader = new BufferedReader(new InputStreamReader(io));
 		String result = reader.lines().collect(Collectors.joining(System.lineSeparator()));
 		return result;

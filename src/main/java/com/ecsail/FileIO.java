@@ -14,7 +14,7 @@ import com.ecsail.structures.Object_TupleCount;
 
 public class FileIO {
 
-public static List<Object_Login> logins = new ArrayList<Object_Login>();
+public static List<Object_Login> logins = new ArrayList<>();
 	
 	public static void saveLoginObjects() {  // saves user file to disk
 		File g = new File(HalyardPaths.HOSTS);
@@ -46,6 +46,29 @@ public static List<Object_Login> logins = new ArrayList<Object_Login>();
 	}
 
 	public static ArrayList<Object_TupleCount> openTupleCountObjects() {
+		ArrayList<Object_TupleCount> tuples = new ArrayList<>();
+		File g = new File(HalyardPaths.TUPLECOUNTS);
+		if (g.exists()) {
+			try {
+				ObjectInputStream in = new ObjectInputStream(new FileInputStream(g));
+				Object obj = in.readObject();
+				ArrayList<?> ar = (ArrayList<?>) obj;
+				for (Object x : ar) {
+				    tuples.add((Object_TupleCount) x);
+				}
+				in.close();
+			} catch (Exception e) {
+				BaseApplication.logger.error("Error occurred during reading of " + HalyardPaths.TUPLECOUNTS);
+				BaseApplication.logger.error(e.getMessage());
+				e.printStackTrace();
+			}
+		} else {
+			BaseApplication.logger.error("No such file exists: " + HalyardPaths.TUPLECOUNTS);
+		}
+		return tuples;
+	}
+	
+	public static Object_TupleCount openTupleCountObject() {
 		ArrayList<Object_TupleCount> tuples = new ArrayList<Object_TupleCount>();
 		File g = new File(HalyardPaths.TUPLECOUNTS);
 		if (g.exists()) {
@@ -65,37 +88,13 @@ public static List<Object_Login> logins = new ArrayList<Object_Login>();
 			}
 		} else {
 			BaseApplication.logger.error("No such file exists: " + HalyardPaths.TUPLECOUNTS);
+			BaseApplication.logger.info("Creating file " + HalyardPaths.TUPLECOUNTS);
+			List<Object_TupleCount> t = new ArrayList<Object_TupleCount>();
+			t.add(new Object_TupleCount());
+			saveTupleCountObjects(t);
 		}
-		return tuples;
+		return tuples.get(tuples.size() - 1);
 	}
-	
-//	public static Object_TupleCount openTupleCountObject() {
-//		ArrayList<Object_TupleCount> tuples = new ArrayList<Object_TupleCount>();
-//		File g = new File(HalyardPaths.TUPLECOUNTS);
-//		if (g.exists()) {
-//			try {
-//				ObjectInputStream in = new ObjectInputStream(new FileInputStream(g));
-//				Object obj = in.readObject();
-//				ArrayList<?> ar = (ArrayList<?>) obj;
-//				tuples.clear();
-//				for (Object x : ar) {
-//				    tuples.add((Object_TupleCount) x);
-//				}
-//				in.close();
-//			} catch (Exception e) {
-//				Halyard.getLogger().error("Error occurred during reading of " + HalyardPaths.TUPLECOUNTS);
-//				Halyard.getLogger().error(e.getMessage());
-//				e.printStackTrace();
-//			}			  
-//		} else {
-//			Halyard.getLogger().error("No such file exists: " + HalyardPaths.TUPLECOUNTS);
-//			Halyard.getLogger().info("Creating file " + HalyardPaths.TUPLECOUNTS);
-//			List<Object_TupleCount> t = new ArrayList<Object_TupleCount>();
-//			t.add(new Object_TupleCount());
-//			saveTupleCountObjects(t);
-//		}
-//		return tuples.get(tuples.size() - 1);
-//	}
 	
 	public static int getSelectedHost(String hostname) {
 		boolean error = true;

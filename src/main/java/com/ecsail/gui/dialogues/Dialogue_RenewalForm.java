@@ -1,7 +1,7 @@
 package com.ecsail.gui.dialogues;
 
 import com.ecsail.BaseApplication;
-
+import com.ecsail.pdf.PDF_Renewal_Form;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -11,6 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class Dialogue_RenewalForm extends Stage {
@@ -73,17 +74,13 @@ public class Dialogue_RenewalForm extends Stage {
 
   		yearSpinner.getValueFactory().setValue(Integer.parseInt(selectedYear));	
 		
-//		createPDFbutton.setOnAction(new EventHandler<ActionEvent>() {
-//			@Override
-//			public void handle(ActionEvent e) {
-//				try {
-//					new PDF_Renewal_Form(selectedYear, memberidTextField.getText(), r2.isSelected(), c1.isSelected(), c2.isSelected());
-//				} catch (IOException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
-// 			}
-//		});
+		createPDFbutton.setOnAction(e -> {
+			try {
+				new PDF_Renewal_Form(selectedYear, memberidTextField.getText(), r2.isSelected(), c1.isSelected(), c2.isSelected());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		 });
 		
 		//////////////// ADD CONTENT ///////////////////
 		vboxColumn1.getChildren().addAll(yearSpinner,r1,r2,memberidTextField,c1,c2);
