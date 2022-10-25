@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 public class SqlScriptMaker {
-	static Object_TupleCount newTupleCount;
+//	static Object_TupleCount newTupleCount;
 	static ArrayList<String> tableCreation = new ArrayList<>();
 	static ObservableList<MembershipDTO> memberships;
 	static ObservableList<MembershipIdDTO> ids;
@@ -40,11 +40,12 @@ public class SqlScriptMaker {
 	public static void createSql() {
 		//SqlScriptMaker.newTupleCount = new Object_TupleCount();
 //		SqlScriptMaker.newTupleCount =  Halyard.edits;
-		System.out.println("Creating SQL script....");
+		BaseApplication.logger.info("Creating SQL script....");
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
 		Date date = new Date();
 		String stringDate = formatter.format(date);
 		stringDate.replaceAll("\\s+", "");
+		BaseApplication.logger.info("1");
 		memberships = SqlMembership.getMemberships();
 		ids = SqlMembership_Id.getIds();
 		people = SqlPerson.getPeople();
@@ -65,10 +66,14 @@ public class SqlScriptMaker {
 		hash = SqlHash.getAllHash();
 		fees = SqlFee.getAllFees();
 		idChanges = SqlIdChange.getAllChangedIds();
-		HalyardPaths.checkPath(HalyardPaths.SQLBACKUP + "/" + HalyardPaths.getYear());
-		calculateSums();
-		new Dialogue_DatabaseBackup(newTupleCount);
-		writeToFile(HalyardPaths.SQLBACKUP + "/" + HalyardPaths.getYear() + "/ecsc_sql_" + stringDate + ".sql");
+		BaseApplication.logger.info("2");
+		HalyardPaths.checkPath(HalyardPaths.SQLBACKUP + "/" + BaseApplication.selectedYear);
+//		calculateSums();
+		BaseApplication.logger.info("opening dialogue");
+		new Dialogue_DatabaseBackup();
+		String path = HalyardPaths.SQLBACKUP + "/" + HalyardPaths.getYear() + "/ecsc_sql_" + stringDate + ".sql";
+		BaseApplication.logger.info("Backed up to: " + path);
+		writeToFile(path);
 	}
 
 	public static void writeToFile(String filename) {
@@ -153,40 +158,40 @@ public class SqlScriptMaker {
 	}
 
 	// this is to calculate changes to display everytime you back up the database.
-	public static void calculateSums() {
-	//	System.out.println("Table creation script is " + tableCreation.size() + " lines.");
-		newTupleCount.setTableCreationSize(tableCreation.size());
-	//	System.out.println(memberships.size() +" memberships written");
-		newTupleCount.setMembershipSize(memberships.size());
-	//	System.out.println(ids.size() + " ids written");
-		newTupleCount.setIdSize(ids.size());
-	//	System.out.println(people.size() + " people written");
-		newTupleCount.setPeopleSize(people.size());
-	//	System.out.println(phones.size() + " phone numbers written");
-		newTupleCount.setPhoneSize(phones.size());
-	//	System.out.println(boats.size() + " boats written");
-		newTupleCount.setBoatSize(boats.size());
-	//	System.out.println(boatowners.size() + " boatowners written");
-		newTupleCount.setBoatOwnerSize(boatowners.size());
-	//	System.out.println(slips.size() + " slips written");
-		newTupleCount.setSlipsSize(slips.size());
-	//	System.out.println(memos.size() + " memos written");
-		newTupleCount.setMemosSize(memos.size());
-	//	System.out.println(email.size() + " email written");
-		newTupleCount.setEmailSize(email.size());
-	//	System.out.println(monies.size() + " monies written");
-		newTupleCount.setMoniesSize(monies.size());
-	//	System.out.println(deposits.size() + " deposits written");
-		newTupleCount.setDepositsSize(deposits.size());
-	//	System.out.println(payments.size() + " payments written");
-		newTupleCount.setPaymentsSize(payments.size());
-	//	System.out.println(officers.size() + " officers written");
-		newTupleCount.setOfficersSize(officers.size());
-	//	System.out.println(definedfees.size() + " definedfees written");
-		newTupleCount.setDefinedFeesSize(definedfees.size());
-	//	System.out.println(workcredits.size() + " workcredits written");
-		newTupleCount.setWorkCreditsSize(workcredits.size());
-	}
+//	public static void calculateSums() {
+//		System.out.println("Table creation script is " + tableCreation.size() + " lines.");
+//		newTupleCount.setTableCreationSize(tableCreation.size());
+//		System.out.println(memberships.size() +" memberships written");
+//		newTupleCount.setMembershipSize(memberships.size());
+//		System.out.println(ids.size() + " ids written");
+//		newTupleCount.setIdSize(ids.size());
+//		System.out.println(people.size() + " people written");
+//		newTupleCount.setPeopleSize(people.size());
+//		System.out.println(phones.size() + " phone numbers written");
+//		newTupleCount.setPhoneSize(phones.size());
+//		System.out.println(boats.size() + " boats written");
+//		newTupleCount.setBoatSize(boats.size());
+//		System.out.println(boatowners.size() + " boatowners written");
+//		newTupleCount.setBoatOwnerSize(boatowners.size());
+//		System.out.println(slips.size() + " slips written");
+//		newTupleCount.setSlipsSize(slips.size());
+//		System.out.println(memos.size() + " memos written");
+//		newTupleCount.setMemosSize(memos.size());
+//		System.out.println(email.size() + " email written");
+//		newTupleCount.setEmailSize(email.size());
+//		System.out.println(monies.size() + " monies written");
+//		newTupleCount.setMoniesSize(monies.size());
+//		System.out.println(deposits.size() + " deposits written");
+//		newTupleCount.setDepositsSize(deposits.size());
+//		System.out.println(payments.size() + " payments written");
+//		newTupleCount.setPaymentsSize(payments.size());
+//		System.out.println(officers.size() + " officers written");
+//		newTupleCount.setOfficersSize(officers.size());
+//		System.out.println(definedfees.size() + " definedfees written");
+//		newTupleCount.setDefinedFeesSize(definedfees.size());
+//		System.out.println(workcredits.size() + " workcredits written");
+//		newTupleCount.setWorkCreditsSize(workcredits.size());
+//	}
 
 	private static String getIdChangeString(IdChangeDTO idc) {
 		return
