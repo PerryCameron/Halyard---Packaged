@@ -41,7 +41,7 @@ public class CreateMembership {
 				newMemNote.addMemo(new MemoDTO(note_id, ms_id, date, "Created new membership record", 0, "N"));
 				BaseApplication.activeMemberships.add(newMembership);
 				SqlInsert.addPersonRecord(newPrimary);
-				SqlInsert.addMembershipId(new MembershipIdDTO(mid, HalyardPaths.getYear(), ms_id, membership_id + "", false,
+				SqlInsert.addMembershipId(new MembershipIdDTO(mid, HalyardPaths.getYear(), ms_id, membership_id + "", true,
 						"RM", false, false));
 				Launcher.createMembershipTabForRoster(newMembership.getMembershipId(), newMembership.getMsid());
 			}

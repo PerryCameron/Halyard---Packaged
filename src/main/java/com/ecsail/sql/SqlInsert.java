@@ -94,9 +94,9 @@ public class SqlInsert {
 
 	public static void addPersonRecord(PersonDTO person) {
 		String query = "INSERT INTO person () VALUES ("
-				+ person.getP_id() + "," + person.getMs_id() + ",'" + person.getMemberType() + "','" + person.getFname()
+				+ person.getP_id() + "," + person.getMs_id() + "," + person.getMemberType() + ",'" + person.getFname()
 				+ "','" + person.getLname() + "'," + SqlScriptMaker.getCorrectString(person.getBirthday())
-				+ ",'" + person.getOccupation() + "','" + person.getBuisness() +"',true,"+person.getNname()+",'"+person.getNname()+"',"+person.getOldMsid()+")";
+				+ ",'" + person.getOccupation() + "','" + person.getBuisness() +"',true,null,'"+person.getNname()+"',"+person.getOldMsid()+")";
 		try {
 
 			BaseApplication.connect.executeQuery(query);

@@ -152,7 +152,7 @@ public class SqlMembership_Id {
 
     public static int getHighestMembershipId(String year) {  // example-> "email","email_id"
         int result = 0;
-        String query = "SELECT Max(membership_id) FROM membership_id WHERE fiscal_year='" + year + "'";
+        String query = "SELECT Max(membership_id) FROM membership_id WHERE fiscal_year='" + year + "' AND membership_id < 500";
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             rs.next();
