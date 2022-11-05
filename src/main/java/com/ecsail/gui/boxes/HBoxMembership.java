@@ -27,6 +27,7 @@ public class HBoxMembership extends HBox {
         ml.getJoinDate().setText(membership.getJoinDate());
         ml.getMemberID().setText("" + membership.getMembershipId());
         ml.getMemberType().setText("" + MembershipType.getByCode(membership.getMemType()));
+//        ml.getMemberType().setText("" + membership.getMemType());
         ml.getStatus().setText(getStatus());
      
         ///////////// ATTRIBUTES ///////////

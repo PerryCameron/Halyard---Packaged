@@ -32,7 +32,7 @@ public enum MembershipType {
 	 
 	   public static MembershipType getByCode(String memTypeCode) {
 		   return Arrays.stream(MembershipType.values())
-				   .filter(g -> g.code == memTypeCode)
+				   .filter(g -> g.code.equals(memTypeCode))
 				   .findFirst().orElse(null);
 	   }
 	 
