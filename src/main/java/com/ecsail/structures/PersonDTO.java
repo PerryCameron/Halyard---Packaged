@@ -15,18 +15,19 @@ public class PersonDTO {
 	private StringProperty nname;
 	private IntegerProperty oldMsid;
 
-	public PersonDTO(Integer pid, Integer ms_id, Integer mt, String fn, String ln, String birthday, String oc,
-                     String bu, Boolean active, String nn, Integer oldMsid) {
+	public PersonDTO(Integer pid, Integer ms_id, Integer memberType, String firstName, String lastName,
+					 String birthday, String occupation,
+                     String business, Boolean isActive, String nickName, Integer oldMsid) {
 		this.p_id = new SimpleIntegerProperty(pid);
 		this.ms_id = new SimpleIntegerProperty(ms_id);
-		this.memberType = new SimpleIntegerProperty(mt);
-		this.fname = new SimpleStringProperty(fn);
-		this.lname = new SimpleStringProperty(ln);
+		this.memberType = new SimpleIntegerProperty(memberType);
+		this.fname = new SimpleStringProperty(firstName);
+		this.lname = new SimpleStringProperty(lastName);
 		this.birthday = new SimpleStringProperty(birthday);
-		this.occupation = new SimpleStringProperty(oc);
-		this.buisness = new SimpleStringProperty(bu);
-		this.active = new SimpleBooleanProperty(active);
-		this.nname = new SimpleStringProperty(nn);
+		this.occupation = new SimpleStringProperty(occupation);
+		this.buisness = new SimpleStringProperty(business);
+		this.active = new SimpleBooleanProperty(isActive);
+		this.nname = new SimpleStringProperty(nickName);
 		this.oldMsid = new SimpleIntegerProperty(oldMsid);
 	}
 
@@ -35,6 +36,8 @@ public class PersonDTO {
 	}
 
 	public String getFullName() {
+		if(getFname() == null) setFname("First");
+		if(getLname() == null) setLname("Last");
 		return getFname() + " " + getLname();
 	}
 

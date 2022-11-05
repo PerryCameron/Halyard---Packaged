@@ -6,6 +6,7 @@ import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.structures.MembershipIdDTO;
 import com.ecsail.structures.MembershipListDTO;
 import com.ecsail.structures.MemoDTO;
+import com.ecsail.structures.PersonDTO;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,7 +22,7 @@ public class CreateMembership {
 			int membership_id = SqlMembership_Id.getHighestMembershipId(HalyardPaths.getYear()) + 1;
 			// get the next available primary key for a new membership_id tuple
 			int mid = SqlSelect.getNextAvailablePrimaryKey("membership_id", "mid");
-			// Do we really need to create a person?
+			// Do we really need to create a person? yes
 			int pid = SqlSelect.getNextAvailablePrimaryKey("person","p_id");
 			// creates a note object
 			Note newMemNote = new Note();
@@ -35,10 +36,11 @@ public class CreateMembership {
 
 			MembershipListDTO newMembership = new MembershipListDTO(ms_id, pid, membership_id, date, "FM", "",
 					"", "", 0, "", "", "", "", HalyardPaths.getYear());
+			PersonDTO newPrimary = new PersonDTO(pid,ms_id,1,"","",null,"","",true,"",0);
 			if (SqlInsert.addMembershipIsSucessful(newMembership)) {
 				newMemNote.addMemo(new MemoDTO(note_id, ms_id, date, "Created new membership record", 0, "N"));
 				BaseApplication.activeMemberships.add(newMembership);
-
+				SqlInsert.addPersonRecord(newPrimary);
 				SqlInsert.addMembershipId(new MembershipIdDTO(mid, HalyardPaths.getYear(), ms_id, membership_id + "", false,
 						"RM", false, false));
 				Launcher.createMembershipTabForRoster(newMembership.getMembershipId(), newMembership.getMsid());
