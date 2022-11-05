@@ -1,0 +1,3 @@
+-Fix invoice tab that pops up when you put in a new invoice
+-Fix Memtype to change on record when you change it in history table view
+-Make Jotform work
