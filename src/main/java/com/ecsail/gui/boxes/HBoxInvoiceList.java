@@ -13,6 +13,7 @@ import com.ecsail.structures.DefinedFeeDTO;
 import com.ecsail.structures.MembershipDTO;
 import com.ecsail.structures.MoneyDTO;
 import com.ecsail.structures.PersonDTO;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -105,8 +106,7 @@ public class HBoxInvoiceList extends HBox {
 		hbox1.setSpacing(5);  // membership HBox
         vboxGrey.setSpacing(10);
         hbox1.setAlignment(Pos.CENTER_LEFT);
-        
-//		vboxPink.setId("box-pink");
+
 		vboxGrey.setId("box-background-light");
 		setId("custom-tap-pane-frame");
 		VBox.setVgrow(vboxPink, Priority.ALWAYS);
@@ -137,7 +137,7 @@ public class HBoxInvoiceList extends HBox {
 				// send new money row to top
 				fiscals.sort(Comparator.comparing(MoneyDTO::getFiscal_year).reversed());
 				// open a tab for the year we just created
-				createTabByYear(newMoney);
+				createTabByYear(newMoney ,fiscalTableView);
 		});
         
 		deleteFiscalRecord.setOnAction((event) -> {
@@ -209,21 +209,30 @@ public class HBoxInvoiceList extends HBox {
 		}
 	}
 
-	private static void createTabByYear(MoneyDTO money) {
+	private static void createTabByYear(MoneyDTO money, TableView fiscalTableView) {
 		// create a tab with the correct year
 		Tab newTab = new Tab(String.valueOf(money.getFiscal_year()));
 		// add tab to pane
 		parentTabPane.getTabs().add(newTab);
 		// find the index value of the correct Object_Money in fiscals ArrayList
-		int fiscalsIndex = getFiscalIndexByYear(money.getFiscal_year());
+		int fiscalsIndex = getFiscalIndexByYear(money.getMoney_id());
+		// select appropriate index
+//		Platform.runLater(() -> {
+//			fiscalTableView.requestFocus();
+//			fiscalTableView.getSelectionModel().select(fiscalTableView.getItems().size() - 1);
+//			fiscalTableView.getFocusModel().focus(fiscalTableView.getItems().size() - 1);
+//		});
+
 		// add appropriate invoice to the tab using the index of fiscals
 		newTab.setContent(new HBoxInvoice(membership, people, fiscals, fiscalsIndex, note));
 		// open the correct tab
 		parentTabPane.getSelectionModel().select(newTab);
 	}
 
-	private static int getFiscalIndexByYear(int year) {
-		return (int) fiscals.stream().filter(fis -> fis.getFiscal_year() == year).count();
+	// searches through list and counts the index value it finds correct money_id at.
+	private static int getFiscalIndexByYear(int money_id) {
+		return (int) fiscals.stream().filter(fis -> fis.getMoney_id() == money_id).count();
 	}
+
 
 }
