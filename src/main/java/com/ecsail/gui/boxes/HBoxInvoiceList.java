@@ -216,13 +216,6 @@ public class HBoxInvoiceList extends HBox {
 		parentTabPane.getTabs().add(newTab);
 		// find the index value of the correct Object_Money in fiscals ArrayList
 		int fiscalsIndex = getFiscalIndexByYear(money.getMoney_id());
-		// select appropriate index
-//		Platform.runLater(() -> {
-//			fiscalTableView.requestFocus();
-//			fiscalTableView.getSelectionModel().select(fiscalTableView.getItems().size() - 1);
-//			fiscalTableView.getFocusModel().focus(fiscalTableView.getItems().size() - 1);
-//		});
-
 		// add appropriate invoice to the tab using the index of fiscals
 		newTab.setContent(new HBoxInvoice(membership, people, fiscals, fiscalsIndex, note));
 		// open the correct tab
