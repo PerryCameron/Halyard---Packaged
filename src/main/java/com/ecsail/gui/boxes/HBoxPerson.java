@@ -1,5 +1,6 @@
 package com.ecsail.gui.boxes;
 
+import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.Launcher;
 import com.ecsail.gui.tabs.TabPeople;
@@ -9,8 +10,6 @@ import com.ecsail.structures.MembershipListDTO;
 import com.ecsail.structures.PersonDTO;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -20,9 +19,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Objects;
 
 // TODO need to add ability to switch primary and secondary
@@ -164,11 +165,7 @@ public class HBoxPerson extends HBox {
         this.setId("custom-tap-pane-frame");
         vboxGrey.setId("box-background-light");
 
-        if (person.getBirthday() != null) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDate date = LocalDate.parse(person.getBirthday(), formatter);
-            birthdayDatePicker.setValue(date);
-        }
+
 
         /////////////// LISTENERS //////////////////////////
 
@@ -232,13 +229,50 @@ public class HBoxPerson extends HBox {
 
         photo.setOnMouseEntered(en -> hboxPictureFrame.setStyle("-fx-background-color: #201ac9;"));
 
-        EventHandler<ActionEvent> event = e -> {
-            // get the date picker value
-            LocalDate i = birthdayDatePicker.getValue();
-            SqlUpdate.updateBirthday(i, person);
-        };
 
-        birthdayDatePicker.setOnAction(event);
+        if (person.getBirthday() != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate date = LocalDate.parse(person.getBirthday(), formatter);
+            birthdayDatePicker.setValue(date);
+        }
+        // This is a hack I got from here
+        // https://stackoverflow.com/questions/32346893/javafx-datepicker-not-updating-value
+        // Apparently datepicker was broken after java 8 and then fixed in java 18
+        birthdayDatePicker.setConverter(new StringConverter<>() {
+            private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
+            @Override
+            public String toString(LocalDate localDate) {
+                if (localDate == null)
+                    return "";
+                return dateTimeFormatter.format(localDate);
+            }
+
+            @Override
+            public LocalDate fromString(String dateString) {
+                if (dateString == null || dateString.trim().isEmpty())
+                    return null;
+                try {
+                    return LocalDate.parse(dateString, dateTimeFormatter);
+                } catch (Exception e) {
+                    BaseApplication.logger.error("Bad date value entered");
+                    return null;
+                }
+            }
+        });
+        //This deals with the bug located here where the datepicker value is not updated on focus lost
+        //https://bugs.openjdk.java.net/browse/JDK-8092295?page=com.atlassian.jira.plugin.system.issuetabpanels:all-tabpanel
+        birthdayDatePicker.focusedProperty().addListener((observable, wasFocused, isFocused) -> {
+            if (!isFocused){
+                try {
+                    birthdayDatePicker.setValue(birthdayDatePicker.getConverter().fromString(birthdayDatePicker.getEditor().getText()));
+                } catch (DateTimeParseException e) {
+                    birthdayDatePicker.getEditor().setText(birthdayDatePicker.getConverter().toString(birthdayDatePicker.getValue()));
+                }
+                LocalDate i = birthdayDatePicker.getValue();
+                SqlUpdate.updateBirthday(i, person);
+            }
+        });
 
         /////////////// SETTING CONTENT /////////////////////
 

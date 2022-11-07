@@ -80,7 +80,7 @@ public class JotForm {
 
         HttpRequestBase req;
         HttpResponse resp;
-
+        BaseApplication.logger.info("Performing HTTP Request");
         switch (method) {
             case "GET" -> {
                 req = new HttpGet(JotForm.baseUrl + JotForm.version + path);
@@ -97,6 +97,7 @@ public class JotForm {
                             e.printStackTrace();
                         }
                     }
+                    BaseApplication.logger.info(String.valueOf(uri));
                     req.setURI(uri);
                 }
             }
