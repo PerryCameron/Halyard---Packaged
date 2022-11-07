@@ -238,6 +238,7 @@ public class HBoxPerson extends HBox {
         // This is a hack I got from here
         // https://stackoverflow.com/questions/32346893/javafx-datepicker-not-updating-value
         // Apparently datepicker was broken after java 8 and then fixed in java 18
+        // this is a work-around until I upgrade this to java 18+
         birthdayDatePicker.setConverter(new StringConverter<>() {
             private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 

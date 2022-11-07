@@ -28,9 +28,11 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Optional;
@@ -214,12 +216,54 @@ public class HBoxHistory extends HBox {
 
         /////////////////// LISTENERS //////////////////////////////
 
-        joinDatePicker.setOnAction((event -> {
-            LocalDate date = joinDatePicker.getValue();
-            SqlUpdate.updateMembership(membership.getMsid(), "JOIN_DATE", date);
-            membership.setJoinDate(joinDatePicker.getValue().toString());
-            labels.getJoinDate().setText(joinDatePicker.getValue().toString());
-        }));
+//        joinDatePicker.setOnAction((event -> {
+//            LocalDate date = joinDatePicker.getValue();
+//            SqlUpdate.updateMembership(membership.getMsid(), "JOIN_DATE", date);
+//            membership.setJoinDate(joinDatePicker.getValue().toString());
+//            labels.getJoinDate().setText(joinDatePicker.getValue().toString());
+//        }));
+
+        // This is a hack I got from here
+        // https://stackoverflow.com/questions/32346893/javafx-datepicker-not-updating-value
+        // Apparently datepicker was broken after java 8 and then fixed in java 18
+        // this is a work-around until I upgrade this to java 18+
+        joinDatePicker.setConverter(new StringConverter<>() {
+            private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
+            @Override
+            public String toString(LocalDate localDate) {
+                if (localDate == null)
+                    return "";
+                return dateTimeFormatter.format(localDate);
+            }
+
+            @Override
+            public LocalDate fromString(String dateString) {
+                if (dateString == null || dateString.trim().isEmpty())
+                    return null;
+                try {
+                    return LocalDate.parse(dateString, dateTimeFormatter);
+                } catch (Exception e) {
+                    BaseApplication.logger.error("Bad date value entered");
+                    return null;
+                }
+            }
+        });
+        //This deals with the bug located here where the datepicker value is not updated on focus lost
+        //https://bugs.openjdk.java.net/browse/JDK-8092295?page=com.atlassian.jira.plugin.system.issuetabpanels:all-tabpanel
+        joinDatePicker.focusedProperty().addListener((observable, wasFocused, isFocused) -> {
+            if (!isFocused){
+                try {
+                    joinDatePicker.setValue(joinDatePicker.getConverter().fromString(joinDatePicker.getEditor().getText()));
+                } catch (DateTimeParseException e) {
+                    joinDatePicker.getEditor().setText(joinDatePicker.getConverter().toString(joinDatePicker.getValue()));
+                }
+                LocalDate date = joinDatePicker.getValue();
+                SqlUpdate.updateMembership(membership.getMsid(), "JOIN_DATE", date);
+                membership.setJoinDate(joinDatePicker.getValue().toString());
+                labels.getJoinDate().setText(joinDatePicker.getValue().toString());
+            }
+        });
 
         idAdd.setOnAction((event) -> {
 
