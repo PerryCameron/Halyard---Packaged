@@ -2,4 +2,5 @@
 (fixed) Memtype to change on record when you change it in history table view
 (fixed) Make Jotform work
 (fixed) Datepicker not functioning correctly
-Secondary and Dependent 1 both displaying as secondary
+(fixed) Secondary and Dependent 1 both displaying as secondary
+(fixed) When making new people it puts a null in nickname

@@ -25,14 +25,13 @@ public class VBoxAddPerson extends VBox {
 	
 	int ms_id;
 	private final Label titleLabel;
-	private final TabPane peopleTabPane; // a reference so we can open up the newly created pane
+	private final TabPane peopleTabPane; // a reference, so we can open up the newly created pane
 	private final Note note;
 	private final MembershipListDTO membership;
 	private PersonDTO person;
-	private final int SECONDARY = 2;
-	private final int DEPENDANT = 3;
+
 	private Boolean hasError = false;
-	private TabPane tp;
+	private final TabPane tp;
 	
 	public VBoxAddPerson(TabPane tp, Note n, MembershipListDTO me) {
 		this.note = n;
@@ -59,7 +58,7 @@ public class VBoxAddPerson extends VBox {
 		TextField businessTextField = new TextField();
 		TextField occupationTextField = new TextField();
 		DatePicker birthdayDatePicker = new DatePicker();
-		final ComboBox<MemberType> memberType = new ComboBox<MemberType>();
+		final ComboBox<MemberType> memberType = new ComboBox<>();
 		HBox hboxTitle = new HBox(); // Title
 		HBox hbox1 = new HBox(); // first name
 		HBox hbox2 = new HBox(); // last name
@@ -141,7 +140,7 @@ public class VBoxAddPerson extends VBox {
 			int pid = SqlSelect.getNextAvailablePrimaryKey("person", "p_id");
 			person = new PersonDTO(pid, ms_id, memberType.getValue().getCode(), fnameTextField.getText(),
 					lnameTextField.getText(), getBirthday(birthdayDatePicker.getValue()), occupationTextField.getText(),
-					businessTextField.getText(), true, null,0);
+					businessTextField.getText(), true, "",0);
 			BaseApplication.logger.info("New Key=" + pid + " new person=" + person.getNameWithInfo());
 
 			// if adding member succeeds, clear the form
@@ -208,7 +207,7 @@ public class VBoxAddPerson extends VBox {
 
 	private void checkIfCoreMembersExist(PersonDTO person) {
 		if(person.getMemberType() < 3)
-		if (SqlExists.personExists(person.getMemberType(), ms_id)) {
+   			if (SqlExists.personExists(person.getMemberType(), ms_id)) {
 			printErrorMessage("A " + MemberType.getByCode(person.getMemberType())
 					+ " member already exists for this account");
 			hasError = true;
