@@ -1,3 +1,5 @@
--Fix invoice tab that pops up when you put in a new invoice
--Fix Memtype to change on record when you change it in history table view
--Make Jotform work
+(fixed) blank invoice tab that pops up when you put in a new invoice
+(fixed) Memtype to change on record when you change it in history table view
+(fixed) Make Jotform work
+(fixed) Datepicker not functioning correctly
+Secondary and Dependent 1 both displaying as secondary

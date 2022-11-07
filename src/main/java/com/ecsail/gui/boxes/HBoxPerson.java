@@ -59,7 +59,7 @@ public class HBoxPerson extends HBox {
 
         HBox hboxFirstName = new HBox(); // first name
         HBox hboxLastName = new HBox(); // last name
-        HBox hboxNickName = new HBox(); // nick name
+        HBox hboxNickName = new HBox(); // nickname
         HBox hboxOccupation = new HBox(); // Occupation
         HBox hboxBusiness = new HBox(); // Business
         HBox hboxBirthday = new HBox(); // Birthday
@@ -225,7 +225,7 @@ public class HBoxPerson extends HBox {
 //			}
 //		});
 
-        photo.setOnMouseExited(ex -> hboxPictureFrame.setStyle("-fx-background-color: #9fc0c7;"));
+        photo.setOnMouseExited(ex -> hboxPictureFrame.setStyle("-fx-background-color: #010e11;"));
 
         photo.setOnMouseEntered(en -> hboxPictureFrame.setStyle("-fx-background-color: #201ac9;"));
 
@@ -240,7 +240,7 @@ public class HBoxPerson extends HBox {
         // Apparently datepicker was broken after java 8 and then fixed in java 18
         // this is a work-around until I upgrade this to java 18+
         birthdayDatePicker.setConverter(new StringConverter<>() {
-            private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+            private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
             @Override
             public String toString(LocalDate localDate) {
