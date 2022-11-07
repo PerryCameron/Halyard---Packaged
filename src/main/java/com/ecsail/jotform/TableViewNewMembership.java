@@ -1,7 +1,7 @@
 package com.ecsail.jotform;
 
 import com.ecsail.gui.customwidgets.RoundCheckBox;
-import com.ecsail.structures.jotform.JotFormSubmissionListDTO;
+import com.ecsail.jotform.structures.JotFormSubmissionListDTO;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;

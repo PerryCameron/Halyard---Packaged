@@ -1,7 +1,6 @@
 package com.ecsail.jotform;
 
-import com.ecsail.BaseApplication;
-import com.ecsail.structures.jotform.JotFormSubmissionListDTO;
+import com.ecsail.jotform.structures.JotFormSubmissionListDTO;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

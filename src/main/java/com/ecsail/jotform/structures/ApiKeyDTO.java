@@ -1,4 +1,4 @@
-package com.ecsail.structures;
+package com.ecsail.jotform.structures;
 
 public class ApiKeyDTO {
     int id;

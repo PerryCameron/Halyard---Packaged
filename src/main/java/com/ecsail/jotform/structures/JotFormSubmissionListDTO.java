@@ -1,4 +1,4 @@
-package com.ecsail.structures.jotform;
+package com.ecsail.jotform.structures;
 
 import javafx.beans.property.*;
 
