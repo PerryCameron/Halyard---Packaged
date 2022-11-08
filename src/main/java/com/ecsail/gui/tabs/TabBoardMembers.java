@@ -63,9 +63,9 @@ public class TabBoardMembers extends Tab {
 	board.getStyleClass().add("title-text-bod");
 	year.getStyleClass().add("title-text-bod");
 
-	Image slipImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Stickers/" + selectedYear + ".png")));
+	Image stickerImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Stickers/" + selectedYear + ".png")));
 	//Image slipImage = new Image(getClass().getResourceAsStream("/Stickers/" + filename + ".png"), 600, 600, false, false);
-	ImageView imageView = new ImageView(slipImage);
+	ImageView imageView = new ImageView(stickerImage);
 	imageView.setFitWidth(300);
 	imageView.setFitHeight(300);
 	imageView.setPreserveRatio(true);

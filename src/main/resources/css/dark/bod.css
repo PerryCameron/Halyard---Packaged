@@ -29,3 +29,26 @@
     -fx-font-size: 12px;
     -fx-font-weight: bold;
 }
+
+#form-hbox {
+    -fx-background-color: #353a40;
+    -fx-background-radius: 14 14 14 14;
+    -fx-border-radius: 12 12 12 12;
+    -fx-border-width:1 1 1 1;
+    -fx-border-color: #0a0a0a #0a0a0a #0a0a0a #0a0a0a;
+    -fx-fill:white;
+}
+
+#form-hbox:hover {
+    -fx-background-color: #1658e7;
+    -fx-border-color: #082b76 #082b76 #082b76 #082b76;
+    -fx-fill:white;
+}
+
+#form-hbox:hover .text {
+
+}
+
+#group:hover {
+    -fx-fill:white;
+}

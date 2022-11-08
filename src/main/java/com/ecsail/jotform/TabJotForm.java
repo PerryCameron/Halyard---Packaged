@@ -33,18 +33,19 @@ public class TabJotForm extends Tab {
 		vboxGrey.setPrefHeight(688);
 		Button listButton = new Button("List");
 
-		TableViewNewMembership tableViewNewMembership = new TableViewNewMembership(list, client);
-		TableView<JotFormSubmissionListDTO> tableView;
-		Thread t = new Thread(() -> {
-			JSONObject submissions = client.getFormSubmissions(213494856046160L);
-			ArrayList<JSONObject> formSubmissions = jotFormECSC.addFormSubmissionsIntoArray(submissions);
-			for (JSONObject a : formSubmissions) {
-				list.add(jotFormECSC.addSubmissionAnswersIntoDTO(a));
-			}
-		});
-		t.start();
-		tableView = tableViewNewMembership.getContent();
-		vboxGrey.getChildren().add(tableView);
+		CustomViewForms customViewForms = new CustomViewForms();
+//		TableViewNewMembership tableViewNewMembership = new TableViewNewMembership(list, client);
+//		TableView<JotFormSubmissionListDTO> tableView;
+//		Thread t = new Thread(() -> {
+//			JSONObject submissions = client.getFormSubmissions(213494856046160L);
+//			ArrayList<JSONObject> formSubmissions = jotFormECSC.addFormSubmissionsIntoArray(submissions);
+//			for (JSONObject a : formSubmissions) {
+//				list.add(jotFormECSC.addSubmissionAnswersIntoDTO(a));
+//			}
+//		});
+//		t.start();
+//		tableView = tableViewNewMembership.getContent();
+		vboxGrey.getChildren().add(customViewForms);
 
 		vboxGrey.getChildren().add(listButton);
 		vboxBlue.getChildren().add(vboxPink);

@@ -11,7 +11,7 @@ public class JotFormsDTO {
     StringProperty created_at;
     StringProperty updated_at;
     StringProperty last_submission;
-    IntegerProperty _new;
+    IntegerProperty newSubmission;
     IntegerProperty count;
     StringProperty type;
     IntegerProperty favorite;
@@ -29,7 +29,7 @@ public class JotFormsDTO {
         this.created_at = new SimpleStringProperty(created_at);
         this.updated_at = new SimpleStringProperty(updated_at);
         this.last_submission = new SimpleStringProperty(last_submission);
-        this._new = new SimpleIntegerProperty(_new);
+        this.newSubmission = new SimpleIntegerProperty(_new);
         this.count = new SimpleIntegerProperty(count);
         this.type = new SimpleStringProperty(type);
         this.favorite = new SimpleIntegerProperty(favorite);
@@ -133,16 +133,16 @@ public class JotFormsDTO {
         this.last_submissionProperty().set(last_submission);
     }
 
-    public final IntegerProperty _newProperty() {
-        return this._new;
+    public final IntegerProperty newSubmissionProperty() {
+        return this.newSubmission;
     }
 
-    public final int get_new() {
-        return this._newProperty().get();
+    public final int getNewSubmission() {
+        return this.newSubmissionProperty().get();
     }
 
-    public final void set_new(final int _new) {
-        this._newProperty().set(_new);
+    public final void setNewSubmission(final int newSubmission) {
+        this.newSubmissionProperty().set(newSubmission);
     }
 
     public final IntegerProperty countProperty() {

@@ -4,3 +4,6 @@
 (fixed) Datepicker not functioning correctly
 (fixed) Secondary and Dependent 1 both displaying as secondary
 (fixed) When making new people it puts a null in nickname
+
+features
+Make is so it remembers last server visited
