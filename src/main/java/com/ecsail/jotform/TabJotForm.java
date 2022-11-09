@@ -1,19 +1,15 @@
 package com.ecsail.jotform;
 
-import com.ecsail.sql.select.SqlApi_key;
 import com.ecsail.jotform.structures.ApiKeyDTO;
 import com.ecsail.jotform.structures.JotFormSubmissionListDTO;
+import com.ecsail.sql.select.SqlApi_key;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TableView;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 
 public class TabJotForm extends Tab {
@@ -31,25 +27,16 @@ public class TabJotForm extends Tab {
 		vboxPink.setPadding(new Insets(3,3,3,3)); // spacing to make pink from around table
 		VBox.setVgrow(vboxPink, Priority.ALWAYS);
 		vboxGrey.setPrefHeight(688);
-		Button listButton = new Button("List");
 
-		CustomViewForms customViewForms = new CustomViewForms();
-//		TableViewNewMembership tableViewNewMembership = new TableViewNewMembership(list, client);
-//		TableView<JotFormSubmissionListDTO> tableView;
-//		Thread t = new Thread(() -> {
-//			JSONObject submissions = client.getFormSubmissions(213494856046160L);
-//			ArrayList<JSONObject> formSubmissions = jotFormECSC.addFormSubmissionsIntoArray(submissions);
-//			for (JSONObject a : formSubmissions) {
-//				list.add(jotFormECSC.addSubmissionAnswersIntoDTO(a));
-//			}
-//		});
-//		t.start();
-//		tableView = tableViewNewMembership.getContent();
+
+		CustomViewForms customViewForms = new CustomViewForms(client);
 		vboxGrey.getChildren().add(customViewForms);
 
-		vboxGrey.getChildren().add(listButton);
+		vboxGrey.getChildren().add(new Label("stuff here"));
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
 		setContent(vboxBlue);
 	}
+
+
 }

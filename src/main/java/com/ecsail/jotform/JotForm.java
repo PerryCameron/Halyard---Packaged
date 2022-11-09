@@ -344,6 +344,7 @@ public class JotForm {
      * @return Returns name of the folder and owner of the folder for shared folders.
      */
     public JSONObject getFolders() {
+        BaseApplication.logger.info("Getting folders...");
         return executeGetRequest("/user/folders", null);
     }
 

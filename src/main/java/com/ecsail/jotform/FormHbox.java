@@ -23,17 +23,16 @@ public class FormHbox extends HBox {
 
     public FormHbox(JotFormsDTO jotFormsDTO) {
         String formText =
-                "2022 ECSC Membership Renewal Form\n" +
-                        jotFormsDTO.getCount() + " Submissions, Created on " + jotFormsDTO.getCreated_at()+ "\n" +
-                        jotFormsDTO.getNewSubmission() + " New    " + jotFormsDTO.getArchived() + " Archived";
+                jotFormsDTO.getTitle() + "\n" +
+                jotFormsDTO.getCount() + " Submissions, Created on " + jotFormsDTO.getCreated_at()+ "\n" +
+                jotFormsDTO.getNewSubmission() + " New    " + jotFormsDTO.getArchived() + " Archived";
 
         var list = new VBox();
         var formTextObj = new Text();
         var selectForm = new CheckBox();
         IosSwitch checkBox1 = IosSwitchBuilder.create()
                 .prefSize(76, 46)
-                .selected(true)
-                .selectedColor(Color.CORNFLOWERBLUE)
+                .selected(jotFormsDTO.isFavorite())
                 .build();
 
         formTextObj.setId("form-hbox");
@@ -42,7 +41,7 @@ public class FormHbox extends HBox {
         list.getChildren().add(formTextObj);
         setSpacing(10);
         setPadding(new Insets(10,10,10,10));
-        setAlignment(Pos.CENTER);
+        setAlignment(Pos.CENTER_LEFT);
         setId("form-hbox");
 
         formTextObj.setOnMouseClicked(e -> {
