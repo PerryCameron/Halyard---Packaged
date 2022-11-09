@@ -1,4 +1,4 @@
-package com.ecsail.gui.customwidgets;
+package com.ecsail.customwidgets;
 
 import javafx.animation.AnimationTimer;
 import javafx.animation.Interpolator;
@@ -450,8 +450,7 @@ public class IosSwitch extends Region {
 
     private double clamp(final double MIN, final double MAX, final double VALUE) {
         if (VALUE < MIN) { return MIN; }
-        if (VALUE > MAX) { return MAX; }
-        return VALUE;
+        return Math.min(VALUE, MAX);
     }
 
 

@@ -1,4 +1,4 @@
-package com.ecsail.gui.customwidgets;
+package com.ecsail.customwidgets;
 
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;

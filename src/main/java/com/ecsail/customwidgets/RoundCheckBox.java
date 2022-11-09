@@ -1,4 +1,4 @@
-package com.ecsail.gui.customwidgets;
+package com.ecsail.customwidgets;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -64,7 +64,7 @@ public class RoundCheckBox extends HBox {
                 }
             }
         });
-        HBox.setHgrow(this, Priority.ALWAYS);
+        setPrefWidth(30.0);
         this.setAlignment(Pos.CENTER);
         this.getChildren().add(stackPane);
     }

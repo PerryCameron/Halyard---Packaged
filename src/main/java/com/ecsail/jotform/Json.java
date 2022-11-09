@@ -11,20 +11,22 @@ public class Json {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode neoJsonNode;
         try {
-            return neoJsonNode = objectMapper.readTree(jsonObject.toString());
+            neoJsonNode = objectMapper.readTree(jsonObject.toString());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+        return  neoJsonNode;
     }
 
     public static JsonNode getJsonNodeFromString(String jsonObject) {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode neoJsonNode;
         try {
-            return neoJsonNode = objectMapper.readTree(jsonObject.toString());
+            neoJsonNode = objectMapper.readTree(jsonObject);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+        return neoJsonNode;
     }
 
 
