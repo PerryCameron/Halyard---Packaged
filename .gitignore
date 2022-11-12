@@ -32,3 +32,5 @@ target/
 
 # OS
 .DS_Store
+/src/main/resources/test_json/submissions.json
+/src/main/java/com/ecsail/jotform/TestJSONProcess.java
