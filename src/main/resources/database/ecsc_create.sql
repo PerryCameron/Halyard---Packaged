@@ -383,7 +383,16 @@ CREATE TABLE ECSC_SQL.users
     enabled  boolean                             not null
 );
 
-
+CREATE TABLE ECSC_SQL.board_positions
+(
+    id LONG NOT NULL primary key,
+    position varchar(50) unique not null,
+    identifier varchar(5) unique not null,
+    order INTEGER not null,
+    is_officer boolean not null,
+    is_chair boolean not null,
+    is_assistant_chair boolean not null
+);
 
 
 

@@ -187,7 +187,7 @@ public class TabBoardMembers extends Tab {
 	
 	
 	private void addOfficers() {
-		Arrays.stream(Officer.values()).limit(8)
+		Arrays.stream(Officer.values()).limit(7)
 				.filter(offTypes -> !offTypes.getText().equals("Board Member"))
 				.map(offTypes -> new Pair(offTypes.getCode(), getOfficer(offTypes.getCode())))
 				.filter(pair -> !pair.value.equals(""))
@@ -203,7 +203,7 @@ public class TabBoardMembers extends Tab {
 	}
 
 	private void addChairmen() {
-		Arrays.stream(Officer.values()).skip(8)
+		Arrays.stream(Officer.values()).skip(7)
 				.filter(offTypes -> !offTypes.getText().equals("Board Member"))
 				.map(offTypes -> new Pair<>(offTypes.getCode(), getOfficer(offTypes.getCode())))
 				.filter(pair -> !pair.value.equals(""))
