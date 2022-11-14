@@ -24,11 +24,8 @@ public class SqlUpdate {
 				BaseApplication.connect.executeQuery(query);
 			else
 				BaseApplication.connect.executeQuery(query1);
-//			Halyard.edits.setBoatEdits(Halyard.edits.getBoatEdits() + 1);  // count number of edits.		} catch (SQLException e) {
-
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-//			throw new RuntimeException(e);
 		}
 	}
 
@@ -36,7 +33,6 @@ public class SqlUpdate {
 		String query = "UPDATE boat SET has_trailer=" + hasTrailer + " WHERE boat_id=" + boat_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setBoatEdits(Halyard.edits.getBoatEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -46,7 +42,6 @@ public class SqlUpdate {
 		String query = "UPDATE person SET MS_ID=null, OLDMSID="+p.getMs_id()+" where P_ID=" + p.getP_id();
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setBoatEdits(Halyard.edits.getBoatEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -56,7 +51,6 @@ public class SqlUpdate {
 		String query = "UPDATE boat SET keel='" + keel + "' WHERE boat_id=" + boat_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setBoatEdits(Halyard.edits.getBoatEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -67,7 +61,6 @@ public class SqlUpdate {
 				+ "' WHERE ms_id=" + membership.getMsid();
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setMembershipEdits(Halyard.edits.getMembershipEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -78,7 +71,6 @@ public class SqlUpdate {
 				+ "' WHERE ms_id=" + membership.getMsid();
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setMembershipEdits(Halyard.edits.getMembershipEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -89,7 +81,6 @@ public class SqlUpdate {
 				+ "' WHERE ms_id=" + membership.getMsid();
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setMembershipEdits(Halyard.edits.getMembershipEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -100,7 +91,6 @@ public class SqlUpdate {
 				+ "' WHERE ms_id=" + membership.getMsid();
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setMembershipEdits(Halyard.edits.getMembershipEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -110,7 +100,6 @@ public class SqlUpdate {
 		String query = "UPDATE membership SET " + field + "='" + date + "' WHERE ms_id=" + ms_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setMembershipEdits(Halyard.edits.getMembershipEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -120,7 +109,6 @@ public class SqlUpdate {
 		String query = "UPDATE deposit SET " + field + "='" + date + "' WHERE deposit_id=" + deposit_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setDepositsEdits(Halyard.edits.getDepositsEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -130,7 +118,6 @@ public class SqlUpdate {
 		String query = "UPDATE phone SET " + field + "=" + attribute + " WHERE phone_id=" + phone_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setPhoneEdits(Halyard.edits.getPhoneEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -140,7 +127,6 @@ public class SqlUpdate {
 		String query = "UPDATE person SET MEMBER_TYPE=" + newMemType + " WHERE P_ID=" + person.getP_id();
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setPhoneEdits(Halyard.edits.getPhoneEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -150,7 +136,6 @@ public class SqlUpdate {
 		String query = "UPDATE waitlist SET " + field + "=" + attribute + " WHERE ms_id=" + ms_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setPhoneEdits(Halyard.edits.getPhoneEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -160,7 +145,6 @@ public class SqlUpdate {
 		String query = "UPDATE phone SET " + field + "='" + attribute + "' WHERE phone_id=" + phone_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setPhoneEdits(Halyard.edits.getPhoneEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -170,7 +154,6 @@ public class SqlUpdate {
 		String query = "UPDATE email SET " + field + "=" + attribute + " WHERE email_id=" + email_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setEmailEdits(Halyard.edits.getEmailEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -180,7 +163,6 @@ public class SqlUpdate {
 		String query = "UPDATE email SET email='" + email + "' WHERE email_id=" + email_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setEmailEdits(Halyard.edits.getEmailEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -190,7 +172,6 @@ public class SqlUpdate {
 		String query = "UPDATE officer SET " + field + "='" + attribute + "' WHERE o_id=" + officer_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setOfficersEdits(Halyard.edits.getOfficersEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 			//new Dialogue_ErrorSQL(e,"There was a problem with the Update","");
 			alert.setTitle("Error Dialog");
@@ -204,7 +185,6 @@ public class SqlUpdate {
 		String query = "UPDATE awards SET " + field + "='" + attribute + "' WHERE award_id=" + awardId;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setOfficersEdits(Halyard.edits.getOfficersEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 			//new Dialogue_ErrorSQL(e,"There was a problem with the Update","");
 			alert.setTitle("Error Dialog");
@@ -219,7 +199,6 @@ public class SqlUpdate {
 				+ "' WHERE p_id=" + person.getP_id();
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setPeopleEdits(Halyard.edits.getPeopleEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -230,7 +209,6 @@ public class SqlUpdate {
 				+ "' WHERE p_id=" + person.getP_id();
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setPeopleEdits(Halyard.edits.getPeopleEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"Unable to save nickname","");
 		}
@@ -241,7 +219,6 @@ public class SqlUpdate {
 				+ "' WHERE p_id=" + person.getP_id();
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setPeopleEdits(Halyard.edits.getPeopleEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -252,7 +229,6 @@ public class SqlUpdate {
 				+ "' WHERE p_id=" + person.getP_id();
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setPeopleEdits(Halyard.edits.getPeopleEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -263,7 +239,6 @@ public class SqlUpdate {
 				+ "' WHERE p_id=" + person.getP_id();
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setPeopleEdits(Halyard.edits.getPeopleEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -274,7 +249,6 @@ public class SqlUpdate {
 				+ "' WHERE p_id=" + person.getP_id();
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setPeopleEdits(Halyard.edits.getPeopleEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -284,7 +258,6 @@ public class SqlUpdate {
 		String query = "UPDATE person SET " + field + "=" + attribute + " WHERE p_id=" + p_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setPeopleEdits(Halyard.edits.getPeopleEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -304,7 +277,6 @@ public class SqlUpdate {
 				+ " WHERE p_id=" + p.getP_id();
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setPeopleEdits(Halyard.edits.getPeopleEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -315,7 +287,6 @@ public class SqlUpdate {
 		try {
 			BaseApplication.connect.executeQuery(query);
 			membership.setSubleaser(ms_id);
-//			Halyard.edits.setSlipsEdits(Halyard.edits.getSlipsEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -326,7 +297,6 @@ public class SqlUpdate {
 		try {
 			BaseApplication.connect.executeQuery(query);
 			membership.setSubleaser(0);
-//			Halyard.edits.setSlipsEdits(Halyard.edits.getSlipsEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -338,7 +308,6 @@ public class SqlUpdate {
 			BaseApplication.connect.executeQuery(query);
 			MembershipListDTO ownerMembership = SqlMembershipList.getMembershipFromList(subleasee, BaseApplication.selectedYear);
 			ownerMembership.setSubleaser(0);
-//			Halyard.edits.setSlipsEdits(Halyard.edits.getSlipsEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -352,7 +321,6 @@ public class SqlUpdate {
 			membership.setSlip("0");
 			MembershipListDTO newSlipOwnerMembership = SqlMembershipList.getMembershipFromList(ms_id, BaseApplication.selectedYear);
 			newSlipOwnerMembership.setSlip(slip);
-//			Halyard.edits.setSlipsEdits(Halyard.edits.getSlipsEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -362,7 +330,6 @@ public class SqlUpdate {
 		String query = "UPDATE money SET commited=" + commit + " WHERE money_id=" + money_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setMoniesEdits(Halyard.edits.getMoniesEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -395,7 +362,6 @@ public class SqlUpdate {
 			+ " WHERE money_id=" + money.getMoney_id();
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setMoniesEdits(Halyard.edits.getMoniesEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 		e.printStackTrace();
 		new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
@@ -407,7 +373,6 @@ public class SqlUpdate {
 				+ " WHERE money_id=" + money_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setMoniesEdits(Halyard.edits.getMoniesEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -418,7 +383,6 @@ public class SqlUpdate {
 				+ " WHERE money_id=" + money_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setMoniesEdits(Halyard.edits.getMoniesEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -428,7 +392,6 @@ public class SqlUpdate {
 		String query = "UPDATE memo SET " + field + "='" + attribute + "' WHERE memo_id=" + memo_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setMemosEdits(Halyard.edits.getMemosEdits() + 1);  // update edits tracking
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -438,7 +401,6 @@ public class SqlUpdate {
 		String query = "UPDATE payment SET " + field + "='" + attribute + "' WHERE pay_id=" + pay_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setPaymentsEdits(Halyard.edits.getPaymentsEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -449,7 +411,6 @@ public class SqlUpdate {
 		String query = "UPDATE membership_id SET " + field + "='" + attribute + "' WHERE mid=" + thisId.getMid();
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setIdEdits(Halyard.edits.getIdEdits() + 1);
 		} catch (SQLIntegrityConstraintViolationException IV) {
 			PersonDTO accountHolder = SqlPerson.getPersonFromMembershipID(thisId.getMembership_id(), thisId.getFiscal_Year());
 			String errorMessage = "The entry for the year " + thisId.getFiscal_Year() + " with a membership ID of " + thisId.getMembership_id()
@@ -468,7 +429,6 @@ public class SqlUpdate {
 		String query = "UPDATE boat SET aux=" + value + " where BOAT_ID=" + boatId;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setIdEdits(Halyard.edits.getBoatEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -478,7 +438,6 @@ public class SqlUpdate {
 		String query = "UPDATE membership_id SET renew=" + value + " where fiscal_year='" + year + "' and ms_id=" + ms_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setIdEdits(Halyard.edits.getIdEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -488,7 +447,6 @@ public class SqlUpdate {
 		String query = "UPDATE membership_id SET " + field + "=" + attribute + " WHERE mid=" + mid;
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setIdEdits(Halyard.edits.getIdEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -503,7 +461,6 @@ public class SqlUpdate {
 				+ "' WHERE FEE_ID=" + feeDTO.getFeeId();
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setIdEdits(Halyard.edits.getIdEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -532,7 +489,6 @@ public class SqlUpdate {
 				" WHERE fiscal_year=" + d.getFiscal_year();
 		try {
 			BaseApplication.connect.executeQuery(query);
-//			Halyard.edits.setDefinedFeesEdits(Halyard.edits.getDefinedFeesEdits() + 1);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}

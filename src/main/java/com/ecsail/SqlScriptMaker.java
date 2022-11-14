@@ -35,6 +35,8 @@ public class SqlScriptMaker {
 	static ArrayList<FeeDTO>fees;
 	static ArrayList<IdChangeDTO>idChanges;
 
+	static ArrayList<BoardPositionDTO> positions;
+
 	private static final int ALL = 0;
 
 	public static void createSql() {
@@ -66,6 +68,8 @@ public class SqlScriptMaker {
 		hash = SqlHash.getAllHash();
 		fees = SqlFee.getAllFees();
 		idChanges = SqlIdChange.getAllChangedIds();
+		positions = SqlBoardPositions.getPositions();
+
 		BaseApplication.logger.info("2");
 		HalyardPaths.checkPath(HalyardPaths.SQLBACKUP + "/" + BaseApplication.selectedYear);
 //		calculateSums();
@@ -123,6 +127,10 @@ public class SqlScriptMaker {
 				writer.write(getFeeString(fe));
 			for (IdChangeDTO idc: idChanges)
 				writer.write(getIdChangeString(idc));
+			for (BoardPositionDTO b: positions)
+				writer.write(getPositionString(b));
+
+//			positions.stream().forEach(p -> writeToFile(getPositionString(p)));
 
 			clearMemory();
 			writer.close();
@@ -132,7 +140,13 @@ public class SqlScriptMaker {
 		}
 	}
 
-
+//	public static void writeToFile(FileWriter writer, String entry)  {
+//		try {
+//			writer.write("");
+//		} catch (IOException e) {
+//			throw new RuntimeException(e);
+//		}
+//	}
 
 	public static void clearMemory() {
 		tableCreation.clear();
@@ -155,44 +169,20 @@ public class SqlScriptMaker {
 		awards.clear();
 		fees.clear();
 		idChanges.clear();
+		positions.clear();
 	}
 
-	// this is to calculate changes to display everytime you back up the database.
-//	public static void calculateSums() {
-//		System.out.println("Table creation script is " + tableCreation.size() + " lines.");
-//		newTupleCount.setTableCreationSize(tableCreation.size());
-//		System.out.println(memberships.size() +" memberships written");
-//		newTupleCount.setMembershipSize(memberships.size());
-//		System.out.println(ids.size() + " ids written");
-//		newTupleCount.setIdSize(ids.size());
-//		System.out.println(people.size() + " people written");
-//		newTupleCount.setPeopleSize(people.size());
-//		System.out.println(phones.size() + " phone numbers written");
-//		newTupleCount.setPhoneSize(phones.size());
-//		System.out.println(boats.size() + " boats written");
-//		newTupleCount.setBoatSize(boats.size());
-//		System.out.println(boatowners.size() + " boatowners written");
-//		newTupleCount.setBoatOwnerSize(boatowners.size());
-//		System.out.println(slips.size() + " slips written");
-//		newTupleCount.setSlipsSize(slips.size());
-//		System.out.println(memos.size() + " memos written");
-//		newTupleCount.setMemosSize(memos.size());
-//		System.out.println(email.size() + " email written");
-//		newTupleCount.setEmailSize(email.size());
-//		System.out.println(monies.size() + " monies written");
-//		newTupleCount.setMoniesSize(monies.size());
-//		System.out.println(deposits.size() + " deposits written");
-//		newTupleCount.setDepositsSize(deposits.size());
-//		System.out.println(payments.size() + " payments written");
-//		newTupleCount.setPaymentsSize(payments.size());
-//		System.out.println(officers.size() + " officers written");
-//		newTupleCount.setOfficersSize(officers.size());
-//		System.out.println(definedfees.size() + " definedfees written");
-//		newTupleCount.setDefinedFeesSize(definedfees.size());
-//		System.out.println(workcredits.size() + " workcredits written");
-//		newTupleCount.setWorkCreditsSize(workcredits.size());
-//	}
-
+	private static String getPositionString(BoardPositionDTO p) {
+		return
+				"INSERT INTO board_positions () VALUES("
+				+ p.id() + ","
+				+ getCorrectString(p.position()) + ","
+				+ getCorrectString(p.identifier()) + ","
+				+ p.order() + ","
+				+ p.isOfficer() + ","
+				+ p.isChair() + ","
+				+ p.isAssist() + ");\n";
+	}
 	private static String getIdChangeString(IdChangeDTO idc) {
 		return
 		"INSERT INTO id_change () VALUES("
