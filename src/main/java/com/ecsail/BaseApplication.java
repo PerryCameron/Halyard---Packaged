@@ -1,6 +1,8 @@
 package com.ecsail;
 
 import com.ecsail.plugin.*;
+import com.ecsail.sql.select.SqlBoardPositions;
+import com.ecsail.structures.BoardPositionDTO;
 import com.ecsail.structures.MembershipListDTO;
 
 import com.jcraft.jsch.JSchException;
@@ -20,6 +22,7 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 
@@ -46,6 +49,7 @@ public class BaseApplication extends Application implements Log {
     public static TabPane tabPane;
     public static Logger logger = LoggerFactory.getLogger(BaseApplication.class);
     public static ObservableList<MembershipListDTO> activeMemberships;
+    public static ArrayList<BoardPositionDTO> boardPositions;
     public static ConnectDatabase connect;
     public static String selectedYear;
     public static Stage stage;
@@ -53,7 +57,7 @@ public class BaseApplication extends Application implements Log {
 
     public static void main(String[] args) {
         setUpForFirstTime();
-        startFileLogger();
+//        startFileLogger();
         logger.info("Starting application...");
         BaseApplication.selectedYear = HalyardPaths.getYear();
         launch(args);

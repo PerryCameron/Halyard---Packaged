@@ -1,8 +1,10 @@
 package com.ecsail;
 
+import com.ecsail.enums.Officer;
 import com.ecsail.gui.boxes.HBoxWelcome;
 import com.ecsail.gui.tabs.TabLogin;
 import com.ecsail.gui.tabs.TabWelcome;
+import com.ecsail.sql.select.SqlBoardPositions;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.structures.Object_Login;
 import javafx.application.Platform;
@@ -311,6 +313,8 @@ public class ConnectDatabase {
 				primaryStage.setTitle("ECSC Membership Database");
         		if(createConnection(user, pass, loopback, port)) {
         		BaseApplication.activeMemberships = SqlMembershipList.getRoster(BaseApplication.selectedYear, true);
+				// gets a list of all the board positions to use throughout the application
+				BaseApplication.boardPositions = Officer.getPositionList();
         		logonStage.close();
         		} else {
 					BaseApplication.logger.error(exception);

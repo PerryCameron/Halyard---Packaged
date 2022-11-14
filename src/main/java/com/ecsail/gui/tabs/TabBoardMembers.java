@@ -4,7 +4,9 @@ import com.ecsail.BaseApplication;
 import com.ecsail.Launcher;
 import com.ecsail.enums.Officer;
 import com.ecsail.sql.select.SqlBoard;
+import com.ecsail.sql.select.SqlBoardPositions;
 import com.ecsail.structures.BoardDTO;
+import com.ecsail.structures.BoardPositionDTO;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,24 +21,26 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 
 
 public class TabBoardMembers extends Tab {
-	
-	VBox boardMembersVBox1 = new VBox();
-	VBox boardMembersVBox2 = new VBox();
-	VBox boardMembersVBox3 = new VBox();
-	VBox committeeVBox1 = new VBox();  // titles
-	VBox committeeVBox2 = new VBox();
-	VBox officerVBox1 = new VBox();  // titles
-	VBox officerVBox2 = new VBox();
+
+	private VBox boardMembersVBox1 = new VBox();
+	private VBox boardMembersVBox2 = new VBox();
+	private VBox boardMembersVBox3 = new VBox();
+	private VBox committeeVBox1 = new VBox();  // titles
+	private VBox committeeVBox2 = new VBox();
+	private VBox officerVBox1 = new VBox();  // titles
+	private VBox officerVBox2 = new VBox();
 	private ObservableList<BoardDTO> board;
-	String selectedYear;
-	String currentYear;
-	Text year;
+	private String selectedYear;
+	private String currentYear;
+	private Text year;
+
 	
 	public TabBoardMembers(String text) {
 		super(text);
@@ -44,6 +48,7 @@ public class TabBoardMembers extends Tab {
 		this.board =  SqlBoard.getBoard(selectedYear);
 		this.currentYear = selectedYear;  // save the current year for later
 		this.year = new Text(selectedYear + " Officers");
+		// gets a list of board position data to use throughout app.
 
 		
 	VBox vboxLeft = new VBox();  // this is the vbox for organizing all the widgets
@@ -184,31 +189,45 @@ public class TabBoardMembers extends Tab {
 	private String incrementSelectedYear(int increment) {
 		return (Integer.parseInt(selectedYear) + increment) + "";
 	}
-	
-	
+
+
 	private void addOfficers() {
-		Arrays.stream(Officer.values()).limit(7)
-				.filter(offTypes -> !offTypes.getText().equals("Board Member"))
-				.map(offTypes -> new Pair(offTypes.getCode(), getOfficer(offTypes.getCode())))
+		BaseApplication.boardPositions.stream()
+				.filter(p -> p.isOfficer())
+				.map(offType -> new Pair(offType.identifier(), getOfficer(offType.identifier())))
 				.filter(pair -> !pair.value.equals(""))
 				.forEach(pair -> {
-						Text officerTitle = new Text(Officer.getNameByCode(pair.key.toString()));
-						officerTitle.getStyleClass().add("bod-position-titles-text");
-						officerVBox1.getChildren().add(officerTitle); // this is our labels
-						Text officerName = new Text(pair.value.toString());
-						officerName.getStyleClass().add("bod-names-text");
-						officerVBox2.getChildren()
-								.add(setMouseListener(officerName, getOfficerMSID(pair.key.toString())));
+					Text officerTitle = new Text(Officer.getByCode(pair.key.toString()));
+					officerTitle.getStyleClass().add("bod-position-titles-text");
+					officerVBox1.getChildren().add(officerTitle); // this is our labels
+					Text officerName = new Text(pair.value.toString());
+					officerName.getStyleClass().add("bod-names-text");
+					officerVBox2.getChildren()
+							.add(setMouseListener(officerName, getOfficerMSID(pair.key.toString())));
 				});
+
+//		Arrays.stream(Officer.values()).limit(7)
+//				.filter(offTypes -> !offTypes.getText().equals("Board Member"))
+//				.map(offTypes -> new Pair(offTypes.getCode(), getOfficer(offTypes.getCode())))
+//				.filter(pair -> !pair.value.equals(""))
+//				.forEach(pair -> {
+//						Text officerTitle = new Text(Officer.getNameByCode(pair.key.toString()));
+//						officerTitle.getStyleClass().add("bod-position-titles-text");
+//						officerVBox1.getChildren().add(officerTitle); // this is our labels
+//						Text officerName = new Text(pair.value.toString());
+//						officerName.getStyleClass().add("bod-names-text");
+//						officerVBox2.getChildren()
+//								.add(setMouseListener(officerName, getOfficerMSID(pair.key.toString())));
+//				});
 	}
 
 	private void addChairmen() {
-		Arrays.stream(Officer.values()).skip(7)
-				.filter(offTypes -> !offTypes.getText().equals("Board Member"))
-				.map(offTypes -> new Pair<>(offTypes.getCode(), getOfficer(offTypes.getCode())))
+		BaseApplication.boardPositions.stream()
+						.filter(p -> p.isChair() || p.isAssist())
+				.map(offType -> new Pair<>(offType.identifier(), getOfficer(offType.identifier())))
 				.filter(pair -> !pair.value.equals(""))
 				.forEach(pair -> {
-					Text committeeTitle = new Text(Officer.getNameByCode(pair.key));
+					Text committeeTitle = new Text(Officer.getByCode(pair.key));
 					committeeTitle.getStyleClass().add("bod-position-titles-text");
 					committeeVBox1.getChildren().add(committeeTitle); // this is our labels
 					Text chairmanName = new Text(pair.value);
@@ -216,6 +235,20 @@ public class TabBoardMembers extends Tab {
 					committeeVBox2.getChildren()
 							.add(setMouseListener(chairmanName, getOfficerMSID(pair.key)));
 				});
+
+//		Arrays.stream(Officer.values()).skip(7)
+//				.filter(offTypes -> !offTypes.getText().equals("Board Member"))
+//				.map(offTypes -> new Pair<>(offTypes.getCode(), getOfficer(offTypes.getCode())))
+//				.filter(pair -> !pair.value.equals(""))
+//				.forEach(pair -> {
+//					Text committeeTitle = new Text(Officer.getNameByCode(pair.key));
+//					committeeTitle.getStyleClass().add("bod-position-titles-text");
+//					committeeVBox1.getChildren().add(committeeTitle); // this is our labels
+//					Text chairmanName = new Text(pair.value);
+//					chairmanName.getStyleClass().add("bod-names-text");
+//					committeeVBox2.getChildren()
+//							.add(setMouseListener(chairmanName, getOfficerMSID(pair.key)));
+//				});
 	}
 
 	/**

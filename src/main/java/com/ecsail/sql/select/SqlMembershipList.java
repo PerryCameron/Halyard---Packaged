@@ -115,7 +115,7 @@ public class SqlMembershipList {
         } catch (SQLException e) {
 //            new Dialogue_ErrorSQL(e,"Unable to SELECT roster","See below for details");
         }
-        BaseApplication.logger.info("Creating Active Roster list for " + year + "...");
+        BaseApplication.logger.info("Selecting Active Roster list for " + year + "...");
         return rosters;
     }
 

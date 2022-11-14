@@ -209,7 +209,7 @@ public class PDF_BoardOfDirectors extends Table {
 			Cell cell;
 			Paragraph p;
 			cell = new Cell();
-			p = new Paragraph(Officer.getNameByCode(type) + ":");
+			p = new Paragraph(Officer.getByCode(type) + ":");
 			p.setFontSize(set.getNormalFontSize());
 			p.setFont(set.getColumnHead());
 			p.setFixedLeading(set.getFixedLeading() - 15);  // sets spacing between lines of text
@@ -226,7 +226,6 @@ public class PDF_BoardOfDirectors extends Table {
 	}
 	
 	public String getOfficer(String type) {
-
 		String officer = "";
 		for(PDF_Object_Officer o: officers) {
 			if(o.getOfficerType().equals(type))

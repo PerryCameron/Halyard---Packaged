@@ -6,8 +6,10 @@ import com.ecsail.enums.Officer;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
+import com.ecsail.sql.select.SqlBoardPositions;
 import com.ecsail.sql.select.SqlOfficer;
 import com.ecsail.sql.select.SqlSelect;
+import com.ecsail.structures.BoardPositionDTO;
 import com.ecsail.structures.OfficerDTO;
 import com.ecsail.structures.PersonDTO;
 import javafx.beans.property.SimpleObjectProperty;
@@ -27,6 +29,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class HBoxOfficer extends HBox {
 
@@ -85,24 +88,23 @@ public class HBoxOfficer extends HBox {
 					}
 			);
 
-	        ObservableList<Officer> officerList = FXCollections.observableArrayList(Officer.values());
-	    	final TableColumn<OfficerDTO, Officer> Col2 = new TableColumn<>("Officers, Chairs and Board");
+	        ObservableList<String> officerList = FXCollections.observableArrayList(BaseApplication.boardPositions.stream().map(e -> e.position()).collect(Collectors.toList()));
+	    	final TableColumn<OfficerDTO, String> Col2 = new TableColumn<>("Officers, Chairs and Board");
 	        Col2.setCellValueFactory(param -> {
 				OfficerDTO thisOfficer = param.getValue();
-				String officerCode = thisOfficer.getOfficer_type();
-				Officer type = Officer.getByCode(officerCode);
+				String type = Officer.getByCode(thisOfficer.getOfficer_type());
 				return new SimpleObjectProperty<>(type);
 			});
 	        
 	        Col2.setCellFactory(ComboBoxTableCell.forTableColumn(officerList));
 	 
-	        Col2.setOnEditCommit((CellEditEvent<OfficerDTO, Officer> event) -> {
-	            TablePosition<OfficerDTO, Officer> pos = event.getTablePosition();
-	            Officer newOfficer = event.getNewValue();
+	        Col2.setOnEditCommit((CellEditEvent<OfficerDTO, String> event) -> {
+	            TablePosition<OfficerDTO, String> pos = event.getTablePosition();
+	            String newOfficer = event.getNewValue();
 	            int row = pos.getRow();
 	            OfficerDTO thisofficer = event.getTableView().getItems().get(row);
-	            SqlUpdate.updateOfficer("off_type",thisofficer.getOfficer_id(), newOfficer.getCode());
-	            thisofficer.setOfficer_type(newOfficer.getCode());
+	            SqlUpdate.updateOfficer("off_type",thisofficer.getOfficer_id(), Officer.getByName(newOfficer));
+	            thisofficer.setOfficer_type(newOfficer);
 	        });
 	        
 			TableColumn<OfficerDTO, String> Col3 = createColumn("Exp", OfficerDTO::board_yearProperty);
@@ -142,7 +144,7 @@ public class HBoxOfficer extends HBox {
 				OfficerDTO officerDTO = officer.get(selectedIndex);
 				Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
 				conformation.setTitle("Delete Officer Entry");
-				conformation.setHeaderText(officerDTO.getBoard_year() + " " + Officer.getNameByCode(officerDTO.getOfficer_type()));
+				conformation.setHeaderText(officerDTO.getBoard_year() + " " + Officer.getByCode(officerDTO.getOfficer_type()));
 				conformation.setContentText("Are sure you want to delete this officer/chairman entry?");
 				DialogPane dialogPane = conformation.getDialogPane();
 				dialogPane.getStylesheets().add("css/dark/dialogue.css");
