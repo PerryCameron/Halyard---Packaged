@@ -385,7 +385,7 @@ CREATE TABLE ECSC_SQL.users
 
 CREATE TABLE ECSC_SQL.board_positions
 (
-    id LONG NOT NULL primary key,
+    id INTEGER NOT NULL primary key,
     position varchar(50) unique not null,
     identifier varchar(5) unique not null,
     order INTEGER not null,
@@ -393,6 +393,26 @@ CREATE TABLE ECSC_SQL.board_positions
     is_chair boolean not null,
     is_assistant_chair boolean not null
 );
+
+CREATE TABLE ECSC_SQL.db_updates
+(
+    ID INTEGER NOT NULL primary key,
+    SQL_CREATION_DATE DATETIME NULL,
+    UPDATE INTEGER,
+    INSERT INTEGER,
+    DELETE INTEGER
+);
+
+CREATE TABLE ECSC_SQL.db_table_changes
+(
+    id INTEGER NOT NULL primary key,
+    db_updates_id INTEGER NOT NULL,
+    table_changed varchar(50),
+    change_type varchar(20),
+    change_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    changed_by varchar(100),
+    foreign key (db_updates_id) references db_updates (ID)
+)
 
 
 

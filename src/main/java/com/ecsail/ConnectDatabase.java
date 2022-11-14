@@ -6,6 +6,7 @@ import com.ecsail.gui.tabs.TabLogin;
 import com.ecsail.gui.tabs.TabWelcome;
 import com.ecsail.sql.select.SqlBoardPositions;
 import com.ecsail.sql.select.SqlMembershipList;
+import com.ecsail.structures.DataBase;
 import com.ecsail.structures.Object_Login;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -541,7 +542,9 @@ public class ConnectDatabase {
 		}
 		stmt.execute(query);
 		stmt.close();
+		DataBase.recordChange(query);
 	}
+
 
 	public void closeResultSet(ResultSet rs) throws SQLException {
 		if (rs.getStatement() != null) {
