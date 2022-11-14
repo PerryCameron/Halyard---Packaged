@@ -9,18 +9,36 @@ import java.sql.SQLException;
 
 public class SqlSelect {
 
-	public static int getNextAvailablePrimaryKey(String table, String column) {  // example-> "email","email_id"
+	public static int getNextAvailablePrimaryKey(String table, String column) {
+		return getLastPrimaryKey(table, column) + 1;
+	}
+
+	public static int getLastPrimaryKey(String table, String column) {  // example-> "email","email_id"
 		int result = 0;
 		String query = "SELECT " + column + " FROM " + table + " ORDER BY " + column + " DESC LIMIT 1";
 		try {
 			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
 			rs.next();
-			result =  rs.getInt(column);
+			result = rs.getInt(column);
 			BaseApplication.connect.closeResultSet(rs);
 		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
+			new Dialogue_ErrorSQL(e, "Unable to retrieve information", "See below for details");
 		}
-		return result + 1;
+			return result;
+	}
+
+	public static int selectIntValueFromTable(String table, String column, String rowId) {
+		int result = 0;
+		String query = "SELECT " + column + " FROM " + table + " WHERE ID=" + rowId;
+		try {
+			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+			rs.next();
+			result = rs.getInt(column);
+			BaseApplication.connect.closeResultSet(rs);
+		} catch (SQLException e) {
+			new Dialogue_ErrorSQL(e, "Unable to retrieve information", "See below for details");
+		}
+		return result;
 	}
 
 }

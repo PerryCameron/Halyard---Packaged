@@ -13,6 +13,23 @@ public class SqlExists {
 	
 	// this may be a duplicate, for instance it doesn't need int pid, and why the inner join
 	// this is used on BoxAddPerson only
+	public static Boolean dbTableChangeRowExists(int id, String table) {
+		boolean answer = false;
+		String query = "select exists(select * from db_table_changes where db_updates_id="
+				+id+" and table_changed='"+table+"') AS table_exists";
+		try {
+			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+			rs.next();
+			answer = rs.getBoolean("table_exists");
+			BaseApplication.connect.closeResultSet(rs);
+		}
+		catch (SQLException e) {
+			new Dialogue_ErrorSQL(e,"Unable to check if EXISTS","See below for details");
+
+		}
+		return answer;
+	}
+
 	public static Boolean personExists(int type, int ms_id) {
 		boolean answer = false;
 		String query = "SELECT EXISTS(SELECT * FROM person INNER JOIN membership ON person.ms_id = membership.ms_id WHERE membership.ms_id ="
@@ -25,7 +42,6 @@ public class SqlExists {
 		}
 		catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"Unable to check if EXISTS","See below for details");
-
 		}
 		return answer;
 	}

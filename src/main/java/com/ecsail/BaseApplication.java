@@ -53,6 +53,7 @@ public class BaseApplication extends Application implements Log {
     public static ConnectDatabase connect;
     public static String selectedYear;
     public static Stage stage;
+    public static String user = "membership";
     public static Label statusLabel;
 
     public static void main(String[] args) {

@@ -1,6 +1,7 @@
 package com.ecsail.sql;
 
 import com.ecsail.BaseApplication;
+import com.ecsail.DataBase;
 import com.ecsail.gui.dialogues.Dialogue_CustomErrorMessage;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.sql.select.SqlMembershipList;
@@ -15,7 +16,22 @@ import java.time.LocalDate;
 public class SqlUpdate {
 	
 	static Alert alert = new Alert(AlertType.ERROR);
-	
+
+	public static void updateDbTableChanges(DbTableChangesDTO u)  {
+		String query = "UPDATE db_table_changes SET " +
+				"table_changed='" + u.getTableChanged() + "'," +
+				"table_insert=" + u.getTableInsert() + "," +
+				"table_delete=" + u.getTableDelete() + "," +
+				"table_update=" + u.getTableUpdate() + "," +
+				"change_date='" + DataBase.getTimeStamp() + "'," +
+				"changed_by='" + BaseApplication.user + "' WHERE id="
+				+ u.getId();
+		try {
+				BaseApplication.connect.executeQuery(query);
+		} catch (SQLException e) {
+			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
+		}
+	}
 	public static void updateBoat(String field, int boat_id, String attribute)  {
 		String query = "UPDATE boat SET " + field + "=null WHERE boat_id=" + boat_id;
 		String query1 = "UPDATE boat SET " + field + "=\"" + attribute + "\" WHERE boat_id=" + boat_id;

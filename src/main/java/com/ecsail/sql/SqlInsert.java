@@ -1,17 +1,40 @@
 package com.ecsail.sql;
 
 import com.ecsail.BaseApplication;
+import com.ecsail.DataBase;
 import com.ecsail.SqlScriptMaker;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.structures.*;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
 
 public class SqlInsert {
 	
 	///////////////  CLASS OF STATIC PURE FUNCTIONS /////////////////////////////
-	
+
+	public static void addNewDbTableChanges(String tableName, int mainRecordId) {
+		int primaryKey = SqlSelect.getNextAvailablePrimaryKey("db_table_changes","ID");
+		String query = "INSERT INTO db_table_changes () VALUES (" + primaryKey + ","
+				+mainRecordId+",'"+tableName+"',0,0,0,'"+ DataBase.getTimeStamp() +"','"+BaseApplication.user+"')";
+		try {
+			BaseApplication.connect.executeQuery(query);
+		} catch (SQLException e) {
+			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
+		}
+	}
+	public static void addNewDbUpdateRecord() {
+		int primaryKey = SqlSelect.getNextAvailablePrimaryKey("db_updates","ID");
+		String query = "INSERT INTO db_updates () VALUES (" + primaryKey + ",null,0,0,0)";
+		try {
+			BaseApplication.connect.executeQuery(query);
+		} catch (SQLException e) {
+			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
+		}
+	}
+
 	// add phone record
 	public static boolean addPhoneRecord(int phone_id, int pid , Boolean listed, String phone, String type) {
 		boolean noError = false;
