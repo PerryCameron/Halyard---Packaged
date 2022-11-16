@@ -90,7 +90,8 @@ public class StandardMenus implements Plugin {
         MenuItem feesExp = Configure("Fees (experimental)", (event) -> Launcher.openFeeTab2(), null);
         MenuItem notes = Configure("Notes", (event) -> Launcher.openNotesTab(), null);
         MenuItem jotform = Configure("Jotform", (event) -> Launcher.openJotFormTab(), null);
-        subMenuTabs.getItems().addAll(rosters,bod,people,boats,slips,deposits,fees,feesExp,notes,jotform);
+        MenuItem dataBase = Configure("DataBase", (event) -> Launcher.openTabDataBase(), null);
+        subMenuTabs.getItems().addAll(rosters,bod,people,boats,slips,deposits,fees,feesExp,notes,jotform,dataBase);
 
         membership.getItems().addAll(subMenuMembershipCreate, subMenuTabs);
 

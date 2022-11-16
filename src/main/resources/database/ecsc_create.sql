@@ -396,21 +396,22 @@ CREATE TABLE ECSC_SQL.board_positions
 
 CREATE TABLE ECSC_SQL.db_updates
 (
-    ID INTEGER NOT NULL primary key,
+    ID                INTEGER  NOT NULL primary key,
     SQL_CREATION_DATE DATETIME NULL,
-    IS_CLOSED boolean NOT NULL
+    IS_CLOSED         boolean  NOT NULL,
+    DB_SIZE           DOUBLE   NULL
 );
 
 CREATE TABLE ECSC_SQL.db_table_changes
 (
-    id INTEGER NOT NULL primary key,
-    db_updates_id INTEGER NOT NULL,
+    id            INTEGER   NOT NULL primary key,
+    db_updates_id INTEGER   NOT NULL,
     table_changed varchar(50),
-    table_insert INTEGER NOT NULL,
-    table_delete INTEGER NOT NULL,
-    table_update INTEGER NOT NULL,
-    change_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    changed_by varchar(100),
+    table_insert  INTEGER   NOT NULL,
+    table_delete  INTEGER   NOT NULL,
+    table_update  INTEGER   NOT NULL,
+    change_date   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    changed_by    varchar(100),
     foreign key (db_updates_id) references db_updates (ID)
 );
 

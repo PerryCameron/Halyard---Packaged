@@ -84,5 +84,19 @@ public class DbTableChangesDTO {
     public void setChangedBy(String changedBy) {
         this.changedBy = changedBy;
     }
+
+    @Override
+    public String toString() {
+        return "DbTableChangesDTO{" +
+                "id=" + id +
+                ", dbUpdatesId=" + dbUpdatesId +
+                ", tableChanged='" + tableChanged + '\'' +
+                ", tableInsert=" + tableInsert +
+                ", tableDelete=" + tableDelete +
+                ", tableUpdate=" + tableUpdate +
+                ", changeDate='" + changeDate + '\'' +
+                ", changedBy='" + changedBy + '\'' +
+                '}';
+    }
 }
 

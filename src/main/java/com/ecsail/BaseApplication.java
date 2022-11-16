@@ -136,7 +136,8 @@ public class BaseApplication extends Application implements Log {
                 "css/dark/tabpane.css",
                 "css/dark/tableview.css",
                 "css/dark/chart.css",
-                "css/dark/bod.css");
+                "css/dark/bod.css",
+                "css/dark/table_changes.css");
     }
 
     public static void closeDatabaseConnection() {
