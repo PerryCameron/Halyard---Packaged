@@ -39,12 +39,12 @@ public class BaseApplication extends Application implements Log {
      */
     private final Plugin[] plugins = new Plugin[]{
             new StandardMenus(),
-            new HelloWorld(),
+//            new HelloWorld(),
             new FileDrop(),
             new SearchToolBar(),
-            new LogFile(),
-            new DarkMode()};
-
+            new LogFile()
+//            new DarkMode()
+    };
 
     public static TabPane tabPane;
     public static Logger logger = LoggerFactory.getLogger(BaseApplication.class);

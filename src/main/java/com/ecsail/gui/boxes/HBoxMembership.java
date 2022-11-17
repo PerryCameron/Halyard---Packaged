@@ -1,7 +1,6 @@
 package com.ecsail.gui.boxes;
 
 import com.ecsail.enums.MembershipType;
-import com.ecsail.sql.select.SqlMembership_Id;
 import com.ecsail.structures.MemLabelsDTO;
 import com.ecsail.structures.MembershipListDTO;
 import javafx.geometry.Pos;
@@ -9,11 +8,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
 public class HBoxMembership extends HBox {
-	
-	private final MembershipListDTO membership;
 
     public HBoxMembership(MembershipListDTO m, MemLabelsDTO ml) {
-		this.membership =  m;
 
         //////////// OBJECTS //////////
         var hbox1 = new HBox(); // sub HBox1 a
@@ -22,10 +18,10 @@ public class HBoxMembership extends HBox {
 //        var hbox4 = new HBox();
         var hbox5 = new HBox();
 
-        ml.getSelectedYear().setText(membership.getSelectedYear());
-        ml.getJoinDate().setText(membership.getJoinDate());
-        ml.getMemberID().setText("" + membership.getMembershipId());
-        ml.getMemberType().setText("" + MembershipType.getByCode(membership.getMemType()));
+        ml.getSelectedYear().setText(m.getSelectedYear());
+        ml.getJoinDate().setText(m.getJoinDate());
+        ml.getMemberID().setText("" + m.getMembershipId());
+        ml.getMemberType().setText("" + MembershipType.getByCode(m.getMemType()));
 //        ml.getMemberType().setText("" + membership.getMemType());
 //        ml.getStatus().setText(getStatus());
      
@@ -58,12 +54,12 @@ public class HBoxMembership extends HBox {
         
 	} // CONSTRUCTOR END
 	
-	private String getStatus() {
-		String result = "not active";
-		if(SqlMembership_Id.isRenewedByMsidAndYear(membership.getMsid(), membership.getSelectedYear())) {
-			result = "active";
-		}
-		return result;
-	}
+//	private String getStatus() {
+//		String result = "not active";
+//		if(SqlMembership_Id.isRenewedByMsidAndYear(membership.getMsid(), membership.getSelectedYear())) {
+//			result = "active";
+//		}
+//		return result;
+//	}
 
 } // CLASS END
