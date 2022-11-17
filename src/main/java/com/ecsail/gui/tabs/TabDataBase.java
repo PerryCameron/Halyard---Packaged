@@ -23,30 +23,33 @@ public class TabDataBase extends Tab {
 	public TabDataBase(String text) {
 		super(text);
 		this.thisDbTableChanges = SqlDbTableChanges.getDbtableChanges();
-		VBox inner = new VBox();
-		HBox vboxGrey = new HBox();  // this is the vbox for organizing all the widgets
+		VBox vboxInner = new VBox();
+		HBox hboxGrey = new HBox();  // this is the vbox for organizing all the widgets
 		VBox vboxBlue = new VBox();
 		VBox vboxPink = new VBox(); // this creates a pink border around the table
 
-		inner.setSpacing(2);
-//		inner.setId("hbox-inner");
-		inner.getChildren().add(new HBoxTableChanges());
-		for(DbTableChangesDTO d: thisDbTableChanges) {
-			inner.getChildren().add(new HBoxTableChanges(d));
-		}
+		hboxGrey.setStyle("-fx-background-color: #4d6955;");  //green
+		vboxBlue.setStyle("-fx-background-color: #feffab;");  // yellow
+		vboxPink.setStyle("-fx-background-color: #e83115;");  // red
+		vboxInner.setStyle("-fx-background-color: #0a0a0a;");  // black
 
+		vboxInner.setSpacing(2);
+//		vboxInner.setId("hbox-vboxInner");
+		vboxInner.getChildren().add(new HBoxTableChanges());
+		for(DbTableChangesDTO d: thisDbTableChanges) {
+			vboxInner.getChildren().add(new HBoxTableChanges(d));
+		}
 
 		vboxBlue.setId("box-frame-dark");
 		vboxBlue.setPadding(new Insets(10,10,10,10));
 		vboxPink.setPadding(new Insets(3,3,3,3)); // spacing to make pink from around table
-		VBox.setVgrow(vboxPink, Priority.ALWAYS);
-		VBox.setVgrow(vboxBlue, Priority.ALWAYS);
-		VBox.setVgrow(vboxGrey, Priority.ALWAYS);
-		//vboxGrey.setPrefWidth(1003);
+//		VBox.setVgrow(vboxPink, Priority.ALWAYS);
+//		VBox.setVgrow(vboxBlue, Priority.ALWAYS);
+//		VBox.setVgrow(hboxGrey, Priority.ALWAYS);
 
 		vboxPink.setPrefHeight(1000);
-		vboxGrey.getChildren().add(inner);
-		vboxPink.getChildren().add(vboxGrey);
+		hboxGrey.getChildren().add(vboxInner);
+		vboxPink.getChildren().add(hboxGrey);
 		vboxBlue.getChildren().add(vboxPink);
 		setContent(vboxBlue);
 	}

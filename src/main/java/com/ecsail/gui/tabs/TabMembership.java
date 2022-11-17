@@ -113,8 +113,8 @@ public class TabMembership extends Tab {
 		people.stream()
 				.filter(personDTO -> personDTO.getMemberType() == MemberType.DEPENDANT.getCode())
 				.forEach(personDTO -> {
+					peopleTabPane.getTabs().add(new Tab("Dependent " + (count), new HBoxPerson(personDTO,membership,peopleTabPane)));
 					count++; // child number
-					peopleTabPane.getTabs().add(new Tab("Dependent " + (count - 1), new HBoxPerson(people.get(count),membership,peopleTabPane)));
 				});
 		count = 1;
 	}
