@@ -19,7 +19,7 @@ public class HBoxMembership extends HBox {
         var hbox1 = new HBox(); // sub HBox1 a
         var hbox2 = new HBox(); // sub HBox1 b
         var hbox3 = new HBox();
-        var hbox4 = new HBox();
+//        var hbox4 = new HBox();
         var hbox5 = new HBox();
 
         ml.getSelectedYear().setText(membership.getSelectedYear());
@@ -27,7 +27,7 @@ public class HBoxMembership extends HBox {
         ml.getMemberID().setText("" + membership.getMembershipId());
         ml.getMemberType().setText("" + MembershipType.getByCode(membership.getMemType()));
 //        ml.getMemberType().setText("" + membership.getMemType());
-        ml.getStatus().setText(getStatus());
+//        ml.getStatus().setText(getStatus());
      
         ///////////// ATTRIBUTES ///////////
         ml.getSelectedYear().setStyle("-fx-font-weight: bold;");
@@ -40,18 +40,18 @@ public class HBoxMembership extends HBox {
         hbox1.getChildren().addAll(new Label("Membership ID: "), ml.getMemberID());
         hbox2.getChildren().addAll(new Label("Membership Type: "), ml.getMemberType());
         hbox3.getChildren().addAll(new Label("Join Date: "), ml.getJoinDate());
-        hbox4.getChildren().addAll(new Label("Status: "), ml.getStatus());
+//        hbox4.getChildren().addAll(new Label("Status: "), ml.getStatus());
         
         hbox1.setSpacing(5);
         hbox2.setSpacing(5);
         hbox3.setSpacing(5);
-        hbox4.setSpacing(5);
+//        hbox4.setSpacing(5);
         hbox5.setSpacing(5);
         
         hbox1.setAlignment(Pos.CENTER_LEFT);
         hbox2.setAlignment(Pos.CENTER_LEFT);
         hbox3.setAlignment(Pos.CENTER_LEFT);
-        hbox4.setAlignment(Pos.CENTER_LEFT);
+//        hbox4.setAlignment(Pos.CENTER_LEFT);
         hbox5.setAlignment(Pos.CENTER_LEFT);
     
         getChildren().addAll(hbox5,hbox1,hbox2,hbox3);
