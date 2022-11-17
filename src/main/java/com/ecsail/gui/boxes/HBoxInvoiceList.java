@@ -13,7 +13,6 @@ import com.ecsail.structures.DefinedFeeDTO;
 import com.ecsail.structures.MembershipDTO;
 import com.ecsail.structures.MoneyDTO;
 import com.ecsail.structures.PersonDTO;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -27,7 +26,7 @@ import javafx.scene.layout.VBox;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class HBoxInvoiceList extends HBox {
 	private static ObservableList<MoneyDTO> fiscals = null;
@@ -137,7 +136,7 @@ public class HBoxInvoiceList extends HBox {
 				// send new money row to top
 				fiscals.sort(Comparator.comparing(MoneyDTO::getFiscal_year).reversed());
 				// open a tab for the year we just created
-				createTabByYear(newMoney ,fiscalTableView);
+				createTabByYear(newMoney);
 		});
         
 		deleteFiscalRecord.setOnAction((event) -> {
@@ -209,7 +208,7 @@ public class HBoxInvoiceList extends HBox {
 		}
 	}
 
-	private static void createTabByYear(MoneyDTO money, TableView fiscalTableView) {
+	private static void createTabByYear(MoneyDTO money) {
 		// create a tab with the correct year
 		Tab newTab = new Tab(String.valueOf(money.getFiscal_year()));
 		// add tab to pane
@@ -224,7 +223,12 @@ public class HBoxInvoiceList extends HBox {
 
 	// searches through list and counts the index value it finds correct money_id at.
 	private static int getFiscalIndexByYear(int money_id) {
-		return (int) fiscals.stream().filter(fis -> fis.getMoney_id() == money_id).count();
+//		return (int) fiscals
+//				.stream()
+//				.filter(fis -> fis.getMoney_id() == money_id).count();
+		AtomicInteger i = new AtomicInteger();
+		return fiscals.stream().sequential().peek(v -> i.incrementAndGet())
+				.anyMatch(fis -> fis.getMoney_id() == money_id) ? i.get() - 1 : -1;
 	}
 
 
