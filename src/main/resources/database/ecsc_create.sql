@@ -415,5 +415,17 @@ CREATE TABLE ECSC_SQL.db_table_changes
     foreign key (db_updates_id) references db_updates (ID)
 );
 
+CREATE Table ECSC_SQL.db_invoice
+(
+    id             INTEGER NOT NULL primary key,
+    effective      datetime NOT NULL,
+    objectName     varchar(30) NOT NULL,
+    widget_type    varchar(30) NOT NULL,
+    multiplied     boolean NOT NULL,
+    price_editable boolean NOT NULL,
+    is_credit      boolean NOT NULL,
+    listener_type  varchar(30) NOT NULL
+);
 
+drop TABLE ECSC_SQL.db_invoice;
 

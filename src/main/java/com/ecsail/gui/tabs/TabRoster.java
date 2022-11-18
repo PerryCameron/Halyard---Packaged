@@ -82,7 +82,7 @@ public class TabRoster extends Tab {
 		CheckBox c12 = new CheckBox("Email");
 		CheckBox c13 = new CheckBox("Subleased To");
 		Button buttonXLS = new Button("Export XLS");
-//		final Spinner<Integer> yearSpinner = new Spinner<Integer>();
+
 		TableColumn<MembershipListDTO, Integer> Col1 = new TableColumn<>("ID");
 		TableColumn<MembershipListDTO, String> Col2 = new TableColumn<>("Join Date");
 		TableColumn<MembershipListDTO, String> Col3 = new TableColumn<>("Type");

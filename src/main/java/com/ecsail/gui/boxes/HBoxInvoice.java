@@ -203,7 +203,7 @@ public class HBoxInvoice extends HBox {
 		});
 
 		// this is only called if you change membership type or open a record or manually type in
-		invoiceDTO.getDuesTextField().textProperty().addListener((observable, oldValue, newValue) -> {
+		invoiceDTO.getTextFieldMap().get("dues-text-field").textProperty().addListener((observable, oldValue, newValue) -> {
 			if (!SqlMoney.isCommitted(fiscals.get(rowIndex).getMoney_id())) {
 				invoiceDTO.getDuesText().setText(newValue);
 				fiscals.get(rowIndex).setDues(newValue);
@@ -213,15 +213,15 @@ public class HBoxInvoice extends HBox {
 			}
 		});
 		
-		invoiceDTO.getDuesTextField().focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+		invoiceDTO.getTextFieldMap().get("dues-text-field").focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 	            //focus out
 	            if (oldValue) {  // we have focused and unfocused
-	            	if(!FixInput.isBigDecimal(invoiceDTO.getDuesTextField().getText())) {
-						invoiceDTO.getDuesTextField().setText("0");
+	            	if(!FixInput.isBigDecimal(invoiceDTO.getTextFieldMap().get("dues-text-field").getText())) {
+						invoiceDTO.getTextFieldMap().get("dues-text-field").setText("0");
 	            	}
-	            	BigDecimal dues = new BigDecimal(invoiceDTO.getDuesTextField().getText());
+	            	BigDecimal dues = new BigDecimal(invoiceDTO.getTextFieldMap().get("dues-text-field").getText());
 	            	updateItem(dues,"dues");
-					invoiceDTO.getDuesTextField().setText(String.valueOf(dues.setScale(2, RoundingMode.HALF_UP)));
+					invoiceDTO.getTextFieldMap().get("dues-text-field").setText(String.valueOf(dues.setScale(2, RoundingMode.HALF_UP)));
 	            	updateBalance();
 	            }
 	        });
@@ -345,42 +345,42 @@ public class HBoxInvoice extends HBox {
 			updateBalance();
 		});
 
-		invoiceDTO.getYscTextField().focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+		invoiceDTO.getTextFieldMap().get("ysc-text-field").focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 			//focus out
 			if (oldValue) {  // we have focused and unfocused
-				if(!FixInput.isBigDecimal(invoiceDTO.getYscTextField().getText())) {
-					invoiceDTO.getYscTextField().setText("0.00");
+				if(!FixInput.isBigDecimal(invoiceDTO.getTextFieldMap().get("ysc-text-field").getText())) {
+					invoiceDTO.getTextFieldMap().get("ysc-text-field").setText("0.00");
 				}
-				BigDecimal ysc = new BigDecimal(invoiceDTO.getYscTextField().getText());
+				BigDecimal ysc = new BigDecimal(invoiceDTO.getTextFieldMap().get("ysc-text-field").getText());
 				invoiceDTO.getYspText().setText(String.valueOf(ysc.setScale(2, RoundingMode.HALF_UP)));
 				updateItem(ysc.setScale(2, RoundingMode.HALF_UP), "ysc");
-				invoiceDTO.getYscTextField().setText(String.valueOf(ysc.setScale(2, RoundingMode.HALF_UP)));
+				invoiceDTO.getTextFieldMap().get("ysc-text-field").setText(String.valueOf(ysc.setScale(2, RoundingMode.HALF_UP)));
 				updateBalance();
 			}
 		});
 
-		invoiceDTO.getInitiationTextField().focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+		invoiceDTO.getTextFieldMap().get("initiation-text-field").focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 			//focus out
 			if (oldValue) {  // we have focused and unfocused
-				if(!FixInput.isBigDecimal(invoiceDTO.getInitiationTextField().getText())) {
-					invoiceDTO.getInitiationTextField().setText("0.00");
+				if(!FixInput.isBigDecimal(invoiceDTO.getTextFieldMap().get("initiation-text-field").getText())) {
+					invoiceDTO.getTextFieldMap().get("initiation-text-field").setText("0.00");
 				}
-				BigDecimal initiation = new BigDecimal(invoiceDTO.getInitiationTextField().getText());
+				BigDecimal initiation = new BigDecimal(invoiceDTO.getTextFieldMap().get("initiation-text-field").getText());
 				updateItem(initiation.setScale(2, RoundingMode.HALF_UP), "initiation");
-				invoiceDTO.getInitiationTextField().setText(String.valueOf(initiation.setScale(2, RoundingMode.HALF_UP)));
+				invoiceDTO.getTextFieldMap().get("initiation-text-field").setText(String.valueOf(initiation.setScale(2, RoundingMode.HALF_UP)));
 				invoiceDTO.getInitiationText().setText(String.valueOf(initiation.setScale(2, RoundingMode.HALF_UP)));
 				updateBalance();
 			}
 		});
 
-		invoiceDTO.getOtherTextField().focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+		invoiceDTO.getTextFieldMap().get("other-text-field").focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 			//focus out
 			if (oldValue) {  // we have focused and unfocused
-				if(!FixInput.isBigDecimal(invoiceDTO.getOtherTextField().getText())) {
-					invoiceDTO.getOtherTextField().setText("0.00");
+				if(!FixInput.isBigDecimal(invoiceDTO.getTextFieldMap().get("other-text-field").getText())) {
+					invoiceDTO.getTextFieldMap().get("other-text-field").setText("0.00");
 				}
-				BigDecimal other = new BigDecimal(invoiceDTO.getOtherTextField().getText());
-				invoiceDTO.getOtherTextField().setText(String.valueOf(other.setScale(2, RoundingMode.HALF_UP)));
+				BigDecimal other = new BigDecimal(invoiceDTO.getTextFieldMap().get("other-text-field").getText());
+				invoiceDTO.getTextFieldMap().get("other-text-field").setText(String.valueOf(other.setScale(2, RoundingMode.HALF_UP)));
 				updateItem(other.setScale(2, RoundingMode.HALF_UP),"other");
 				updateBalance();
 			}
@@ -458,10 +458,10 @@ public class HBoxInvoice extends HBox {
 		updateBalance(); // updates and saves
 		//////////////// SETTING CONTENT //////////////
 		invoiceDTO.getDuesText().setText(String.valueOf(fiscals.get(rowIndex).getDues()));
-		invoiceDTO.getDuesTextField().setText(String.valueOf(fiscals.get(rowIndex).getDues()));
-		invoiceDTO.getYscTextField().setText(String.valueOf(fiscals.get(rowIndex).getYsc_donation()));
-		invoiceDTO.getOtherTextField().setText(String.valueOf(fiscals.get(rowIndex).getOther()));
-		invoiceDTO.getInitiationTextField().setText(String.valueOf(fiscals.get(rowIndex).getInitiation()));
+		invoiceDTO.getTextFieldMap().get("dues-text-field").setText(String.valueOf(fiscals.get(rowIndex).getDues()));
+		invoiceDTO.getTextFieldMap().get("ysc-text-field").setText(String.valueOf(fiscals.get(rowIndex).getYsc_donation()));
+		invoiceDTO.getTextFieldMap().get("other-text-field").setText(String.valueOf(fiscals.get(rowIndex).getOther()));
+		invoiceDTO.getTextFieldMap().get("initiation-text-field").setText(String.valueOf(fiscals.get(rowIndex).getInitiation()));
 		invoiceDTO.getWetslipTextField().setText(String.valueOf(definedFees.getWet_slip()));
 		invoiceDTO.getOtherCreditTextField().setText(String.valueOf(fiscals.get(rowIndex).getOther_credit()));
 		invoiceDTO.getYspText().setText(fiscals.get(rowIndex).getYsc_donation());
@@ -497,7 +497,8 @@ public class HBoxInvoice extends HBox {
 
 	private void checkIfRecordHasOfficer() {
 		if (fiscals.get(rowIndex).isSupplemental()) { // have we already created a record for this year?
-			invoiceDTO.getDuesTextField().setEditable(true);
+			invoiceDTO.getTextFieldMap().get("dues" +
+					"-text-field").setEditable(true);
 			//duesTextField.setText("0");
 		} else { // this is the first invoice record created for this year
 			if (hasOfficer) { // has officer and not

@@ -1,5 +1,6 @@
 package com.ecsail.structures;
 
+import com.ecsail.sql.select.SqlInvoiceWidget;
 import com.ecsail.sql.select.SqlPayment;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -11,13 +12,22 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 public class InvoiceDTO {
+
+    Map<String, TextField> textFieldMap = new HashMap<>();
+
+    ArrayList<InvoiceWidget> theseWidgets = SqlInvoiceWidget.getInvoiceWidgets();
     private final MoneyDTO invoice;
     private final GridPane gridPane;
-    private final TextField yscTextField;
-    private final TextField duesTextField;
-    private final TextField otherTextField;
-    private final TextField initiationTextField;
+//    private final TextField yscTextField;
+//    private final TextField duesTextField;
+//    private final TextField otherTextField;
+//    private final TextField initiationTextField;
     private final TextField wetslipTextField;
     private final TextField otherCreditTextField;
 
@@ -122,6 +132,15 @@ public class InvoiceDTO {
     Separator separator = new Separator(Orientation.HORIZONTAL);
 
     public InvoiceDTO(MoneyDTO invoice, DefinedFeeDTO definedFees, TableView<PaymentDTO> paymentTableView) {
+//    private final TextField yscTextField;
+//    private final TextField duesTextField;
+//    private final TextField otherTextField;
+//    private final TextField initiationTextField;
+//        Arrays.stream(textFieldNames).forEach(n -> textFieldMap.put(n, new TextField()));
+        theseWidgets.stream()
+                .filter(w -> w.getWidgetType().equals("text-field"))
+                .forEach(w -> textFieldMap.put(w.objectName, new TextField()));
+
         Text text1 = new Text("Fee");
         Text text2 = new Text("Price");
         Text text3 = new Text("Total");
@@ -135,10 +154,10 @@ public class InvoiceDTO {
         this.renewCheckBox = new CheckBox("Renew");
 //        this.definedFees = definedFees;
         this.gridPane = new GridPane();
-        this.yscTextField = new TextField();
-        this.duesTextField = new TextField();
-        this.otherTextField = new TextField();
-        this.initiationTextField = new TextField();
+//        this.yscTextField = new TextField();
+//        this.duesTextField = new TextField();
+//        this.otherTextField = new TextField();
+//        this.initiationTextField = new TextField();
         this.wetslipTextField = new TextField();
         this.otherCreditTextField = new TextField();
 
@@ -253,12 +272,16 @@ public class InvoiceDTO {
         text3.setFont(font);
         text4.setFont(font);
 
-        this.yscTextField.setPrefWidth(65);
-        this.otherTextField.setPrefWidth(65);
+        textFieldMap.get("ysc-text-field").setPrefWidth(60);
+        textFieldMap.get("dues-text-field").setPrefWidth(65);
+        textFieldMap.get("initiation-text-field").setPrefWidth(65);
+        textFieldMap.get("other-text-field").setPrefWidth(65);
+//        this.yscTextField.setPrefWidth(65);
+//        this.otherTextField.setPrefWidth(65);
         this.otherCreditTextField.setPrefWidth(65);
-        this.initiationTextField.setPrefWidth(65);
+//        this.initiationTextField.setPrefWidth(65);
         this.wetslipTextField.setPrefWidth(65);
-        this.duesTextField.setPrefWidth(65);
+//        this.duesTextField.setPrefWidth(65);
         this.beachSpinner.setPrefWidth(65);
         this.kayakShedSpinner.setPrefWidth(65);
         this.sailLoftSpinner.setPrefWidth(65);
@@ -410,21 +433,21 @@ public class InvoiceDTO {
     }
 
 
-    public TextField getYscTextField() {
-        return yscTextField;
-    }
-
-    public TextField getDuesTextField() {
-        return duesTextField;
-    }
-
-    public TextField getOtherTextField() {
-        return otherTextField;
-    }
-
-    public TextField getInitiationTextField() {
-        return initiationTextField;
-    }
+//    public TextField getYscTextField() {
+//        return yscTextField;
+//    }
+//
+//    public TextField getDuesTextField() {
+//        return duesTextField;
+//    }
+//
+//    public TextField getOtherTextField() {
+//        return otherTextField;
+//    }
+//
+//    public TextField getInitiationTextField() {
+//        return initiationTextField;
+//    }
 
     public TextField getWetslipTextField() {
         return wetslipTextField;
@@ -590,6 +613,13 @@ public class InvoiceDTO {
         return buttonAddNote;
     }
 
+    public Map<String, TextField> getTextFieldMap() {
+        return textFieldMap;
+    }
+
+    public void setTextFieldMap(Map<String, TextField> textFieldMap) {
+        this.textFieldMap = textFieldMap;
+    }
 
     public static <T, E, F> int addCommittedRow(int row, GridPane gridPane, T name, E quantity, F total ) {
         gridPane.add((Node) name, 0, row, 1, 1);
@@ -676,8 +706,9 @@ public class InvoiceDTO {
         Region spacer = new Region();
         spacer.setPrefHeight(25);
         row = addUnCommittedRow(row, gridPane, vboxTitleFee, new Text(""), new Text(""), vboxTitlePrice, vboxTitleTotal);
-        row = addUnCommittedRow(row, gridPane, new Label("Dues:"), duesTextField, new Text(""), new Label(""), vboxDues);
+        row = addUnCommittedRow(row, gridPane, new Label("Dues:"), textFieldMap.get("dues-text-field"), new Text(""), new Label(""), vboxDues);
         row = addUnCommittedRow(row, gridPane, new Label("Beach Spot:"), beachSpinner, new Label("X"), vboxBeachFee, vboxBeach);
+        row = addTitledPane(row, gridPane);
         row = addUnCommittedRow(row, gridPane, new Label("Kayak Rack:"), kayakRackSpinner, new Label("X"), vboxKayakFee, vboxKayak);
         row = addUnCommittedRow(row, gridPane, new Label("Kayak Beach Rack:"), kayakBeachRackSpinner, new Label("X"), vboxBeachKayakFee, vboxBeachKayak);
         row = addUnCommittedRow(row, gridPane, new Label("Kayak Shed:"), kayakShedSpinner, new Label("X"), vboxKayakShedFee, vboxKayakShed);
@@ -689,9 +720,9 @@ public class InvoiceDTO {
         row = addUnCommittedRow(row, gridPane, new Label("Sail Loft Key:"), sailLKeySpinner, new Label("X"), vboxSailLoftKeyFee, vboxSailLoftKey);
         row = addUnCommittedRow(row, gridPane, new Label("Kayak Shed Key:"), kayakSKeySpinner, new Label("X"), vboxKayakShedKeyFee, vboxKayakShedKey);
         row = addUnCommittedRow(row, gridPane, new Label("Sail School Loft Key:"), sailSSLKeySpinner, new Label("X"), vboxSailSchoolLoftKeyFee, vboxSailSchoolLoftKey);
-        row = addUnCommittedRow(row, gridPane, new Label("YSP Donation:"), yscTextField, new Label(""), new Label(""), vboxYSC);
-        row = addUnCommittedRow(row, gridPane, new Label("Initiation:"), initiationTextField, new Label(""), new Label(""), vboxInitiation);
-        row = addUnCommittedRow(row, gridPane, new Label("Other Fee:"), otherTextField, new Label(""), new Label(""), vboxOther);
+        row = addUnCommittedRow(row, gridPane, new Label("YSP Donation:"), textFieldMap.get("ysc-text-field"), new Label(""), new Label(""), vboxYSC);
+        row = addUnCommittedRow(row, gridPane, new Label("Initiation:"), textFieldMap.get("initiation-text-field"), new Label(""), new Label(""), vboxInitiation);
+        row = addUnCommittedRow(row, gridPane, new Label("Other Fee:"), textFieldMap.get("other-text-field"), new Label(""), new Label(""), vboxOther);
         row = addUnCommittedRow(row, gridPane, new Label("Work Credits:"), comboBox, new Label("X"), vboxWorkCreditsFee, vboxWorkCredits);
         row = addUnCommittedRow(row, gridPane, new Label("Other Credit:"), otherCreditTextField, new Label(""), new Label(""), vboxOtherCredit);
         row = addUnCommittedRow(row, gridPane, new Label("Position Credit:"), spacer, new Label(""), new Label(""), vboxPositionCredit);
@@ -721,5 +752,13 @@ public class InvoiceDTO {
         gridPane.add(vboxTotalBalance, 1, row, 3, 1);
         row++;
         gridPane.add(new Label(""), 0, row, 5, 1);
+    }
+
+    private int addTitledPane(int row, GridPane gridPane) {
+        TitledPane titledPane = new TitledPane();
+        titledPane.setText("Kayak");
+        gridPane.add(titledPane, 0, row, 5, 1);
+        row++;
+        return row;
     }
 }
