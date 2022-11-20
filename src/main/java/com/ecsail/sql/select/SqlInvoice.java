@@ -36,4 +36,30 @@ public class SqlInvoice {
         }
         return invoices;
     }
+
+    public static ObservableList<InvoiceDTO> getAllInvoices() { // overload
+        ObservableList<InvoiceDTO> invoices = FXCollections.observableArrayList();
+        String query = "SELECT * FROM invoice";
+        try {
+            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+            while (rs.next()) {
+                invoices.add(new InvoiceDTO(
+                        rs.getInt("ID"),
+                        rs.getInt("MS_ID"),
+                        rs.getInt("FISCAL_YEAR"),
+                        rs.getString("PAID"),
+                        rs.getString("TOTAL"),
+                        rs.getString("CREDIT"),
+                        rs.getString("BALANCE"),
+                        rs.getInt("BATCH"),
+                        rs.getBoolean("COMMITTED"),
+                        rs.getBoolean("CLOSED"),
+                        rs.getBoolean("SUPPLEMENTAL")));
+            }
+            BaseApplication.connect.closeResultSet(rs);
+        } catch (SQLException e) {
+            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
+        }
+        return invoices;
+    }
 }

@@ -26,7 +26,9 @@ public class SqlScriptMaker {
 	static ArrayList<SlipDTO> slips;
 	static ObservableList<MemoDTO> memos;
 	static ObservableList<EmailDTO> email;
-	static ObservableList<MoneyDTO> monies;
+//	static ObservableList<MoneyDTO> monies;
+	static ObservableList<InvoiceDTO> invoiceDTOS;
+	static ObservableList<InvoiceItemDTO> invoiceItemDTOS;
 	static ObservableList<OfficerDTO> officers;
 	static ObservableList<DefinedFeeDTO> definedfees;
 	static ObservableList<WorkCreditDTO> workcredits;
@@ -37,11 +39,8 @@ public class SqlScriptMaker {
 	static ArrayList<HashDTO>hash;
 	static ArrayList<FeeDTO>fees;
 	static ArrayList<IdChangeDTO>idChanges;
-
 	static ArrayList<BoardPositionDTO> positions;
-
 	private static final int ALL = 0;
-
 	public static void createSql() {
 		//SqlScriptMaker.newTupleCount = new Object_TupleCount();
 //		SqlScriptMaker.newTupleCount =  Halyard.edits;
@@ -60,7 +59,8 @@ public class SqlScriptMaker {
 		slips = SqlSlip.getSlips();
 		memos = SqlMemos.getMemos(ALL);
 		email = SqlEmail.getEmail(ALL);
-		monies = SqlMoney.getAllMonies();
+		invoiceDTOS = SqlInvoice.getAllInvoices();
+		invoiceItemDTOS = SqlInvoiceItem.getAllInvoiceItems();
 		officers = SqlOfficer.getOfficers();
 		definedfees = SqlDefinedFee.getDefinedFees();
 		workcredits = SqlWorkCredit.getWorkCredits();
@@ -110,8 +110,10 @@ public class SqlScriptMaker {
 				writer.write(getMemoString(mem));
 			for (EmailDTO eml : email)
 				writer.write(getEmailString(eml));
-			for (MoneyDTO mon : monies)
-				writer.write(getMoneyString(mon));
+			for (InvoiceDTO i : invoiceDTOS)
+				writer.write(getInvoiceString(i));
+			for (InvoiceItemDTO i : invoiceItemDTOS)
+				writer.write(getInvoiceItemString(i));
 			for (DepositDTO dep : deposits)
 				writer.write(getDepositString(dep));
 			for (PaymentDTO obp : payments)
@@ -150,8 +152,6 @@ public class SqlScriptMaker {
 	}
 
 
-
-
 	public static void clearMemory() {
 		tableCreation.clear();
 		memberships.clear();
@@ -163,7 +163,8 @@ public class SqlScriptMaker {
 		slips.clear();
 		memos.clear();
 		email.clear();
-		monies.clear();
+		invoiceDTOS.clear();
+		invoiceItemDTOS.clear();
 		deposits.clear();
 		payments.clear();
 		officers.clear();
@@ -178,10 +179,38 @@ public class SqlScriptMaker {
 		invoiceWidgets.clear();
 	}
 
+	private static String getInvoiceString(InvoiceDTO i) {
+		return "INSERT INTO invoice () VALUES("
+				+ i.getId() + ","
+				+ i.getMsId() + ","
+				+ i.getYear() + ","
+				+ i.getPaid() + ","
+				+ i.getTotal() + ","
+				+ i.getCredit() + ","
+				+ i.getBalance() + ","
+				+ i.getBatch() + ","
+				+ i.isCommitted() + ","
+				+ i.isClosed() + ","
+				+ i.isSupplemental() + ");\n";
+	}
+
+	private static String getInvoiceItemString(InvoiceItemDTO i) {
+		return "INSERT INTO invoice_item () VALUES("
+				+ i.getId() + ","
+				+ i.getInvoiceId() + ","
+				+ i.getMsId() + ","
+				+ i.getYear() + ","
+				+ getCorrectString(i.getItemType()) + ","
+				+ i.isMultiplied() + ","
+				+ i.isCredit()+ ","
+				+ i.getValue() + ","
+				+ i.getQty() + ");\n";
+	}
+
 	private static String getInvoiceWidgetString(InvoiceWidgetDTO a) {
 		return "INSERT INTO db_invoice () VALUES("
 				+ a.getId() + ","
-				+ getCorrectString(a.getDate()) + ","
+				+ a.getYear() + ","
 				+ getCorrectString(a.getObjectName()) + ","
 				+ getCorrectString(a.getWidgetType()) + ","
 				+ a.getWidth() + ","

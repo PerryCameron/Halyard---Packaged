@@ -34,4 +34,28 @@ public class SqlInvoiceItem {
         }
         return invoiceItems;
     }
+
+    public static ObservableList<InvoiceItemDTO> getAllInvoiceItems() { // overload
+        ObservableList<InvoiceItemDTO> invoiceItems = FXCollections.observableArrayList();
+        String query = "SELECT * FROM invoice_item";
+        try {
+            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+            while (rs.next()) {
+                invoiceItems.add(new InvoiceItemDTO(
+                        rs.getInt("ID"),
+                        rs.getInt("INVOICE_ID"),
+                        rs.getInt("MS_ID"),
+                        rs.getInt("FISCAL_YEAR"),
+                        rs.getString("ITEM_TYPE"),
+                        rs.getBoolean("MULTIPLIED"),
+                        rs.getBoolean("IS_CREDIT"),
+                        rs.getString("VALUE"),
+                        rs.getInt("QTY")));
+            }
+            BaseApplication.connect.closeResultSet(rs);
+        } catch (SQLException e) {
+            new Dialogue_ErrorSQL(e, "Unable to retrieve invoice items", "See below for details");
+        }
+        return invoiceItems;
+    }
 }

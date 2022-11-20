@@ -18,7 +18,7 @@ public class SqlInvoiceWidget {
             while (rs.next()) {
                 theseWidgets.add(new InvoiceWidgetDTO(
                         rs.getInt("ID"),
-                        rs.getString("effective"),
+                        rs.getString("year"),
                         rs.getString("objectName"),
                         rs.getString("widget_type"),
                         rs.getDouble("width"),
@@ -44,7 +44,7 @@ public class SqlInvoiceWidget {
             while (rs.next()) {
                 theseWidgets.add(new InvoiceWidgetDTO(
                         rs.getInt("ID"),
-                        rs.getString("effective"),
+                        rs.getString("year"),
                         rs.getString("objectName"),
                         rs.getString("widget_type"),
                         rs.getDouble("width"),

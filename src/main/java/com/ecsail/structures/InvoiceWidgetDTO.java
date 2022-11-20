@@ -2,7 +2,7 @@ package com.ecsail.structures;
 
 public class InvoiceWidgetDTO {
     private int id;
-    private String date;
+    private String year;
     private String objectName;
     private String widgetType;
     private double width;
@@ -11,14 +11,16 @@ public class InvoiceWidgetDTO {
     private boolean price_editable;
     private boolean is_credit;
     private String listener_type;
+    /**
+     * below not included in database
+     */
     private FeeDTO fee;
-
     private InvoiceItemDTO item;
 
 
     public InvoiceWidgetDTO(int id, String date, String objectName, String widgetType, double width, int order, boolean multiplied, boolean price_editable, boolean is_credit, String listener_type) {
         this.id = id;
-        this.date = date;
+        this.year = date;
         this.objectName = objectName;
         this.widgetType = widgetType;
         this.width = width;
@@ -37,12 +39,12 @@ public class InvoiceWidgetDTO {
         this.id = id;
     }
 
-    public String getDate() {
-        return date;
+    public String getYear() {
+        return year;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setYear(String year) {
+        this.year = year;
     }
 
     public String getObjectName() {
@@ -129,7 +131,7 @@ public class InvoiceWidgetDTO {
     public String toString() {
         return "InvoiceWidgetDTO{" +
                 "id=" + id +
-                ", date='" + date + '\'' +
+                ", date='" + year + '\'' +
                 ", objectName='" + objectName + '\'' +
                 ", widgetType='" + widgetType + '\'' +
                 ", width=" + width +
