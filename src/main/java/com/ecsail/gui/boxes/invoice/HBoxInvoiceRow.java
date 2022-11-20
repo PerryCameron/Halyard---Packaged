@@ -1,5 +1,6 @@
 package com.ecsail.gui.boxes.invoice;
 
+import com.ecsail.structures.InvoiceDTO;
 import com.ecsail.structures.InvoiceWidgetDTO;
 import com.ecsail.structures.MoneyDTO;
 import javafx.geometry.Pos;
@@ -20,7 +21,7 @@ public class HBoxInvoiceRow extends HBox {
     private Spinner<Integer> spinner;
     private final InvoiceWidgetDTO invoiceWidget;
     private ComboBox<Integer> comboBox;
-    private MoneyDTO invoice;
+    private InvoiceDTO invoice;
     private VBoxInvoiceFooter footer;
 
     Map<String, Spinner<Integer>> spinnerMap = new HashMap<>();
@@ -63,7 +64,7 @@ public class HBoxInvoiceRow extends HBox {
         VBox vBox5 = new VBox();
         vBox5.setPrefWidth(70);
         vBox5.setAlignment(Pos.CENTER_RIGHT);
-        total.setText("0.00");
+        total.setText(invoiceWidget.getItem().getValue());
         vBox5.getChildren().add(total);
 
         getChildren().addAll(vBox1,vBox2,vBox3,vBox4,vBox5);
@@ -90,6 +91,7 @@ public class HBoxInvoiceRow extends HBox {
             case "spinner":
                 spinner = new Spinner<>();
                 spinner.setPrefWidth(i.getWidth());
+                System.out.println("Inserting price for " + invoiceWidget.getObjectName());
                 price.setText(String.valueOf(invoiceWidget.getFee().getFieldValue()));
                 setSpinnerListener();
                 return spinner;
@@ -112,18 +114,18 @@ public class HBoxInvoiceRow extends HBox {
     }
 
     private void setSpinnerListener() {
-        SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 15, invoice.getExtra_key());
+        SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 15, invoiceWidget.getItem().getQty());
 		spinner.setValueFactory(spinnerValueFactory);
 		spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
 			total.setText(String.valueOf(invoiceWidget.getFee().getFieldValue().multiply(BigDecimal.valueOf(newValue))));
-			invoice.setExtra_key(newValue);
+            invoiceWidget.getItem().setQty(newValue);
 			footer.updateBalance();
 		});
     }
 
     private void setComboBoxListener() {
         comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-            invoice.setWork_credit(newValue);
+            invoiceWidget.getItem().setQty(newValue);
             String workCredits = String.valueOf(invoiceWidget.getFee().getFieldValue().multiply(BigDecimal.valueOf(newValue)));
             total.setText(workCredits);
             footer.updateBalance();

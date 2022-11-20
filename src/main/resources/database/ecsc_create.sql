@@ -2,7 +2,7 @@ drop database if exists ECSC_SQL;
 create database if not exists ECSC_SQL;
 use ECSC_SQL;
 
-create table boat
+create table ECSC_SQL.boat
 (
     BOAT_ID          INTEGER NOT NULL auto_increment primary key,
     MANUFACTURER     varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
@@ -22,7 +22,7 @@ create table boat
     AUX TINYINT(1) DEFAULT 0 NOT NULL
 );
 
-create table boat_memo
+create table ECSC_SQL.boat_memo
 (
     BOAT_MEMO_ID INTEGER NOT NULL auto_increment primary key,
     BOAT_ID      INTEGER NOT NULL,
@@ -31,7 +31,7 @@ create table boat_memo
     foreign key (BOAT_ID) references boat (BOAT_ID)
 );
 
-CREATE TABLE boat_picture
+CREATE TABLE ECSC_SQL.boat_picture
 (
     BOAT_PICTURE_ID   INTEGER NOT NULL auto_increment primary key,
     BOAT_ID           INTEGER NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE boat_picture
     foreign key (BOAT_ID) references boat (BOAT_ID)
 );
 
-create table winter_storage
+create table ECSC_SQL.winter_storage
 (
     WS_ID       INTEGER NOT NULL auto_increment primary key,
     BOAT_ID     INTEGER NOT NULL,
@@ -49,7 +49,7 @@ create table winter_storage
     foreign key (BOAT_ID) references boat (BOAT_ID)
 );
 
-create table membership
+create table ECSC_SQL.membership
 (
     MS_ID     int        NOT NULL auto_increment primary key,
     P_ID      int UNIQUE NOT NULL,
@@ -62,7 +62,7 @@ create table membership
     ZIP       varchar(15)
 );
 
-create table membership_id
+create table ECSC_SQL.membership_id
 (
     MID           INTEGER           NOT NULL auto_increment primary key,
     FISCAL_YEAR   INTEGER NOT NULL,
@@ -78,7 +78,7 @@ create table membership_id
 
 );
 
-create table slip
+create table ECSC_SQL.slip
 (
     SLIP_ID      INTEGER               NOT NULL auto_increment primary key,
     MS_ID        INTEGER unique        NULL,
@@ -88,7 +88,7 @@ create table slip
     foreign key (MS_ID) references membership (MS_ID)
 );
 
-CREATE TABLE fee
+CREATE TABLE ECSC_SQL.fee
 (
     FEE_ID      INTEGER NOT NULL auto_increment primary key,
     FIELD_NAME  varchar(40),
@@ -98,7 +98,7 @@ CREATE TABLE fee
     Description varchar(40) NULL
 );
 
-create table memo
+create table ECSC_SQL.memo
 (
     MEMO_ID   INTEGER         NOT NULL auto_increment primary key,
     MS_ID     INTEGER         NOT NULL,
@@ -109,7 +109,7 @@ create table memo
     foreign key (MS_ID) references membership (MS_ID)
 );
 
-create table person
+create table ECSC_SQL.person
 (
     P_ID        INTEGER     NOT NULL auto_increment primary key,
     MS_ID       INTEGER, # attaches person to membership
@@ -126,7 +126,7 @@ create table person
     foreign key (MS_ID) references membership (MS_ID)
 );
 
-create table email
+create table ECSC_SQL.email
 (
     EMAIL_ID     INTEGER NOT NULL auto_increment primary key,
     P_ID         INTEGER NOT NULL,
@@ -136,7 +136,7 @@ create table email
     foreign key (P_ID) references person (P_ID)
 );
 
-create table phone
+create table ECSC_SQL.phone
 (
     PHONE_ID     INTEGER NOT NULL auto_increment primary key,
     P_ID         INTEGER NOT NULL,
@@ -146,7 +146,7 @@ create table phone
     foreign key (P_ID) references person (P_ID)
 );
 
-create table boat_owner
+create table ECSC_SQL.boat_owner
 (
     MS_ID   INTEGER NOT NULL,
     BOAT_ID INTEGER NOT NULL,
@@ -158,7 +158,7 @@ create table boat_owner
 -- DROP FOREIGN KEY boat_owner_ibfk_2;
 -- #We want to change this to be a key but not prevent deletions, so make sure boat exists only for creation
 
-create table deposit
+create table ECSC_SQL.deposit
 (
     DEPOSIT_ID   INTEGER NOT NULL auto_increment primary key unique,
     DEPOSIT_DATE date    NOT NULL,
@@ -167,42 +167,38 @@ create table deposit
     unique (FISCAL_YEAR, BATCH)
 );
 
-create table money
+create table ECSC_SQL.invoice
 (
-    MONEY_ID               int                     NOT NULL auto_increment primary key unique,
-    MS_ID                  int                     NOT NULL,
-    FISCAL_YEAR            INTEGER                 NULL,
-    BATCH                  INTEGER                 NULL,
-    OFFICER_CREDIT         DECIMAL(10, 2)          NULL, #this is the dues and gets derived.
-    EXTRA_KEY              INTEGER                 NULL,
-    KAYAK_SHED_KEY         INTEGER                 NULL,
-    SAIL_LOFT_KEY          INTEGER                 NULL,
-    SAIL_SCHOOL_LOFT_KEY   INTEGER                 NULL,
-    BEACH                  INTEGER                 NULL,
-    WET_SLIP               DECIMAL(10, 2)          NULL,
-    KAYAK_RACK             INTEGER                 NULL,
-    KAYAK_SHED             INTEGER                 NULL,
-    SAIL_LOFT              INTEGER                 NULL,
-    SAIL_SCHOOL_LASER_LOFT INTEGER                 NULL,
-    WINTER_STORAGE         INTEGER                 NULL,
-    YSC_DONATION           DECIMAL(10, 2)          NULL,
-    PAID                   DECIMAL(10, 2)          NULL,
-    TOTAL                  DECIMAL(10, 2)          NULL,
-    CREDIT                 DECIMAL(10, 2)          NULL,
-    BALANCE                DECIMAL(10, 2)          NULL,
-    DUES                   DECIMAL(10, 2)          NULL,
-    COMMITED               boolean,
-    CLOSED                 boolean,
-    OTHER                  DECIMAL(10, 2)          NULL,
-    INITIATION             DECIMAL(10, 2)          NULL,
-    SUPPLEMENTAL           boolean,
-    WORK_CREDIT            INT                     NULL,
-    OTHER_CREDIT           DECIMAL(10, 2)          NULL,
-    KAYAK_BEACH_RACK       DECIMAL(4, 0) DEFAULT 0 NULL,
+    ID           INTEGER        NOT NULL auto_increment primary key unique,
+    MS_ID        INTEGER        NOT NULL,
+    FISCAL_YEAR  INTEGER        NULL,
+    PAID         DECIMAL(10, 2) NULL,
+    TOTAL        DECIMAL(10, 2) NULL,
+    CREDIT       DECIMAL(10, 2) NULL,
+    BALANCE      DECIMAL(10, 2) NULL,
+    BATCH        INTEGER        NULL,
+    COMMITTED    boolean,
+    CLOSED       boolean,
+    SUPPLEMENTAL boolean,
     foreign key (MS_ID) references membership (MS_ID)
 );
 
-create table payment
+create table ECSC_SQL.invoice_item
+(
+    ID          INTEGER        NOT NULL auto_increment primary key unique,
+    INVOICE_ID  INTEGER        NOT NULL,
+    MS_ID       INTEGER        NOT NULL,
+    FISCAL_YEAR INTEGER        NULL,
+    ITEM_TYPE   varchar(50)    NOT NULL,
+    MULTIPLIED  boolean        NOT NULL,
+    IS_CREDIT   boolean        NOT NULL,
+    VALUE       DECIMAL(10, 2) NULL,
+    QTY         INTEGER        NULL,
+    foreign key (INVOICE_ID) references INVOICE (ID),
+    foreign key (MS_ID) references membership (MS_ID)
+);
+
+create table ECSC_SQL.payment
 (
     PAY_ID       INTEGER        NOT NULL auto_increment primary key,
     MONEY_ID     INTEGER        NOT NULL,
@@ -212,11 +208,11 @@ create table payment
     AMOUNT       DECIMAL(10, 2) NOT NULL,
     DEPOSIT_ID   INTEGER        NOT NULL,
     foreign key (DEPOSIT_ID) references deposit (DEPOSIT_ID),
-    foreign key (MONEY_ID) references money (MONEY_ID)
+    foreign key (MONEY_ID) references invoice (ID)
 );
 
 # should attach to money_id, if put in early, just create money_id along with it
-create table officer
+create table ECSC_SQL.officer
 (
     O_ID       INTEGER NOT NULL auto_increment primary key,
     P_ID       INTEGER NOT NULL,
@@ -227,7 +223,7 @@ create table officer
     unique (P_ID, OFF_YEAR, OFF_TYPE)
 );
 
-create table defined_fee
+create table ECSC_SQL.defined_fee
 (
     FISCAL_YEAR            INTEGER unique primary key,
     DUES_REGULAR           DECIMAL(10, 2) NULL,
@@ -250,7 +246,7 @@ create table defined_fee
     KAYAK_BEACH_RACK       DECIMAL(10, 2) NULL
 );
 
-CREATE TABLE stats
+CREATE TABLE ECSC_SQL.stats
 (
     STAT_ID            INTEGER NOT NULL PRIMARY KEY UNIQUE,
     FISCAL_YEAR        INTEGER NOT NULL,
@@ -272,7 +268,7 @@ CREATE TABLE stats
     INIATION           DECIMAL(13, 2)
 );
 
-CREATE TABLE awards
+CREATE TABLE ECSC_SQL.awards
 (
     AWARD_ID   int         NOT NULL auto_increment primary key,
     P_ID       int         NOT NULL,
@@ -282,7 +278,7 @@ CREATE TABLE awards
 );
 
 -- # one-to-one relation with money
-create table work_credit
+create table ECSC_SQL.work_credit
 (
     MONEY_ID int NOT NULL primary key unique,
     MS_ID    int NOT NULL,
@@ -290,11 +286,11 @@ create table work_credit
     HARBOR   INTEGER NULL,
     SOCIAL   INTEGER NULL,
     OTHER    INTEGER NULL,
-    foreign key (MONEY_ID) references money (MONEY_ID) on DELETE no action on UPDATE no action
+    foreign key (MONEY_ID) references invoice (ID) on DELETE no action on UPDATE no action
 );
 
 -- #one-to-one relation with membership
-create table waitlist
+create table ECSC_SQL.waitlist
 (
     MS_ID          int NOT NULL primary key unique,
     SLIPWAIT       boolean,
@@ -306,7 +302,7 @@ create table waitlist
     foreign key (MS_ID) references membership (MS_ID) on DELETE no action on UPDATE no action
 );
 
-CREATE TABLE id_change
+CREATE TABLE ECSC_SQL.id_change
 (
     CHANGE_ID int NOT NULL auto_increment primary key,
     ID_YEAR   int NOT NULL unique,
@@ -314,7 +310,7 @@ CREATE TABLE id_change
 );
 
 -- this is the api key for jotform
-CREATE TABLE api_key
+CREATE TABLE ECSC_SQL.api_key
 (
     API_ID int         NOT NULL auto_increment primary key,
     NAME   varchar(50) NOT NULL unique,
@@ -323,7 +319,7 @@ CREATE TABLE api_key
 );
 
 -- this stores a hash for each membership
-create table form_msid_hash
+create table ECSC_SQL.form_msid_hash
 (
     HASH_ID int           NOT NULL auto_increment primary key,
     HASH    BIGINT unique NOT NULL,
@@ -418,16 +414,15 @@ CREATE TABLE ECSC_SQL.db_table_changes
 CREATE Table ECSC_SQL.db_invoice
 (
     id             INTEGER     NOT NULL primary key,
-    effective      datetime    NOT NULL,
+    year           INTEGER     NOT NULL,
     objectName     varchar(30) NOT NULL,
     widget_type    varchar(30) NOT NULL,
     width          double,
-    `order`          INTEGER     NOT NULL,
+    `order`        INTEGER     NOT NULL,
     multiplied     boolean     NOT NULL,
     price_editable boolean     NOT NULL,
     is_credit      boolean     NOT NULL,
     listener_type  varchar(30) NOT NULL
-
 );
 
 

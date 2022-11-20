@@ -4,6 +4,7 @@ import com.ecsail.EditCell;
 import com.ecsail.enums.PaymentType;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlMoney;
+import com.ecsail.structures.InvoiceDTO;
 import com.ecsail.structures.MoneyDTO;
 import com.ecsail.structures.PaymentDTO;
 import javafx.beans.property.SimpleObjectProperty;
@@ -30,13 +31,13 @@ import java.util.function.Function;
 public class VBoxInvoiceFooter extends VBox {
 
     private final TableView<PaymentDTO> paymentTableView = new TableView<>();
-    private final MoneyDTO invoice;
+    private final InvoiceDTO invoice;
     private Text totalFeesText = new Text("0.00");
     private Text totalCreditText = new Text("0.00");
     private Text totalPaymentText = new Text("0.00");
     private Text totalBalanceText = new Text("0.00");
 
-    public VBoxInvoiceFooter(MoneyDTO invoice, ObservableList<PaymentDTO> payments) {
+    public VBoxInvoiceFooter(InvoiceDTO invoice, ObservableList<PaymentDTO> payments) {
         this.invoice = invoice;
 
 
@@ -50,7 +51,7 @@ public class VBoxInvoiceFooter extends VBox {
                     var pay_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getPay_id();
                     BigDecimal amount = new BigDecimal(t.getNewValue());
                     SqlUpdate.updatePayment(pay_id, "amount", String.valueOf(amount.setScale(2, RoundingMode.HALF_UP)));
-                    BigDecimal totalPaidAmount = BigDecimal.valueOf(SqlMoney.getTotalAmount(invoice.getMoney_id()));
+                    BigDecimal totalPaidAmount = BigDecimal.valueOf(SqlMoney.getTotalAmount(invoice.getId()));
 //					invoiceDTO.getTotalPaymentText().setText(String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP)));
                     invoice.setPaid(String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP)));
 //					updateBalance();
@@ -199,7 +200,8 @@ public class VBoxInvoiceFooter extends VBox {
         // updates gui with the newly calculated balance
         totalBalanceText.setText(invoice.getBalance());
         // updates sql using selected money object
-        SqlUpdate.updateMoney(invoice);  // saves to database
+        // TODO fix below
+//        SqlUpdate.updateMoney(invoice);  // saves to database
     }
 
     private <T> TableColumn<T, String> createColumn(String title, Function<T, StringProperty> property) {
@@ -209,7 +211,7 @@ public class VBoxInvoiceFooter extends VBox {
         return col;
     }
 
-    public MoneyDTO getInvoice() {
+    public InvoiceDTO getInvoice() {
         return invoice;
     }
 

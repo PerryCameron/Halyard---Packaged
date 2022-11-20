@@ -1,5 +1,6 @@
 package com.ecsail.gui.boxes.invoice;
 
+import com.ecsail.BaseApplication;
 import com.ecsail.Note;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlInsert;
@@ -20,30 +21,39 @@ import java.util.*;
 
 public class HBoxInvoice extends HBox {
 	private ObservableList<PaymentDTO> payments;
-	private final MoneyDTO invoice;
+	private final InvoiceDTO invoice;
+	private ObservableList<InvoiceItemDTO> items;
+	private ArrayList<FeeDTO> fees;
+	private ArrayList<InvoiceWidgetDTO> theseWidgets;
 	MembershipDTO membership;
-	WorkCreditDTO selectedWorkCreditYear;
 	VBoxInvoiceFooter footer;
 	String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
 	boolean isCommitted;
 	Button addWetSlip = new Button();
-	ArrayList<InvoiceWidgetDTO> theseWidgets = SqlInvoiceWidget.getInvoiceWidgets();
-	ArrayList<FeeDTO> fees;
+
+
 	Map<String, HBoxInvoiceRow> widgetMap = new LinkedHashMap<>();
 	
-	public HBoxInvoice(MembershipDTO m, MoneyDTO invoice, Note note) {
+	public HBoxInvoice(MembershipDTO m, InvoiceDTO invoice, Note note) {
 		this.membership = m;
 		this.invoice = invoice;
-		this.fees = SqlFee.getFeesFromYear(invoice.getFiscal_year());
-		this.selectedWorkCreditYear = SqlMoney.getWorkCredit(invoice.getMoney_id());
+		this.theseWidgets = SqlInvoiceWidget.getInvoiceWidgets();
+		this.items = SqlInvoiceItem.getInvoiceItemsByInvoiceId(invoice.getId());
+		this.fees = SqlFee.getFeesFromYear(invoice.getYear());
 //		this.hasOfficer = membershipHasOfficer();
 		this.isCommitted = invoice.isCommitted();
 		this.payments = getPayment();
 		this.footer = new VBoxInvoiceFooter(invoice, payments);
+		// TODO if not committed
         for(InvoiceWidgetDTO i: theseWidgets) {
 			i.setFee(insertFeeIntoWidget(i));
+			i.setItem(insertItemIntoWidget(i));
             widgetMap.put(i.getObjectName(), new HBoxInvoiceRow(i, footer));
         }
+//		fees.stream().forEach(System.out::println);
+//		items.stream().forEach(System.out::println);
+
+
 		///////////// ACTION ///////////////
 
 
@@ -355,12 +365,12 @@ public class HBoxInvoice extends HBox {
 //		checkIfRecordHasOfficer();
 //		updateBalance(); // updates and saves
 		//////////////// SETTING CONTENT //////////////
-		widgetMap.get("Dues").getTextField().setText(String.valueOf(invoice.getDues()));
-		widgetMap.get("YSP Donation").getTextField().setText(String.valueOf(invoice.getYsc_donation()));
-		widgetMap.get("Other Fee").getTextField().setText(String.valueOf(invoice.getOther()));
-		widgetMap.get("Initiation").getTextField().setText(String.valueOf(invoice.getInitiation()));
-//		widgetMap.get("Wet Slip-editable").getTextField().setText(String.valueOf(definedFees.getWet_slip()));
-		widgetMap.get("Other Credit").getTextField().setText(String.valueOf(invoice.getOther_credit()));
+//		widgetMap.get("Dues").getTextField().setText(String.valueOf(invoice.getDues()));
+//		widgetMap.get("YSP Donation").getTextField().setText(String.valueOf(invoice.getYsc_donation()));
+//		widgetMap.get("Other Fee").getTextField().setText(String.valueOf(invoice.getOther()));
+//		widgetMap.get("Initiation").getTextField().setText(String.valueOf(invoice.getInitiation()));
+////		widgetMap.get("Wet Slip-editable").getTextField().setText(String.valueOf(definedFees.getWet_slip()));
+//		widgetMap.get("Other Credit").getTextField().setText(String.valueOf(invoice.getOther_credit()));
 
 //		invoiceDTO.getInitiationText().setText(invoice.getInitiation());
 //		invoiceDTO.getOtherFeeText().setText(invoice.getOther());
@@ -409,16 +419,25 @@ public class HBoxInvoice extends HBox {
 		getChildren().addAll(vboxGrey);
 	}
 
+	private InvoiceItemDTO insertItemIntoWidget(InvoiceWidgetDTO i) {
+		InvoiceItemDTO item = null;
+		for(InvoiceItemDTO it: items) {
+			if(i.getObjectName().equals(it.getItemType())) {
+				System.out.println("Selected " + i.getObjectName() + " -> " + it.getItemType());
+				return it;
+			}
+		}
+		return null;
+	}
+
 	private FeeDTO insertFeeIntoWidget(InvoiceWidgetDTO i) {
 		FeeDTO selectedFee = null;
-		System.out.print("widget: " + i.getObjectName() + "-> ");
 		for (FeeDTO f : fees) {
 			if (i.getObjectName().equals("Dues") && f.getFieldName().equals("Dues " + membership.getMemType()))
 				selectedFee = f;
 			if (i.getObjectName().equals(f.getFieldName()))
 				selectedFee = f;
 		}
-		System.out.println("Returning: " + selectedFee);
 		return selectedFee;
 	}
 
@@ -451,28 +470,28 @@ public class HBoxInvoice extends HBox {
 	private ObservableList<PaymentDTO> getPayment() {
 		// check to see if invoice record exists
 		ObservableList<PaymentDTO> payments = FXCollections.observableArrayList();
-		if(SqlExists.paymentExists(invoice.getMoney_id())) {
-			return SqlPayment.getPayments(invoice.getMoney_id());
+		if(SqlExists.paymentExists(invoice.getId())) {
+			return SqlPayment.getPayments(invoice.getId());
 		} else {  // if not create one
-			System.out.println("getPayment(): Creating a new payment entry");
+			BaseApplication.logger.info("getPayment(): Creating a new payment entry");
 			int pay_id = SqlSelect.getNextAvailablePrimaryKey("payment","pay_id");
-			payments.add(new PaymentDTO(pay_id,invoice.getMoney_id(),"0","CH",date, "0",1));
+			payments.add(new PaymentDTO(pay_id,invoice.getId(),"0","CH",date, "0",1));
 			SqlInsert.addPaymentRecord(payments.get(payments.size() - 1));
 		}
 		return payments;
 	}
 
-	private void updateItem(BigDecimal newTotalValue, String type) {
-		switch (type) {
-			case "Initiation" -> invoice.setInitiation(String.valueOf(newTotalValue));
-			case "Other Fee" -> invoice.setOther(String.valueOf(newTotalValue));
-			case "YSP Donation" -> invoice.setYsc_donation(String.valueOf(newTotalValue));
-			case "Dues" -> invoice.setDues(String.valueOf(newTotalValue));
-			case "Wet Slip" -> invoice.setWet_slip(String.valueOf(newTotalValue));
-			case "other_credit" -> invoice.setOther_credit(String.valueOf(newTotalValue));
-		}
+//	private void updateItem(BigDecimal newTotalValue, String type) {
+//		switch (type) {
+//			case "Initiation" -> invoice.setInitiation(String.valueOf(newTotalValue));
+//			case "Other Fee" -> invoice.setOther(String.valueOf(newTotalValue));
+//			case "YSP Donation" -> invoice.setYsc_donation(String.valueOf(newTotalValue));
+//			case "Dues" -> invoice.setDues(String.valueOf(newTotalValue));
+//			case "Wet Slip" -> invoice.setWet_slip(String.valueOf(newTotalValue));
+//			case "other_credit" -> invoice.setOther_credit(String.valueOf(newTotalValue));
+//		}
 //		invoice.setTotal(String.valueOf(updateTotalFeeField()));
-	}
+//	}
 	
 //	private void setEditable(boolean isEditable) {
 //		invoiceDTO.clearGridPane();

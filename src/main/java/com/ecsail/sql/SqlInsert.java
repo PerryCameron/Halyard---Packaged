@@ -139,22 +139,16 @@ public class SqlInsert {
 		}
 	}
 
-	public static void addMoneyRecord(MoneyDTO m) {
-		String query = "INSERT INTO money () VALUES ("
-				+ m.getMoney_id() + "," + m.getMs_id() + "," + m.getFiscal_year() + "," + m.getBatch()
-				+ "," + m.getOfficer_credit() + "," + m.getExtra_key() + "," + m.getKayac_shed_key()
-				+ "," + m.getSail_loft_key() + "," + m.getSail_school_loft_key() + "," + m.getBeach()
-				+ "," + m.getWet_slip() + "," + m.getKayac_rack() + "," + m.getKayac_shed()
-				+ "," + m.getSail_loft() + "," + m.getSail_school_laser_loft() + "," + m.getWinter_storage()
-				+ "," + m.getYsc_donation() + "," + m.getPaid() + "," + m.getTotal()
-				+ "," + m.getCredit() + "," + m.getBalance() + "," + m.getDues()
-				+  "," + m.isCommitted() + "," + m.isClosed() + "," + m.getOther() + ","
-				+ m.getInitiation() + "," + m.isSupplemental() + "," + m.getWork_credit()
-				+ "," + m.getOther_credit() + "," + m.getKayak_beach_rack() + ")";
+	public static void addInvoiceRecord(InvoiceDTO m) {
+		String query = "INSERT INTO invoice () VALUES ("
+				+ m.getId() + "," + m.getMsId() + "," + m.getYear() + ",'" + m.getPaid()
+				+ "','" + m.getTotal() + "','" + m.getCredit() + "','" + m.getBalance()
+				+ "'," + m.getBatch() + "," + m.isCommitted() + "," + m.isClosed()
+				+ "," + m.isSupplemental() + ")";
 		try {
 			BaseApplication.connect.executeQuery(query);
 		 } catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
+			new Dialogue_ErrorSQL(e,"Unable to insert data into invoice row","See below for details");
 		}
 	}
 

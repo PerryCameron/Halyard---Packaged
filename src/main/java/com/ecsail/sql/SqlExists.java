@@ -275,17 +275,17 @@ public class SqlExists {
 		return result;
 	}
 	
-	public static Boolean moneyExists(String year, MembershipDTO membership) {
+	public static Boolean invoiceExists(String year, MembershipDTO membership) {
 		boolean result = false;
-		String query = "SELECT EXISTS(SELECT * FROM money WHERE ms_id=" + membership.getMsid() + " AND fiscal_year=" + year + ")";
+		String query = "SELECT EXISTS(SELECT * FROM invoice WHERE ms_id=" + membership.getMsid() + " AND year=" + year + ") AS invoiceExists";
 		try {
 			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
 			while(rs.next()) {
-			result = rs.getBoolean("EXISTS(SELECT * FROM money WHERE ms_id=" + membership.getMsid() + " AND fiscal_year=" + year + ")");
+			result = rs.getBoolean("invoiceExists");
 			}
 		BaseApplication.connect.closeResultSet(rs); }
 		catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to check if EXISTS","See below for details");
+			new Dialogue_ErrorSQL(e,"Unable to check if Invoice Exists","See below for details");
 		}
 		return result;
 	}

@@ -11,8 +11,9 @@ public class InvoiceWidgetDTO {
     private boolean price_editable;
     private boolean is_credit;
     private String listener_type;
-
     private FeeDTO fee;
+
+    private InvoiceItemDTO item;
 
 
     public InvoiceWidgetDTO(int id, String date, String objectName, String widgetType, double width, int order, boolean multiplied, boolean price_editable, boolean is_credit, String listener_type) {
@@ -114,6 +115,14 @@ public class InvoiceWidgetDTO {
 
     public void setFee(FeeDTO fee) {
         this.fee = fee;
+    }
+
+    public InvoiceItemDTO getItem() {
+        return item;
+    }
+
+    public void setItem(InvoiceItemDTO item) {
+        this.item = item;
     }
 
     @Override
