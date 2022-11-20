@@ -1,6 +1,7 @@
 package com.ecsail;
 
 import com.ecsail.gui.dialogues.Dialogue_DatabaseBackup;
+import com.ecsail.jotform.structures.ApiKeyDTO;
 import com.ecsail.sql.select.*;
 import com.ecsail.structures.*;
 import javafx.collections.ObservableList;
@@ -13,6 +14,8 @@ import java.util.stream.Collectors;
 
 public class SqlScriptMaker {
 //	static Object_TupleCount newTupleCount;
+	static ArrayList<InvoiceWidgetDTO> invoiceWidgets;
+	static ArrayList<ApiKeyDTO> apis;
 	static ArrayList<String> tableCreation = new ArrayList<>();
 	static ObservableList<MembershipDTO> memberships;
 	static ObservableList<MembershipIdDTO> ids;
@@ -69,6 +72,8 @@ public class SqlScriptMaker {
 		fees = SqlFee.getAllFees();
 		idChanges = SqlIdChange.getAllChangedIds();
 		positions = SqlBoardPositions.getPositions();
+		apis = SqlApi_key.getAPIKeys();
+		invoiceWidgets = SqlInvoiceWidget.getInvoiceWidgets();
 
 		BaseApplication.logger.info("2");
 		HalyardPaths.checkPath(HalyardPaths.SQLBACKUP + "/" + BaseApplication.selectedYear);
@@ -129,6 +134,10 @@ public class SqlScriptMaker {
 				writer.write(getIdChangeString(idc));
 			for (BoardPositionDTO b: positions)
 				writer.write(getPositionString(b));
+			for(ApiKeyDTO a: apis)
+				writer.write((getApiString(a)));
+			for(InvoiceWidgetDTO a: invoiceWidgets)
+				writer.write(getInvoiceWidgetString(a));
 
 //			positions.stream().forEach(p -> writeToFile(getPositionString(p)));
 
@@ -140,13 +149,8 @@ public class SqlScriptMaker {
 		}
 	}
 
-//	public static void writeToFile(FileWriter writer, String entry)  {
-//		try {
-//			writer.write("");
-//		} catch (IOException e) {
-//			throw new RuntimeException(e);
-//		}
-//	}
+
+
 
 	public static void clearMemory() {
 		tableCreation.clear();
@@ -170,8 +174,30 @@ public class SqlScriptMaker {
 		fees.clear();
 		idChanges.clear();
 		positions.clear();
+		apis.clear();
+		invoiceWidgets.clear();
 	}
 
+	private static String getInvoiceWidgetString(InvoiceWidgetDTO a) {
+		return "INSERT INTO db_invoice () VALUES("
+				+ a.getId() + ","
+				+ getCorrectString(a.getDate()) + ","
+				+ getCorrectString(a.getObjectName()) + ","
+				+ getCorrectString(a.getWidgetType()) + ","
+				+ a.getWidth() + ","
+				+ a.getOrder() + ","
+				+ a.isMultiplied() + ","
+				+ a.isPrice_editable() + ","
+				+ a.isIs_credit() + ","
+				+ getCorrectString(a.getListener_type())+ ");\n";
+	}
+	private static String getApiString(ApiKeyDTO a) {
+		return "INSERT INTO api_key () VALUES("
+				+ a.getId() + ","
+				+ getCorrectString(a.getName()) + ","
+				+ getCorrectString(a.getKey()) + ","
+				+ getCorrectString(a.getDate()) + ");\n";
+	}
 	private static String getPositionString(BoardPositionDTO p) {
 		return
 				"INSERT INTO board_positions () VALUES("

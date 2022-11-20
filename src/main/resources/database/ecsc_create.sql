@@ -388,7 +388,7 @@ CREATE TABLE ECSC_SQL.board_positions
     id INTEGER NOT NULL primary key,
     position varchar(50) unique not null,
     identifier varchar(5) unique not null,
-    order INTEGER not null,
+    list_order INTEGER not null,
     is_officer boolean not null,
     is_chair boolean not null,
     is_assistant_chair boolean not null
@@ -417,15 +417,17 @@ CREATE TABLE ECSC_SQL.db_table_changes
 
 CREATE Table ECSC_SQL.db_invoice
 (
-    id             INTEGER NOT NULL primary key,
-    effective      datetime NOT NULL,
+    id             INTEGER     NOT NULL primary key,
+    effective      datetime    NOT NULL,
     objectName     varchar(30) NOT NULL,
     widget_type    varchar(30) NOT NULL,
-    multiplied     boolean NOT NULL,
-    price_editable boolean NOT NULL,
-    is_credit      boolean NOT NULL,
+    width          double,
+    `order`          INTEGER     NOT NULL,
+    multiplied     boolean     NOT NULL,
+    price_editable boolean     NOT NULL,
+    is_credit      boolean     NOT NULL,
     listener_type  varchar(30) NOT NULL
+
 );
 
-drop TABLE ECSC_SQL.db_invoice;
 

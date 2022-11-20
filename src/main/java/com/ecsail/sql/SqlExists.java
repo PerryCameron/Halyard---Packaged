@@ -10,7 +10,29 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SqlExists {
-	
+
+
+	public static Boolean membershipHasOfficerForYear(int msid, int year) {
+		boolean answer = false;
+		String query = "SELECT EXISTS(" +
+				"SELECT * FROM officer o" +
+				"JOIN person p ON p.P_ID=o.P_ID" +
+				"WHERE o.OFF_YEAR='2022'" +
+				"AND p.MS_ID=1095" +
+				"AND o.OFF_TYPE != 'BM'" +
+				") AS officer_exists";
+		try {
+			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+			rs.next();
+			answer = rs.getBoolean("officer_exists");
+			BaseApplication.connect.closeResultSet(rs);
+		}
+		catch (SQLException e) {
+			new Dialogue_ErrorSQL(e,"Unable to check if Officer EXISTS","See below for details");
+		}
+		return answer;
+	}
+
 	// this may be a duplicate, for instance it doesn't need int pid, and why the inner join
 	// this is used on BoxAddPerson only
 	public static Boolean dbTableChangeRowExists(int id, String table) {

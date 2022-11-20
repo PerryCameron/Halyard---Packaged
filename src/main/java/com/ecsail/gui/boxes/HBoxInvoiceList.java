@@ -3,6 +3,7 @@ package com.ecsail.gui.boxes;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.Note;
+import com.ecsail.gui.boxes.invoice.HBoxInvoice;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlInsert;
@@ -201,22 +202,22 @@ public class HBoxInvoiceList extends HBox {
 	}
 	
 	private static void createTab(int rowIndex) {
-		parentTabPane.getTabs().add(new Tab(fiscals.get(rowIndex).getFiscal_year() + "", new HBoxInvoice(membership, people, fiscals, rowIndex, note))); // current year tab
+		parentTabPane.getTabs().add(new Tab(fiscals.get(rowIndex).getFiscal_year() + "", new HBoxInvoice(membership, fiscals.get(rowIndex), note))); // current year tab
 		for(Tab tab: parentTabPane.getTabs()) {
 			if(tab.getText().equals(fiscals.get(rowIndex).getFiscal_year() + ""))
 		parentTabPane.getSelectionModel().select(tab);
 		}
 	}
 
-	private static void createTabByYear(MoneyDTO money) {
+	private static void createTabByYear(MoneyDTO invoice) {
 		// create a tab with the correct year
-		Tab newTab = new Tab(String.valueOf(money.getFiscal_year()));
+		Tab newTab = new Tab(String.valueOf(invoice.getFiscal_year()));
 		// add tab to pane
 		parentTabPane.getTabs().add(newTab);
 		// find the index value of the correct Object_Money in fiscals ArrayList
-		int fiscalsIndex = getFiscalIndexByYear(money.getMoney_id());
+		int fiscalsIndex = getFiscalIndexByYear(invoice.getMoney_id());
 		// add appropriate invoice to the tab using the index of fiscals
-		newTab.setContent(new HBoxInvoice(membership, people, fiscals, fiscalsIndex, note));
+		newTab.setContent(new HBoxInvoice(membership, fiscals.get(fiscalsIndex), note));
 		// open the correct tab
 		parentTabPane.getSelectionModel().select(newTab);
 	}

@@ -66,4 +66,16 @@ public class FeeDTO {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return "FeeDTO{" +
+                "feeId=" + feeId +
+                ", fieldName='" + fieldName + '\'' +
+                ", fieldValue=" + fieldValue +
+                ", fieldQuantity=" + fieldQuantity +
+                ", feeYear=" + feeYear +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

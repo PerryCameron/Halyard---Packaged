@@ -47,7 +47,7 @@ public class TabFee extends Tab {
     public TabFee(String text) {
         super(text);
         this.selectedYear = BaseApplication.selectedYear;
-        this.feeDTOS = SqlFee.getFeesFromYear(selectedYear);
+        this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
         this.radioGroup = new ToggleGroup();
         this.radioHashMap = new HashMap<>();
         this.textFieldHashMap = new HashMap<>();
@@ -146,7 +146,7 @@ public class TabFee extends Tab {
         // choose year to copy
         int copyYear = Integer.parseInt(selectedYear) + 1;
         // populate that list with objects from copy year
-        feeDTOS = SqlFee.getFeesFromYear(String.valueOf(copyYear));
+        feeDTOS = SqlFee.getFeesFromYear(copyYear);
         // change the year from old objets to current year and save it to SQL
         for (FeeDTO feeDTO : feeDTOS) {
             feeDTO.setFeeYear(Integer.parseInt(selectedYear));
@@ -166,7 +166,7 @@ public class TabFee extends Tab {
         // clear our list
         this.feeDTOS.clear();
         // repopulate our list with new year objects
-        this.feeDTOS = SqlFee.getFeesFromYear(selectedYear);
+        this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
         // clear fx objects
         vboxFeeRow.getChildren().clear();
         // add button objects

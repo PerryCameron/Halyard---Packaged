@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class SqlFee {
 
-        public static ArrayList<FeeDTO> getFeesFromYear(String year) {  //p_id
+        public static ArrayList<FeeDTO> getFeesFromYear(int year) {  //p_id
             ArrayList<FeeDTO> thisAwards = new ArrayList<>();
             String query = "SELECT * FROM fee WHERE fee_year=" + year;
             try {

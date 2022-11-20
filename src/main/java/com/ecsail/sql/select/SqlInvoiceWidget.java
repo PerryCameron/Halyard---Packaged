@@ -2,7 +2,7 @@ package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
-import com.ecsail.structures.InvoiceWidget;
+import com.ecsail.structures.InvoiceWidgetDTO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,17 +10,19 @@ import java.util.ArrayList;
 
 public class SqlInvoiceWidget {
 
-    public static ArrayList<InvoiceWidget> getInvoiceWidgets() {  //p_id
-        ArrayList<InvoiceWidget> theseWidgets = new ArrayList<>();
-        String query = "SELECT * FROM db_invoice";
+    public static ArrayList<InvoiceWidgetDTO> getInvoiceWidgets() {  //p_id
+        ArrayList<InvoiceWidgetDTO> theseWidgets = new ArrayList<>();
+        String query = "select * from db_invoice";
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
-                theseWidgets.add(new InvoiceWidget(
+                theseWidgets.add(new InvoiceWidgetDTO(
                         rs.getInt("ID"),
                         rs.getString("effective"),
                         rs.getString("objectName"),
                         rs.getString("widget_type"),
+                        rs.getDouble("width"),
+                        rs.getInt("order"),
                         rs.getBoolean("multiplied"),
                         rs.getBoolean("price_editable"),
                         rs.getBoolean("is_credit"),
