@@ -186,22 +186,22 @@ public class VBoxInvoiceFooter extends VBox {
         getChildren().addAll(hboxTop,hboxBottom);
     }
 
-    public void updateBalance() {
-        // updates total to the selected money object
-//        invoice.setTotal(String.valueOf(updateTotalFeeField()));
-        // updates gui with the newly calculated total
-		totalFeesText.setText(String.valueOf(invoice.getTotal()));
-        // updates credit to the selected money object
-//        invoice.setCredit(String.valueOf(countTotalCredit()));
-        // updates gui with the newly calculated credit
-        totalCreditText.setText(invoice.getCredit());
-        // updates balance to the selected money object
-//        invoice.setBalance(String.valueOf(getBalance()));
-        // updates gui with the newly calculated balance
-        totalBalanceText.setText(invoice.getBalance());
-        // updates sql using selected money object
-        // TODO fix below
-//        SqlUpdate.updateMoney(invoice);  // saves to database
+    public void updateTotals(BigDecimal fees, BigDecimal credit) {
+        BigDecimal payment = new BigDecimal(invoice.getPaid());
+        BigDecimal balance = fees.subtract(credit).subtract(payment);
+        String feesString = String.valueOf(fees);
+        String creditString = String.valueOf(credit);
+        String paymentString = String.valueOf(payment);
+        String balanceString = String.valueOf(balance);
+		totalFeesText.setText(feesString);
+        totalCreditText.setText(creditString);
+        totalBalanceText.setText(balanceString);
+        totalPaymentText.setText(paymentString);
+        invoice.setTotal(feesString);
+        invoice.setCredit(creditString);
+        invoice.setBalance(balanceString);
+        invoice.setPaid(paymentString);
+        SqlUpdate.updateInvoice(invoice);
     }
 
     private <T> TableColumn<T, String> createColumn(String title, Function<T, StringProperty> property) {

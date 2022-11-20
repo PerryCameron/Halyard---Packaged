@@ -1,8 +1,10 @@
 package com.ecsail.gui.boxes.invoice;
 
-import com.ecsail.structures.InvoiceDTO;
-import com.ecsail.structures.InvoiceWidgetDTO;
-import com.ecsail.structures.MoneyDTO;
+import com.ecsail.FixInput;
+import com.ecsail.sql.SqlUpdate;
+import com.ecsail.structures.*;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -10,11 +12,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
 public class HBoxInvoiceRow extends HBox {
 
+    String itemName;
     private Text price = new Text();
     private Text total = new Text();
     private TextField textField;
@@ -22,22 +26,27 @@ public class HBoxInvoiceRow extends HBox {
     private final InvoiceWidgetDTO invoiceWidget;
     private ComboBox<Integer> comboBox;
     private InvoiceDTO invoice;
+    private InvoiceItemDTO invoiceItem;
+    private FeeDTO fee;
     private VBoxInvoiceFooter footer;
-
-    Map<String, Spinner<Integer>> spinnerMap = new HashMap<>();
+    private ObservableList<InvoiceItemDTO> items;
 
 
     public HBoxInvoiceRow(InvoiceWidgetDTO invoiceWidget, VBoxInvoiceFooter footer) {
         this.invoice = footer.getInvoice();
         this.invoiceWidget = invoiceWidget;
+        this.itemName = invoiceWidget.getObjectName();
+        this.invoiceItem = setItem();
         this.footer = footer;
+        this.fee = invoiceWidget.getFee();
+        this.items = invoiceWidget.getItems();
 
         setSpacing(15);
         // column 1
         VBox vBox1 = new VBox();
         vBox1.setPrefWidth(140);
         vBox1.setAlignment(Pos.CENTER_LEFT);
-        Text feeText = new Text(invoiceWidget.getObjectName() + ":");
+        Text feeText = new Text(itemName + ":");
         feeText.setId("invoice-text-light");
         vBox1.getChildren().add(feeText);
 
@@ -64,12 +73,11 @@ public class HBoxInvoiceRow extends HBox {
         VBox vBox5 = new VBox();
         vBox5.setPrefWidth(70);
         vBox5.setAlignment(Pos.CENTER_RIGHT);
-        total.setText(invoiceWidget.getItem().getValue());
+        total.setText(invoiceItem.getValue());
         vBox5.getChildren().add(total);
 
         getChildren().addAll(vBox1,vBox2,vBox3,vBox4,vBox5);
     }
-
 
     private Text setX(InvoiceWidgetDTO i) {
         Text x = new Text("");
@@ -86,13 +94,14 @@ public class HBoxInvoiceRow extends HBox {
             case "text-field":
                 textField = new TextField();
                 textField.setPrefWidth(i.getWidth());
+                textField.setText(invoiceItem.getValue());
+                setTextFieldListener();
                 return textField;
 
             case "spinner":
                 spinner = new Spinner<>();
                 spinner.setPrefWidth(i.getWidth());
-                System.out.println("Inserting price for " + invoiceWidget.getObjectName());
-                price.setText(String.valueOf(invoiceWidget.getFee().getFieldValue()));
+                price.setText(String.valueOf(fee.getFieldValue()));
                 setSpinnerListener();
                 return spinner;
 
@@ -113,24 +122,64 @@ public class HBoxInvoiceRow extends HBox {
         return null;
     }
 
+    private InvoiceItemDTO setItem() {
+        return invoiceWidget.getItems().stream().filter(i -> i.getItemType().equals(itemName)).findFirst().orElse(null);
+    }
+
     private void setSpinnerListener() {
-        SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 15, invoiceWidget.getItem().getQty());
+        SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 15, invoiceItem.getQty());
 		spinner.setValueFactory(spinnerValueFactory);
 		spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
-			total.setText(String.valueOf(invoiceWidget.getFee().getFieldValue().multiply(BigDecimal.valueOf(newValue))));
-            invoiceWidget.getItem().setQty(newValue);
-			footer.updateBalance();
+            String calculatedTotal = String.valueOf(fee.getFieldValue().multiply(BigDecimal.valueOf(newValue)));
+			total.setText(calculatedTotal);
+            invoiceItem.setQty(newValue);
+            invoiceItem.setValue(calculatedTotal);
+            SqlUpdate.updateInvoiceItem(invoiceItem);
+			updateBalance();
 		});
     }
 
     private void setComboBoxListener() {
         comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-            invoiceWidget.getItem().setQty(newValue);
-            String workCredits = String.valueOf(invoiceWidget.getFee().getFieldValue().multiply(BigDecimal.valueOf(newValue)));
-            total.setText(workCredits);
-            footer.updateBalance();
+            String calculatedTotal = String.valueOf(BigDecimal.valueOf(newValue).multiply(fee.getFieldValue()));
+            total.setText(calculatedTotal);
+            invoiceItem.setQty(newValue);
+            invoiceItem.setValue(calculatedTotal);
+            SqlUpdate.updateInvoiceItem(invoiceItem);
+            updateBalance();
         });
     }
+
+    private void setTextFieldListener() {
+        		textField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+	            //focus out
+	            if (oldValue) {  // we have focused and unfocused
+	            	if(!FixInput.isBigDecimal(textField.getText())) {
+						textField.setText("0");
+	            	}
+	            	BigDecimal dues = new BigDecimal(textField.getText());
+					textField.setText(String.valueOf(dues.setScale(2, RoundingMode.HALF_UP)));
+                    invoiceItem.setQty(1);
+                    invoiceItem.setValue(textField.getText());
+                    total.setText(textField.getText());
+                    SqlUpdate.updateInvoiceItem(invoiceItem);
+	            	updateBalance();
+	            }
+	        });
+    }
+
+    private void updateBalance() {
+        BigDecimal fees = new BigDecimal("0.00");
+        BigDecimal credit = new BigDecimal("0.00");
+        for (InvoiceItemDTO i : items) {
+            if (i.isCredit())
+                credit = credit.add(new BigDecimal(i.getValue()));
+            else
+                fees = fees.add(new BigDecimal(i.getValue()));
+        }
+        footer.updateTotals(fees,credit);
+    }
+
 
     public Text getPrice() {
         return price;

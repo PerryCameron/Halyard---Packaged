@@ -1,5 +1,7 @@
 package com.ecsail.structures;
 
+import javafx.collections.ObservableList;
+
 public class InvoiceWidgetDTO {
     private int id;
     private String year;
@@ -15,7 +17,7 @@ public class InvoiceWidgetDTO {
      * below not included in database
      */
     private FeeDTO fee;
-    private InvoiceItemDTO item;
+    private ObservableList<InvoiceItemDTO> items;
 
 
     public InvoiceWidgetDTO(int id, String date, String objectName, String widgetType, double width, int order, boolean multiplied, boolean price_editable, boolean is_credit, String listener_type) {
@@ -119,12 +121,12 @@ public class InvoiceWidgetDTO {
         this.fee = fee;
     }
 
-    public InvoiceItemDTO getItem() {
-        return item;
+    public ObservableList<InvoiceItemDTO> getItems() {
+        return items;
     }
 
-    public void setItem(InvoiceItemDTO item) {
-        this.item = item;
+    public void setItems(ObservableList<InvoiceItemDTO> items) {
+        this.items = items;
     }
 
     @Override

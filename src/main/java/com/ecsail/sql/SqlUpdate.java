@@ -482,6 +482,34 @@ public class SqlUpdate {
 		}
 	}
 
+	public static void updateInvoiceItem(InvoiceItemDTO item) {
+		String query = "UPDATE invoice_item SET "
+				+ "VALUE=" + item.getValue() + ","
+				+ "QTY=" + item.getQty()
+				+ " WHERE ID=" + item.getId();
+		try {
+			BaseApplication.connect.executeQuery(query);
+		} catch (SQLException e) {
+			new Dialogue_ErrorSQL(e,"There was a problem with updating item " + item.getItemType(),"");
+		}
+	}
+
+	public static void updateInvoice(InvoiceDTO invoice) {
+		String query = "UPDATE invoice SET "
+				+ "PAID=" + invoice.getPaid() + ","
+				+ "TOTAL=" + invoice.getTotal() + ","
+				+ "CREDIT=" + invoice.getCredit() + ","
+				+ "BALANCE=" + invoice.getBalance()
+				+ " WHERE ID=" + invoice.getId();
+		try {
+			BaseApplication.connect.executeQuery(query);
+		} catch (SQLException e) {
+			new Dialogue_ErrorSQL(e,"There was a problem with updating Invoice ID " + invoice.getId(),"");
+		}
+	}
+
+
+
 	public static void updateDefinedFeeRecord(DefinedFeeDTO d) {
 		String query = "UPDATE defined_fee SET " +
 				"DUES_REGULAR=" + d.getDues_regular() + "," +
