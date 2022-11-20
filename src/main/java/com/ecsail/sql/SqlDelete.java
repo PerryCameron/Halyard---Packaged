@@ -160,8 +160,17 @@ public class SqlDelete {
 		}
 	}
 
-	public static void deleteMoneyByMoneyID(int money_id) {
-		String query = "DELETE FROM money WHERE money_id=" + money_id;
+	public static void deleteInvoiceByID(int id) {
+		String query = "DELETE FROM invoice WHERE id=" + id;
+		try {
+			BaseApplication.connect.executeQuery(query);
+		} catch (SQLException e) {
+			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
+		}
+	}
+
+	public static void deleteInvoiceItemByInvoiceID(int id) {
+		String query = "DELETE FROM invoice_item WHERE invoice_id=" + id;
 		try {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {

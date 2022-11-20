@@ -277,7 +277,7 @@ public class SqlExists {
 	
 	public static Boolean invoiceExists(String year, MembershipDTO membership) {
 		boolean result = false;
-		String query = "SELECT EXISTS(SELECT * FROM invoice WHERE ms_id=" + membership.getMsid() + " AND year=" + year + ") AS invoiceExists";
+		String query = "SELECT EXISTS(SELECT * FROM invoice WHERE ms_id=" + membership.getMsid() + " AND fiscal_year=" + year + ") AS invoiceExists";
 		try {
 			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
 			while(rs.next()) {

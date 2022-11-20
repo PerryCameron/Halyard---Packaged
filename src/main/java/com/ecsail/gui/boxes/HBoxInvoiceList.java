@@ -9,6 +9,7 @@ import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.select.SqlDefinedFee;
 import com.ecsail.sql.select.SqlInvoice;
+import com.ecsail.sql.select.SqlInvoiceWidget;
 import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.structures.*;
 import javafx.collections.ObservableList;
@@ -22,6 +23,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -33,6 +35,7 @@ public class HBoxInvoiceList extends HBox {
 	private static ObservableList<PersonDTO> people;
 	private static Note note;
 
+	private int id; // used for making records
 	String currentYear;
 
 	public HBoxInvoiceList(MembershipDTO membership, TabPane t, ObservableList<PersonDTO> p, Note n) {
@@ -120,7 +123,6 @@ public class HBoxInvoiceList extends HBox {
 				var newInvoice = new InvoiceDTO(invoiceId, membership.getMsid(),
 						comboBox.getValue(), "0.00", "0.00", "0.00", "0.00", 0, false, false, false);
 
-				// TODO create invoice_items here
 				// if a record already exists for this year then this is a supplemental record
 				if (SqlExists.invoiceExists(String.valueOf(comboBox.getValue()), membership)) {
 					newInvoice.setSupplemental(true);
@@ -129,6 +131,9 @@ public class HBoxInvoiceList extends HBox {
 
 				// insert the new record into the SQL database
 				SqlInsert.addInvoiceRecord(newInvoice);
+				// insert items that go with invoice
+				createInvoiceItems(invoiceId, comboBox.getValue(), membership.getMsid());
+
 				// insert the work credit information (This may be deprecated. I haven't made up my mind yet)
 				SqlInsert.addWorkCreditRecord(invoiceId, membership);
 				// add new money row to tableview
@@ -152,8 +157,11 @@ public class HBoxInvoiceList extends HBox {
 			if (result.isPresent() && result.get() == ButtonType.OK){
 				BaseApplication.logger.info("deleting fiscal record " + selectedIndex);
 				SqlDelete.deletePaymentByMoneyID(invoices.get(selectedIndex).getId());
+				// TODO get rid of this when I get rid of work credit table
 				SqlDelete.deleteWorkCreditsByMoneyID(invoices.get(selectedIndex).getId());
-				SqlDelete.deleteMoneyByMoneyID(invoices.get(selectedIndex).getId());
+				SqlDelete.deleteInvoiceItemByInvoiceID(invoices.get(selectedIndex).getId());
+				SqlDelete.deleteInvoiceByID(invoices.get(selectedIndex).getId());
+
 				invoices.remove(selectedIndex);
 			}
 		});
@@ -176,6 +184,16 @@ public class HBoxInvoiceList extends HBox {
 		hbox1.getChildren().addAll(new Label("Create new Fiscal Year Record:"),comboBox,addFiscalRecord,deleteButtonHBox);
 		vboxGrey.getChildren().addAll(hbox1,vboxPink);
 		getChildren().addAll(vboxGrey);	
+	}
+
+	private void createInvoiceItems(int invoiceId, Integer year, int msid) {
+		ArrayList<InvoiceWidgetDTO> categories = SqlInvoiceWidget.getInvoiceWidgetsByYear(year);
+		id = SqlSelect.getNextAvailablePrimaryKey("invoice_item","ID");
+		categories.stream().forEach(c -> {
+			InvoiceItemDTO item = new InvoiceItemDTO(id,invoiceId,msid,year,c.getObjectName(),c.isMultiplied(),c.isIs_credit(),"0.00",0);
+			id++;
+			SqlInsert.addInvoiceItemRecord(item);
+		});
 	}
 
 	/////////////////////  CLASS METHODS /////////////////////////////

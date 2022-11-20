@@ -62,4 +62,19 @@ public class SqlInvoiceWidget {
         return theseWidgets;
     }
 
+    public static ArrayList<String> getInvoiceCategoriesByYear(int year) {  //p_id
+        ArrayList<String> categories = null;
+        String query = "select * from db_invoice";
+        try {
+            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+            while (rs.next()) {
+                categories.add(rs.getString("objectName"));
+            }
+            BaseApplication.connect.closeResultSet(rs);
+        } catch (SQLException e) {
+            new Dialogue_ErrorSQL(e,"Unable to retrieve categories","See below for details");
+        }
+        return categories;
+    }
+
 }

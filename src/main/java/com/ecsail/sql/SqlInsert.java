@@ -152,6 +152,18 @@ public class SqlInsert {
 		}
 	}
 
+	public static void addInvoiceItemRecord(InvoiceItemDTO i) {
+		String query = "INSERT INTO invoice_item () VALUES ("
+				+ i.getId() + "," + i.getInvoiceId() + "," + i.getMsId() + "," + i.getYear()
+				+ ",'" + i.getItemType() + "'," + i.isMultiplied() + "," + i.isCredit()
+				+ ",'" + i.getValue() + "'," + i.getQty() + ")";
+		try {
+			BaseApplication.connect.executeQuery(query);
+		} catch (SQLException e) {
+			new Dialogue_ErrorSQL(e,"Unable to insert data into invoice row","See below for details");
+		}
+	}
+
 	public static void addDefinedFeeRecord(DefinedFeeDTO d) {
 		String query = "INSERT INTO defined_fee () VALUES ("
 				+ d.getFiscal_year() + "," + d.getDues_regular() + "," + d.getDues_family() + "," + d.getDues_lake_associate()
