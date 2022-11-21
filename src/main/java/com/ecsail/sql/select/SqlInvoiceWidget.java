@@ -26,7 +26,7 @@ public class SqlInvoiceWidget {
                         rs.getBoolean("multiplied"),
                         rs.getBoolean("price_editable"),
                         rs.getBoolean("is_credit"),
-                        rs.getString("listener_type")
+                        rs.getInt("max_qty")
                         ));
             }
             BaseApplication.connect.closeResultSet(rs);
@@ -52,7 +52,7 @@ public class SqlInvoiceWidget {
                         rs.getBoolean("multiplied"),
                         rs.getBoolean("price_editable"),
                         rs.getBoolean("is_credit"),
-                        rs.getString("listener_type")
+                        rs.getInt("max_qty")
                 ));
             }
             BaseApplication.connect.closeResultSet(rs);

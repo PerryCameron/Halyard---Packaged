@@ -78,6 +78,8 @@ public class HalyardPaths {
 	public static String printDate() {
 		return new SimpleDateFormat("MM-dd-yyyy").format(new Date());
 	}
+
+	public static String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
 	
 	public static boolean isWindows() {
 		boolean result = false;

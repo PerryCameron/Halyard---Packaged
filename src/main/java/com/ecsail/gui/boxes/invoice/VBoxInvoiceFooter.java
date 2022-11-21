@@ -1,11 +1,14 @@
 package com.ecsail.gui.boxes.invoice;
 
 import com.ecsail.EditCell;
+import com.ecsail.HalyardPaths;
 import com.ecsail.enums.PaymentType;
+import com.ecsail.sql.SqlDelete;
+import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlMoney;
+import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.structures.InvoiceDTO;
-import com.ecsail.structures.MoneyDTO;
 import com.ecsail.structures.PaymentDTO;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
@@ -39,6 +42,10 @@ public class VBoxInvoiceFooter extends VBox {
 
     public VBoxInvoiceFooter(InvoiceDTO invoice, ObservableList<PaymentDTO> payments) {
         this.invoice = invoice;
+        totalFeesText.setText(invoice.getTotal());
+        totalCreditText.setText(invoice.getCredit());
+        totalBalanceText.setText(invoice.getBalance());
+        totalPaymentText.setText(invoice.getPaid());
 
 
         TableColumn<PaymentDTO, String> col1 = createColumn("Amount", PaymentDTO::PaymentAmountProperty);
@@ -52,9 +59,10 @@ public class VBoxInvoiceFooter extends VBox {
                     BigDecimal amount = new BigDecimal(t.getNewValue());
                     SqlUpdate.updatePayment(pay_id, "amount", String.valueOf(amount.setScale(2, RoundingMode.HALF_UP)));
                     BigDecimal totalPaidAmount = BigDecimal.valueOf(SqlMoney.getTotalAmount(invoice.getId()));
-//					invoiceDTO.getTotalPaymentText().setText(String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP)));
-                    invoice.setPaid(String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP)));
-//					updateBalance();
+                    String totalAmountPaid = String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP));
+					totalPaymentText.setText(totalAmountPaid);
+                    invoice.setPaid(totalAmountPaid);
+                    updateTotals();
                 }
         );
 
@@ -134,6 +142,23 @@ public class VBoxInvoiceFooter extends VBox {
         Button buttonAddNote = new Button("Add Note");
         CheckBox renewCheckBox = new CheckBox("Renew");
 
+        buttonAdd.setOnAction(e -> {
+            int pay_id = SqlSelect.getNextAvailablePrimaryKey("payment", "pay_id");
+            payments.add(new PaymentDTO(pay_id, invoice.getId(), null, "CH", HalyardPaths.date, "0", 1)); // let's add it to our GUI
+            SqlInsert.addPaymentRecord(payments.get(payments.size() - 1));
+        });
+
+		buttonDelete.setOnAction(e -> {
+			int selectedIndex = paymentTableView.getSelectionModel().getSelectedIndex();
+			if (selectedIndex >= 0) // is something selected?
+				SqlDelete.deletePayment(payments.get(selectedIndex));
+			paymentTableView.getItems().remove(selectedIndex); // remove it from our GUI
+			BigDecimal totalPaidAmount = BigDecimal.valueOf(SqlMoney.getTotalAmount(invoice.getId()));
+			totalPaymentText.setText(String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP)));
+			invoice.setPaid(String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP)));
+			updateTotals();
+		});
+
         buttonAdd.setPrefWidth(60);
         buttonDelete.setPrefWidth(60);
         buttonCommit.setPrefWidth(70);
@@ -188,12 +213,23 @@ public class VBoxInvoiceFooter extends VBox {
 
     public void updateTotals(BigDecimal fees, BigDecimal credit) {
         BigDecimal payment = new BigDecimal(invoice.getPaid());
+        updateItemsAndSave(fees, credit, payment);
+    }
+
+    public void updateTotals() {
+        BigDecimal payment = new BigDecimal(invoice.getPaid());
+        BigDecimal fees = new BigDecimal(invoice.getTotal());
+        BigDecimal credit = new BigDecimal(invoice.getCredit());
+        updateItemsAndSave(fees, credit, payment);
+    }
+
+    private void updateItemsAndSave(BigDecimal fees, BigDecimal credit, BigDecimal payment) {
         BigDecimal balance = fees.subtract(credit).subtract(payment);
         String feesString = String.valueOf(fees);
         String creditString = String.valueOf(credit);
         String paymentString = String.valueOf(payment);
         String balanceString = String.valueOf(balance);
-		totalFeesText.setText(feesString);
+        totalFeesText.setText(feesString);
         totalCreditText.setText(creditString);
         totalBalanceText.setText(balanceString);
         totalPaymentText.setText(paymentString);

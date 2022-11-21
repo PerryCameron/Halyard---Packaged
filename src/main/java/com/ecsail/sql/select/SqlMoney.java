@@ -214,9 +214,9 @@ public class SqlMoney {
         return committed;
     }
 
-    public static int getTotalAmount(int money_id) {
+    public static int getTotalAmount(int invoice_id) {
         int number = 0;
-        String query = "SELECT SUM(amount) FROM payment WHERE money_id=" + money_id;
+        String query = "SELECT SUM(amount) FROM payment WHERE money_id=" + invoice_id;
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             rs.next();

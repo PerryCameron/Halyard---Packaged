@@ -218,7 +218,7 @@ public class SqlScriptMaker {
 				+ a.isMultiplied() + ","
 				+ a.isPrice_editable() + ","
 				+ a.isIs_credit() + ","
-				+ getCorrectString(a.getListener_type())+ ");\n";
+				+ a.getMaxQty() + ");\n";
 	}
 	private static String getApiString(ApiKeyDTO a) {
 		return "INSERT INTO api_key () VALUES("

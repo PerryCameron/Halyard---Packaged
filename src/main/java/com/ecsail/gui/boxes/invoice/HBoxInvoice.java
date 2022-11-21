@@ -1,6 +1,7 @@
 package com.ecsail.gui.boxes.invoice;
 
 import com.ecsail.BaseApplication;
+import com.ecsail.HalyardPaths;
 import com.ecsail.Note;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlInsert;
@@ -10,14 +11,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class HBoxInvoice extends HBox {
 	private ObservableList<PaymentDTO> payments;
@@ -27,7 +29,7 @@ public class HBoxInvoice extends HBox {
 	private ArrayList<InvoiceWidgetDTO> theseWidgets;
 	MembershipDTO membership;
 	VBoxInvoiceFooter footer;
-	String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
+
 	boolean isCommitted;
 	Button addWetSlip = new Button();
 
@@ -44,6 +46,7 @@ public class HBoxInvoice extends HBox {
 		this.isCommitted = invoice.isCommitted();
 		this.payments = getPayment();
 		this.footer = new VBoxInvoiceFooter(invoice, payments);
+
 		// TODO if not committed
         for(InvoiceWidgetDTO i: theseWidgets) {
 			i.setFee(insertFeeIntoWidget(i));
@@ -88,23 +91,7 @@ public class HBoxInvoice extends HBox {
 		//////////////// LISTENER //////////////////
 //		invoiceDTO.getButtonAddNote().setOnAction(e -> note.addMemoAndReturnId("Invoice Note: ",date,invoice.getMoney_id(),"I"));
 //
-//		invoiceDTO.getButtonAdd().setOnAction(e -> {
-//			int pay_id = SqlSelect.getNextAvailablePrimaryKey("payment","pay_id");
-//			payments.add(new PaymentDTO(pay_id,invoice.getMoney_id(),null,"CH",date, "0",1)); // let's add it to our GUI
-//			SqlInsert.addPaymentRecord(payments.get(payments.size() -1));
-//		});
-//
-//		invoiceDTO.getButtonDelete().setOnAction(e -> {
-//			int selectedIndex = paymentTableView.getSelectionModel().getSelectedIndex();
-//			if (selectedIndex >= 0) // is something selected?
-//				SqlDelete.deletePayment(payments.get(selectedIndex));
-//			paymentTableView.getItems().remove(selectedIndex); // remove it from our GUI
-//			BigDecimal totalPaidAmount = BigDecimal.valueOf(SqlMoney.getTotalAmount(invoice.getMoney_id()));
-//			invoiceDTO.getTotalPaymentText().setText(String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP)));
-//			invoice.setPaid(String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP)));
-//			updateBalance();
-//		});
-//
+
 
 //
 //		invoiceDTO.getCommitButton().setOnAction((event) -> {
@@ -198,12 +185,7 @@ public class HBoxInvoice extends HBox {
 //	}
 
 	//////////////////////  CLASS METHODS ///////////////////////////
-	private int getInitialWetSlipValue(String wet_slip) {
-		int startPoint = 1;
-		BigDecimal wetSlip = new BigDecimal(wet_slip);
-		if(wetSlip.compareTo(BigDecimal.ZERO) == 0) startPoint = 0;
-		return startPoint;
-	}
+
 
 	private ObservableList<PaymentDTO> getPayment() {
 		// check to see if invoice record exists
@@ -213,23 +195,13 @@ public class HBoxInvoice extends HBox {
 		} else {  // if not create one
 			BaseApplication.logger.info("getPayment(): Creating a new payment entry");
 			int pay_id = SqlSelect.getNextAvailablePrimaryKey("payment","pay_id");
-			payments.add(new PaymentDTO(pay_id,invoice.getId(),"0","CH",date, "0",1));
+			payments.add(new PaymentDTO(pay_id,invoice.getId(),"0","CH", HalyardPaths.date, "0",1));
 			SqlInsert.addPaymentRecord(payments.get(payments.size() - 1));
 		}
 		return payments;
 	}
 
-//	private void updateItem(BigDecimal newTotalValue, String type) {
-//		switch (type) {
-//			case "Initiation" -> invoice.setInitiation(String.valueOf(newTotalValue));
-//			case "Other Fee" -> invoice.setOther(String.valueOf(newTotalValue));
-//			case "YSP Donation" -> invoice.setYsc_donation(String.valueOf(newTotalValue));
-//			case "Dues" -> invoice.setDues(String.valueOf(newTotalValue));
-//			case "Wet Slip" -> invoice.setWet_slip(String.valueOf(newTotalValue));
-//			case "other_credit" -> invoice.setOther_credit(String.valueOf(newTotalValue));
-//		}
-//		invoice.setTotal(String.valueOf(updateTotalFeeField()));
-//	}
+
 	
 //	private void setEditable(boolean isEditable) {
 //		invoiceDTO.clearGridPane();
@@ -249,13 +221,6 @@ public class HBoxInvoice extends HBox {
 //		}
 //	}
 
-	private BigDecimal getBalance() {
-		// calculates new balance
-		BigDecimal total = new BigDecimal(invoice.getTotal());
-		BigDecimal paid = new BigDecimal(invoice.getPaid());
-		BigDecimal credit = new BigDecimal(invoice.getCredit());
-		return total.subtract(paid).subtract(credit);
-	}
 
 	// decides if officer credit or work credit is counted
 //	private BigDecimal countCredit() {
@@ -268,19 +233,7 @@ public class HBoxInvoice extends HBox {
 //		return credit;
 //	}
 
-//	private BigDecimal countWorkCredits() {
-//		// counts the dollar value of a credit by the number of credits earned
-//		return definedFees.getWork_credit().multiply(BigDecimal.valueOf(invoice.getWork_credit()));
-//	}
 
-//	private BigDecimal countTotalCredit() {
-//		// calculates either officer credit or work credits
-//		BigDecimal normalCredit = countCredit();
-//		//  additional or "other credit"
-//		BigDecimal otherCredit = new BigDecimal(invoice.getOther_credit());
-//		//  sum of both credits above
-//		return normalCredit.add(otherCredit);
-//	}
 
 	public VBoxInvoiceFooter getFooter() {
 		return footer;

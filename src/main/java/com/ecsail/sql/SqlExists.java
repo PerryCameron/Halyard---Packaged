@@ -15,10 +15,10 @@ public class SqlExists {
 	public static Boolean membershipHasOfficerForYear(int msid, int year) {
 		boolean answer = false;
 		String query = "SELECT EXISTS(" +
-				"SELECT * FROM officer o" +
-				"JOIN person p ON p.P_ID=o.P_ID" +
-				"WHERE o.OFF_YEAR='2022'" +
-				"AND p.MS_ID=1095" +
+				"SELECT * FROM officer o " +
+				"JOIN person p ON p.P_ID=o.P_ID " +
+				"WHERE o.OFF_YEAR=" +year+ " " +
+				"AND p.MS_ID=" + msid + " " +
 				"AND o.OFF_TYPE != 'BM'" +
 				") AS officer_exists";
 		try {
@@ -286,38 +286,6 @@ public class SqlExists {
 		BaseApplication.connect.closeResultSet(rs); }
 		catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"Unable to check if Invoice Exists","See below for details");
-		}
-		return result;
-	}
-	
-	public static Boolean moneyExists(int ms_id,String year) {
-		boolean result = false;
-		String query = "SELECT EXISTS(SELECT * FROM money WHERE ms_id="+ms_id+" AND fiscal_year="+year+")";
-		try {
-			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-			while (rs.next()) {
-				result = rs.getBoolean(
-						"EXISTS(SELECT * FROM money WHERE ms_id="+ms_id+" AND fiscal_year="+year+")");
-			}
-		BaseApplication.connect.closeResultSet(rs); }
-		catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to check if EXISTS","See below for details");
-		}
-		return result;
-	}
-	
-	public static Boolean moneyExists(int money_id) {
-		boolean result = false;
-		String query = "SELECT EXISTS(SELECT * FROM money WHERE money_id=" + money_id + ")";
-		try {
-			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-			while (rs.next()) {
-				result = rs.getBoolean(
-						"EXISTS(SELECT * FROM money WHERE money_id=" + money_id + ")");
-			}
-		BaseApplication.connect.closeResultSet(rs); }
-		catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to check if EXISTS","See below for details");
 		}
 		return result;
 	}

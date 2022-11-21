@@ -1,6 +1,7 @@
 package com.ecsail.gui.boxes.invoice;
 
 import com.ecsail.FixInput;
+import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.structures.*;
 import javafx.beans.value.ObservableValue;
@@ -9,12 +10,11 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.HashMap;
-import java.util.Map;
 
 public class HBoxInvoiceRow extends HBox {
 
@@ -25,21 +25,31 @@ public class HBoxInvoiceRow extends HBox {
     private Spinner<Integer> spinner;
     private final InvoiceWidgetDTO invoiceWidget;
     private ComboBox<Integer> comboBox;
-    private InvoiceDTO invoice;
-    private InvoiceItemDTO invoiceItem;
-    private FeeDTO fee;
-    private VBoxInvoiceFooter footer;
-    private ObservableList<InvoiceItemDTO> items;
+    private final InvoiceItemDTO invoiceItem;
+    private final FeeDTO fee;
+    private final VBoxInvoiceFooter footer;
+    private final ObservableList<InvoiceItemDTO> items;
+    private final VBox vBox4;
 
+    InvoiceDTO invoice;
 
     public HBoxInvoiceRow(InvoiceWidgetDTO invoiceWidget, VBoxInvoiceFooter footer) {
-        this.invoice = footer.getInvoice();
+
         this.invoiceWidget = invoiceWidget;
         this.itemName = invoiceWidget.getObjectName();
         this.invoiceItem = setItem();
         this.footer = footer;
+        this.invoice = footer.getInvoice();
         this.fee = invoiceWidget.getFee();
         this.items = invoiceWidget.getItems();
+
+        // get officer credit
+        if(invoiceWidget.getObjectName().equals("Position Credit")) {
+            if (getOfficerCredit()) invoiceItem.setValue(items.get(0).getValue());
+            total.setText(items.get(0).getValue());
+        }
+
+
 
         setSpacing(15);
         // column 1
@@ -64,7 +74,7 @@ public class HBoxInvoiceRow extends HBox {
         vBox3.getChildren().add(setX(invoiceWidget));
 
         // column 4
-        VBox vBox4 = new VBox();
+        this.vBox4 = new VBox();
         vBox4.setPrefWidth(50);
         vBox4.setAlignment(Pos.CENTER_RIGHT);
         vBox4.getChildren().add(price);
@@ -79,6 +89,11 @@ public class HBoxInvoiceRow extends HBox {
         getChildren().addAll(vBox1,vBox2,vBox3,vBox4,vBox5);
     }
 
+    private boolean getOfficerCredit() {
+        boolean hasOfficer = SqlExists.membershipHasOfficerForYear(invoiceItem.getMsId(), invoiceItem.getYear());
+        return hasOfficer && !invoice.isSupplemental();
+    }
+
     private Text setX(InvoiceWidgetDTO i) {
         Text x = new Text("");
         x.setId("invoice-text-light");
@@ -91,43 +106,50 @@ public class HBoxInvoiceRow extends HBox {
 
     private Control setControlWidget(InvoiceWidgetDTO i) {
         switch (i.getWidgetType()) {
-            case "text-field":
+            case "text-field" -> {
                 textField = new TextField();
                 textField.setPrefWidth(i.getWidth());
                 textField.setText(invoiceItem.getValue());
                 setTextFieldListener();
                 return textField;
-
-            case "spinner":
+            }
+            case "spinner" -> {
                 spinner = new Spinner<>();
                 spinner.setPrefWidth(i.getWidth());
                 price.setText(String.valueOf(fee.getFieldValue()));
                 setSpinnerListener();
+                if (invoiceWidget.isPrice_editable())
+                    setPriceChangeListener(new TextField(price.getText()));
                 return spinner;
-
-            case "combo-box":
+            }
+            case "combo-box" -> {
                 comboBox = new ComboBox<>();
                 comboBox.setPrefWidth(i.getWidth());
+                price.setText(String.valueOf(fee.getFieldValue()));
                 // fill comboBox
-                for (int j = 0; j < 100; j++) comboBox.getItems().add(j);
-                comboBox.getSelectionModel().selectFirst();
+                for (int j = 0; j < invoiceWidget.getMaxQty(); j++) comboBox.getItems().add(j);
+                comboBox.getSelectionModel().select(invoiceItem.getQty());
                 setComboBoxListener();
+                if (invoiceWidget.isPrice_editable())
+                    setPriceChangeListener(new TextField(price.getText()));
                 return comboBox;
-
-            case "none":
+            }
+            case "none" -> {
                 textField = new TextField("none");
                 textField.setVisible(false);
                 return textField;
+            }
         }
         return null;
     }
+
 
     private InvoiceItemDTO setItem() {
         return invoiceWidget.getItems().stream().filter(i -> i.getItemType().equals(itemName)).findFirst().orElse(null);
     }
 
     private void setSpinnerListener() {
-        SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 15, invoiceItem.getQty());
+        SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, invoiceWidget.getMaxQty(), invoiceItem.getQty());
 		spinner.setValueFactory(spinnerValueFactory);
 		spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
             String calculatedTotal = String.valueOf(fee.getFieldValue().multiply(BigDecimal.valueOf(newValue)));
@@ -154,6 +176,7 @@ public class HBoxInvoiceRow extends HBox {
         		textField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 	            //focus out
 	            if (oldValue) {  // we have focused and unfocused
+                    // fix it or set to 0 if can't
 	            	if(!FixInput.isBigDecimal(textField.getText())) {
 						textField.setText("0");
 	            	}
@@ -168,6 +191,37 @@ public class HBoxInvoiceRow extends HBox {
 	        });
     }
 
+    private void setPriceChangeListener(TextField textField) {
+        textField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            //focus out
+            if (oldValue) {  // we have focused and unfocused
+                if(!FixInput.isBigDecimal(textField.getText())) {
+                    textField.setText("0.00");
+                }
+                BigDecimal slip = new BigDecimal(textField.getText());
+                textField.setText(String.valueOf(slip.multiply(BigDecimal.valueOf(spinner.getValue()))));
+                textField.setText(String.valueOf(slip.setScale(2, RoundingMode.HALF_UP)));
+                price.setText(String.valueOf(slip.setScale(2, RoundingMode.HALF_UP)));
+                String value = String.valueOf(new BigDecimal(price.getText()).multiply(BigDecimal.valueOf(spinner.getValue())));
+                invoiceItem.setValue(value);
+                total.setText(value);
+                SqlUpdate.updateInvoiceItem(invoiceItem);
+                updateBalance();
+                vBox4.getChildren().clear();
+                vBox4.getChildren().add(price);
+            }
+        });
+
+        price.setOnMouseClicked(e -> {
+            vBox4.getChildren().clear();
+            vBox4.getChildren().add(textField);
+        });
+
+        price.setFill(Color.BLUE);
+        price.setOnMouseEntered(en -> price.setFill(Color.RED));
+        price.setOnMouseExited(ex -> price.setFill(Color.BLUE));
+    }
+// invoiceDTO.getWetslipTextFee()
     private void updateBalance() {
         BigDecimal fees = new BigDecimal("0.00");
         BigDecimal credit = new BigDecimal("0.00");
@@ -189,36 +243,12 @@ public class HBoxInvoiceRow extends HBox {
         this.price = price;
     }
 
-    public TextField getTextField() {
-        return textField;
-    }
-
-    public void setTextField(TextField textField) {
-        this.textField = textField;
-    }
-
-    public Spinner<Integer> getSpinner() {
-        return spinner;
-    }
-
-    public void setSpinner(Spinner<Integer> spinner) {
-        this.spinner = spinner;
-    }
-
     public Text getTotal() {
         return total;
     }
 
     public void setTotal(Text total) {
         this.total = total;
-    }
-
-    public ComboBox<Integer> getComboBox() {
-        return comboBox;
-    }
-
-    public void setComboBox(ComboBox<Integer> comboBox) {
-        this.comboBox = comboBox;
     }
 
     public InvoiceWidgetDTO getInvoiceWidget() {

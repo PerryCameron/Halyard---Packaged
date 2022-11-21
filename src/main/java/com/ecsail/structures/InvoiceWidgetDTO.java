@@ -12,7 +12,7 @@ public class InvoiceWidgetDTO {
     private boolean multiplied;
     private boolean price_editable;
     private boolean is_credit;
-    private String listener_type;
+    private int maxQty;
     /**
      * below not included in database
      */
@@ -20,7 +20,7 @@ public class InvoiceWidgetDTO {
     private ObservableList<InvoiceItemDTO> items;
 
 
-    public InvoiceWidgetDTO(int id, String date, String objectName, String widgetType, double width, int order, boolean multiplied, boolean price_editable, boolean is_credit, String listener_type) {
+    public InvoiceWidgetDTO(int id, String date, String objectName, String widgetType, double width, int order, boolean multiplied, boolean price_editable, boolean is_credit, int maxQty) {
         this.id = id;
         this.year = date;
         this.objectName = objectName;
@@ -30,7 +30,7 @@ public class InvoiceWidgetDTO {
         this.multiplied = multiplied;
         this.price_editable = price_editable;
         this.is_credit = is_credit;
-        this.listener_type = listener_type;
+        this.maxQty = maxQty;
     }
 
     public int getId() {
@@ -105,12 +105,12 @@ public class InvoiceWidgetDTO {
         this.is_credit = is_credit;
     }
 
-    public String getListener_type() {
-        return listener_type;
+    public int getMaxQty() {
+        return maxQty;
     }
 
-    public void setListener_type(String listener_type) {
-        this.listener_type = listener_type;
+    public void setMaxQty(int maxQty) {
+        this.maxQty = maxQty;
     }
 
     public FeeDTO getFee() {
@@ -133,7 +133,7 @@ public class InvoiceWidgetDTO {
     public String toString() {
         return "InvoiceWidgetDTO{" +
                 "id=" + id +
-                ", date='" + year + '\'' +
+                ", year='" + year + '\'' +
                 ", objectName='" + objectName + '\'' +
                 ", widgetType='" + widgetType + '\'' +
                 ", width=" + width +
@@ -141,8 +141,9 @@ public class InvoiceWidgetDTO {
                 ", multiplied=" + multiplied +
                 ", price_editable=" + price_editable +
                 ", is_credit=" + is_credit +
-                ", listener_type='" + listener_type + '\'' +
+                ", maxQty=" + maxQty +
                 ", fee=" + fee +
+                ", items=" + items +
                 '}';
     }
 }

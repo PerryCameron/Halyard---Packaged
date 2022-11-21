@@ -518,7 +518,7 @@ public class ConnectDatabase {
 	}
 
 	public ResultSet executeSelectQuery(String query) throws SQLException {
-//		BaseApplication.logger.info(query);
+		BaseApplication.logger.info(query);
 		Statement stmt = ConnectDatabase.sqlConnection.createStatement();
 		if (currentLogon.isSshForward()) {
 			if (!sshConnection.getSession().isConnected()) {
