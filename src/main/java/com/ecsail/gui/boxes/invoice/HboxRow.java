@@ -16,7 +16,7 @@ import javafx.scene.text.Text;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class InvoiceRowEdit extends HBox {
+public class HboxRow extends HBox {
 
     String itemName;
     private Text price = new Text();
@@ -27,7 +27,7 @@ public class InvoiceRowEdit extends HBox {
     private ComboBox<Integer> comboBox;
     private final InvoiceItemDTO invoiceItem;
     private final FeeDTO fee;
-    private final VBoxInvoiceFooter footer;
+    private final VboxFooter footer;
     private final ObservableList<InvoiceItemDTO> items;
     private final VBox vBox1 = new VBox();
     private final VBox vBox2 = new VBox();
@@ -37,7 +37,7 @@ public class InvoiceRowEdit extends HBox {
 
     InvoiceDTO invoice;
 
-    public InvoiceRowEdit(InvoiceWidgetDTO invoiceWidget, VBoxInvoiceFooter footer) {
+    public HboxRow(InvoiceWidgetDTO invoiceWidget, VboxFooter footer) {
 
         this.invoiceWidget = invoiceWidget;
         this.itemName = invoiceWidget.getObjectName();
