@@ -3,7 +3,6 @@ package com.ecsail.sql.select;
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.structures.InvoiceDTO;
-import com.ecsail.structures.MoneyDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -28,7 +27,8 @@ public class SqlInvoice {
                         rs.getInt("BATCH"),
                         rs.getBoolean("COMMITTED"),
                         rs.getBoolean("CLOSED"),
-                        rs.getBoolean("SUPPLEMENTAL")));
+                        rs.getBoolean("SUPPLEMENTAL"),
+                        rs.getString("MAX_CREDIT")));
             }
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {
@@ -54,7 +54,8 @@ public class SqlInvoice {
                         rs.getInt("BATCH"),
                         rs.getBoolean("COMMITTED"),
                         rs.getBoolean("CLOSED"),
-                        rs.getBoolean("SUPPLEMENTAL")));
+                        rs.getBoolean("SUPPLEMENTAL"),
+                        rs.getString("MAX_CREDIT")));
             }
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {

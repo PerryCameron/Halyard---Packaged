@@ -16,7 +16,7 @@ import javafx.scene.text.Text;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class HBoxInvoiceRow extends HBox {
+public class InvoiceRowEdit extends HBox {
 
     String itemName;
     private Text price = new Text();
@@ -29,11 +29,15 @@ public class HBoxInvoiceRow extends HBox {
     private final FeeDTO fee;
     private final VBoxInvoiceFooter footer;
     private final ObservableList<InvoiceItemDTO> items;
-    private final VBox vBox4;
+    private final VBox vBox1 = new VBox();
+    private final VBox vBox2 = new VBox();
+    private final VBox vBox3 = new VBox();
+    private final VBox vBox4 = new VBox();
+    private final VBox vBox5 = new VBox();
 
     InvoiceDTO invoice;
 
-    public HBoxInvoiceRow(InvoiceWidgetDTO invoiceWidget, VBoxInvoiceFooter footer) {
+    public InvoiceRowEdit(InvoiceWidgetDTO invoiceWidget, VBoxInvoiceFooter footer) {
 
         this.invoiceWidget = invoiceWidget;
         this.itemName = invoiceWidget.getObjectName();
@@ -45,48 +49,65 @@ public class HBoxInvoiceRow extends HBox {
 
         // get officer credit
         if(invoiceWidget.getObjectName().equals("Position Credit")) {
-            if (getOfficerCredit()) invoiceItem.setValue(items.get(0).getValue());
+            if (getOfficerCredit())
+                invoiceItem.setValue(items.get(0).getValue()); // is putting dues into here
             total.setText(items.get(0).getValue());
+            SqlUpdate.updateInvoiceItem(invoiceItem);
+            // TODO maybe find better way than putting element 0 in (not dynamic or robust)
         }
 
-
-
         setSpacing(15);
-        // column 1
-        VBox vBox1 = new VBox();
-        vBox1.setPrefWidth(140);
+
+        // settings common to edit and commit modes
         vBox1.setAlignment(Pos.CENTER_LEFT);
         Text feeText = new Text(itemName + ":");
         feeText.setId("invoice-text-light");
         vBox1.getChildren().add(feeText);
-
-        // column 2
-        VBox vBox2 = new VBox();
-        vBox2.setPrefWidth(65);
         vBox2.setAlignment(Pos.CENTER_LEFT);
         Control control = setControlWidget(invoiceWidget);
         vBox2.getChildren().add(control);
-
-        // column 3
-        VBox vBox3 = new VBox();
-        vBox3.setPrefWidth(30);
         vBox3.setAlignment(Pos.CENTER_RIGHT);
-        vBox3.getChildren().add(setX(invoiceWidget));
-
-        // column 4
-        this.vBox4 = new VBox();
-        vBox4.setPrefWidth(50);
         vBox4.setAlignment(Pos.CENTER_RIGHT);
         vBox4.getChildren().add(price);
-
-        // column 5
-        VBox vBox5 = new VBox();
-        vBox5.setPrefWidth(70);
         vBox5.setAlignment(Pos.CENTER_RIGHT);
         total.setText(invoiceItem.getValue());
         vBox5.getChildren().add(total);
+    }
 
+    private void setEdit() {
+        setVisible(true);
+        setManaged(true);
+        vBox1.setPrefWidth(140);
+        vBox2.setPrefWidth(65);
+        vBox3.setPrefWidth(30);
+        vBox3.getChildren().clear();
+        vBox3.getChildren().add(setX(invoiceWidget));
+        vBox4.setPrefWidth(50);
+        vBox5.setPrefWidth(70);
         getChildren().addAll(vBox1,vBox2,vBox3,vBox4,vBox5);
+    }
+
+    private void setCommit() {
+        if (!invoiceItem.getValue().equals("0.00")) { // list only items in use
+            vBox1.setPrefWidth(100);
+            vBox3.setPrefWidth(100);
+            vBox3.getChildren().clear();
+            if (invoiceItem.getQty() != 0) // don't print the 0's
+                vBox3.getChildren().add(new Text(String.valueOf(invoiceItem.getQty())));
+            vBox5.setPrefWidth(190);
+            getChildren().addAll(vBox1, vBox3, vBox5);
+        } else {
+            setVisible(false);
+            setManaged(false);
+        }
+    }
+
+    public void setEditableMode(boolean setEdit) {
+        getChildren().clear();
+        if(setEdit)
+            setEdit();
+        else
+            setCommit();
     }
 
     private boolean getOfficerCredit() {
@@ -143,7 +164,6 @@ public class HBoxInvoiceRow extends HBox {
         return null;
     }
 
-
     private InvoiceItemDTO setItem() {
         return invoiceWidget.getItems().stream().filter(i -> i.getItemType().equals(itemName)).findFirst().orElse(null);
     }
@@ -198,11 +218,13 @@ public class HBoxInvoiceRow extends HBox {
                 if(!FixInput.isBigDecimal(textField.getText())) {
                     textField.setText("0.00");
                 }
-                BigDecimal slip = new BigDecimal(textField.getText());
-                textField.setText(String.valueOf(slip.multiply(BigDecimal.valueOf(spinner.getValue()))));
-                textField.setText(String.valueOf(slip.setScale(2, RoundingMode.HALF_UP)));
-                price.setText(String.valueOf(slip.setScale(2, RoundingMode.HALF_UP)));
+                BigDecimal calculatedValue = new BigDecimal(textField.getText());
+                String stringValue = String.valueOf(calculatedValue.multiply(BigDecimal.valueOf(spinner.getValue())).setScale(2, RoundingMode.HALF_UP));
+                System.out.println("stringValue= " + stringValue);
+                textField.setText(stringValue);
+                price.setText(stringValue);
                 String value = String.valueOf(new BigDecimal(price.getText()).multiply(BigDecimal.valueOf(spinner.getValue())));
+                System.out.println("value=" + value);
                 invoiceItem.setValue(value);
                 total.setText(value);
                 SqlUpdate.updateInvoiceItem(invoiceItem);
@@ -221,7 +243,6 @@ public class HBoxInvoiceRow extends HBox {
         price.setOnMouseEntered(en -> price.setFill(Color.RED));
         price.setOnMouseExited(ex -> price.setFill(Color.BLUE));
     }
-// invoiceDTO.getWetslipTextFee()
     private void updateBalance() {
         BigDecimal fees = new BigDecimal("0.00");
         BigDecimal credit = new BigDecimal("0.00");
@@ -233,7 +254,6 @@ public class HBoxInvoiceRow extends HBox {
         }
         footer.updateTotals(fees,credit);
     }
-
 
     public Text getPrice() {
         return price;

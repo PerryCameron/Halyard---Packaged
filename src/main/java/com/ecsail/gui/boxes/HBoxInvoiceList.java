@@ -121,7 +121,7 @@ public class HBoxInvoiceList extends HBox {
 				int invoiceId = SqlSelect.getNextAvailablePrimaryKey("invoice","id");
 				// create appropriate money object for this membership
 				var newInvoice = new InvoiceDTO(invoiceId, membership.getMsid(),
-						comboBox.getValue(), "0.00", "0.00", "0.00", "0.00", 0, false, false, false);
+						comboBox.getValue(), "0.00", "0.00", "0.00", "0.00", 0, false, false, false,"0.00");
 
 				// if a record already exists for this year then this is a supplemental record
 				if (SqlExists.invoiceExists(String.valueOf(comboBox.getValue()), membership)) {

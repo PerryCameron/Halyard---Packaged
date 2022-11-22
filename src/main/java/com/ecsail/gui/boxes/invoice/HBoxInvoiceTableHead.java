@@ -8,40 +8,53 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 public class HBoxInvoiceTableHead extends HBox {
+    VBox vBox1 = new VBox();
+    VBox vBox2 = new VBox();
+    VBox vBox3 = new VBox();
+    Text priceText = new Text();
+
 
     public HBoxInvoiceTableHead() {
-                Font font = Font.font("Verdana", FontWeight.BOLD, 16);
-
+        Font font = Font.font("Verdana", FontWeight.BOLD, 16);
         setSpacing(15);
+
         // column 1
-        VBox vBox1 = new VBox();
-        vBox1.setPrefWidth(140);
         vBox1.setAlignment(Pos.CENTER_LEFT);
         Text feeText = new Text("Fee");
         feeText.setFont(font);
         vBox1.getChildren().add(feeText);
 
         // column 2
-        VBox vBox2 = new VBox();
-        vBox2.setPrefWidth(110);
-//        vBox2.setStyle("-fx-background-color: #e83115;");  // red
 
-        // column 4
-        VBox vBox4 = new VBox();
-        vBox4.setPrefWidth(50);
-        vBox4.setAlignment(Pos.CENTER_RIGHT);
-        Text priceText = new Text("Price");
+        vBox2.setAlignment(Pos.CENTER_RIGHT);
         priceText.setFont(font);
-        vBox4.getChildren().add(priceText);
+        vBox2.getChildren().add(priceText);
 
-        // column 5
-        VBox vBox5 = new VBox();
-        vBox5.setPrefWidth(70);
-        vBox5.setAlignment(Pos.CENTER_RIGHT);
+        // column 3
+
+        vBox3.setAlignment(Pos.CENTER_RIGHT);
         Text totalText = new Text("Total");
         totalText.setFont(font);
-        vBox5.getChildren().add(totalText);
+        vBox3.getChildren().add(totalText);
+        getChildren().addAll(vBox1,vBox2,vBox3);
+    }
 
-        getChildren().addAll(vBox1,vBox2,vBox4,vBox5);
+    public void setEditableMode(boolean setEdit) {
+        if(setEdit)
+            setEdit();
+        else
+            setCommit();
+    }
+    private void setEdit() {
+        priceText.setText("Price");
+        vBox1.setPrefWidth(265);
+        vBox2.setPrefWidth(50);
+        vBox3.setPrefWidth(70);
+    }
+    private void setCommit() {
+        priceText.setText("Qty");
+        vBox1.setPrefWidth(160);
+        vBox2.setPrefWidth(50);
+        vBox3.setPrefWidth(180);
     }
 }

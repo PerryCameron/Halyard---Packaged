@@ -3,19 +3,21 @@ package com.ecsail.structures;
 import javafx.beans.property.*;
 
 public class InvoiceDTO {
-    private IntegerProperty id;
-    private IntegerProperty msId;
-    private IntegerProperty year;
-    private StringProperty paid;
-    private StringProperty total;
-    private StringProperty credit;
-    private StringProperty balance;
-    private IntegerProperty batch;
-    private BooleanProperty committed;
-    private BooleanProperty closed;
-    private BooleanProperty supplemental;
+    private final IntegerProperty id;
+    private final IntegerProperty msId;
+    private final IntegerProperty year;
+    private final StringProperty paid;
+    private final StringProperty total;
+    private final StringProperty credit;
+    private final StringProperty balance;
+    private final IntegerProperty batch;
+    private final BooleanProperty committed;
+    private final BooleanProperty closed;
+    private final BooleanProperty supplemental;
 
-    public InvoiceDTO(Integer id, Integer msId, Integer year, String paid, String total, String credit, String balance, Integer batch, Boolean committed, Boolean closed, Boolean supplemental) {
+    private final StringProperty maxCredit;
+
+    public InvoiceDTO(Integer id, Integer msId, Integer year, String paid, String total, String credit, String balance, Integer batch, Boolean committed, Boolean closed, Boolean supplemental, String maxCredit) {
         this.id = new SimpleIntegerProperty(id);
         this.msId = new SimpleIntegerProperty(msId);
         this.year = new SimpleIntegerProperty(year);
@@ -27,6 +29,7 @@ public class InvoiceDTO {
         this.committed = new SimpleBooleanProperty(committed);
         this.closed = new SimpleBooleanProperty(closed);
         this.supplemental = new SimpleBooleanProperty(supplemental);
+        this.maxCredit = new SimpleStringProperty(maxCredit);
     }
 
     public final IntegerProperty idProperty() {
@@ -193,20 +196,19 @@ public class InvoiceDTO {
         this.supplementalProperty().set(supplemental);
     }
 
-    @Override
-    public String toString() {
-        return "InvoiceDTO{" +
-                "id=" + id +
-                ", msId=" + msId +
-                ", year=" + year +
-                ", paid=" + paid +
-                ", total=" + total +
-                ", credit=" + credit +
-                ", balance=" + balance +
-                ", batch=" + batch +
-                ", committed=" + committed +
-                ", closed=" + closed +
-                ", supplemental=" + supplemental +
-                '}';
+    public final StringProperty maxCreditProperty() {
+        return this.maxCredit;
     }
+
+
+    public final String getMaxCredit() {
+        return this.maxCreditProperty().get();
+    }
+
+
+    public final void setMaxCredit(final String maxCredit) {
+        this.maxCreditProperty().set(maxCredit);
+    }
+
+
 }

@@ -40,13 +40,12 @@ public class VBoxInvoiceFooter extends VBox {
     private Text totalPaymentText = new Text("0.00");
     private Text totalBalanceText = new Text("0.00");
 
-    public VBoxInvoiceFooter(InvoiceDTO invoice, ObservableList<PaymentDTO> payments) {
+    public VBoxInvoiceFooter(InvoiceDTO invoice, ObservableList<PaymentDTO> payments, Button buttonCommit) {
         this.invoice = invoice;
         totalFeesText.setText(invoice.getTotal());
         totalCreditText.setText(invoice.getCredit());
         totalBalanceText.setText(invoice.getBalance());
         totalPaymentText.setText(invoice.getPaid());
-
 
         TableColumn<PaymentDTO, String> col1 = createColumn("Amount", PaymentDTO::PaymentAmountProperty);
         col1.setPrefWidth(60);
@@ -138,7 +137,7 @@ public class VBoxInvoiceFooter extends VBox {
 
         Button buttonAdd = new Button("Add");
         Button buttonDelete = new Button("Delete");
-        Button buttonCommit = new Button("Commit");
+
         Button buttonAddNote = new Button("Add Note");
         CheckBox renewCheckBox = new CheckBox("Renew");
 

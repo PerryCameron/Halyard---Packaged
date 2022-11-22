@@ -29,12 +29,9 @@ public class HBoxInvoice extends HBox {
 	private ArrayList<InvoiceWidgetDTO> theseWidgets;
 	MembershipDTO membership;
 	VBoxInvoiceFooter footer;
-
 	boolean isCommitted;
 	Button addWetSlip = new Button();
-
-
-	Map<String, HBoxInvoiceRow> widgetMap = new LinkedHashMap<>();
+	Map<String, InvoiceRowEdit> invoiceItemMap = new LinkedHashMap<>();
 	
 	public HBoxInvoice(MembershipDTO m, InvoiceDTO invoice, Note note) {
 		this.membership = m;
@@ -45,24 +42,18 @@ public class HBoxInvoice extends HBox {
 //		this.hasOfficer = membershipHasOfficer();
 		this.isCommitted = invoice.isCommitted();
 		this.payments = getPayment();
-		this.footer = new VBoxInvoiceFooter(invoice, payments);
+		Button buttonCommit = new Button("Commit");
+		this.footer = new VBoxInvoiceFooter(invoice, payments, buttonCommit);
+		HBoxInvoiceTableHead header = new HBoxInvoiceTableHead();
 
-		// TODO if not committed
-        for(InvoiceWidgetDTO i: theseWidgets) {
-			i.setFee(insertFeeIntoWidget(i));
-			i.setItems(items); // allows calculations to be made
-            widgetMap.put(i.getObjectName(), new HBoxInvoiceRow(i, footer));
-        }
 
 		ScrollPane scrollPane = new ScrollPane();
-
 		var vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
 		var mainVbox = new VBox();
 		var mainHbox = new HBox();
 		var vboxTabPanes = new VBox();
 		var vboxSpinners = new VBox();
 		var hboxButtonCommit = new HBox();
-
 
 		addWetSlip.setPrefWidth(25);
 		addWetSlip.setPrefHeight(25);
@@ -94,7 +85,16 @@ public class HBoxInvoice extends HBox {
 
 
 //
-//		invoiceDTO.getCommitButton().setOnAction((event) -> {
+		buttonCommit.setOnAction((event) -> {
+			if(invoice.isCommitted()) {
+				invoice.setCommitted(false);
+			}
+			else
+				invoice.setCommitted(true);
+
+			header.setEditableMode(invoice.isCommitted());
+			invoiceItemMap.values().forEach(e -> e.setEditableMode(invoice.isCommitted()));
+
 //			if (!invoice.isCommitted()) {
 //				if (!invoiceDTO.getTotalBalanceText().getText().equals("0.00")) {
 //					invoiceDTO.getTotalBalanceText().setStyle("-fx-background-color: #f23a50");
@@ -117,39 +117,41 @@ public class HBoxInvoice extends HBox {
 //				invoice.setCommitted(false);
 //				SqlUpdate.commitFiscalRecord(invoice.getMoney_id(), false);
 //			}
-//		});
-//
-//		invoiceDTO.getWetslipTextFee().setOnMouseClicked(e -> {
-//			invoiceDTO.getVboxWetSlipFee().getChildren().clear();
-//			invoiceDTO.getVboxWetSlipFee().getChildren().add(invoiceDTO.getTextFieldMap().get("Wet Slip-editable"));
-//		});
-//
-//		invoiceDTO.getWetslipTextFee().setFill(Color.BLUE);
-//		invoiceDTO.getWetslipTextFee().setOnMouseEntered(en -> invoiceDTO.getWetslipTextFee().setFill(Color.RED));
-//		invoiceDTO.getWetslipTextFee().setOnMouseExited(ex -> invoiceDTO.getWetslipTextFee().setFill(Color.BLUE));
+		});
 
-//		checkIfRecordHasOfficer();
-//		updateBalance(); // updates and saves
+
 		//////////////// SETTING CONTENT //////////////
 
-		VBox vBox = new VBox();
-		vBox.setSpacing(5);
+		VBox vboxMain = new VBox();
+		vboxMain.setSpacing(5);
 
-		// add table head
-		vBox.getChildren().add(new HBoxInvoiceTableHead());
-		// add rows in the correct order
-		for(int i = 0; i < widgetMap.size() + 1; i++) {
-			for(String key: widgetMap.keySet()) {
-				if(widgetMap.get(key).getInvoiceWidget().getOrder() == i)
-					vBox.getChildren().add(widgetMap.get(key));
+		// Sets up Editable Rows
+
+			// take list of invoiceWidgets, insert appropriate fee into widget, insert reference to invoice items
+			// the put an HBOX with all this attached into a hash map
+			for (InvoiceWidgetDTO i : theseWidgets) {
+				i.setFee(insertFeeIntoWidget(i));
+				i.setItems(items); // allows calculations to be made
+				invoiceItemMap.put(i.getObjectName(), new InvoiceRowEdit(i, footer));
 			}
-		}
-		// add footer
-
-		vBox.getChildren().add(footer);
+			// add table head
 
 
-		scrollPane.setContent(vBox);
+			header.setEditableMode(invoice.isCommitted());
+			invoiceItemMap.values().forEach(e -> e.setEditableMode(invoice.isCommitted()));
+			vboxMain.getChildren().add(header);
+			// add rows in the correct order
+			for(int i = 0; i < invoiceItemMap.size() + 1; i++) {
+				for(String key: invoiceItemMap.keySet()) {
+					if(invoiceItemMap.get(key).getInvoiceWidget().getOrder() == i)
+						vboxMain.getChildren().add(invoiceItemMap.get(key));
+				}
+			}
+			// add footer
+			vboxMain.getChildren().add(footer);
+
+
+		scrollPane.setContent(vboxMain);
 		mainVbox.getChildren().addAll(scrollPane);  // add error HBox in first
 		vboxGrey.getChildren().addAll(mainVbox);
 		getChildren().addAll(vboxGrey);
@@ -165,24 +167,6 @@ public class HBoxInvoice extends HBox {
 		}
 		return selectedFee;
 	}
-
-//	private void checkIfRecordHasOfficer() {
-//		if (invoice.isSupplemental()) { // have we already created a record for this year?
-//			invoiceDTO.getTextFieldMap().get("Dues").setEditable(true);
-//			//duesTextField.setText("0");
-//		} else { // this is the first invoice record created for this year
-//			if (hasOfficer) { // has officer and not
-//				invoice.setOfficer_credit(String.valueOf(definedFees.getDues_regular()));
-//				if(!SqlMoney.isCommitted(invoice.getMoney_id()))	{	// is not committed
-//					BaseApplication.logger.info("This record has not been committed");
-//				}
-//			} else {
-//
-//				invoice.setOfficer_credit("0.00");
-//			}
-//			BaseApplication.logger.info("Membership officer or chairman: " + hasOfficer);
-//		}
-//	}
 
 	//////////////////////  CLASS METHODS ///////////////////////////
 
@@ -200,40 +184,6 @@ public class HBoxInvoice extends HBox {
 		}
 		return payments;
 	}
-
-
-	
-//	private void setEditable(boolean isEditable) {
-//		invoiceDTO.clearGridPane();
-//		if(isEditable)  {
-//			invoiceDTO.populateUncommitted();
-//			invoiceDTO.getCommitButton().setText("Commit");
-//			invoiceDTO.getVboxCommitButton().getChildren().clear();
-//			invoiceDTO.getVboxCommitButton().getChildren().addAll(invoiceDTO.getRenewCheckBox(), invoiceDTO.getCommitButton());
-//		} else {
-//			invoiceDTO.populateCommitted();
-//			invoiceDTO.getCommitButton().setText("Edit");
-//			invoiceDTO.getVboxCommitButton().getChildren().clear();
-//			HBox hboxButtons = new HBox();
-//			hboxButtons.setSpacing(5);
-//			hboxButtons.getChildren().addAll(invoiceDTO.getCommitButton());
-//			invoiceDTO.getVboxCommitButton().getChildren().addAll(hboxButtons);
-//		}
-//	}
-
-
-	// decides if officer credit or work credit is counted
-//	private BigDecimal countCredit() {
-//		BigDecimal credit;
-//		// if an officer we are going to use this
-//		if(SqlExists.membershipHasOfficerForYear(invoice.getMs_id(), invoice.getFiscal_year()))
-//			credit = new BigDecimal(invoice.getOfficer_credit());
-//		// else we are going to calculate work credits
-//		else credit = countWorkCredits();
-//		return credit;
-//	}
-
-
 
 	public VBoxInvoiceFooter getFooter() {
 		return footer;

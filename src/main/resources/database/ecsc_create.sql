@@ -169,17 +169,18 @@ create table ECSC_SQL.deposit
 
 create table ECSC_SQL.invoice
 (
-    ID           INTEGER        NOT NULL auto_increment primary key unique,
-    MS_ID        INTEGER        NOT NULL,
-    FISCAL_YEAR  INTEGER        NULL,
-    PAID         DECIMAL(10, 2) NULL,
-    TOTAL        DECIMAL(10, 2) NULL,
-    CREDIT       DECIMAL(10, 2) NULL,
-    BALANCE      DECIMAL(10, 2) NULL,
-    BATCH        INTEGER        NULL,
+    ID           INTEGER                     NOT NULL auto_increment primary key unique,
+    MS_ID        INTEGER                     NOT NULL,
+    FISCAL_YEAR  INTEGER                     NULL,
+    PAID         DECIMAL(10, 2)              NULL,
+    TOTAL        DECIMAL(10, 2)              NULL,
+    CREDIT       DECIMAL(10, 2)              NULL,
+    BALANCE      DECIMAL(10, 2)              NULL,
+    BATCH        INTEGER                     NULL,
     COMMITTED    boolean,
     CLOSED       boolean,
     SUPPLEMENTAL boolean,
+    MAX_CREDIT   decimal(10, 2) default 0.00 not null,
     foreign key (MS_ID) references membership (MS_ID)
 );
 
