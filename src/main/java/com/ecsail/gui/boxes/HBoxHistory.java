@@ -210,9 +210,9 @@ public class HBoxHistory extends HBox {
         /// sets width of columns by percentage
         Col1.setMaxWidth(1f * Integer.MAX_VALUE * 25);   // Year
         Col2.setMaxWidth(1f * Integer.MAX_VALUE * 15);  // Mem Id
-        Col3.setMaxWidth(1f * Integer.MAX_VALUE * 30);   // Mem Type
+        Col3.setMaxWidth(1f * Integer.MAX_VALUE * 25);   // Mem Type
         Col4.setMaxWidth(1f * Integer.MAX_VALUE * 15);   // Renewed
-        Col5.setMaxWidth(1f * Integer.MAX_VALUE * 15);   // Renew Late
+        Col5.setMaxWidth(1f * Integer.MAX_VALUE * 20);   // Renew Late
 
         /////////////////// LISTENERS //////////////////////////////
 

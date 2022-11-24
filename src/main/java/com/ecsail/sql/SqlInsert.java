@@ -144,7 +144,7 @@ public class SqlInsert {
 				+ m.getId() + "," + m.getMsId() + "," + m.getYear() + ",'" + m.getPaid()
 				+ "','" + m.getTotal() + "','" + m.getCredit() + "','" + m.getBalance()
 				+ "'," + m.getBatch() + "," + m.isCommitted() + "," + m.isClosed()
-				+ "," + m.isSupplemental() + ")";
+				+ "," + m.isSupplemental() + "," + m.getMaxCredit() + ")";
 		try {
 			BaseApplication.connect.executeQuery(query);
 		 } catch (SQLException e) {
