@@ -22,7 +22,7 @@ public class TabDataBase extends Tab {
 	ArrayList<DbTableChangesDTO> thisDbTableChanges;
 	public TabDataBase(String text) {
 		super(text);
-		this.thisDbTableChanges = SqlDbTableChanges.getDbtableChanges();
+		this.thisDbTableChanges = SqlDbTableChanges.getDbTableChanges();
 		VBox vboxInner = new VBox();
 		HBox hboxGrey = new HBox();  // this is the vbox for organizing all the widgets
 		VBox vboxBlue = new VBox();

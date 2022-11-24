@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 
 public class SqlScriptMaker {
 //	static Object_TupleCount newTupleCount;
+	static ArrayList<DbTableChangesDTO> tableChangesDTOS;
+	static ArrayList<DbUpdatesDTO> dbUpdatesDTOS;
 	static ArrayList<InvoiceWidgetDTO> invoiceWidgets;
 	static ArrayList<ApiKeyDTO> apis;
 	static ArrayList<String> tableCreation = new ArrayList<>();
@@ -26,7 +28,6 @@ public class SqlScriptMaker {
 	static ArrayList<SlipDTO> slips;
 	static ObservableList<MemoDTO> memos;
 	static ObservableList<EmailDTO> email;
-//	static ObservableList<MoneyDTO> monies;
 	static ObservableList<InvoiceDTO> invoiceDTOS;
 	static ObservableList<InvoiceItemDTO> invoiceItemDTOS;
 	static ObservableList<OfficerDTO> officers;
@@ -74,6 +75,8 @@ public class SqlScriptMaker {
 		positions = SqlBoardPositions.getPositions();
 		apis = SqlApi_key.getAPIKeys();
 		invoiceWidgets = SqlInvoiceWidget.getInvoiceWidgets();
+		dbUpdatesDTOS = SqlDbTableChanges.getDbUpdates();
+		tableChangesDTOS = SqlDbTableChanges.getDbTableChanges();
 
 		BaseApplication.logger.info("2");
 		HalyardPaths.checkPath(HalyardPaths.SQLBACKUP + "/" + BaseApplication.selectedYear);
@@ -140,6 +143,10 @@ public class SqlScriptMaker {
 				writer.write((getApiString(a)));
 			for(InvoiceWidgetDTO a: invoiceWidgets)
 				writer.write(getInvoiceWidgetString(a));
+			for(DbUpdatesDTO u: dbUpdatesDTOS)
+				writer.write((getDbUpdatesString(u)));
+			for(DbTableChangesDTO t: tableChangesDTOS)
+				writer.write(getTableChanges(t));
 
 //			positions.stream().forEach(p -> writeToFile(getPositionString(p)));
 
@@ -150,7 +157,6 @@ public class SqlScriptMaker {
 			e.printStackTrace();
 		}
 	}
-
 
 	public static void clearMemory() {
 		tableCreation.clear();
@@ -177,8 +183,28 @@ public class SqlScriptMaker {
 		positions.clear();
 		apis.clear();
 		invoiceWidgets.clear();
+		dbUpdatesDTOS.clear();
+		tableChangesDTOS.clear();
 	}
 
+	private static String getTableChanges(DbTableChangesDTO t) {
+		return "INSERT INTO db_table_changes () VALUES("
+				+ t.getId() + ","
+				+ t.getDbUpdatesId() + ","
+				+ getCorrectString(t.getTableChanged()) + ","
+				+ t.getTableInsert() + ","
+				+ t.getTableDelete() + ","
+				+ t.getTableUpdate() + ","
+				+ getCorrectString(t.getChangeDate()) + ","
+				+ getCorrectString(t.getChangedBy()) + ");\n";
+	}
+	private static String getDbUpdatesString(DbUpdatesDTO u) {
+		return "INSERT INTO db_updates () VALUES("
+				+ u.getId() + ","
+				+ getCorrectString(u.getCreationDate()) + ","
+				+ u.isClosed() + ","
+				+ u.getDbSize() + ");\n";
+	}
 	private static String getInvoiceString(InvoiceDTO i) {
 		return "INSERT INTO invoice () VALUES("
 				+ i.getId() + ","
@@ -191,7 +217,8 @@ public class SqlScriptMaker {
 				+ i.getBatch() + ","
 				+ i.isCommitted() + ","
 				+ i.isClosed() + ","
-				+ i.isSupplemental() + ");\n";
+				+ i.isSupplemental() + ","
+				+ i.getMaxCredit() + ");\n";
 	}
 
 	private static String getInvoiceItemString(InvoiceItemDTO i) {

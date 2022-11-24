@@ -14,7 +14,6 @@ public class InvoiceDTO {
     private final BooleanProperty committed;
     private final BooleanProperty closed;
     private final BooleanProperty supplemental;
-
     private final StringProperty maxCredit;
 
     public InvoiceDTO(Integer id, Integer msId, Integer year, String paid, String total, String credit, String balance, Integer batch, Boolean committed, Boolean closed, Boolean supplemental, String maxCredit) {

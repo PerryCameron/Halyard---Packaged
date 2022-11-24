@@ -39,11 +39,11 @@ public class HboxHeader extends HBox {
         getChildren().addAll(vBox1,vBox2,vBox3);
     }
 
-    public void setEditableMode(boolean setEdit) {
-        if(setEdit)
-            setEdit();
-        else
+    public void setCommitMode(boolean setCommit) {
+        if(setCommit)
             setCommit();
+        else
+            setEdit();
     }
     private void setEdit() {
         priceText.setText("Price");

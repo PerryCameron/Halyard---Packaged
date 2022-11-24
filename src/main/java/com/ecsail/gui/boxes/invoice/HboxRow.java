@@ -89,8 +89,8 @@ public class HboxRow extends HBox {
 
     private void setCommit() {
         if (!invoiceItem.getValue().equals("0.00")) { // list only items in use
-            vBox1.setPrefWidth(100);
-            vBox3.setPrefWidth(100);
+            vBox1.setPrefWidth(160);
+            vBox3.setPrefWidth(40);
             vBox3.getChildren().clear();
             if (invoiceItem.getQty() != 0) // don't print the 0's
                 vBox3.getChildren().add(new Text(String.valueOf(invoiceItem.getQty())));
@@ -102,12 +102,12 @@ public class HboxRow extends HBox {
         }
     }
 
-    public void setEditableMode(boolean setEdit) {
+    public void setCommitMode(boolean setCommit) {
         getChildren().clear();
-        if(setEdit)
-            setEdit();
-        else
+        if(setCommit)
             setCommit();
+        else
+            setEdit();
     }
 
     private boolean getOfficerCredit() {
@@ -137,6 +137,7 @@ public class HboxRow extends HBox {
             case "spinner" -> {
                 spinner = new Spinner<>();
                 spinner.setPrefWidth(i.getWidth());
+                System.out.println("Setting price for " + this.itemName + " for the year " + this.invoiceItem.getYear());
                 price.setText(String.valueOf(fee.getFieldValue()));
                 setSpinnerListener();
                 if (invoiceWidget.isPrice_editable())

@@ -38,7 +38,7 @@ public class SqlInvoiceWidget {
 
     public static ArrayList<InvoiceWidgetDTO> getInvoiceWidgetsByYear(int year) {  //p_id
         ArrayList<InvoiceWidgetDTO> theseWidgets = new ArrayList<>();
-        String query = "select * from db_invoice";
+        String query = "select * from db_invoice where year=" + year;
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {

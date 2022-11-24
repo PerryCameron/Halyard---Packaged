@@ -423,7 +423,7 @@ CREATE Table ECSC_SQL.db_invoice
     multiplied     boolean     NOT NULL,
     price_editable boolean     NOT NULL,
     is_credit      boolean     NOT NULL,
-    listener_type  varchar(30) NOT NULL
+    max_qty        INTEGER     NOT NULL
 );
 
 

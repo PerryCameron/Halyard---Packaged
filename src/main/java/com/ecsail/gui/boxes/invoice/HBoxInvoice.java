@@ -5,6 +5,7 @@ import com.ecsail.HalyardPaths;
 import com.ecsail.Note;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlInsert;
+import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.*;
 import com.ecsail.structures.*;
 import javafx.collections.FXCollections;
@@ -23,25 +24,25 @@ import java.util.Map;
 public class HBoxInvoice extends HBox {
     private final ObservableList<PaymentDTO> payments;
     private final InvoiceDTO invoice;
-    private final ObservableList<InvoiceItemDTO> items;
     private final ArrayList<FeeDTO> fees;
-    private final ArrayList<InvoiceWidgetDTO> theseWidgets;
     MembershipDTO membership;
     VboxFooter footer;
     boolean isCommitted;
     Button addWetSlip = new Button();
     Map<String, HboxRow> invoiceItemMap = new LinkedHashMap<>();
     Button buttonCommit = new Button("Commit");
+    Note note;
 
     public HBoxInvoice(MembershipDTO m, InvoiceDTO invoice, Note note) {
         this.membership = m;
         this.invoice = invoice;
-        this.theseWidgets = SqlInvoiceWidget.getInvoiceWidgets();
-        this.items = SqlInvoiceItem.getInvoiceItemsByInvoiceId(invoice.getId());
+        ArrayList<InvoiceWidgetDTO> theseWidgets = SqlInvoiceWidget.getInvoiceWidgetsByYear(invoice.getYear());
+        ObservableList<InvoiceItemDTO> items = SqlInvoiceItem.getInvoiceItemsByInvoiceId(invoice.getId());
         this.fees = SqlFee.getFeesFromYear(invoice.getYear());
         this.isCommitted = invoice.isCommitted();
         this.payments = getPayment();
         this.footer = new VboxFooter(this);
+        this.note = note;
         HboxHeader header = new HboxHeader();
         ScrollPane scrollPane = new ScrollPane();
         var vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
@@ -64,51 +65,31 @@ public class HBoxInvoice extends HBox {
         HBox.setHgrow(scrollPane, Priority.ALWAYS);
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
 
+        System.out.println("Commit is initially set at " + invoice.isCommitted());
 
         //////////////// LISTENER //////////////////
 
         buttonCommit.setOnAction((event) -> {
-			invoice.setCommitted(!invoice.isCommitted());
-            header.setEditableMode(invoice.isCommitted());
-            invoiceItemMap.values().forEach(e -> e.setEditableMode(invoice.isCommitted()));
-
-//			if (!invoice.isCommitted()) {
-//				if (!invoiceDTO.getTotalBalanceText().getText().equals("0.00")) {
-//					invoiceDTO.getTotalBalanceText().setStyle("-fx-background-color: #f23a50");
-//					note.addMemoAndReturnId("Non-Zero Balance: ",date,invoice.getMoney_id(),"B");
-//				}
-//				SqlUpdate.commitFiscalRecord(invoice.getMoney_id(), true);// this could be placed in line above
-//				SqlUpdate.updateMembershipId(invoice.getMs_id(), invoice.getFiscal_year(), invoiceDTO.getRenewCheckBox().isSelected());
-//				invoice.setCommitted(true);
-//
-//				// if we put an amount in other we need to make a note
-//				if(new BigDecimal(invoice.getOther()).compareTo(BigDecimal.ZERO) != 0) {
-//					System.out.println("Found an other field");
-//					// make sure the memo doesn't already exist
-//					if(!SqlExists.memoExists(invoice.getMoney_id(), "O"))
-//						note.addMemoAndReturnId("Other expense: ",date,invoice.getMoney_id(),"O");
-//				}
-//				setEditable(false);
-//			} else {
-//				setEditable(true);
-//				invoice.setCommitted(false);
-//				SqlUpdate.commitFiscalRecord(invoice.getMoney_id(), false);
-//			}
+			invoice.setCommitted(!invoice.isCommitted()); // change to opposite of what it currently is
+            System.out.println("committed = " + invoice.isCommitted());
+            header.setCommitMode(invoice.isCommitted());
+            invoiceItemMap.values().forEach(e -> e.setCommitMode(invoice.isCommitted()));
+            footer.setCommitMode(invoice.isCommitted());
+            SqlUpdate.updateInvoice(invoice);
         });
-
 
 		// take list of invoiceWidgets, insert appropriate fee into widget, insert reference to invoice items
 		// the put an HBOX with all this attached into a hash map
 		for (InvoiceWidgetDTO i : theseWidgets) {
-			i.setFee(insertFeeIntoWidget(i));
-			i.setItems(items); // allows calculations to be made
-			invoiceItemMap.put(i.getObjectName(), new HboxRow(i, footer));
+                i.setFee(insertFeeIntoWidget(i));
+                i.setItems(items); // allows calculations to be made
+                invoiceItemMap.put(i.getObjectName(), new HboxRow(i, footer));
 		}
         //////////////// SETTING CONTENT //////////////
 
         // add table head
-        header.setEditableMode(invoice.isCommitted());
-        invoiceItemMap.values().forEach(e -> e.setEditableMode(invoice.isCommitted()));
+        header.setCommitMode(invoice.isCommitted());
+        invoiceItemMap.values().forEach(e -> e.setCommitMode(invoice.isCommitted()));
         vboxMain.getChildren().add(header);
         // add rows in the correct order
         for (int i = 0; i < invoiceItemMap.size() + 1; i++) {
@@ -118,9 +99,9 @@ public class HBoxInvoice extends HBox {
             }
         }
         // add footer
-        vboxMain.getChildren().add(footer);
-        footer.setEditableMode(true);
 
+        footer.setCommitMode(invoice.isCommitted());
+        vboxMain.getChildren().add(footer);
         scrollPane.setContent(vboxMain);
         mainVbox.getChildren().addAll(scrollPane);  // add error HBox in first
         vboxGrey.getChildren().addAll(mainVbox);
@@ -153,9 +134,6 @@ public class HBoxInvoice extends HBox {
         }
         return payments;
     }
-    public VboxFooter getFooter() {
-        return footer;
-    }
 
     public ObservableList<PaymentDTO> getPayments() {
         return payments;
@@ -167,5 +145,9 @@ public class HBoxInvoice extends HBox {
 
     public Button getButtonCommit() {
         return buttonCommit;
+    }
+
+    public Note getNote() {
+        return note;
     }
 }

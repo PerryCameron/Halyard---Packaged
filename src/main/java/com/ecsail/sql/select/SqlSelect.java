@@ -18,7 +18,7 @@ public class SqlSelect {
 		String query = "SELECT " + column + " FROM " + table + " ORDER BY " + column + " DESC LIMIT 1";
 		try {
 			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-			rs.next();
+			if(rs.next());
 			result = rs.getInt(column);
 			BaseApplication.connect.closeResultSet(rs);
 		} catch (SQLException e) {

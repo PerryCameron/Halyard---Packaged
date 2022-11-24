@@ -342,48 +342,6 @@ public class SqlUpdate {
 		}
 	}
 
-	public static void commitFiscalRecord(int money_id, Boolean commit) {
-		String query = "UPDATE money SET commited=" + commit + " WHERE money_id=" + money_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
-
-	public static void updateMoney(MoneyDTO money) {
-		String query = "UPDATE money SET extra_key="
-			+ money.getExtra_key()
-			+ ",kayak_shed_key=" + money.getKayac_shed_key()
-			+ ",sail_loft_key=" + money.getSail_loft_key()
-			+ ",sail_school_loft_key=" + money.getSail_school_loft_key()
-			+ ",beach=" + money.getBeach()
-			+ ",wet_slip=" + money.getWet_slip()
-			+ ",kayak_rack=" + money.getKayac_rack()
-			+ ",kayak_shed=" + money.getKayac_shed()
-			+ ",sail_loft=" + money.getSail_loft()
-			+ ",sail_school_laser_loft=" + money.getSail_school_laser_loft()
-			+ ",winter_storage=" + money.getWinter_storage()
-			+ ",ysc_donation=" + money.getYsc_donation()
-			+ ",paid=" + money.getPaid()
-			+ ",total=" + money.getTotal()
-			+ ",credit=" + money.getCredit()
-			+ ",balance=" + money.getBalance()
-			+ ",dues=" + money.getDues()
-			+ ",other=" + money.getOther()
-			+ ",initiation=" + money.getInitiation()
-			+ ",work_credit=" + money.getWork_credit()
-			+ ",other_credit=" + money.getOther_credit()
-			+ ",kayak_beach_rack=" + money.getKayak_beach_rack()
-			+ " WHERE money_id=" + money.getMoney_id();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-		e.printStackTrace();
-		new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
-
 	public static void updateMoneyBatch(int money_id, int batchNumber) {
 		String query = "UPDATE money SET batch=" + batchNumber
 				+ " WHERE money_id=" + money_id;
@@ -499,7 +457,8 @@ public class SqlUpdate {
 				+ "PAID=" + invoice.getPaid() + ","
 				+ "TOTAL=" + invoice.getTotal() + ","
 				+ "CREDIT=" + invoice.getCredit() + ","
-				+ "BALANCE=" + invoice.getBalance()
+				+ "BALANCE=" + invoice.getBalance() + ","
+				+ "COMMITTED=" + invoice.isCommitted()
 				+ " WHERE ID=" + invoice.getId();
 		try {
 			BaseApplication.connect.executeQuery(query);

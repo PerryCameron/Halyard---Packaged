@@ -1,6 +1,5 @@
 package com.ecsail.gui.boxes.invoice;
 
-import com.ecsail.HalyardPaths;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
@@ -17,11 +16,14 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
+import static com.ecsail.HalyardPaths.date;
 
 public class VboxFooter extends VBox {
 
@@ -34,6 +36,14 @@ public class VboxFooter extends VBox {
     private final HBox hboxTop = new HBox();
     private final HBox hboxBottom = new HBox();
     private final ObservableList<PaymentDTO> payments;
+    private final VBox vboxButtons = new VBox();
+    private final VBox vboxTableView = new VBox();
+    private final VBox vboxCommitButton = new VBox();
+    private final VBox vboxTotalLabels = new VBox();
+    private final VBox vboxTotalAmounts = new VBox();
+    private final CheckBox renewCheckBox = new CheckBox("Renew");
+    private final Button buttonCommit;
+    private final Button buttonAddNote = new Button("Add Note");
 
     public VboxFooter(HBoxInvoice hBoxInvoice) {
         this.invoice = hBoxInvoice.getInvoice();
@@ -43,21 +53,16 @@ public class VboxFooter extends VBox {
         totalPaymentText.setText(invoice.getPaid());
         this.payments = hBoxInvoice.getPayments();
         this.paymentTableView = new PaymentTableView(this);
-        Button buttonCommit = hBoxInvoice.getButtonCommit();
-
+        this.buttonCommit = hBoxInvoice.getButtonCommit();
+        Button buttonAdd = new Button("Add");
+        Button buttonDelete = new Button("Delete");
 
         setPadding(new Insets(15, 0, 15, 0));
         setSpacing(15);
 
-        Button buttonAdd = new Button("Add");
-        Button buttonDelete = new Button("Delete");
-
-        Button buttonAddNote = new Button("Add Note");
-        CheckBox renewCheckBox = new CheckBox("Renew");
-
         buttonAdd.setOnAction(e -> {
             int pay_id = SqlSelect.getNextAvailablePrimaryKey("payment", "pay_id");
-            payments.add(new PaymentDTO(pay_id, invoice.getId(), null, "CH", HalyardPaths.date, "0", 1)); // let's add it to our GUI
+            payments.add(new PaymentDTO(pay_id, invoice.getId(), null, "CH", date, "0", 1)); // let's add it to our GUI
             SqlInsert.addPaymentRecord(payments.get(payments.size() - 1));
         });
 
@@ -72,16 +77,12 @@ public class VboxFooter extends VBox {
 			updateTotals();
 		});
 
+        buttonAddNote.setOnAction(e -> hBoxInvoice.getNote().addMemoAndReturnId("Invoice Note: ",date,invoice.getId(),"I"));
+
         buttonAdd.setPrefWidth(60);
         buttonDelete.setPrefWidth(60);
-        buttonCommit.setPrefWidth(70);
-
-        VBox vboxTableView = new VBox();
-        VBox vboxCommitButton = new VBox();
-        VBox vboxTotalLabels = new VBox();
-        VBox vboxTotalAmounts = new VBox();
-
-        VBox vboxButtons = new VBox();
+        buttonCommit.setPrefWidth(75);
+        buttonAddNote.setPrefWidth(75);
 
         Text totalFeesLabelText = new Text("Total Fees:");
         Text totalCreditLabelText = new Text("Total Credit:");
@@ -92,7 +93,7 @@ public class VboxFooter extends VBox {
         totalPaymentLabelText.setId("invoice-text-light");
         totalBalanceLabelText.setId("invoice-text-light");
 
-        vboxTableView.setStyle("-fx-background-color: #e83115;");  // red
+//        vboxTableView.setStyle("-fx-background-color: #e83115;");  // red
         hboxTop.setSpacing(10);
         hboxBottom.setSpacing(25);
         vboxTotalAmounts.setSpacing(5);
@@ -116,26 +117,40 @@ public class VboxFooter extends VBox {
         vboxTableView.getChildren().add(paymentTableView);
         vboxButtons.getChildren().addAll(buttonAdd, buttonDelete);
 
-        hboxTop.getChildren().addAll(vboxTableView,vboxButtons);
         hboxBottom.getChildren().addAll(vboxTotalLabels,vboxTotalAmounts,vboxCommitButton);
     }
 
-    public void setEditableMode(boolean setEdit) {
+    public void setCommitMode(boolean setCommit) {
         getChildren().clear();
-        if(setEdit)
-            setEdit();
-        else
+        if(setCommit)
             setCommit();
+        else
+            setEdit();
     }
     private void setEdit() {
+        hboxTop.getChildren().clear();
+        hboxTop.getChildren().addAll(vboxTableView,vboxButtons);
+        buttonCommit.setText("Commit");
+        this.requestFocus(); // removes focus from button
+        vboxCommitButton.getChildren().clear();
+        vboxCommitButton.getChildren().addAll(renewCheckBox, buttonCommit);
         getChildren().addAll(hboxTop,hboxBottom);
     }
 
     private void setCommit() {
     Separator separator = new Separator(Orientation.HORIZONTAL);
-    HBox hboxCommitDetails = new HBox();
+    HBox.setHgrow(separator, Priority.ALWAYS);
+    VBox vboxCommitDetails = new VBox();
+    buttonCommit.setText("Edit");
+    this.requestFocus(); // removes focus from button
+    vboxCommitDetails.getChildren().addAll(
+            new Text("Payment Date: " + payments.get(0).getPaymentDate()),
+            new Text("Deposit Number: " + invoice.getBatch()));
+    vboxCommitButton.getChildren().clear();
+    vboxCommitButton.getChildren().addAll(buttonAddNote, buttonCommit);
+    hboxTop.getChildren().clear();
     hboxTop.getChildren().add(separator);
-
+        getChildren().addAll(hboxTop,hboxBottom,vboxCommitDetails);
     }
 
     public void updateTotals(BigDecimal fees, BigDecimal credit) {
@@ -176,35 +191,9 @@ public class VboxFooter extends VBox {
         return invoice;
     }
 
-    public Text getTotalFeesText() {
-        return totalFeesText;
-    }
-
-    public void setTotalFeesText(Text totalFeesText) {
-        this.totalFeesText = totalFeesText;
-    }
-
-    public Text getTotalCreditText() {
-        return totalCreditText;
-    }
-
-    public void setTotalCreditText(Text totalCreditText) {
-        this.totalCreditText = totalCreditText;
-    }
 
     public Text getTotalPaymentText() {
         return totalPaymentText;
     }
 
-    public void setTotalPaymentText(Text totalPaymentText) {
-        this.totalPaymentText = totalPaymentText;
-    }
-
-    public Text getTotalBalanceText() {
-        return totalBalanceText;
-    }
-
-    public void setTotalBalanceText(Text totalBalanceText) {
-        this.totalBalanceText = totalBalanceText;
-    }
 }

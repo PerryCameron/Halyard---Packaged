@@ -40,7 +40,7 @@ public class SqlDbTableChanges {
         return tableChangesDTO;
     }
 
-    public static ArrayList<DbTableChangesDTO> getDbtableChanges() {  //p_id
+    public static ArrayList<DbTableChangesDTO> getDbTableChanges() {  //p_id
         ArrayList<DbTableChangesDTO> thisDbUpdates = new ArrayList<>();
         String query = "SELECT * FROM db_table_changes";
         try {
