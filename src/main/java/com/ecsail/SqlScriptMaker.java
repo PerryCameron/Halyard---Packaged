@@ -32,7 +32,6 @@ public class SqlScriptMaker {
 	static ObservableList<InvoiceItemDTO> invoiceItemDTOS;
 	static ObservableList<OfficerDTO> officers;
 	static ObservableList<DefinedFeeDTO> definedfees;
-	static ObservableList<WorkCreditDTO> workcredits;
 	static ObservableList<PaymentDTO> payments;
 	static ObservableList<DepositDTO> deposits;
 	static ArrayList<WaitListDTO> waitlist;
@@ -64,7 +63,6 @@ public class SqlScriptMaker {
 		invoiceItemDTOS = SqlInvoiceItem.getAllInvoiceItems();
 		officers = SqlOfficer.getOfficers();
 		definedfees = SqlDefinedFee.getDefinedFees();
-		workcredits = SqlWorkCredit.getWorkCredits();
 		payments = SqlPayment.getPayments();
 		deposits = SqlDeposit.getDeposits();
 		waitlist = SqlWaitList.getWaitLists();
@@ -125,8 +123,6 @@ public class SqlScriptMaker {
 				writer.write(getOfficerString(off));
 			for (DefinedFeeDTO def : definedfees)
 				writer.write(getDefinedFeeString(def));
-			for (WorkCreditDTO woc : workcredits)
-				writer.write(getWorkCreditString(woc));
 			for (WaitListDTO wal: waitlist)
 				writer.write(getWaitListString(wal));
 			for (AwardDTO oa: awards)
@@ -175,7 +171,6 @@ public class SqlScriptMaker {
 		payments.clear();
 		officers.clear();
 		definedfees.clear();
-		workcredits.clear();
 		waitlist.clear();
 		awards.clear();
 		fees.clear();
@@ -349,18 +344,6 @@ public class SqlScriptMaker {
 				+ pay.getPaymentDate() + "','"
 				+ pay.getPaymentAmount() + "',"
 				+ pay.getDeposit_id()
-				+ ");\n";
-	}
-
-	public static String getWorkCreditString(WorkCreditDTO woc) {
-		return
-				"INSERT INTO work_credit () VALUES ("
-				+ woc.getMoney_id() + ","
-				+ woc.getMsid() + ","
-				+ woc.getRacing() + ","
-				+ woc.getHarbor() + ","
-				+ woc.getSocial() + ","
-				+ woc.getOther()
 				+ ");\n";
 	}
 

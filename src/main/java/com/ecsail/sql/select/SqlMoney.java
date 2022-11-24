@@ -4,7 +4,7 @@ import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.structures.DepositSummaryDTO;
 import com.ecsail.structures.MoneyDTO;
-import com.ecsail.structures.WorkCreditDTO;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -183,36 +183,6 @@ public class SqlMoney {
         return thisFiscal;
     }
 
-
-
-    public static WorkCreditDTO getWorkCredit(int moneyID) {
-        WorkCreditDTO workCredits = null;
-        String query = "SELECT * FROM work_credit WHERE money_id=" + moneyID;
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            rs.next();
-            workCredits = new WorkCreditDTO(rs.getInt("MONEY_ID"), rs.getInt("MS_ID"),rs.getInt("RACING"), rs.getInt("HARBOR"),
-                        rs.getInt("SOCIAL"), rs.getInt("OTHER"));
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
-        }
-        return workCredits;
-    }
-
-    public static boolean isCommitted(int money_id) {
-        boolean committed = false;
-        String query = "SELECT commited FROM money WHERE money_id=" + money_id;
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            rs.next();
-            committed = rs.getBoolean("commited");
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
-        }
-        return committed;
-    }
 
     public static int getTotalAmount(int invoice_id) {
         int number = 0;
