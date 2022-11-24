@@ -16,7 +16,9 @@ public class InvoiceDTO {
     private final BooleanProperty supplemental;
     private final StringProperty maxCredit;
 
-    public InvoiceDTO(Integer id, Integer msId, Integer year, String paid, String total, String credit, String balance, Integer batch, Boolean committed, Boolean closed, Boolean supplemental, String maxCredit) {
+
+    public InvoiceDTO(Integer id, Integer msId, Integer year, String paid, String total, String credit, String balance,
+                      Integer batch, Boolean committed, Boolean closed, Boolean supplemental, String maxCredit) {
         this.id = new SimpleIntegerProperty(id);
         this.msId = new SimpleIntegerProperty(msId);
         this.year = new SimpleIntegerProperty(year);
@@ -209,5 +211,21 @@ public class InvoiceDTO {
         this.maxCreditProperty().set(maxCredit);
     }
 
-
+    @Override
+    public String toString() {
+        return "InvoiceDTO{" +
+                "id=" + id +
+                ", msId=" + msId +
+                ", year=" + year +
+                ", paid=" + paid +
+                ", total=" + total +
+                ", credit=" + credit +
+                ", balance=" + balance +
+                ", batch=" + batch +
+                ", committed=" + committed +
+                ", closed=" + closed +
+                ", supplemental=" + supplemental +
+                ", maxCredit=" + maxCredit +
+                '}';
+    }
 }

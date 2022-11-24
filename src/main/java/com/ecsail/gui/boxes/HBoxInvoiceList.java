@@ -132,8 +132,6 @@ public class HBoxInvoiceList extends HBox {
 				SqlInsert.addInvoiceRecord(newInvoice);
 				// insert items for the invoice
 				createInvoiceItems(invoiceId, comboBox.getValue(), membership.getMsid());
-				// insert the work credit information (This may be deprecated. I haven't made up my mind yet)
-				SqlInsert.addWorkCreditRecord(invoiceId, membership);
 				// add new money row to tableview
 				invoices.add(newInvoice);
 				// send new money row to top

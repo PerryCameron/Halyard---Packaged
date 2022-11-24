@@ -128,17 +128,6 @@ public class SqlInsert {
 		}
 	}
 
-	public static void addWorkCreditRecord(int moneyId, MembershipDTO membership) {
-		String query = "INSERT INTO work_credit () VALUES ("
-				+ moneyId + ","
-				+ membership.getMsid() + ",0,0,0,0)";
-		try {
-			BaseApplication.connect.executeQuery(query);
-		 } catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
-		}
-	}
-
 	public static void addInvoiceRecord(InvoiceDTO m) {
 		String query = "INSERT INTO invoice () VALUES ("
 				+ m.getId() + "," + m.getMsId() + "," + m.getYear() + ",'" + m.getPaid()

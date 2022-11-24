@@ -1,5 +1,6 @@
 package com.ecsail.structures;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.ObservableList;
 
 public class InvoiceWidgetDTO {
@@ -13,6 +14,8 @@ public class InvoiceWidgetDTO {
     private boolean price_editable;
     private boolean is_credit;
     private int maxQty;
+
+    private boolean autoPopulate;
     /**
      * below not included in database
      */
@@ -20,9 +23,9 @@ public class InvoiceWidgetDTO {
     private ObservableList<InvoiceItemDTO> items;
 
 
-    public InvoiceWidgetDTO(int id, String date, String objectName, String widgetType, double width, int order, boolean multiplied, boolean price_editable, boolean is_credit, int maxQty) {
+    public InvoiceWidgetDTO(int id, String year, String objectName, String widgetType, double width, int order, boolean multiplied, boolean price_editable, boolean is_credit, int maxQty, boolean autoPopulate) {
         this.id = id;
-        this.year = date;
+        this.year = year;
         this.objectName = objectName;
         this.widgetType = widgetType;
         this.width = width;
@@ -31,6 +34,7 @@ public class InvoiceWidgetDTO {
         this.price_editable = price_editable;
         this.is_credit = is_credit;
         this.maxQty = maxQty;
+        this.autoPopulate = autoPopulate;
     }
 
     public int getId() {
@@ -129,6 +133,14 @@ public class InvoiceWidgetDTO {
         this.items = items;
     }
 
+    public boolean isAutoPopulate() {
+        return autoPopulate;
+    }
+
+    public void setAutoPopulate(boolean autoPopulate) {
+        this.autoPopulate = autoPopulate;
+    }
+
     @Override
     public String toString() {
         return "InvoiceWidgetDTO{" +
@@ -142,8 +154,7 @@ public class InvoiceWidgetDTO {
                 ", price_editable=" + price_editable +
                 ", is_credit=" + is_credit +
                 ", maxQty=" + maxQty +
-                ", fee=" + fee +
-                ", items=" + items +
+                ", autoPopulate=" + autoPopulate +
                 '}';
     }
 }

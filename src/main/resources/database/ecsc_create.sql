@@ -414,16 +414,17 @@ CREATE TABLE ECSC_SQL.db_table_changes
 
 CREATE Table ECSC_SQL.db_invoice
 (
-    id             INTEGER     NOT NULL primary key,
-    year           INTEGER     NOT NULL,
-    objectName     varchar(30) NOT NULL,
-    widget_type    varchar(30) NOT NULL,
+    id             INTEGER           NOT NULL primary key,
+    year           INTEGER           NOT NULL,
+    objectName     varchar(30)       NOT NULL,
+    widget_type    varchar(30)       NOT NULL,
     width          double,
-    `order`        INTEGER     NOT NULL,
-    multiplied     boolean     NOT NULL,
-    price_editable boolean     NOT NULL,
-    is_credit      boolean     NOT NULL,
-    max_qty        INTEGER     NOT NULL
+    `order`        INTEGER           NOT NULL,
+    multiplied     boolean           NOT NULL,
+    price_editable boolean           NOT NULL,
+    is_credit      boolean           NOT NULL,
+    max_qty        INTEGER           NOT NULL,
+    auto_populate  boolean default 0 not null
 );
 
 
