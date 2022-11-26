@@ -1,10 +1,8 @@
 package com.ecsail.gui.tabs.deposits;
 
 
-import com.ecsail.structures.PaidDuesDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Pos;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
@@ -15,10 +13,10 @@ import javafx.scene.layout.VBox;
 
 import java.util.Arrays;
 
-public class InvoicesTableView extends TableView {
-
+public class InvoicesTableView extends TableView<InvoiceWithMemberInfoDTO> {
+    TabDeposits tabDeposits;
     public InvoicesTableView(TabDeposits tabDeposits) {
-
+    this.tabDeposits = tabDeposits;
 
         setItems(tabDeposits.getInvoices());
         setFixedCellSize(30);
@@ -73,19 +71,19 @@ public class InvoicesTableView extends TableView {
         Col5.setCellValueFactory(new PropertyValueFactory<>("f_name"));
         Col5.setPrefWidth(80);
 
-        var Col6 = new TableColumn<PaidDuesDTO, Integer>("Fees");
+        var Col6 = new TableColumn<InvoiceWithMemberInfoDTO, Integer>("Fees");
         Col6.setCellValueFactory(new PropertyValueFactory<>("total"));
         Col6.setPrefWidth(50);
 
-        var Col7 = new TableColumn<PaidDuesDTO, Integer>("Credit");
+        var Col7 = new TableColumn<InvoiceWithMemberInfoDTO, Integer>("Credit");
         Col7.setCellValueFactory(new PropertyValueFactory<>("credit"));
         Col7.setPrefWidth(50);
 
-        var Col8 = new TableColumn<PaidDuesDTO, Integer>("Paid");
+        var Col8 = new TableColumn<InvoiceWithMemberInfoDTO, Integer>("Paid");
         Col8.setCellValueFactory(new PropertyValueFactory<>("paid"));
         Col8.setPrefWidth(50);
 
-        var Col9 = new TableColumn<PaidDuesDTO, Integer>("Balance");
+        var Col9 = new TableColumn<InvoiceWithMemberInfoDTO, Integer>("Balance");
         Col9.setCellValueFactory(new PropertyValueFactory<>("balance"));
         Col9.setPrefWidth(50);
 

@@ -1,9 +1,8 @@
 package com.ecsail.structures;
 
-import javafx.beans.property.BooleanProperty;
 import javafx.collections.ObservableList;
 
-public class InvoiceWidgetDTO {
+public class DbInvoiceDTO {
     private int id;
     private String year;
     private String objectName;
@@ -23,7 +22,7 @@ public class InvoiceWidgetDTO {
     private ObservableList<InvoiceItemDTO> items;
 
 
-    public InvoiceWidgetDTO(int id, String year, String objectName, String widgetType, double width, int order, boolean multiplied, boolean price_editable, boolean is_credit, int maxQty, boolean autoPopulate) {
+    public DbInvoiceDTO(int id, String year, String objectName, String widgetType, double width, int order, boolean multiplied, boolean price_editable, boolean is_credit, int maxQty, boolean autoPopulate) {
         this.id = id;
         this.year = year;
         this.objectName = objectName;

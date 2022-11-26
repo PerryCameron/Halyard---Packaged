@@ -16,7 +16,7 @@ public class SqlScriptMaker {
 //	static Object_TupleCount newTupleCount;
 	static ArrayList<DbTableChangesDTO> tableChangesDTOS;
 	static ArrayList<DbUpdatesDTO> dbUpdatesDTOS;
-	static ArrayList<InvoiceWidgetDTO> invoiceWidgets;
+	static ArrayList<DbInvoiceDTO> invoiceWidgets;
 	static ArrayList<ApiKeyDTO> apis;
 	static ArrayList<String> tableCreation = new ArrayList<>();
 	static ObservableList<MembershipDTO> memberships;
@@ -72,7 +72,7 @@ public class SqlScriptMaker {
 		idChanges = SqlIdChange.getAllChangedIds();
 		positions = SqlBoardPositions.getPositions();
 		apis = SqlApi_key.getAPIKeys();
-		invoiceWidgets = SqlInvoiceWidget.getInvoiceWidgets();
+		invoiceWidgets = SqlDbInvoice.getInvoiceWidgets();
 		dbUpdatesDTOS = SqlDbTableChanges.getDbUpdates();
 		tableChangesDTOS = SqlDbTableChanges.getDbTableChanges();
 
@@ -137,7 +137,7 @@ public class SqlScriptMaker {
 				writer.write(getPositionString(b));
 			for(ApiKeyDTO a: apis)
 				writer.write((getApiString(a)));
-			for(InvoiceWidgetDTO a: invoiceWidgets)
+			for(DbInvoiceDTO a: invoiceWidgets)
 				writer.write(getInvoiceWidgetString(a));
 			for(DbUpdatesDTO u: dbUpdatesDTOS)
 				writer.write((getDbUpdatesString(u)));
@@ -229,7 +229,7 @@ public class SqlScriptMaker {
 				+ i.getQty() + ");\n";
 	}
 
-	private static String getInvoiceWidgetString(InvoiceWidgetDTO a) {
+	private static String getInvoiceWidgetString(DbInvoiceDTO a) {
 		return "INSERT INTO db_invoice () VALUES("
 				+ a.getId() + ","
 				+ a.getYear() + ","

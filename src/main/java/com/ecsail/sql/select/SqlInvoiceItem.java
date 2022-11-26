@@ -2,6 +2,7 @@ package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
+import com.ecsail.structures.InvoiceDTO;
 import com.ecsail.structures.InvoiceItemDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -57,5 +58,30 @@ public class SqlInvoiceItem {
             new Dialogue_ErrorSQL(e, "Unable to retrieve invoice items", "See below for details");
         }
         return invoiceItems;
+    }
+
+    public static InvoiceItemDTO getInvoiceItemSumByYearAndType(String year, String type) { // overload
+        InvoiceItemDTO invoiceItem = null;
+        String query = "select sum(value) AS VALUE,sum(QTY) AS QTY from invoice_item where FISCAL_YEAR="+year+" " +
+                "and ITEM_TYPE='"+type+"'";
+        try {
+            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+            while (rs.next()) {
+                invoiceItem = new InvoiceItemDTO(
+                        0,
+                        0,
+                        0,
+                        Integer.parseInt(year),
+                        type,
+                        false,
+                        false,
+                        rs.getString("VALUE"),
+                        rs.getInt("QTY"));
+            }
+            BaseApplication.connect.closeResultSet(rs);
+        } catch (SQLException e) {
+            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
+        }
+        return invoiceItem;
     }
 }

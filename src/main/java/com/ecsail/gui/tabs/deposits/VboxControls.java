@@ -1,5 +1,7 @@
 package com.ecsail.gui.tabs.deposits;
 
+import com.ecsail.sql.select.SqlDbInvoice;
+import com.ecsail.sql.select.SqlInvoiceItem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -11,11 +13,23 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+import java.util.ArrayList;
+
 import static com.ecsail.BaseApplication.selectedYear;
 
 public class VboxControls extends VBox {
+    private final TabDeposits tabDeposits;
+    private final ArrayList<String> invoiceItemTypes;
+    private final ArrayList<HboxInvoiceSumItem> hboxInvoiceSumItems = new ArrayList<>();
 
-    public VboxControls() {
+
+    public VboxControls(TabDeposits tabDeposits) {
+        this.tabDeposits = tabDeposits;
+        this.invoiceItemTypes = SqlDbInvoice.getInvoiceCategoriesByYear(tabDeposits.getSelectedYear());
+
+
+
+
         setPrefWidth(350);
 
         var vboxGrey = new VBox(); // this is the vbox for organizing all the widgets
@@ -27,7 +41,7 @@ public class VboxControls extends VBox {
         var batchNumberHBox = new HBox(); // holds spinner and label
         var buttonHBox = new HBox(); // holds buttons
         var yearBatchHBox = new HBox(); // holds spinner and batchNumberHBox
-        var gridHBox = new HBox(); // holds gridPane
+        var vboxSumItems = new VBox(); // holds gridPane
         var remaindingRenewalHBox = new HBox();
         var selectionHBox = new HBox();
         var numberOfRecordsHBox = new HBox();
@@ -49,6 +63,8 @@ public class VboxControls extends VBox {
         selectionHBox.setPadding(new Insets(0, 0, 0, 37));
         comboBoxHBox.setPadding(new Insets(0, 0, 0, 37));
         this.setPadding(new Insets(15, 5, 5, 5));
+        vboxSumItems.setPadding(new Insets(15,0,20,10));
+        vboxSumItems.setSpacing(5);
 
         controlsVBox.setPrefWidth(342);
         depositDatePicker.setPrefWidth(123);
@@ -63,6 +79,7 @@ public class VboxControls extends VBox {
         selectionHBox.setSpacing(30);
         yearBatchHBox.setSpacing(15);
         this.setSpacing(10);
+
 
         comboBox.setValue("Show All");
 
@@ -107,9 +124,16 @@ public class VboxControls extends VBox {
 
         batchNumberHBox.setAlignment(Pos.CENTER);
         yearBatchHBox.setAlignment(Pos.CENTER);
-        gridHBox.setAlignment(Pos.CENTER);
+        vboxSumItems.setAlignment(Pos.CENTER);
         buttonHBox.setAlignment(Pos.CENTER);
         remaindingRenewalHBox.setAlignment(Pos.CENTER);
+
+        invoiceItemTypes.stream().forEach(e -> {
+            /// take string and get with SQL
+            vboxSumItems.getChildren().add(new HboxInvoiceSumItem(
+                    SqlInvoiceItem.getInvoiceItemSumByYearAndType(tabDeposits.getSelectedYear(), e)));
+
+        });
 
         comboBoxHBox.getChildren().add(comboBox);
         numberOfRecordsHBox.getChildren().addAll(new Text("Records:"), numberOfRecords);
@@ -118,9 +142,8 @@ public class VboxControls extends VBox {
         batchNumberHBox.getChildren().addAll(new Label("Deposit Number"), batchSpinner);
         yearBatchHBox.getChildren().addAll(yearSpinner, batchNumberHBox);
         buttonHBox.getChildren().addAll(refreshButton, printPdfButton);
-        gridHBox.getChildren().add(gridPane);
         controlsHBox.getChildren().add(controlsVBox);
-        getChildren().addAll(yearBatchHBox, selectionHBox, comboBoxHBox, gridHBox, buttonHBox,
+        getChildren().addAll(yearBatchHBox, selectionHBox, comboBoxHBox, vboxSumItems, buttonHBox,
                 remaindingRenewalHBox);
     }
 

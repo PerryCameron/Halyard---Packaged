@@ -23,7 +23,7 @@ public class HboxRow extends HBox {
     private Text total = new Text();
     private TextField textField;
     private Spinner<Integer> spinner;
-    private final InvoiceWidgetDTO invoiceWidget;
+    private final DbInvoiceDTO invoiceWidget;
     private ComboBox<Integer> comboBox;
     private final InvoiceItemDTO invoiceItem;
     private final FeeDTO fee;
@@ -37,7 +37,7 @@ public class HboxRow extends HBox {
 
     InvoiceDTO invoice;
 
-    public HboxRow(InvoiceWidgetDTO invoiceWidget, VboxFooter footer) {
+    public HboxRow(DbInvoiceDTO invoiceWidget, VboxFooter footer) {
 
         this.invoiceWidget = invoiceWidget;
         this.itemName = invoiceWidget.getObjectName();
@@ -115,7 +115,7 @@ public class HboxRow extends HBox {
         return hasOfficer && !invoice.isSupplemental();
     }
 
-    private Text setX(InvoiceWidgetDTO i) {
+    private Text setX(DbInvoiceDTO i) {
         Text x = new Text("");
         x.setId("invoice-text-light");
         if(i.isMultiplied()) {
@@ -125,7 +125,7 @@ public class HboxRow extends HBox {
         return x;
     }
 
-    private Control setControlWidget(InvoiceWidgetDTO i) {
+    private Control setControlWidget(DbInvoiceDTO i) {
         switch (i.getWidgetType()) {
             case "text-field" -> {
                 textField = new TextField();
@@ -284,7 +284,7 @@ public class HboxRow extends HBox {
         this.total = total;
     }
 
-    public InvoiceWidgetDTO getInvoiceWidget() {
+    public DbInvoiceDTO getInvoiceWidget() {
         return invoiceWidget;
     }
 }

@@ -9,7 +9,7 @@ import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.select.SqlDefinedFee;
 import com.ecsail.sql.select.SqlInvoice;
-import com.ecsail.sql.select.SqlInvoiceWidget;
+import com.ecsail.sql.select.SqlDbInvoice;
 import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.structures.*;
 import javafx.collections.ObservableList;
@@ -182,7 +182,7 @@ public class HBoxInvoiceList extends HBox {
 	}
 
 	private void createInvoiceItems(int invoiceId, Integer year, int msid) {
-		ArrayList<InvoiceWidgetDTO> categories = SqlInvoiceWidget.getInvoiceWidgetsByYear(year);
+		ArrayList<DbInvoiceDTO> categories = SqlDbInvoice.getInvoiceWidgetsByYear(year);
 		id = SqlSelect.getNextAvailablePrimaryKey("invoice_item","ID");
 		categories.stream().forEach(c -> {
 			InvoiceItemDTO item = new InvoiceItemDTO(id,invoiceId,msid,year,c.getObjectName(),c.isMultiplied(),c.isIs_credit(),"0.00",0);

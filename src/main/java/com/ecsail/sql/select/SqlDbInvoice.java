@@ -2,21 +2,21 @@ package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
-import com.ecsail.structures.InvoiceWidgetDTO;
+import com.ecsail.structures.DbInvoiceDTO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class SqlInvoiceWidget {
+public class SqlDbInvoice {
 
-    public static ArrayList<InvoiceWidgetDTO> getInvoiceWidgets() {  //p_id
-        ArrayList<InvoiceWidgetDTO> theseWidgets = new ArrayList<>();
+    public static ArrayList<DbInvoiceDTO> getInvoiceWidgets() {  //p_id
+        ArrayList<DbInvoiceDTO> theseWidgets = new ArrayList<>();
         String query = "select * from db_invoice";
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
-                theseWidgets.add(new InvoiceWidgetDTO(
+                theseWidgets.add(new DbInvoiceDTO(
                         rs.getInt("ID"),
                         rs.getString("year"),
                         rs.getString("objectName"),
@@ -37,13 +37,13 @@ public class SqlInvoiceWidget {
         return theseWidgets;
     }
 
-    public static ArrayList<InvoiceWidgetDTO> getInvoiceWidgetsByYear(int year) {  //p_id
-        ArrayList<InvoiceWidgetDTO> theseWidgets = new ArrayList<>();
+    public static ArrayList<DbInvoiceDTO> getInvoiceWidgetsByYear(int year) {  //p_id
+        ArrayList<DbInvoiceDTO> theseWidgets = new ArrayList<>();
         String query = "select * from db_invoice where year=" + year;
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
-                theseWidgets.add(new InvoiceWidgetDTO(
+                theseWidgets.add(new DbInvoiceDTO(
                         rs.getInt("ID"),
                         rs.getString("year"),
                         rs.getString("objectName"),
@@ -64,9 +64,9 @@ public class SqlInvoiceWidget {
         return theseWidgets;
     }
 
-    public static ArrayList<String> getInvoiceCategoriesByYear(int year) {  //p_id
-        ArrayList<String> categories = null;
-        String query = "select * from db_invoice";
+    public static ArrayList<String> getInvoiceCategoriesByYear(String year) {  //p_id
+        ArrayList<String> categories = new ArrayList<>();
+        String query = "select objectName from db_invoice where year=" + year;
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {

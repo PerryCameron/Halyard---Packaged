@@ -44,7 +44,6 @@ public class TabDepositsOLD extends Tab {
 	private final DepositSummaryTextDTO summaryText = new DepositSummaryTextDTO();
 	// will hold the totals of all at first and then for a selected deposit
 	private final DepositSummaryDTO summaryTotals = new DepositSummaryDTO();
-
 	Text numberOfRecords = new Text("0");
 	String currentDate;
 	String selectedYear;

@@ -36,7 +36,7 @@ public class HBoxInvoice extends HBox {
     public HBoxInvoice(MembershipDTO m, InvoiceDTO invoice, Note note) {
         this.membership = m;
         this.invoice = invoice;
-        ArrayList<InvoiceWidgetDTO> theseWidgets = SqlInvoiceWidget.getInvoiceWidgetsByYear(invoice.getYear());
+        ArrayList<DbInvoiceDTO> theseWidgets = SqlDbInvoice.getInvoiceWidgetsByYear(invoice.getYear());
         ObservableList<InvoiceItemDTO> items = SqlInvoiceItem.getInvoiceItemsByInvoiceId(invoice.getId());
         this.fees = SqlFee.getFeesFromYear(invoice.getYear());
         this.isCommitted = invoice.isCommitted();
@@ -80,7 +80,7 @@ public class HBoxInvoice extends HBox {
 
 		// take list of invoiceWidgets, insert appropriate fee into widget, insert reference to invoice items
 		// the put an HBOX with all this attached into a hash map
-		for (InvoiceWidgetDTO i : theseWidgets) {
+		for (DbInvoiceDTO i : theseWidgets) {
                 i.setFee(insertFeeIntoWidget(i));
 
                 i.setItems(items); // allows calculations to be made
@@ -109,7 +109,7 @@ public class HBoxInvoice extends HBox {
         getChildren().addAll(vboxGrey);
     }
 
-    private FeeDTO insertFeeIntoWidget(InvoiceWidgetDTO i) {
+    private FeeDTO insertFeeIntoWidget(DbInvoiceDTO i) {
         FeeDTO selectedFee = null;
         for (FeeDTO f : fees) {
             if (i.getObjectName().equals("Dues") && f.getFieldName().equals("Dues " + membership.getMemType()))
