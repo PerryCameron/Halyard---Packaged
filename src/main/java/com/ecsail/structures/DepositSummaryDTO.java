@@ -75,7 +75,6 @@ public class DepositSummaryDTO {
 		this.sail_loftNumber = sail_loftNumber;
 		this.sail_school_laser_loftNumber = sail_school_laser_loftNumber;
 		this.winter_storageNumber = winter_storageNumber;
-
 	}
 
 	public void calculateVariables() {

@@ -33,7 +33,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 
-public class TabDeposits extends Tab {
+public class TabDepositsOLD extends Tab {
 	// starts with all paid dues for a given year, then can change to dues for a selected deposit
 	private final ObservableList<PaidDuesDTO> paidDues;
 	// containes all the defined fees for a given year
@@ -50,7 +50,7 @@ public class TabDeposits extends Tab {
 	String selectedYear;
 	final Spinner<Integer> batchSpinner = new Spinner<>();
 
-	public TabDeposits(String text) {
+	public TabDepositsOLD(String text) {
 		super(text);
 		this.paidDues = FXCollections.observableArrayList(param -> new Observable[] { param.closedProperty() });
 		this.selectedYear = new SimpleDateFormat("yyyy").format(new Date()); // lets start at the current year

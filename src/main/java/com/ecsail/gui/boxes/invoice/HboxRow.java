@@ -137,7 +137,6 @@ public class HboxRow extends HBox {
             case "spinner" -> {
                 spinner = new Spinner<>();
                 spinner.setPrefWidth(i.getWidth());
-                System.out.println("Setting price for " + this.itemName + " for the year " + this.invoiceItem.getYear());
                 price.setText(String.valueOf(fee.getFieldValue()));
                 setSpinnerListener();
                 if (invoiceWidget.isPrice_editable())

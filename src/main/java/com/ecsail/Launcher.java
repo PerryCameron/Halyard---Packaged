@@ -4,6 +4,7 @@ import com.ecsail.gui.boxes.HBoxWelcome;
 import com.ecsail.gui.dialogues.Dialogue_EnvelopePDF;
 import com.ecsail.gui.dialogues.Dialogue_RenewalForm;
 import com.ecsail.gui.tabs.*;
+import com.ecsail.gui.tabs.deposits.TabDeposits;
 import com.ecsail.jotform.TabJotForm;
 import com.ecsail.pdf.PDF_BoatReport;
 import com.ecsail.sql.select.SqlMembershipList;
