@@ -142,14 +142,6 @@ public class SqlDelete {
 		}
 	}
 
-	public static void deleteWorkCreditsByMoneyID(int money_id) {
-		String query = "DELETE FROM work_credit WHERE money_id=" + money_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-		}
-	}
 
 	public static void deleteMonies(int ms_id) {
 		String query = "DELETE FROM money WHERE ms_id=" + ms_id;

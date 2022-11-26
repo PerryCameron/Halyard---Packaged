@@ -130,7 +130,7 @@ public class HboxRow extends HBox {
             case "text-field" -> {
                 textField = new TextField();
                 textField.setPrefWidth(i.getWidth());
-                textField.setText(invoiceItem.getValue());
+                autoPopulateField();
                 setTextFieldListener();
                 return textField;
             }
@@ -163,6 +163,19 @@ public class HboxRow extends HBox {
             }
         }
         return null;
+    }
+
+    private void autoPopulateField() {
+        if(invoiceWidget.isAutoPopulate()) {
+            if (!invoice.isSupplemental()) {
+                textField.setText(String.valueOf(fee.getFieldValue()));
+                invoiceItem.setValue(String.valueOf(fee.getFieldValue()));
+                updateBalance();
+            }
+            else
+                textField.setText(invoiceItem.getValue());
+        } else
+            textField.setText(invoiceItem.getValue());
     }
 
     private InvoiceItemDTO setItem() {

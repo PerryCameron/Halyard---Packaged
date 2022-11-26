@@ -82,6 +82,7 @@ public class HBoxInvoice extends HBox {
 		// the put an HBOX with all this attached into a hash map
 		for (InvoiceWidgetDTO i : theseWidgets) {
                 i.setFee(insertFeeIntoWidget(i));
+
                 i.setItems(items); // allows calculations to be made
                 invoiceItemMap.put(i.getObjectName(), new HboxRow(i, footer));
 		}
@@ -116,6 +117,7 @@ public class HBoxInvoice extends HBox {
             if (i.getObjectName().equals(f.getFieldName()))
                 selectedFee = f;
         }
+        if(selectedFee == null) System.out.println("Fee for " + i.getObjectName() + " is null" );
         return selectedFee;
     }
 
