@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SqlDeposit {
-    public static DepositDTO getDeposit(String year, int batch) {
+    public static DepositDTO getDeposit(int year, int batch) {
         DepositDTO thisDeposit = null;
         String query = "SELECT * FROM deposit WHERE fiscal_year=" + year + " AND batch=" + batch;
         try {
@@ -29,6 +29,21 @@ public class SqlDeposit {
             new Dialogue_ErrorSQL(e, "Unable to retrieve information", "See below for details");
         }
         return thisDeposit;
+    }
+
+    public static void getDeposit(DepositDTO depositDTO) {
+        String query = "SELECT * FROM deposit WHERE fiscal_year=" + depositDTO.getFiscalYear()
+                + " AND batch=" + depositDTO.getBatch();
+        try {
+            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+            while (rs.next()) {
+                depositDTO.setDeposit_id(rs.getInt("DEPOSIT_ID"));
+                depositDTO.setDepositDate(rs.getString("DEPOSIT_DATE"));
+            }
+            BaseApplication.connect.closeResultSet(rs);
+        } catch (SQLException e) {
+            new Dialogue_ErrorSQL(e, "Unable to retrieve information", "See below for details");
+        }
     }
 
     public static ObservableList<PaidDuesDTO> getPaidDues(DepositDTO currentDeposit) {

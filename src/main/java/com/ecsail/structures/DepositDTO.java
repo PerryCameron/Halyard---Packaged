@@ -14,6 +14,9 @@ public class DepositDTO {
 		this.batch = batch;
 	}
 
+	public DepositDTO() {
+	}
+
 	public Integer getDeposit_id() {
 		return deposit_id;
 	}
@@ -52,6 +55,14 @@ public class DepositDTO {
 		this.fiscalYear = "";
 		this.batch = 0;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "DepositDTO{" +
+				"deposit_id=" + deposit_id +
+				", depositDate='" + depositDate + '\'' +
+				", fiscalYear='" + fiscalYear + '\'' +
+				", batch=" + batch +
+				'}';
+	}
 }

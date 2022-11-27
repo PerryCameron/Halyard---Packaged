@@ -82,7 +82,7 @@ public class Dialogue_DepositPDF extends Stage {
         ////////////  Check to see if batch exists first////////////
 
         if (currentDeposit == null) { // deposit does not exist
-            currentDeposit = SqlDeposit.getDeposit(selectedYear, 1);
+            currentDeposit = SqlDeposit.getDeposit(Integer.parseInt(selectedYear), 1);
             batchSpinner.getValueFactory().setValue(1);
         } else {
             batchSpinner.getValueFactory().setValue(currentDeposit.getBatch());

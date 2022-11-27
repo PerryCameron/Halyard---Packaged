@@ -15,17 +15,19 @@ public class TabDeposits extends Tab {
 	private final ObservableList<InvoiceWithMemberInfoDTO> invoices;
 	private final String selectedYear;
 
+	TableView<InvoiceWithMemberInfoDTO> tableView;
+
 	public TabDeposits(String text) {
 		super(text);
 		this.selectedYear = BaseApplication.selectedYear;
 		this.invoices = getInvoiceItems(selectedYear);
 		VboxControls vboxControls = new VboxControls(this);
+		this.tableView = new InvoicesTableView(this);
 
-		TableView<InvoiceWithMemberInfoDTO> tableView = new InvoicesTableView(this);
 		var vboxGreen = new VBox(); // this is the vbox for organizing all the widgets
 		var vboxYellow = new VBox();
 		var mainHBox = new HBox(); // this separates table content from controls
-		vboxYellow.setPadding(new Insets(10, 10, 10, 10));
+		vboxYellow.setPadding(new Insets(10, 0, 10, 10));
 
 		VBox.setVgrow(vboxYellow, Priority.ALWAYS);
 		VBox.setVgrow(vboxGreen, Priority.ALWAYS);
@@ -49,5 +51,7 @@ public class TabDeposits extends Tab {
 		return selectedYear;
 	}
 
-
+	public TableView<InvoiceWithMemberInfoDTO> getTableView() {
+		return tableView;
+	}
 }

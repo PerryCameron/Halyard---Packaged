@@ -121,12 +121,23 @@ public class SqlUpdate {
 		}
 	}
 
-	public static void updateDeposit(String field, int deposit_id, LocalDate date) {
-		String query = "UPDATE deposit SET " + field + "='" + date + "' WHERE deposit_id=" + deposit_id;
+//	public static void updateDeposit(String field, int deposit_id, LocalDate date) {
+//		String query = "UPDATE deposit SET " + field + "='" + date + "' WHERE deposit_id=" + deposit_id;
+//		try {
+//			BaseApplication.connect.executeQuery(query);
+//		} catch (SQLException e) {
+//			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
+//		}
+//	}
+
+	public static void updateDeposit(DepositDTO depositDTO) {
+		String query = "UPDATE deposit SET DEPOSIT_DATE='" + depositDTO.getDepositDate()
+				+ "', FISCAL_YEAR=" + depositDTO.getFiscalYear()
+				+ ", BATCH=" + depositDTO.getBatch() + " WHERE deposit_id=" + depositDTO.getDeposit_id();
 		try {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
+			new Dialogue_ErrorSQL(e,"There was a problem with the updating this deposit","");
 		}
 	}
 

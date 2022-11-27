@@ -64,7 +64,7 @@ public class SqlDbInvoice {
         return theseWidgets;
     }
 
-    public static ArrayList<String> getInvoiceCategoriesByYear(String year) {  //p_id
+    public static ArrayList<String> getInvoiceCategoriesByYear(int year) {  //p_id
         ArrayList<String> categories = new ArrayList<>();
         String query = "select objectName from db_invoice where year=" + year;
         try {

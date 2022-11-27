@@ -2,7 +2,6 @@ package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
-import com.ecsail.structures.InvoiceDTO;
 import com.ecsail.structures.InvoiceItemDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -60,11 +59,15 @@ public class SqlInvoiceItem {
         return invoiceItems;
     }
 
-    public static InvoiceItemDTO getInvoiceItemSumByYearAndType(String year, String type) { // overload
+    public static InvoiceItemDTO getInvoiceItemSumByYearAndType(int year, String type, int batch) { // overload
         InvoiceItemDTO invoiceItem = null;
-        String query = "select sum(value) AS VALUE,sum(QTY) AS QTY,IF(SUM(IS_CREDIT) > 0,true,false) AS IS_CREDIT" +
-                " from invoice_item where FISCAL_YEAR="+year+" " +
-                "and ITEM_TYPE='"+type+"'";
+        String query = "select sum(ii.value) AS VALUE,sum(ii.QTY) AS QTY,IF(SUM(ii.IS_CREDIT) > 0,true,false) AS IS_CREDIT" +
+                " from invoice_item  ii left join invoice i on ii.INVOICE_ID = i.ID where i.FISCAL_YEAR="+year+" " +
+                " and ii.FISCAL_YEAR="+year+" and ITEM_TYPE='"+type+"' and COMMITTED=true";
+        if(batch > 0)
+            query = "select sum(ii.value) AS VALUE,sum(ii.QTY) AS QTY, IF(SUM(ii.IS_CREDIT) > 0,true,false)" +
+                    " AS IS_CREDIT from invoice_item ii left join invoice i on ii.INVOICE_ID = i.ID where" +
+                    " i.FISCAL_YEAR="+year+" and ii.FISCAL_YEAR="+year+" and ITEM_TYPE='"+type+"' and BATCH="+batch;
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
@@ -72,35 +75,10 @@ public class SqlInvoiceItem {
                         0,
                         0,
                         0,
-                        Integer.parseInt(year),
+                        year,
                         type,
                         false,
                         rs.getBoolean("IS_CREDIT"),
-                        rs.getString("VALUE"),
-                        rs.getInt("QTY"));
-            }
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
-        }
-        return invoiceItem;
-    }
-
-    public static InvoiceItemDTO getInvoiceItemSumByYearAndTypeAndBatch(String year, String type, int batch) { // overload
-        InvoiceItemDTO invoiceItem = null;
-        String query = "select sum(value) AS VALUE,sum(QTY) AS QTY from invoice_item where FISCAL_YEAR="+year+" " +
-                "and ITEM_TYPE='"+type+"' and BATCH";
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            while (rs.next()) {
-                invoiceItem = new InvoiceItemDTO(
-                        0,
-                        0,
-                        0,
-                        Integer.parseInt(year),
-                        type,
-                        false,
-                        false,
                         rs.getString("VALUE"),
                         rs.getInt("QTY"));
             }

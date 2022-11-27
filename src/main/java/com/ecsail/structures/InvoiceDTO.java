@@ -33,6 +33,21 @@ public class InvoiceDTO {
         this.maxCredit = new SimpleStringProperty(maxCredit);
     }
 
+    public InvoiceDTO() {
+        this.id = new SimpleIntegerProperty(0);
+        this.msId = new SimpleIntegerProperty(0);
+        this.year = new SimpleIntegerProperty(0);
+        this.paid = new SimpleStringProperty("");
+        this.total = new SimpleStringProperty("");
+        this.credit = new SimpleStringProperty("");
+        this.balance = new SimpleStringProperty("");
+        this.batch = new SimpleIntegerProperty(0);
+        this.committed = new SimpleBooleanProperty(false);
+        this.closed = new SimpleBooleanProperty(false);
+        this.supplemental = new SimpleBooleanProperty(false);
+        this.maxCredit = new SimpleStringProperty("");
+    }
+
     public final IntegerProperty idProperty() {
         return this.id;
     }

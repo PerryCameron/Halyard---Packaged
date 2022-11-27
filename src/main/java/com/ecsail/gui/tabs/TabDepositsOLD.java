@@ -71,7 +71,7 @@ public class TabDepositsOLD extends Tab {
 		var buttonHBox = new HBox(); // holds buttons
 		var yearBatchHBox = new HBox(); // holds spinner and batchNumberHBox
 		var gridHBox = new HBox(); // holds gridPane
-		var remaindingRenewalHBox = new HBox();
+		var remainingRenewalHBBox = new HBox();
 		var selectionHBox = new HBox();
 		var numberOfRecordsHBox = new HBox();
 		var comboBoxHBox = new HBox();
@@ -123,7 +123,7 @@ public class TabDepositsOLD extends Tab {
 		yearBatchHBox.setAlignment(Pos.CENTER);
 		gridHBox.setAlignment(Pos.CENTER);
 		buttonHBox.setAlignment(Pos.CENTER);
-		remaindingRenewalHBox.setAlignment(Pos.CENTER);
+		remainingRenewalHBBox.setAlignment(Pos.CENTER);
 		
 		gridPane.setVgap(5);
 		gridPane.setHgap(50);
@@ -284,7 +284,7 @@ public class TabDepositsOLD extends Tab {
 			numberOfRecords.setText(paidDues.size() + "");
 
 			if (SqlExists.depositRecordExists(selectedYear + "", summaryTotals.getDepositNumber())) {
-				currentDeposit = SqlDeposit.getDeposit(selectedYear + "", summaryTotals.getDepositNumber());
+//				currentDeposit = SqlDeposit.getDeposit(selectedYear + "", summaryTotals.getDepositNumber());
 				LocalDate date = LocalDate.parse(currentDeposit.getDepositDate(), formatter);
 				depositDatePicker.setValue(date);
 			}
@@ -298,7 +298,7 @@ public class TabDepositsOLD extends Tab {
 		var pickerEvent = new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 				LocalDate date = depositDatePicker.getValue();
-				SqlUpdate.updateDeposit("DEPOSIT_DATE", currentDeposit.getDeposit_id(), date);
+//				SqlUpdate.updateDeposit("DEPOSIT_DATE", currentDeposit.getDeposit_id(), date);
 			}
 		};
 
@@ -391,14 +391,14 @@ public class TabDepositsOLD extends Tab {
 		comboBoxHBox.getChildren().add(comboBox);
 		numberOfRecordsHBox.getChildren().addAll(new Text("Records:"), numberOfRecords);
 		selectionHBox.getChildren().addAll(depositDatePicker, numberOfRecordsHBox);
-		remaindingRenewalHBox.getChildren().addAll(new Text("Memberships not renewed: "), nonRenewed);
+		remainingRenewalHBBox.getChildren().addAll(new Text("Memberships not renewed: "), nonRenewed);
 		batchNumberHBox.getChildren().addAll(new Label("Deposit Number"), batchSpinner);
 		yearBatchHBox.getChildren().addAll(yearSpinner, batchNumberHBox);
 		buttonHBox.getChildren().addAll(refreshButton, printPdfButton);
 		gridHBox.getChildren().add(gridPane);
 		controlsHBox.getChildren().add(controlsVBox);
 		controlsVBox.getChildren().addAll(yearBatchHBox, selectionHBox, comboBoxHBox, gridHBox, buttonHBox,
-				remaindingRenewalHBox);
+				remainingRenewalHBBox);
 		paidDuesTableView.getColumns()
 				.addAll(Arrays.asList(Col1, Col2, Col9, Col3, Col4, Col10, Col5, Col6, Col7, Col8, Col11));
 		mainHBox.getChildren().addAll(paidDuesTableView, controlsHBox);
@@ -414,7 +414,7 @@ public class TabDepositsOLD extends Tab {
 		// does a deposit exist for selected year and batch?
 		if (SqlExists.depositRecordExists(selectedYear + "", summaryTotals.getDepositNumber())) {
 //			System.out.println("deposit exists");
-			SqlDeposit.getDeposit(selectedYear + "", summaryTotals.getDepositNumber()).getDeposit_id();
+//			SqlDeposit.getDeposit(selectedYear + "", summaryTotals.getDepositNumber()).getDeposit_id();
 		} else { // record does not exist
 //			System.out.println("deposit does not exist, creating record");
 			createDepositRecord();
@@ -434,12 +434,12 @@ public class TabDepositsOLD extends Tab {
 																														// a
 																							// batch?
 //			System.out.println("deposit exists");
-			deposit_id = SqlDeposit.getDeposit(selectedYear + "", summaryTotals.getDepositNumber()).getDeposit_id();
+//			deposit_id = SqlDeposit.getDeposit(selectedYear + "", summaryTotals.getDepositNumber()).getDeposit_id();
 		} else { // record does not exist
 //			System.out.println("deposit does not exist, creating record");
 			deposit_id = createDepositRecord();
 		}
-		return deposit_id;
+		return 0;
 	}
 
 	private int getPayId(PaidDuesDTO thisPaidDues) {
