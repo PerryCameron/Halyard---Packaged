@@ -62,8 +62,34 @@ public class SqlInvoiceItem {
 
     public static InvoiceItemDTO getInvoiceItemSumByYearAndType(String year, String type) { // overload
         InvoiceItemDTO invoiceItem = null;
-        String query = "select sum(value) AS VALUE,sum(QTY) AS QTY from invoice_item where FISCAL_YEAR="+year+" " +
+        String query = "select sum(value) AS VALUE,sum(QTY) AS QTY,IF(SUM(IS_CREDIT) > 0,true,false) AS IS_CREDIT" +
+                " from invoice_item where FISCAL_YEAR="+year+" " +
                 "and ITEM_TYPE='"+type+"'";
+        try {
+            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+            while (rs.next()) {
+                invoiceItem = new InvoiceItemDTO(
+                        0,
+                        0,
+                        0,
+                        Integer.parseInt(year),
+                        type,
+                        false,
+                        rs.getBoolean("IS_CREDIT"),
+                        rs.getString("VALUE"),
+                        rs.getInt("QTY"));
+            }
+            BaseApplication.connect.closeResultSet(rs);
+        } catch (SQLException e) {
+            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
+        }
+        return invoiceItem;
+    }
+
+    public static InvoiceItemDTO getInvoiceItemSumByYearAndTypeAndBatch(String year, String type, int batch) { // overload
+        InvoiceItemDTO invoiceItem = null;
+        String query = "select sum(value) AS VALUE,sum(QTY) AS QTY from invoice_item where FISCAL_YEAR="+year+" " +
+                "and ITEM_TYPE='"+type+"' and BATCH";
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {

@@ -6,7 +6,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-public class HboxInvoiceSumItem extends HBox {
+import java.math.BigDecimal;
+
+public class HboxInvoiceFooter extends HBox {
 
     private VBox vboxItemType = new VBox();
     private VBox vboxQty = new VBox();
@@ -14,10 +16,8 @@ public class HboxInvoiceSumItem extends HBox {
     private Text typeText = new Text();
     private Text qtyText = new Text();
     private Text valueText = new Text();
-    private InvoiceItemDTO invoiceSummedItem;
 
-    public HboxInvoiceSumItem(InvoiceItemDTO invoiceSummedItem) {
-        this.invoiceSummedItem = invoiceSummedItem;
+    public HboxInvoiceFooter(BigDecimal value, int qty) {
         vboxItemType.setPrefWidth(140);
         vboxQty.setPrefWidth(50);
         vboxValue.setPrefWidth(150);
@@ -25,23 +25,16 @@ public class HboxInvoiceSumItem extends HBox {
         vboxQty.setAlignment(Pos.CENTER_RIGHT);
         vboxValue.setAlignment(Pos.CENTER_RIGHT);
 
-        typeText.setText(invoiceSummedItem.getItemType());
-        qtyText.setText(String.valueOf(invoiceSummedItem.getQty()));
-        valueText.setText("$" + invoiceSummedItem.getValue());
-        typeText.setId("invoice-text-light");
-        qtyText.setId("invoice-text-black");
-        if(invoiceSummedItem.isCredit())
-            valueText.setId("invoice-text-credit");
-        else
-        valueText.setId("invoice-text-black");
+        typeText.setText("Total");
+        qtyText.setText(String.valueOf(qty));
+        valueText.setText("$" + value);
+        typeText.setId("invoice-header");
+        qtyText.setId("invoice-text-label");
+        valueText.setId("invoice-text-label");
 
         vboxItemType.getChildren().add(typeText);
         vboxQty.getChildren().add(qtyText);
         vboxValue.getChildren().add(valueText);
         getChildren().addAll(vboxItemType,vboxQty,vboxValue);
-    }
-
-    public InvoiceItemDTO getInvoiceSummedItem() {
-        return invoiceSummedItem;
     }
 }

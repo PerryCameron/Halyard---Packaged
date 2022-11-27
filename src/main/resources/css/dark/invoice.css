@@ -3,7 +3,35 @@
     -fx-fill:white;
 }
 
-#invoice-text-table-head
+#invoice-text-credit
 {
+    -fx-fill: #820d0d;
+}
 
+#invoice-text-fee
+{
+    -fx-fill:green
+}
+
+#invoice-text-black
+{
+    -fx-fill:black;
+}
+
+#invoice-header
+{
+    -fx-fill:white;
+    -fx-font-weight: bold;
+}
+
+#invoice-text-number
+{
+    -fx-fill:white;
+    -fx-font-weight: bold;
+}
+
+#invoice-text-label
+{
+    -fx-fill:black;
+    -fx-font-weight: bold;
 }

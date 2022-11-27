@@ -2,6 +2,7 @@ package com.ecsail.gui.tabs.deposits;
 
 import com.ecsail.sql.select.SqlDbInvoice;
 import com.ecsail.sql.select.SqlInvoiceItem;
+import com.ecsail.structures.InvoiceItemDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -13,6 +14,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import static com.ecsail.BaseApplication.selectedYear;
@@ -20,17 +22,15 @@ import static com.ecsail.BaseApplication.selectedYear;
 public class VboxControls extends VBox {
     private final TabDeposits tabDeposits;
     private final ArrayList<String> invoiceItemTypes;
-    private final ArrayList<HboxInvoiceSumItem> hboxInvoiceSumItems = new ArrayList<>();
+    private final VBox vboxSumItems = new VBox();
+    private final VBox vBoxSumItemsInner = new VBox();
 
+    private final Text numberOfRecords = new Text();
 
     public VboxControls(TabDeposits tabDeposits) {
         this.tabDeposits = tabDeposits;
         this.invoiceItemTypes = SqlDbInvoice.getInvoiceCategoriesByYear(tabDeposits.getSelectedYear());
-
-
-
-
-        setPrefWidth(350);
+        this.numberOfRecords.setText(String.valueOf(tabDeposits.getInvoices().size()));
 
         var vboxGrey = new VBox(); // this is the vbox for organizing all the widgets
         var vboxBlue = new VBox();
@@ -41,19 +41,19 @@ public class VboxControls extends VBox {
         var batchNumberHBox = new HBox(); // holds spinner and label
         var buttonHBox = new HBox(); // holds buttons
         var yearBatchHBox = new HBox(); // holds spinner and batchNumberHBox
-        var vboxSumItems = new VBox(); // holds gridPane
+
         var remaindingRenewalHBox = new HBox();
         var selectionHBox = new HBox();
         var numberOfRecordsHBox = new HBox();
         var comboBoxHBox = new HBox();
         var nonRenewed = new Text("0");
+        var recordsLabel = new Text("Records:");
         ObservableList<String> options = FXCollections.observableArrayList("Show All", "Show Selected");
         final var comboBox = new ComboBox<>(options);
         var gridPane = new GridPane();
         var refreshButton = new Button("Refresh");
         var printPdfButton = new Button("Print PDF");
         var depositDatePicker = new DatePicker();
-        Text numberOfRecords = new Text("0");
         final Spinner<Integer> batchSpinner = new Spinner<>();
 
         controlsHBox.setPadding(new Insets(5, 5, 5, 5));
@@ -64,11 +64,17 @@ public class VboxControls extends VBox {
         comboBoxHBox.setPadding(new Insets(0, 0, 0, 37));
         this.setPadding(new Insets(15, 5, 5, 5));
         vboxSumItems.setPadding(new Insets(15,0,20,10));
+        vBoxSumItemsInner.setPadding(new Insets(5,5,10,5));
         vboxSumItems.setSpacing(5);
+        vBoxSumItemsInner.setSpacing(5);
+        vBoxSumItemsInner.setId("box-background-light");
+        numberOfRecords.setId("invoice-text-number");
+        recordsLabel.setId("invoice-text-label");
+
 
         controlsVBox.setPrefWidth(342);
         depositDatePicker.setPrefWidth(123);
-
+        this.setPrefWidth(350);
         //vboxGrey.setPrefHeight(688);
 
         controlsVBox.setSpacing(10);
@@ -79,6 +85,8 @@ public class VboxControls extends VBox {
         selectionHBox.setSpacing(30);
         yearBatchHBox.setSpacing(15);
         this.setSpacing(10);
+
+        numberOfRecordsHBox.setAlignment(Pos.CENTER);
 
 
         comboBox.setValue("Show All");
@@ -128,12 +136,8 @@ public class VboxControls extends VBox {
         buttonHBox.setAlignment(Pos.CENTER);
         remaindingRenewalHBox.setAlignment(Pos.CENTER);
 
-        invoiceItemTypes.stream().forEach(e -> {
-            /// take string and get with SQL
-            vboxSumItems.getChildren().add(new HboxInvoiceSumItem(
-                    SqlInvoiceItem.getInvoiceItemSumByYearAndType(tabDeposits.getSelectedYear(), e)));
-
-        });
+        // gets all invoice items
+        getInvoiceItemRows(tabDeposits.getSelectedYear());
 
         comboBoxHBox.getChildren().add(comboBox);
         numberOfRecordsHBox.getChildren().addAll(new Text("Records:"), numberOfRecords);
@@ -143,10 +147,29 @@ public class VboxControls extends VBox {
         yearBatchHBox.getChildren().addAll(yearSpinner, batchNumberHBox);
         buttonHBox.getChildren().addAll(refreshButton, printPdfButton);
         controlsHBox.getChildren().add(controlsVBox);
+        vboxSumItems.getChildren().addAll(new HboxInvoiceHeader(),vBoxSumItemsInner);
         getChildren().addAll(yearBatchHBox, selectionHBox, comboBoxHBox, vboxSumItems, buttonHBox,
                 remaindingRenewalHBox);
     }
 
+    private void getInvoiceItemRows(String year) {
+        int qty = 0;
+        BigDecimal value = new BigDecimal(0.00);
+        for(String e: invoiceItemTypes) {
+            /// take string and get with SQL
+            HboxInvoiceSumItem item = new HboxInvoiceSumItem(
+                    SqlInvoiceItem.getInvoiceItemSumByYearAndType(year, e));
+            qty = qty + item.getInvoiceSummedItem().getQty();
+            if(item.getInvoiceSummedItem().isCredit())
+                value = value.subtract(new BigDecimal(item.getInvoiceSummedItem().getValue()));
+            else
+                value = value.add(new BigDecimal(item.getInvoiceSummedItem().getValue()));
+            vBoxSumItemsInner.getChildren().add(item);
+        }
+        vBoxSumItemsInner.getChildren().add(new HboxInvoiceFooter(value,qty)); // adds the footer with totals
+    }
 
-
+    public Text getNumberOfRecords() {
+        return numberOfRecords;
+    }
 }

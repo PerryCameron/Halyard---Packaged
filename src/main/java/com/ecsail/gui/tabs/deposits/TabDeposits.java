@@ -18,7 +18,9 @@ public class TabDeposits extends Tab {
 	public TabDeposits(String text) {
 		super(text);
 		this.selectedYear = BaseApplication.selectedYear;
-		this.invoices = SqlInvoice.getInvoicesWithMembershipInfoByYear(selectedYear);
+		this.invoices = getInvoiceItems(selectedYear);
+		VboxControls vboxControls = new VboxControls(this);
+
 		TableView<InvoiceWithMemberInfoDTO> tableView = new InvoicesTableView(this);
 		var vboxGreen = new VBox(); // this is the vbox for organizing all the widgets
 		var vboxYellow = new VBox();
@@ -31,8 +33,12 @@ public class TabDeposits extends Tab {
 
 		vboxYellow.getChildren().add(vboxGreen);
 		vboxGreen.getChildren().add(mainHBox);
-		mainHBox.getChildren().addAll(tableView, new VboxControls(this));
+		mainHBox.getChildren().addAll(tableView, vboxControls);
 		setContent(vboxYellow);
+	}
+
+	private ObservableList<InvoiceWithMemberInfoDTO> getInvoiceItems(String year) {
+		return SqlInvoice.getInvoicesWithMembershipInfoByYear(year);
 	}
 
 	public ObservableList<InvoiceWithMemberInfoDTO> getInvoices() {
@@ -42,4 +48,6 @@ public class TabDeposits extends Tab {
 	public String getSelectedYear() {
 		return selectedYear;
 	}
+
+
 }

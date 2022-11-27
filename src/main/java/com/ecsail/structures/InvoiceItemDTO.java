@@ -26,6 +26,18 @@ public class InvoiceItemDTO {
         this.qty = new SimpleIntegerProperty(qty);
     }
 
+    public InvoiceItemDTO() {
+//        id.set(0);
+//        invoiceId.set(0);
+//        msId.set(0);
+//        year.set(0);
+//        itemType.set("");
+//        multiplied.set(false);
+//        credit.set(false);
+//        value.set("");
+//        qty.set(0);
+    }
+
     public final IntegerProperty idProperty() {
         return this.id;
     }
