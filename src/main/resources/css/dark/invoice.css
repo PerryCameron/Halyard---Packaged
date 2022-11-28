@@ -35,3 +35,9 @@
     -fx-fill:black;
     -fx-font-weight: bold;
 }
+
+#invoice-warning-text-label
+{
+    -fx-fill: #820d0d;
+    -fx-font-weight: bold;
+}

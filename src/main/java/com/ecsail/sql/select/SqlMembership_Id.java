@@ -228,7 +228,7 @@ public class SqlMembership_Id {
         return theseIds;
     }
 
-    public static int getNonRenewNumber(String year) {
+    public static int getNonRenewNumber(int year) {
         int number = 0;
         String query = "SELECT COUNT(*) FROM membership_id WHERE fiscal_year='" + year + "' AND renew=false";
         try {

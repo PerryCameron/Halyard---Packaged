@@ -477,7 +477,7 @@ public class TabDepositsOLD extends Tab {
 	}
 
 	private void updateNonRenewed(Text nonRenewed) {
-		nonRenewed.setText(SqlMembership_Id.getNonRenewNumber(selectedYear) + "");
+		nonRenewed.setText(String.valueOf(SqlMembership_Id.getNonRenewNumber(Integer.parseInt(selectedYear))));
 	}
 
 	private void updateMoneyTotals() { // need to add defined fees object

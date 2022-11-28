@@ -3,6 +3,8 @@ package com.ecsail.sql;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
+import com.ecsail.structures.DepositDTO;
+import com.ecsail.structures.InvoiceItemDTO;
 import com.ecsail.structures.MembershipDTO;
 import com.ecsail.structures.PersonDTO;
 
@@ -386,6 +388,48 @@ public class SqlExists {
 		}
 		catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"Unable to check if EXISTS","See below for details");
+		}
+		return result;
+	}
+
+	public static Boolean depositIsUsed(int year, int batch) {
+		boolean result = false;
+		String query = "select exists(select * from invoice where FISCAL_YEAR="+year+" " +
+				"and BATCH="+batch+") AS LATEST_EXISTS";
+		try {
+			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+			while (rs.next()) {
+				result = rs.getBoolean(
+						"LATEST_EXISTS");
+			}
+			BaseApplication.connect.closeResultSet(rs);
+		}
+		catch (SQLException e) {
+			new Dialogue_ErrorSQL(e,"Unable to check if EXISTS","See below for details");
+		}
+		return result;
+	}
+
+	public static Boolean invoiceItemExistsSumByYearAndType(int year, String type, int batch) { // overload
+		boolean result = false;
+		String preQuery = "select exists(select sum(ii.value) AS VALUE,sum(ii.QTY) AS QTY, IF(SUM(ii.IS_CREDIT) > 0,true,false)" +
+				" AS IS_CREDIT from invoice_item ii left join invoice i on ii.INVOICE_ID = i.ID where i.FISCAL_YEAR="+year+" " +
+		" and ii.FISCAL_YEAR="+year+" and ITEM_TYPE='"+type+"'";
+		String query;
+		if(batch > 0)
+			query = preQuery + " and BATCH="+batch+") AS itemExists";
+		else
+			query = preQuery + " and COMMITTED=true) AS itemExists";
+		try {
+			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+			while (rs.next()) {
+				result = rs.getBoolean(
+						"itemExists");
+			}
+			BaseApplication.connect.closeResultSet(rs);
+		}
+		catch (SQLException e) {
+			new Dialogue_ErrorSQL(e,"Unable to check if invoice item exists","See below for details");
 		}
 		return result;
 	}

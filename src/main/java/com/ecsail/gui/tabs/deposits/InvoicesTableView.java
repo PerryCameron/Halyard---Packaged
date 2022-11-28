@@ -34,7 +34,6 @@ public class InvoicesTableView extends TableView<InvoiceWithMemberInfoDTO> {
             booleanProp.addListener((observable, oldValue, newValue) -> {
                 invoiceM.setClosed(newValue); // sets checkbox value in table
                 if (newValue) { // if checked
-
                     System.out.println("Checked the box for " + invoiceM.getMembershipId());
 //                    setBatchAndClose(thisPaidDues, summaryTotals.getDepositNumber(), true);
 //                    System.out.println("batch=" + thisPaidDues.getBatch());
@@ -57,7 +56,7 @@ public class InvoicesTableView extends TableView<InvoiceWithMemberInfoDTO> {
             return cell;
         });
 
-        var Col2 = new TableColumn<InvoiceWithMemberInfoDTO, Integer>("Batch");
+        var Col2 = new TableColumn<InvoiceWithMemberInfoDTO, Integer>("Deposit");
         Col2.setCellValueFactory(new PropertyValueFactory<>("batch"));
 
         var Col3 = new TableColumn<InvoiceWithMemberInfoDTO, Integer>("Mem ID");
