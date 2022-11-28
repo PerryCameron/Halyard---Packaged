@@ -29,23 +29,23 @@ import java.util.ArrayList;
 public class VboxControls extends VBox {
     private final TabDeposits tabParent;
     private final ArrayList<String> invoiceItemTypes; // a list of types of invoice items for a given year
-    private final DepositDTO depositDTO = new DepositDTO();
+    private final DepositDTO depositDTO;
     private final VBox vBoxSumItemsInner = new VBox();
     private final Text numberOfRecordsText = new Text();
     private final Text numberOfDepositsText = new Text();
     private final ComboBox<String> comboBox;
-
-    private final Spinner<Integer> batchSpinner = new Spinner<>();
-    private int batch = 1;
     private int selectedYear;
     private final DatePicker depositDatePicker = new DatePicker();
     private int numberOfDeposits = 100;
     Text nonRenewed = new Text("0");
     boolean isSafeToDisplay = true;
+    final Spinner<Integer> batchSpinner;
+//    private Integer batch = 1;
 
     public VboxControls(TabDeposits tabDeposits) {
         this.tabParent = tabDeposits;
-        this.selectedYear = Integer.parseInt(BaseApplication.selectedYear);
+        this.depositDTO = tabParent.getDepositDTO();
+        this.selectedYear = Integer.parseInt(depositDTO.getFiscalYear());
         this.invoiceItemTypes = SqlDbInvoice.getInvoiceCategoriesByYear(selectedYear);
         this.numberOfRecordsText.setText(String.valueOf(tabDeposits.getInvoices().size()));
 
@@ -68,11 +68,12 @@ public class VboxControls extends VBox {
         var invoiceLabel = new Text("Invoices:");
         var depositLabel = new Text("Deposits:");
         var notRenewedLabel = new Text("Not Renewed:");
-        ObservableList<String> options = FXCollections.observableArrayList("Show All", "Show One");
+        ObservableList<String> options = FXCollections.observableArrayList("Show All", "Show Current"
+                ,"Show Last");
         this.comboBox = new ComboBox<>(options);
         var newDepositButton = new Button("New Deposit");
         var printPdfButton = new Button("Print PDF");
-        final Spinner<Integer> batchSpinner = new Spinner<>();
+        batchSpinner = new Spinner<>();
 
         controlsHBox.setPadding(new Insets(5, 5, 5, 5));
         controlsVBox.setPadding(new Insets(15, 5, 5, 5));
@@ -94,8 +95,8 @@ public class VboxControls extends VBox {
         notRenewedLabel.setId("invoice-text-label");
 
         controlsVBox.setPrefWidth(342);
-        depositDatePicker.setPrefWidth(123);
-        comboBox.setPrefWidth(123);
+        depositDatePicker.setPrefWidth(150);
+        comboBox.setPrefWidth(150);
         this.setPrefWidth(350);
 
         controlsVBox.setSpacing(10);
@@ -130,13 +131,13 @@ public class VboxControls extends VBox {
 
         // 0 to batch, display batch
         batchSpinner.setEditable(true);
-        var batchValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, batch);
+        var batchValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, depositDTO.getBatch());
         batchSpinner.setValueFactory(batchValueFactory);
         batchSpinner.setPrefWidth(60);
         batchSpinner.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 batchSpinner.increment(0); // won't change value, but will commit editor
-                batch = Integer.parseInt(batchSpinner.getEditor().getText());
+                depositDTO.setBatch(Integer.parseInt(batchSpinner.getEditor().getText()));
                 refreshSafeToDisplay();
                 refreshAllData(false);
             }
@@ -152,7 +153,6 @@ public class VboxControls extends VBox {
         depositDatePicker.setOnAction(pickerEvent);
 
         comboBox.valueProperty().addListener((change) -> {
-                    System.out.println("Changing type");
                     refreshAllData(false);
                 }
         );
@@ -163,8 +163,8 @@ public class VboxControls extends VBox {
                 cleanDeposit(true);
                 SqlInsert.addDeposit(depositDTO);
                 refreshDepositCount();
-                batch = numberOfDeposits;
-                batchSpinner.getEditor().setText(String.valueOf(batch));
+                depositDTO.setBatch(numberOfDeposits);
+                batchSpinner.getEditor().setText(String.valueOf(depositDTO.getBatch()));
             } else {
                 // TODO add error dialogue here
                 System.out.println("Cant make a new record because the last one is new");
@@ -209,7 +209,7 @@ public class VboxControls extends VBox {
     }
 
     public boolean depositIsUsed() {
-        return SqlExists.depositIsUsed(selectedYear,batch);
+        return SqlExists.depositIsUsed(selectedYear,depositDTO.getBatch());
     }
 
     private void refreshAllData(boolean refreshInvoiceTypes) {
@@ -234,8 +234,8 @@ public class VboxControls extends VBox {
         getInvoiceItemRows();
     }
 
-    private void createNewDepositNotificationRow() {
-        if (comboBox.getValue().equals("Show One")) {
+    private void createNewDepositNotificationRow() { // if it is a new deposit, this will show "New Deposit Report"
+        if (comboBox.getValue().equals("Show Current")) {
             HBox hboxNewDeposit = new HBox();
             hboxNewDeposit.setAlignment(Pos.CENTER);
             Text newText = new Text("New Deposit Report");
@@ -258,13 +258,16 @@ public class VboxControls extends VBox {
     }
 
     private void refreshCurrentDeposit() {
-        if (isSafeToDisplay) { // don't need this anymore
             depositDTO.setFiscalYear(String.valueOf(selectedYear));
-            depositDTO.setBatch(batch);
+            if(comboBox.getValue().equals("Show Last")) {
+                depositDTO.setBatch(numberOfDeposits);
+                batchSpinner.getEditor().setText(String.valueOf(depositDTO.getBatch()));
+                comboBox.setValue("Show Current");
+                // TODO move comboBox selector as well
+            }
+            depositDTO.setBatch(depositDTO.getBatch());
             SqlDeposit.getDeposit(depositDTO);
             System.out.println("Current Deposit is " + depositDTO);
-        } else
-            cleanDeposit(false);
     }
 
     private void cleanDeposit(boolean isNewDeposit) {
@@ -296,9 +299,9 @@ public class VboxControls extends VBox {
         depositDatePicker.setValue(date);
     }
 
-    private int getBatch() {
+    private int getCorrectBatch() {
         if (comboBox.getValue().equals("Show All")) return 0;
-        return batch;
+        return depositDTO.getBatch();
     }
 
     private void refreshDepositCount() {
@@ -307,7 +310,7 @@ public class VboxControls extends VBox {
     }
 
     private void refreshSafeToDisplay() {
-        isSafeToDisplay = getBatch() <= numberOfDeposits;
+        isSafeToDisplay = getCorrectBatch() <= numberOfDeposits;
     }
 
     private boolean itemHasAValue(HboxInvoiceSumItem item) {
@@ -326,7 +329,7 @@ public class VboxControls extends VBox {
         if (isSafeToDisplay) { // prevent an exception if we go too high on selector
             for (String e : invoiceItemTypes) {
                 HboxInvoiceSumItem item = new HboxInvoiceSumItem(
-                        SqlInvoiceItem.getInvoiceItemSumByYearAndType(selectedYear, e, getBatch()));
+                        SqlInvoiceItem.getInvoiceItemSumByYearAndType(selectedYear, e, getCorrectBatch()));
                 if (itemHasAValue(item)) { // let's not bother with 0 value line items
                     qty = qty + item.getInvoiceSummedItem().getQty();
                     if (itemIsACredit(item))
@@ -337,6 +340,7 @@ public class VboxControls extends VBox {
                 }
             }
             vBoxSumItemsInner.getChildren().add(new HboxInvoiceFooter(value, qty)); // adds the footer with totals
+            System.out.println("Batch=" + depositDTO.getBatch());
         } else
             BaseApplication.logger.info("Invoice selector set too high to display information");
     }
@@ -344,4 +348,9 @@ public class VboxControls extends VBox {
     private void refreshNonRenewed() {
         nonRenewed.setText(SqlMembership_Id.getNonRenewNumber(selectedYear) + "");
     }
+
+    public int getSelectedYear() {
+        return selectedYear;
+    }
+
 }

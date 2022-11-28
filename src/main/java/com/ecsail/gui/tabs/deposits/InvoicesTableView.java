@@ -1,6 +1,8 @@
 package com.ecsail.gui.tabs.deposits;
 
 
+import com.ecsail.structures.DepositDTO;
+import com.ecsail.structures.InvoiceDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableColumn;
@@ -14,11 +16,14 @@ import javafx.scene.layout.VBox;
 import java.util.Arrays;
 
 public class InvoicesTableView extends TableView<InvoiceWithMemberInfoDTO> {
-    TabDeposits tabDeposits;
-    public InvoicesTableView(TabDeposits tabDeposits) {
-    this.tabDeposits = tabDeposits;
+    TabDeposits tabParent;
+    DepositDTO depositDTO;
 
-        setItems(tabDeposits.getInvoices());
+    public InvoicesTableView(TabDeposits tabParent) {
+    this.tabParent = tabParent;
+    this.depositDTO = tabParent.getDepositDTO();
+
+        setItems(tabParent.getInvoices());
         setFixedCellSize(30);
         setEditable(true);
         setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY );
@@ -33,19 +38,14 @@ public class InvoicesTableView extends TableView<InvoiceWithMemberInfoDTO> {
             SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(invoiceM.isClosed());
             booleanProp.addListener((observable, oldValue, newValue) -> {
                 invoiceM.setClosed(newValue); // sets checkbox value in table
+                InvoiceDTO invoiceDTO = convertToProperInvoice(invoiceM);
                 if (newValue) { // if checked
-                    System.out.println("Checked the box for " + invoiceM.getMembershipId());
-//                    setBatchAndClose(thisPaidDues, summaryTotals.getDepositNumber(), true);
-//                    System.out.println("batch=" + thisPaidDues.getBatch());
-//                    addDepositIdToPayment(thisPaidDues); // does lots of stuff
+                    invoiceM.setBatch(depositDTO.getBatch()); // updates tableview batch
+                    invoiceDTO.setBatch(depositDTO.getBatch()); // sets batch to invoice for saving to db
                 } else { // if unchecked
-//                    setBatchAndClose(thisPaidDues, 0, false);
+                    invoiceM.setBatch(0);  // updates tableview batch
+                    invoiceDTO.setBatch(0); // sets batch to invoice for saving to db
                 }
-//                summaryTotals.clear();
-//                updateSummaryTotals();
-//                // updateCurrentMoneyTotals(); // need error check if batch doesn't exist
-//                updateMoneyTotals();
-//                updateNonRenewed(nonRenewed);
             });
             return booleanProp;
         });
@@ -100,4 +100,10 @@ public class InvoicesTableView extends TableView<InvoiceWithMemberInfoDTO> {
                 .addAll(Arrays.asList(Col1, Col2, Col3, Col4, Col5, Col6, Col7, Col8, Col9));
 
     }
+
+    private InvoiceDTO convertToProperInvoice(InvoiceWithMemberInfoDTO i) {
+        return new InvoiceDTO(i.getId(),i.getMsId(),i.getYear(),i.getPaid(),i.getTotal(), i.getCredit(),
+                i.getBalance(),i.getBatch(),i.isCommitted(),i.isClosed(),i.isSupplemental(),i.getMaxCredit());
+    }
+
 }

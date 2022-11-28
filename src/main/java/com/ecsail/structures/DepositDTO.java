@@ -1,5 +1,7 @@
 package com.ecsail.structures;
 
+import com.ecsail.BaseApplication;
+
 public class DepositDTO {
 	private Integer deposit_id;
 	private String depositDate;
@@ -15,6 +17,8 @@ public class DepositDTO {
 	}
 
 	public DepositDTO() {
+		this.batch = 1;
+		this.fiscalYear = BaseApplication.selectedYear;
 	}
 
 	public Integer getDeposit_id() {

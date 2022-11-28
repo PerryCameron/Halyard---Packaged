@@ -2,6 +2,7 @@ package com.ecsail.gui.tabs.deposits;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.sql.select.SqlInvoice;
+import com.ecsail.structures.DepositDTO;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Tab;
@@ -14,14 +15,15 @@ public class TabDeposits extends Tab {
 
 	private final ObservableList<InvoiceWithMemberInfoDTO> invoices;
 	private final String selectedYear;
-
-	TableView<InvoiceWithMemberInfoDTO> tableView;
+	private TableView<InvoiceWithMemberInfoDTO> tableView;
+	private VboxControls vboxControls;
+	private final DepositDTO depositDTO = new DepositDTO();
 
 	public TabDeposits(String text) {
 		super(text);
 		this.selectedYear = BaseApplication.selectedYear;
 		this.invoices = getInvoiceItems(selectedYear);
-		VboxControls vboxControls = new VboxControls(this);
+		this.vboxControls = new VboxControls(this);
 		this.tableView = new InvoicesTableView(this);
 
 		var vboxGreen = new VBox(); // this is the vbox for organizing all the widgets
@@ -53,5 +55,13 @@ public class TabDeposits extends Tab {
 
 	public TableView<InvoiceWithMemberInfoDTO> getTableView() {
 		return tableView;
+	}
+
+	public VboxControls getVboxControls() {
+		return vboxControls;
+	}
+
+	public DepositDTO getDepositDTO() {
+		return depositDTO;
 	}
 }
