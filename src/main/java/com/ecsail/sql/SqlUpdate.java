@@ -469,7 +469,11 @@ public class SqlUpdate {
 				+ "TOTAL=" + invoice.getTotal() + ","
 				+ "CREDIT=" + invoice.getCredit() + ","
 				+ "BALANCE=" + invoice.getBalance() + ","
-				+ "COMMITTED=" + invoice.isCommitted()
+				+ "BATCH=" + invoice.getBatch() + ","
+				+ "COMMITTED=" + invoice.isCommitted() + ","
+				+ "CLOSED=" + invoice.isClosed() + ","
+				+ "SUPPLEMENTAL=" + invoice.isSupplemental() + ","
+				+ "MAX_CREDIT=" + invoice.getMaxCredit()
 				+ " WHERE ID=" + invoice.getId();
 		try {
 			BaseApplication.connect.executeQuery(query);

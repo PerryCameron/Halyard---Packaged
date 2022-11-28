@@ -1,6 +1,7 @@
 package com.ecsail.gui.tabs.deposits;
 
 
+import com.ecsail.sql.SqlUpdate;
 import com.ecsail.structures.DepositDTO;
 import com.ecsail.structures.InvoiceDTO;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -29,8 +30,6 @@ public class InvoicesTableView extends TableView<InvoiceWithMemberInfoDTO> {
         setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY );
         VBox.setVgrow(this, Priority.ALWAYS);
         HBox.setHgrow(this,Priority.ALWAYS);
-
-
         var Col1 = new TableColumn<InvoiceWithMemberInfoDTO, Boolean>("Select");
         Col1.setPrefWidth(50);
         Col1.setCellValueFactory(param -> {
@@ -42,9 +41,12 @@ public class InvoicesTableView extends TableView<InvoiceWithMemberInfoDTO> {
                 if (newValue) { // if checked
                     invoiceM.setBatch(depositDTO.getBatch()); // updates tableview batch
                     invoiceDTO.setBatch(depositDTO.getBatch()); // sets batch to invoice for saving to db
+                    SqlUpdate.updateInvoice(invoiceDTO);
+
                 } else { // if unchecked
                     invoiceM.setBatch(0);  // updates tableview batch
                     invoiceDTO.setBatch(0); // sets batch to invoice for saving to db
+                    SqlUpdate.updateInvoice(invoiceDTO);
                 }
             });
             return booleanProp;
@@ -98,7 +100,6 @@ public class InvoicesTableView extends TableView<InvoiceWithMemberInfoDTO> {
 
         getColumns()
                 .addAll(Arrays.asList(Col1, Col2, Col3, Col4, Col5, Col6, Col7, Col8, Col9));
-
     }
 
     private InvoiceDTO convertToProperInvoice(InvoiceWithMemberInfoDTO i) {

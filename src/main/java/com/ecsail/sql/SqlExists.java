@@ -72,11 +72,11 @@ public class SqlExists {
 	
 	public static Boolean paymentExists(int money_id) {
 		boolean answer = false;
-		String query = "SELECT EXISTS(SELECT * FROM payment WHERE INVOICE_ID=" + money_id + ")";
+		String query = "SELECT EXISTS(SELECT * FROM payment WHERE MONEY_ID=" + money_id + ")";
 		try {
 			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
 			rs.next();
-		    answer = rs.getBoolean("EXISTS(SELECT * FROM payment WHERE INVOICE_ID=" + money_id + ")");
+		    answer = rs.getBoolean("EXISTS(SELECT * FROM payment WHERE MONEY_ID=" + money_id + ")");
 		BaseApplication.connect.closeResultSet(rs); }
 		catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"Unable to check if money record EXISTS","See below for details");

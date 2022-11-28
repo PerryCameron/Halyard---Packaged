@@ -12,10 +12,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 public class TabDeposits extends Tab {
-
 	private final ObservableList<InvoiceWithMemberInfoDTO> invoices;
 	private final String selectedYear;
-	private TableView<InvoiceWithMemberInfoDTO> tableView;
+	private final TableView<InvoiceWithMemberInfoDTO> tableView;
 	private VboxControls vboxControls;
 	private final DepositDTO depositDTO = new DepositDTO();
 
