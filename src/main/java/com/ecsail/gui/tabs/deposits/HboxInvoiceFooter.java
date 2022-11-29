@@ -23,12 +23,17 @@ public class HboxInvoiceFooter extends HBox {
         vboxValue.setAlignment(Pos.CENTER_RIGHT);
 
         typeText.setText(label);
-        valueText.setText("$" + value);
+        valueText.setText("$" + filterText(value));
         typeText.setId("invoice-header");
         valueText.setId("invoice-text-label");
 
         vboxItemType.getChildren().add(typeText);
         vboxValue.getChildren().add(valueText);
         getChildren().addAll(vboxItemType,vboxValue);
+    }
+
+    private String filterText(String text) {
+        if(text == null) return "0.00";
+        return text;
     }
 }
