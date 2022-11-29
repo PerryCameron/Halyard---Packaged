@@ -41,11 +41,13 @@ public class InvoicesTableView extends TableView<InvoiceWithMemberInfoDTO> {
                 if (newValue) { // if checked
                     invoiceM.setBatch(depositDTO.getBatch()); // updates tableview batch
                     invoiceDTO.setBatch(depositDTO.getBatch()); // sets batch to invoice for saving to db
+                    invoiceDTO.setClosed(true);
                     SqlUpdate.updateInvoice(invoiceDTO);
 
                 } else { // if unchecked
                     invoiceM.setBatch(0);  // updates tableview batch
                     invoiceDTO.setBatch(0); // sets batch to invoice for saving to db
+                    invoiceDTO.setClosed(false);
                     SqlUpdate.updateInvoice(invoiceDTO);
                 }
             });

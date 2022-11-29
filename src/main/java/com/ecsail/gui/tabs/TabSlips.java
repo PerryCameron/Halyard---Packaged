@@ -206,501 +206,173 @@ public class TabSlips extends Tab {
 	private void createSlipsAsTextObjects() {
 		for (SlipDTO mem : slips) {
 			switch (mem.getSlipNumber()) {
-				case "D40":
-					placeText(col[0], row[0], "D40");
-					break;
-				case "D39":
-					placeText(col[1], row[0], "D39");
-					break;
-				case "A35":
-					placeText(col[2], row[0], "A35");
-					break;
-				case "A34":
-					placeText(col[3], row[0], "A34");
-					break;
-				case "B93":
-					placeText(col[4], row[0], "B93");
-					break;
-				case "B94":
-					placeText(col[5], row[0], "B94");
-					break;
-				case "C157":
-					placeText(col[6], row[0], "C157");
-					break;
-				case "C156":
-					placeText(col[7], row[0], "C156");
-					break;
-				case "D38":
-					placeText(col[0], row[1], "D38");
-					break;
-				case "D37":
-					placeText(col[1], row[1], "D37");
-					break;
-				case "A33":
-					placeText(col[2], row[1], "A33");
-					break;
-				case "A32":
-					placeText(col[3], row[1], "A32");
-					break;
-				case "B91":
-					placeText(col[4], row[1], "B91");
-					break;
-				case "B92":
-					placeText(col[5], row[1], "B92");
-					break;
-				case "C155":
-					placeText(col[6], row[1], "C155");
-					break;
-				case "C154":
-					placeText(col[7], row[1], "C154");
-					break;
-				case "D36":
-					placeText(col[0], row[2], "D36");
-					break;
-				case "D35":
-					placeText(col[1], row[2], "D35");
-					break;
-				case "A31":
-					placeText(col[2], row[2], "A31");
-					break;
-				case "A30":
-					placeText(col[3], row[2], "A30");
-					break;
-				case "B89":
-					placeText(col[4], row[2], "B89");
-					break;
-				case "B90":
-					placeText(col[5], row[2], "B90");
-					break;
-				case "C153":
-					placeText(col[6], row[2], "C153");
-					break;
-				case "C152":
-					placeText(col[7], row[2], "C152");
-					break;
-				case "D34":
-					placeText(col[0], row[3], "D34");
-					break;
-				case "D33":
-					placeText(col[1], row[3], "D33");
-					break;
-				case "A29":
-					placeText(col[2], row[3], "A29");
-					break;
-				case "A28":
-					placeText(col[3], row[3], "A28");
-					break;
-				case "B87":
-					placeText(col[4], row[3], "B87");
-					break;
-				case "B88":
-					placeText(col[5], row[3], "B88");
-					break;
-				case "C151":
-					placeText(col[6], row[3], "C151");
-					break;
-				case "C150":
-					placeText(col[7], row[3], "C150");
-					break;
-				case "D32":
-					placeText(col[0], row[4], "D32");
-					break;
-				case "D31":
-					placeText(col[1], row[4], "D31");
-					break;
-				case "A27":
-					placeText(col[2], row[4], "A27");
-					break;
-				case "A26":
-					placeText(col[3], row[4], "A26");
-					break;
-				case "B85":
-					placeText(col[4], row[4], "B85");
-					break;
-				case "B86":
-					placeText(col[5], row[4], "B86");
-					break;
-				case "C149":
-					placeText(col[6], row[4], "C149");
-					break;
-				case "C148":
-					placeText(col[7], row[4], "C148");
-					break;
-				case "D30":
-					placeText(col[0], row[5], "D30");
-					break;
-				case "D29":
-					placeText(col[1], row[5], "D29");
-					break;
-				case "A25":
-					placeText(col[2], row[5], "A25");
-					break;
-				case "A24":
-					placeText(col[3], row[5], "A24");
-					break;
-				case "B83":
-					placeText(col[4], row[5], "B83");
-					break;
-				case "B84":
-					placeText(col[5], row[5], "B84");
-					break;
-				case "C147":
-					placeText(col[6], row[5], "C147");
-					break;
-				case "C146":
-					placeText(col[7], row[5], "C146");
-					break;
-				case "D28":  // problem starts here?
-					placeText(col[0], row[6], "D28");
-					break;
-				case "D27":
-					placeText(col[1], row[6], "D27");
-					break;
-				case "A23":
-					placeText(col[2], row[6], "A23");
-					break;
-				case "A22":
-					placeText(col[3], row[6], "A22");
-					break;
-				case "B81":
-					placeText(col[4], row[6], "B81");
-					break;
-				case "B82":
-					placeText(col[5], row[6], "B82");
-					break;
-				case "C145":
-					placeText(col[6], row[6], "C145");
-					break;
-				case "C144":
-					placeText(col[7], row[6], "C144");
-					break;
-				case "D26":
-					placeText(col[0], row[7], "D26");
-					break;
-				case "D25":
-					placeText(col[1], row[7], "D25");
-					break;
-				case "A21":
-					placeText(col[2], row[7], "A21");
-					break;
-				case "A20":
-					placeText(col[3], row[7], "A20");
-					break;
-				case "B79":
-					placeText(col[4], row[7], "B79");
-					break;
-				case "B80":
-					placeText(col[5], row[7], "B80");
-					break;
-				case "C143":
-					placeText(col[6], row[7], "C143");
-					break;
-				case "C142":
-					placeText(col[7], row[7], "C142");
-					break;
-				case "D24":
-					placeText(col[0], row[8], "D24");
-					break;
-				case "D23":
-					placeText(col[1], row[8], "D23");
-					break;
-				case "A19":
-					placeText(col[2], row[8], "A19");
-					break;
-				case "A18":
-					placeText(col[3], row[8], "A18");
-					break;
-				case "B77":
-					placeText(col[4], row[8], "B77");
-					break;
-				case "B78":
-					placeText(col[5], row[8], "B78");
-					break;
-				case "C141":
-					placeText(col[6], row[8], "C141");
-					break;
-				case "C140":
-					placeText(col[7], row[8], "C140");
-					break;
-				case "D22":
-					placeText(col[0], row[9], "D22");
-					break;
-				case "D21":
-					placeText(col[1], row[9], "D21");
-					break;
-				case "A17":
-					placeText(col[2], row[9], "A17");
-					break;
-				case "A16":
-					placeText(col[3], row[9], "A16");
-					break;
-				case "B75":
-					placeText(col[4], row[9], "B75");
-					break;
-				case "B76":
-					placeText(col[5], row[9], "B76");
-					break;
-				case "C139":
-					placeText(col[6], row[9], "C139");
-					break;
-				case "C138":
-					placeText(col[7], row[9], "C138");
-					break;
-				case "D20":
-					placeText(col[0], row[10], "D20");
-					break;
-				case "D19":
-					placeText(col[1], row[10], "D19");
-					break;
-				case "A15":
-					placeText(col[2], row[10], "A15");
-					break;
-				case "A14":
-					placeText(col[3], row[10], "A14");
-					break;
-				case "B73":
-					placeText(col[4], row[10], "B73");
-					break;
-				case "B74":
-					placeText(col[5], row[10], "B74");
-					break;
-				case "C137":
-					placeText(col[6], row[10], "C137");
-					break;
-				case "C136":
-					placeText(col[7], row[10], "C136");
-					break;
-				case "D18":
-					placeText(col[0], row[11], "D18");
-					break;
-				case "D17":
-					placeText(col[1], row[11], "D17");
-					break;
-				case "A13":
-					placeText(col[2], row[11], "A13");
-					break;
-				case "A12":
-					placeText(col[3], row[11], "A12");
-					break;
-				case "B71":
-					placeText(col[4], row[11], "B71");
-					break;
-				case "B72":
-					placeText(col[5], row[11], "B72");
-					break;
-				case "C135":
-					placeText(col[6], row[11], "C135");
-					break;
-				case "C134":
-					placeText(col[7], row[11], "C134");
-					break;
-				case "D16":
-					placeText(col[0], row[12], "D16");
-					break;
-				case "D15":
-					placeText(col[1], row[12], "D15");
-					break;
-				case "A11":
-					placeText(col[2], row[12], "A11");
-					break;
-				case "A10":
-					placeText(col[3], row[12], "A10");
-					break;
-				case "B69":
-					placeText(col[4], row[12], "B69");
-					break;
-				case "B70":
-					placeText(col[5], row[12], "B70");
-					break;
-				case "C133":
-					placeText(col[6], row[12], "C133");
-					break;
-				case "C132":
-					placeText(col[7], row[12], "C132");
-					break;
-				case "D14":
-					placeText(col[0], row[13], "D14");
-					break;
-				case "D13":
-					placeText(col[1], row[13], "D13");
-					break;
-				case "A09":
-					placeText(col[3], row[13], "A09");
-					break;
-				case "B67":
-					placeText(col[4], row[13], "B67");
-					break;
-				case "B68":
-					placeText(col[5], row[13], "B68");
-					break;
-				case "C131":
-					placeText(col[6], row[13], "C131");
-					break;
-				case "C130":
-					placeText(col[7], row[13], "C130");
-					break;
-				case "D12":
-					placeText(col[0], row[14], "D12");
-					break;
-				case "D11":
-					placeText(col[1], row[14], "D11");
-					break;
-				case "A08":
-					placeText(col[3], row[14], "A08");
-					break;
-				case "B65":
-					placeText(col[4], row[14], "B65");
-					break;
-				case "B66":
-					placeText(col[5], row[14], "B66");
-					break;
-				case "C129":
-					placeText(col[6], row[14], "C129");
-					break;
-				case "C128":
-					placeText(col[7], row[14], "C128");
-					break;
-				case "D10":
-					placeText(col[0], row[15], "D10");
-					break;
-				case "D09":
-					placeText(col[1], row[15], "D09");
-					break;
-				case "A07":
-					placeText(col[3], row[15], "A07");
-					break;
-				case "B63":
-					placeText(col[4], row[15], "B63");
-					break;
-				case "B64":
-					placeText(col[5], row[15], "B64");
-					break;
-				case "C127":
-					placeText(col[6], row[15], "C127");
-					break;
-				case "C126":
-					placeText(col[7], row[15], "C126");
-					break;
-				case "D08":
-					placeText(col[0], row[16], "D08");
-					break;
-				case "D07":
-					placeText(col[1], row[16], "D07");
-					break;
-				case "A06":
-					placeText(col[3], row[16], "A06");
-					break;
-				case "B61":
-					placeText(col[4], row[16], "B61");
-					break;
-				case "B62":
-					placeText(col[5], row[16], "B62");
-					break;
-				case "C125":
-					placeText(col[6], row[16], "C125");
-					break;
-				case "C124":
-					placeText(col[7], row[16], "C124");
-					break;
-				case "D06":
-					placeText(col[0], row[17], "D06");
-					break;
-				case "D05":
-					placeText(col[1], row[17], "D05");
-					break;
-				case "A05":
-					placeText(col[3], row[17], "A05");
-					break;
-				case "B59":
-					placeText(col[4], row[17], "B59");
-					break;
-				case "B60":
-					placeText(col[5], row[17], "B60");
-					break;
-				case "C123":
-					placeText(col[6], row[17], "C123");
-					break;
-				case "C122":
-					placeText(col[7], row[17], "C122");
-					break;
-				case "D04":
-					placeText(col[0], row[18], "D04");
-					break;
-				case "D03":
-					placeText(col[1], row[18], "D03");
-					break;
-				case "A04":
-					placeText(col[3], row[18], "A04");
-					break;
-				case "B57":
-					placeText(col[4], row[18], "B57");
-					break;
-				case "B58":
-					placeText(col[5], row[18], "B58");
-					break;
-				case "C121":
-					placeText(col[6], row[18], "C121");
-					break;
-				case "C120":
-					placeText(col[7], row[18], "C120");
-					break;
-				case "D02":
-					placeText(col[0], row[19], "D02");
-					break;
-				case "D01":
-					placeText(col[1], row[19], "D01");
-					break;
-				case "A03":
-					placeText(col[3], row[19], "A03");
-					break;
-				case "B55":
-					placeText(col[4], row[19], "B55");
-					break;
-				case "B56":
-					placeText(col[5], row[19], "B56");
-					break;
-				case "C119":
-					placeText(col[6], row[19], "C119");
-					break;
-				case "C118":
-					placeText(col[7], row[19], "C118");
-					break;
-				case "A02":
-					placeText(col[3], row[20], "A02");
-					break;
-				case "B53":
-					placeText(col[4], row[20], "B53");
-					break;
-				case "B54":
-					placeText(col[5], row[20], "B54");
-					break;
-				case "C117":
-					placeText(col[6], row[20], "C117");
-					break;
-				case "C116":
-					placeText(col[7], row[20], "C116");
-					break;
-				case "A01":
-					placeText(col[3], row[21], "A01");
-					break;
-				case "B51":
-					placeText(col[4], row[21], "B51");
-					break;
-				case "B52":
-					placeText(col[5], row[21], "B52");
-					break;
-				case "C115":
-					placeText(col[6], row[21], "C115");
-					break;
-				case "C114":
-					placeText(col[7], row[21], "C114");
-					break;
-				case "B50":
-					placeText(col[5], row[22], "B50");
-					break;
-				case "B48":
-					placeText(col[5], row[23], "B48");
-					break;
+				case "D40" -> placeText(col[0], row[0], "D40");
+				case "D39" -> placeText(col[1], row[0], "D39");
+				case "A35" -> placeText(col[2], row[0], "A35");
+				case "A34" -> placeText(col[3], row[0], "A34");
+				case "B93" -> placeText(col[4], row[0], "B93");
+				case "B94" -> placeText(col[5], row[0], "B94");
+				case "C157" -> placeText(col[6], row[0], "C157");
+				case "C156" -> placeText(col[7], row[0], "C156");
+				case "D38" -> placeText(col[0], row[1], "D38");
+				case "D37" -> placeText(col[1], row[1], "D37");
+				case "A33" -> placeText(col[2], row[1], "A33");
+				case "A32" -> placeText(col[3], row[1], "A32");
+				case "B91" -> placeText(col[4], row[1], "B91");
+				case "B92" -> placeText(col[5], row[1], "B92");
+				case "C155" -> placeText(col[6], row[1], "C155");
+				case "C154" -> placeText(col[7], row[1], "C154");
+				case "D36" -> placeText(col[0], row[2], "D36");
+				case "D35" -> placeText(col[1], row[2], "D35");
+				case "A31" -> placeText(col[2], row[2], "A31");
+				case "A30" -> placeText(col[3], row[2], "A30");
+				case "B89" -> placeText(col[4], row[2], "B89");
+				case "B90" -> placeText(col[5], row[2], "B90");
+				case "C153" -> placeText(col[6], row[2], "C153");
+				case "C152" -> placeText(col[7], row[2], "C152");
+				case "D34" -> placeText(col[0], row[3], "D34");
+				case "D33" -> placeText(col[1], row[3], "D33");
+				case "A29" -> placeText(col[2], row[3], "A29");
+				case "A28" -> placeText(col[3], row[3], "A28");
+				case "B87" -> placeText(col[4], row[3], "B87");
+				case "B88" -> placeText(col[5], row[3], "B88");
+				case "C151" -> placeText(col[6], row[3], "C151");
+				case "C150" -> placeText(col[7], row[3], "C150");
+				case "D32" -> placeText(col[0], row[4], "D32");
+				case "D31" -> placeText(col[1], row[4], "D31");
+				case "A27" -> placeText(col[2], row[4], "A27");
+				case "A26" -> placeText(col[3], row[4], "A26");
+				case "B85" -> placeText(col[4], row[4], "B85");
+				case "B86" -> placeText(col[5], row[4], "B86");
+				case "C149" -> placeText(col[6], row[4], "C149");
+				case "C148" -> placeText(col[7], row[4], "C148");
+				case "D30" -> placeText(col[0], row[5], "D30");
+				case "D29" -> placeText(col[1], row[5], "D29");
+				case "A25" -> placeText(col[2], row[5], "A25");
+				case "A24" -> placeText(col[3], row[5], "A24");
+				case "B83" -> placeText(col[4], row[5], "B83");
+				case "B84" -> placeText(col[5], row[5], "B84");
+				case "C147" -> placeText(col[6], row[5], "C147");
+				case "C146" -> placeText(col[7], row[5], "C146");
+				case "D28" ->  // problem starts here?
+						placeText(col[0], row[6], "D28");
+				case "D27" -> placeText(col[1], row[6], "D27");
+				case "A23" -> placeText(col[2], row[6], "A23");
+				case "A22" -> placeText(col[3], row[6], "A22");
+				case "B81" -> placeText(col[4], row[6], "B81");
+				case "B82" -> placeText(col[5], row[6], "B82");
+				case "C145" -> placeText(col[6], row[6], "C145");
+				case "C144" -> placeText(col[7], row[6], "C144");
+				case "D26" -> placeText(col[0], row[7], "D26");
+				case "D25" -> placeText(col[1], row[7], "D25");
+				case "A21" -> placeText(col[2], row[7], "A21");
+				case "A20" -> placeText(col[3], row[7], "A20");
+				case "B79" -> placeText(col[4], row[7], "B79");
+				case "B80" -> placeText(col[5], row[7], "B80");
+				case "C143" -> placeText(col[6], row[7], "C143");
+				case "C142" -> placeText(col[7], row[7], "C142");
+				case "D24" -> placeText(col[0], row[8], "D24");
+				case "D23" -> placeText(col[1], row[8], "D23");
+				case "A19" -> placeText(col[2], row[8], "A19");
+				case "A18" -> placeText(col[3], row[8], "A18");
+				case "B77" -> placeText(col[4], row[8], "B77");
+				case "B78" -> placeText(col[5], row[8], "B78");
+				case "C141" -> placeText(col[6], row[8], "C141");
+				case "C140" -> placeText(col[7], row[8], "C140");
+				case "D22" -> placeText(col[0], row[9], "D22");
+				case "D21" -> placeText(col[1], row[9], "D21");
+				case "A17" -> placeText(col[2], row[9], "A17");
+				case "A16" -> placeText(col[3], row[9], "A16");
+				case "B75" -> placeText(col[4], row[9], "B75");
+				case "B76" -> placeText(col[5], row[9], "B76");
+				case "C139" -> placeText(col[6], row[9], "C139");
+				case "C138" -> placeText(col[7], row[9], "C138");
+				case "D20" -> placeText(col[0], row[10], "D20");
+				case "D19" -> placeText(col[1], row[10], "D19");
+				case "A15" -> placeText(col[2], row[10], "A15");
+				case "A14" -> placeText(col[3], row[10], "A14");
+				case "B73" -> placeText(col[4], row[10], "B73");
+				case "B74" -> placeText(col[5], row[10], "B74");
+				case "C137" -> placeText(col[6], row[10], "C137");
+				case "C136" -> placeText(col[7], row[10], "C136");
+				case "D18" -> placeText(col[0], row[11], "D18");
+				case "D17" -> placeText(col[1], row[11], "D17");
+				case "A13" -> placeText(col[2], row[11], "A13");
+				case "A12" -> placeText(col[3], row[11], "A12");
+				case "B71" -> placeText(col[4], row[11], "B71");
+				case "B72" -> placeText(col[5], row[11], "B72");
+				case "C135" -> placeText(col[6], row[11], "C135");
+				case "C134" -> placeText(col[7], row[11], "C134");
+				case "D16" -> placeText(col[0], row[12], "D16");
+				case "D15" -> placeText(col[1], row[12], "D15");
+				case "A11" -> placeText(col[2], row[12], "A11");
+				case "A10" -> placeText(col[3], row[12], "A10");
+				case "B69" -> placeText(col[4], row[12], "B69");
+				case "B70" -> placeText(col[5], row[12], "B70");
+				case "C133" -> placeText(col[6], row[12], "C133");
+				case "C132" -> placeText(col[7], row[12], "C132");
+				case "D14" -> placeText(col[0], row[13], "D14");
+				case "D13" -> placeText(col[1], row[13], "D13");
+				case "A09" -> placeText(col[3], row[13], "A09");
+				case "B67" -> placeText(col[4], row[13], "B67");
+				case "B68" -> placeText(col[5], row[13], "B68");
+				case "C131" -> placeText(col[6], row[13], "C131");
+				case "C130" -> placeText(col[7], row[13], "C130");
+				case "D12" -> placeText(col[0], row[14], "D12");
+				case "D11" -> placeText(col[1], row[14], "D11");
+				case "A08" -> placeText(col[3], row[14], "A08");
+				case "B65" -> placeText(col[4], row[14], "B65");
+				case "B66" -> placeText(col[5], row[14], "B66");
+				case "C129" -> placeText(col[6], row[14], "C129");
+				case "C128" -> placeText(col[7], row[14], "C128");
+				case "D10" -> placeText(col[0], row[15], "D10");
+				case "D09" -> placeText(col[1], row[15], "D09");
+				case "A07" -> placeText(col[3], row[15], "A07");
+				case "B63" -> placeText(col[4], row[15], "B63");
+				case "B64" -> placeText(col[5], row[15], "B64");
+				case "C127" -> placeText(col[6], row[15], "C127");
+				case "C126" -> placeText(col[7], row[15], "C126");
+				case "D08" -> placeText(col[0], row[16], "D08");
+				case "D07" -> placeText(col[1], row[16], "D07");
+				case "A06" -> placeText(col[3], row[16], "A06");
+				case "B61" -> placeText(col[4], row[16], "B61");
+				case "B62" -> placeText(col[5], row[16], "B62");
+				case "C125" -> placeText(col[6], row[16], "C125");
+				case "C124" -> placeText(col[7], row[16], "C124");
+				case "D06" -> placeText(col[0], row[17], "D06");
+				case "D05" -> placeText(col[1], row[17], "D05");
+				case "A05" -> placeText(col[3], row[17], "A05");
+				case "B59" -> placeText(col[4], row[17], "B59");
+				case "B60" -> placeText(col[5], row[17], "B60");
+				case "C123" -> placeText(col[6], row[17], "C123");
+				case "C122" -> placeText(col[7], row[17], "C122");
+				case "D04" -> placeText(col[0], row[18], "D04");
+				case "D03" -> placeText(col[1], row[18], "D03");
+				case "A04" -> placeText(col[3], row[18], "A04");
+				case "B57" -> placeText(col[4], row[18], "B57");
+				case "B58" -> placeText(col[5], row[18], "B58");
+				case "C121" -> placeText(col[6], row[18], "C121");
+				case "C120" -> placeText(col[7], row[18], "C120");
+				case "D02" -> placeText(col[0], row[19], "D02");
+				case "D01" -> placeText(col[1], row[19], "D01");
+				case "A03" -> placeText(col[3], row[19], "A03");
+				case "B55" -> placeText(col[4], row[19], "B55");
+				case "B56" -> placeText(col[5], row[19], "B56");
+				case "C119" -> placeText(col[6], row[19], "C119");
+				case "C118" -> placeText(col[7], row[19], "C118");
+				case "A02" -> placeText(col[3], row[20], "A02");
+				case "B53" -> placeText(col[4], row[20], "B53");
+				case "B54" -> placeText(col[5], row[20], "B54");
+				case "C117" -> placeText(col[6], row[20], "C117");
+				case "C116" -> placeText(col[7], row[20], "C116");
+				case "A01" -> placeText(col[3], row[21], "A01");
+				case "B51" -> placeText(col[4], row[21], "B51");
+				case "B52" -> placeText(col[5], row[21], "B52");
+				case "C115" -> placeText(col[6], row[21], "C115");
+				case "C114" -> placeText(col[7], row[21], "C114");
+				case "B50" -> placeText(col[5], row[22], "B50");
+				case "B48" -> placeText(col[5], row[23], "B48");
+
 //				col		row
 //				176		511
 //				194	18	529	18
@@ -714,44 +386,20 @@ public class TabSlips extends Tab {
 //				310	18	645	18
 //				321	11	656 11
 //				339	18	674 18
-				case "F12":
-					placeText(176, 511, "F12");
-					break;
-				case "F11":
-					placeText(194, 529, "F11");
-					break;
-				case "F10":
-					placeText(205, 540, "F10");
-					break;
-				case "F09":
-					placeText(223, 558, "F09");
-					break;
-				case "F08":
-					placeText(234, 569, "F08");
-					break;
-				case "F07":
-					placeText(252, 587, "F07");
-					break;
-				case "F06":
-					placeText(263, 598, "F06");
-					break;
-				case "F05":
-					placeText(281, 616, "F05");
-					break;
-				case "F04":
-					placeText(292, 627, "F04");
-					break;
-				case "F03":
-					placeText(310, 645, "F03");
-					break;
-				case "F02":
-					placeText(321, 656, "F02");
-					break;
-				case "F01":
-					placeText(339, 674, "F01");
-					break;
-				default:
-					break;
+				case "F12" -> placeText(176, 511, "F12");
+				case "F11" -> placeText(194, 529, "F11");
+				case "F10" -> placeText(205, 540, "F10");
+				case "F09" -> placeText(223, 558, "F09");
+				case "F08" -> placeText(234, 569, "F08");
+				case "F07" -> placeText(252, 587, "F07");
+				case "F06" -> placeText(263, 598, "F06");
+				case "F05" -> placeText(281, 616, "F05");
+				case "F04" -> placeText(292, 627, "F04");
+				case "F03" -> placeText(310, 645, "F03");
+				case "F02" -> placeText(321, 656, "F02");
+				case "F01" -> placeText(339, 674, "F01");
+				default -> {
+				}
 			}
 		}
 	}

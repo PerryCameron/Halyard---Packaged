@@ -19,10 +19,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.StringConverter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 
@@ -142,15 +144,56 @@ public class VboxControls extends VBox {
                 refreshAllData(false);
             }
         });
+//    THIS is original DATE PICKER CODE SEE BELOW
+//        var pickerEvent = new EventHandler<ActionEvent>() {
+//            public void handle(ActionEvent e) {
+//                depositDTO.setDepositDate(String.valueOf(depositDatePicker.getValue()));
+//                SqlUpdate.updateDeposit(depositDTO);
+//            }
+//        };
+//
+//        depositDatePicker.setOnAction(pickerEvent);
 
-        var pickerEvent = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e) {
+        // This is a hack I got from here
+        // https://stackoverflow.com/questions/32346893/javafx-datepicker-not-updating-value
+        // Apparently datepicker was broken after java 8 and then fixed in java 18
+        // this is a work-around until I upgrade this to java 18+
+        depositDatePicker.setConverter(new StringConverter<>() {
+            private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
+            @Override
+            public String toString(LocalDate localDate) {
+                if (localDate == null)
+                    return "";
+                return dateTimeFormatter.format(localDate);
+            }
+
+            @Override
+            public LocalDate fromString(String dateString) {
+                if (dateString == null || dateString.trim().isEmpty())
+                    return null;
+                try {
+                    return LocalDate.parse(dateString, dateTimeFormatter);
+                } catch (Exception e) {
+                    BaseApplication.logger.error("Bad date value entered");
+                    return null;
+                }
+            }
+        });
+
+        //This deals with the bug located here where the datepicker value is not updated on focus lost
+        //https://bugs.openjdk.java.net/browse/JDK-8092295?page=com.atlassian.jira.plugin.system.issuetabpanels:all-tabpanel
+        depositDatePicker.focusedProperty().addListener((observable, wasFocused, isFocused) -> {
+            if (!isFocused){
+                try {
+                    depositDatePicker.setValue(depositDatePicker.getConverter().fromString(depositDatePicker.getEditor().getText()));
+                } catch (DateTimeParseException e) {
+                    depositDatePicker.getEditor().setText(depositDatePicker.getConverter().toString(depositDatePicker.getValue()));
+                }
                 depositDTO.setDepositDate(String.valueOf(depositDatePicker.getValue()));
                 SqlUpdate.updateDeposit(depositDTO);
             }
-        };
-
-        depositDatePicker.setOnAction(pickerEvent);
+        });
 
         comboBox.valueProperty().addListener((change) -> {
                     refreshAllData(false);
@@ -221,6 +264,19 @@ public class VboxControls extends VBox {
         refreshNonRenewed();
     }
 
+    private void refreshDate() {
+        System.out.println("Refresh Date Called");
+        LocalDate date;
+        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // if no deposit selected put in today's date
+        if (!isSafeToDisplay) { // spinner is higher than number of deposits
+            date = LocalDate.parse(HalyardPaths.getDate(), formatter);
+            depositDTO.setDepositDate(HalyardPaths.getDate());
+        }
+        else date = LocalDate.parse(depositDTO.getDepositDate(), formatter);
+        depositDatePicker.setValue(date);
+    }
+
     private void refreshNewYearData(boolean refreshInvoiceTypes) {
         if (refreshInvoiceTypes) {  // if a new year was selected
             refreshInvoiceTypes();
@@ -287,17 +343,7 @@ public class VboxControls extends VBox {
         depositDatePicker.setValue(date);
     }
 
-    private void refreshDate() {
-        LocalDate date;
-        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        // if no deposit selected put in today's date
-        if (!isSafeToDisplay) { // spinner is higher than number of deposits
-            date = LocalDate.parse(HalyardPaths.getDate(), formatter);
-            depositDTO.setDepositDate(HalyardPaths.getDate());
-        }
-        else date = LocalDate.parse(depositDTO.getDepositDate(), formatter);
-        depositDatePicker.setValue(date);
-    }
+
 
     private int getCorrectBatch() {
         if (comboBox.getValue().equals("Show All")) return 0;
