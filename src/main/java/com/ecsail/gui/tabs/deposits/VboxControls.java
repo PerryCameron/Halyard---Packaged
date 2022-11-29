@@ -8,6 +8,7 @@ import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.*;
 import com.ecsail.structures.DepositDTO;
+import com.ecsail.structures.DepositTotal;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -370,25 +371,27 @@ public class VboxControls extends VBox {
     }
 
     private void getInvoiceItemRows() {
-        int qty = 0; // for calculating totals
-        BigDecimal value = new BigDecimal("0.00"); // for calculating totals
         if (isSafeToDisplay) { // prevent an exception if we go too high on selector
             for (String e : invoiceItemTypes) {
                 HboxInvoiceSumItem item = new HboxInvoiceSumItem(
                         SqlInvoiceItem.getInvoiceItemSumByYearAndType(selectedYear, e, getCorrectBatch()));
                 if (itemHasAValue(item)) { // let's not bother with 0 value line items
-                    qty = qty + item.getInvoiceSummedItem().getQty();
-                    if (itemIsACredit(item))
-                        value = value.subtract(new BigDecimal(item.getInvoiceSummedItem().getValue()));
-                    else
-                        value = value.add(new BigDecimal(item.getInvoiceSummedItem().getValue()));
                     vBoxSumItemsInner.getChildren().add(item);  // adds an invoice item row
                 }
             }
-            vBoxSumItemsInner.getChildren().add(new HboxInvoiceFooter(value, qty)); // adds the footer with totals
-            System.out.println("Batch=" + depositDTO.getBatch());
+            addFooter();
         } else
             BaseApplication.logger.info("Invoice selector set too high to display information");
+    }
+
+    // adds the footer with totals
+    private void addFooter() {
+        vBoxSumItemsInner.getChildren().add(new HboxInvoiceSectionHead("Totals"));
+        DepositTotal depositTotal = SqlDeposit.getTotals(depositDTO);
+        for(int i = 0; i < depositTotal.getValues().length; i++) {
+            vBoxSumItemsInner.getChildren().add(
+                    new HboxInvoiceFooter(depositTotal.getLabels()[i],depositTotal.getValues()[i]));
+        }
     }
 
     private void refreshNonRenewed() {

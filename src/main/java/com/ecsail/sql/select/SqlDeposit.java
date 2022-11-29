@@ -3,6 +3,7 @@ package com.ecsail.sql.select;
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.structures.DepositDTO;
+import com.ecsail.structures.DepositTotal;
 import com.ecsail.structures.PaidDuesDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -187,6 +188,26 @@ public class SqlDeposit {
         } catch (SQLException e) {
             new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
         }
+    }
+
+    public static DepositTotal getTotals(DepositDTO d) {
+        DepositTotal depositTotal = null;
+        String query = "select sum(TOTAL) AS TOTAL, sum(CREDIT) AS CREDIT,sum(PAID) AS PAID from invoice where " +
+                "FISCAL_YEAR="+d.getFiscalYear()+" and BATCH="+d.getBatch()+" and COMMITTED=true";
+        try {
+            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+            while (rs.next()) {
+                depositTotal = new DepositTotal(
+                        rs.getString("TOTAL"),
+                        rs.getString("CREDIT"),
+                        rs.getString("PAID")
+                );
+            }
+            BaseApplication.connect.closeResultSet(rs);
+        } catch (SQLException e) {
+            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
+        }
+        return depositTotal;
     }
 
     public static int getNumberOfDepositBatches(String year) {
