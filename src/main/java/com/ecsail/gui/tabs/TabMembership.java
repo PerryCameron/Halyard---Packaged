@@ -24,16 +24,18 @@ import javafx.scene.layout.VBox;
 public class TabMembership extends Tab {
 	private final MembershipListDTO membership;
 	private final ObservableList<PersonDTO> people;  // has to be in this class because we pull up two instances
-
 	private int count = 1;
-
+	private TabPane fiscalTabPane = new TabPane();
+	private Note note;
+	private MemLabelsDTO labels = new MemLabelsDTO();
 	
 	public TabMembership(MembershipListDTO me) {
 		super();
 		this.membership = me;
 		var memos = SqlMemos.getMemos(membership.getMsid());
+		this.note = new Note(memos,membership.getMsid());
 		// allows labels to be easily changed from another class
-		var labels = new MemLabelsDTO();
+
         this.people = SqlPerson.getPeople(membership.getMsid());
 		this.setText(setTabLabel());
 		BaseApplication.logger.info("Opening Membership tab for "
@@ -42,14 +44,13 @@ public class TabMembership extends Tab {
 		);
 
 		////////// OBJECTS /////////////
-		var note = new Note(memos,membership.getMsid());
+
 		var containerVBox = new VBox();
 		var vboxBlue = new VBox();
-        var hbox1 = new HBoxMembership(membership, labels);  // holds membershipID, Type and Active
+        var hbox1 = new HBoxMembership(this);  // holds membershipID, Type and Active
 		var hbox2 = new HBox();  // holds PersonVBoxes (2 instances require a generic HBox
 		var hbox3 = new HBox();
 		var peopleTabPane = new TabPane();
-		var fiscalTabPane = new TabPane();
 		var informationTabPane = new TabPane();
 
         //////////// PROPERTIES ///////////////
@@ -94,7 +95,7 @@ public class TabMembership extends Tab {
 		peopleTabPane.getTabs().add(new Tab("Add", new VBoxAddPerson(peopleTabPane, note, membership)));
 		fiscalTabPane.getTabs().add(new Tab("Slip", new HBoxSlip(membership, this)));
 		fiscalTabPane.getTabs().add(new Tab("History", new HBoxHistory(membership, labels)));
-		fiscalTabPane.getTabs().add(new Tab("Invoices", new HBoxInvoiceList(membership, fiscalTabPane, people, note)));
+		fiscalTabPane.getTabs().add(new Tab("Invoices", new HBoxInvoiceList(this)));
 		informationTabPane.getTabs().add(new Tab("Boats", new HBoxBoat(membership)));
 		informationTabPane.getTabs().add(new Tab("Notes", new HBoxMembershipNotes(note)));
 		informationTabPane.getTabs().add(new Tab("Properties", new HBoxProperties(people, membership)));
@@ -156,5 +157,25 @@ public class TabMembership extends Tab {
 			tabLabel= "Membership " + membership.getMembershipId();
 		}
 		return tabLabel;
+	}
+
+	public TabPane getFiscalTabPane() {
+		return fiscalTabPane;
+	}
+
+	public MembershipListDTO getMembership() {
+		return membership;
+	}
+
+	public ObservableList<PersonDTO> getPeople() {
+		return people;
+	}
+
+	public Note getNote() {
+		return note;
+	}
+
+	public MemLabelsDTO getLabels() {
+		return labels;
 	}
 }

@@ -4,6 +4,7 @@ package com.ecsail.gui.boxes;
 import com.ecsail.BaseApplication;
 import com.ecsail.Note;
 import com.ecsail.gui.boxes.invoice.HBoxInvoice;
+import com.ecsail.gui.tabs.TabMembership;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlInsert;
@@ -29,23 +30,21 @@ import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class HBoxInvoiceList extends HBox {
-	private static ObservableList<InvoiceDTO> invoices = null;
-	private static TabPane parentTabPane;
-	private static MembershipDTO membership;
-	private static ObservableList<PersonDTO> people;
-	private static Note note;
-
+	private ObservableList<InvoiceDTO> invoices = null;
+	private TabPane parentTabPane;
+	private Note note;
 	private int id; // used for making records
 	String currentYear;
+	TabMembership t;
 
-	public HBoxInvoiceList(MembershipDTO membership, TabPane t, ObservableList<PersonDTO> p, Note n) {
+	ObservableList<PersonDTO> p;
+	public HBoxInvoiceList(TabMembership t) {
 		super();
-		HBoxInvoiceList.membership = membership;
+		this.t = t;
+		this.note = t.getNote();
+		this.parentTabPane = t.getTabPane();
 		this.currentYear = BaseApplication.selectedYear;
-		HBoxInvoiceList.note = n;
-		HBoxInvoiceList.parentTabPane = t;
-		HBoxInvoiceList.people = p;
-		
+
 		////////////////////////  OBJECTS   ///////////////////////////////
 		var vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
 		var hbox1 = new HBox();  // holds membershipID, Type and Active
@@ -53,7 +52,7 @@ public class HBoxInvoiceList extends HBox {
 		var deleteButtonHBox = new HBox();
 		var addFiscalRecord = new Button("Add");
 		var deleteFiscalRecord = new Button("Delete");
-		HBoxInvoiceList.invoices = SqlInvoice.getInvoicesByMsid(membership.getMsid());
+		invoices = SqlInvoice.getInvoicesByMsid(t.getMembership().getMsid());
 		var fiscalTableView = new TableView<InvoiceDTO>();
 		var Col1 = new TableColumn<InvoiceDTO, Integer>("Year");
 		var Col2 = new TableColumn<InvoiceDTO, Integer>("Fees");
@@ -62,9 +61,10 @@ public class HBoxInvoiceList extends HBox {
 		var Col5 = new TableColumn<InvoiceDTO, Integer>("Balance");
 		var comboBox = new ComboBox<Integer>();
 		populateComboBox(comboBox);
-		comboBox.getSelectionModel().select(1);
+		
+//		comboBox.getSelectionModel().select(1);
 		///////////////////// SORT ///////////////////////////////////////////
-		HBoxInvoiceList.invoices.sort((p1, p2) -> Integer.compare(p2.getYear(), (p1.getYear())));
+		invoices.sort((p1, p2) -> Integer.compare(p2.getYear(), (p1.getYear())));
 		
 		///////////////////// ATTRIBUTES /////////////////////////////////////
 
@@ -120,18 +120,19 @@ public class HBoxInvoiceList extends HBox {
 				// get the next available key for money_id table
 				int invoiceId = SqlSelect.getNextAvailablePrimaryKey("invoice","id");
 				// create appropriate money object for this membership
-				var newInvoice = new InvoiceDTO(invoiceId, membership.getMsid(),
-						comboBox.getValue(), "0.00", "0.00", "0.00", "0.00", 0, false, false, false,"0.00");
+				var newInvoice = new InvoiceDTO(invoiceId, t.getMembership().getMsid(),
+						comboBox.getValue(), "0.00", "0.00", "0.00", "0.00", 0,
+						false, false, false,"0.00");
 
 				// if a record already exists for this year then this is a supplemental record
-				if (SqlExists.invoiceExists(String.valueOf(comboBox.getValue()), membership)) {
+				if (SqlExists.invoiceExists(String.valueOf(comboBox.getValue()), t.getMembership())) {
 					newInvoice.setSupplemental(true);
 				}
 
 				// insert the new record into the SQL database
 				SqlInsert.addInvoiceRecord(newInvoice);
 				// insert items for the invoice
-				createInvoiceItems(invoiceId, comboBox.getValue(), membership.getMsid());
+				createInvoiceItems(invoiceId, comboBox.getValue(), t.getMembership().getMsid());
 				// add new money row to tableview
 				invoices.add(newInvoice);
 				// send new money row to top
@@ -181,6 +182,11 @@ public class HBoxInvoiceList extends HBox {
 		getChildren().addAll(vboxGrey);	
 	}
 
+	private Integer getComboValue(ComboBox comboBox) {
+		System.out.println("Getting the selected year of " + t.getLabels().getSelectedYear().getText());
+		return comboBox.getItems().indexOf(t.getLabels().getSelectedYear().getText());
+	}
+
 	private void createInvoiceItems(int invoiceId, Integer year, int msid) {
 		ArrayList<DbInvoiceDTO> categories = SqlDbInvoice.getInvoiceWidgetsByYear(year);
 		id = SqlSelect.getNextAvailablePrimaryKey("invoice_item","ID");
@@ -193,35 +199,23 @@ public class HBoxInvoiceList extends HBox {
 
 	/////////////////////  CLASS METHODS /////////////////////////////
 	private void populateComboBox(ComboBox<Integer> comboBox) {
+		int selectedElement = 0;
 		for(int i = Integer.parseInt(BaseApplication.selectedYear) + 1; i > 1969; i--) {
+			if(i == Integer.parseInt(t.getLabels().getSelectedYear().getText())) selectedElement = i;
 			comboBox.getItems().add(i);
 		}
+		comboBox.setValue(selectedElement);
 	}
 
-	private BigDecimal getDues(int year) {  // takes the membership type and gets the dues
-		DefinedFeeDTO selectedDefinedFee = SqlDefinedFee.getDefinedFeeByYear(String.valueOf(year));
-		BigDecimal dues;
-		if(membership.getMemType() != null) {
-			dues = switch (membership.getMemType()) {
-				case "RM" -> selectedDefinedFee.getDues_regular();
-				case "SO" -> selectedDefinedFee.getDues_social();
-				case "FM" -> selectedDefinedFee.getDues_family();
-				case "LA" -> selectedDefinedFee.getDues_lake_associate();
-				default -> BigDecimal.valueOf(0);
-			};
-		} else dues = BigDecimal.valueOf(0);
-		return dues;
-	}
-	
-	private static void createTab(int rowIndex) {
-		parentTabPane.getTabs().add(new Tab(invoices.get(rowIndex).getYear()+ "", new HBoxInvoice(membership, invoices.get(rowIndex), note))); // current year tab
+	private void createTab(int rowIndex) {
+		parentTabPane.getTabs().add(new Tab(invoices.get(rowIndex).getYear()+ "", new HBoxInvoice(t.getMembership(), invoices.get(rowIndex), note))); // current year tab
 		for(Tab tab: parentTabPane.getTabs()) {
 			if(tab.getText().equals(invoices.get(rowIndex).getYear() + ""))
 		parentTabPane.getSelectionModel().select(tab);
 		}
 	}
 
-	private static void createTabByYear(InvoiceDTO invoice) {
+	private void createTabByYear(InvoiceDTO invoice) {
 		// create a tab with the correct year
 		Tab newTab = new Tab(String.valueOf(invoice.getYear()));
 		// add tab to pane
@@ -229,20 +223,15 @@ public class HBoxInvoiceList extends HBox {
 		// find the index value of the correct Object_Money in fiscals ArrayList
 		int fiscalsIndex = getFiscalIndexByYear(invoice.getId());
 		// add appropriate invoice to the tab using the index of fiscals
-		newTab.setContent(new HBoxInvoice(membership, invoices.get(fiscalsIndex), note));
+		newTab.setContent(new HBoxInvoice(t.getMembership(), invoices.get(fiscalsIndex), note));
 		// open the correct tab
 		parentTabPane.getSelectionModel().select(newTab);
 	}
 
 	// searches through list and counts the index value it finds correct money_id at.
-	private static int getFiscalIndexByYear(int money_id) {
-//		return (int) fiscals
-//				.stream()
-//				.filter(fis -> fis.getMoney_id() == money_id).count();
+	private int getFiscalIndexByYear(int money_id) {
 		AtomicInteger i = new AtomicInteger();
 		return invoices.stream().sequential().peek(v -> i.incrementAndGet())
 				.anyMatch(fis -> fis.getId() == money_id) ? i.get() - 1 : -1;
 	}
-
-
 }
