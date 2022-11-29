@@ -14,6 +14,7 @@ public class HboxInvoiceSectionHead extends HBox {
         vboxItemType.setPrefWidth(340);
         vboxItemType.setAlignment(Pos.CENTER);
         typeText.setText(label);
+        setId("box-frame-dark");
         typeText.setId("invoice-header");
         vboxItemType.getChildren().add(typeText);
         getChildren().add(vboxItemType);

@@ -1,7 +1,5 @@
 package com.ecsail.structures;
 
-import java.util.HashMap;
-
 public class DepositTotal {
     String[] labels = {"Fees","Credit","Paid"};
     String[] values = new String[3];

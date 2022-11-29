@@ -11,8 +11,6 @@ import com.ecsail.structures.DepositDTO;
 import com.ecsail.structures.DepositTotal;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -22,7 +20,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -196,10 +193,7 @@ public class VboxControls extends VBox {
             }
         });
 
-        comboBox.valueProperty().addListener((change) -> {
-                    refreshAllData(false);
-                }
-        );
+        comboBox.valueProperty().addListener((change) -> refreshAllData(false));
 
         newDepositButton.setOnAction(event -> {
             if(okToMakeNewDeposit()) { // checks to see that last deposit is not empty, so ok to make new one
@@ -256,13 +250,18 @@ public class VboxControls extends VBox {
         return SqlExists.depositIsUsed(selectedYear,depositDTO.getBatch());
     }
 
-    private void refreshAllData(boolean refreshInvoiceTypes) {
+    private void refreshAllData(boolean newYearSelected) {
         refreshCurrentDeposit();
-        refreshNewYearData(refreshInvoiceTypes);
+        refreshNewYearData(newYearSelected);
         refreshRows();
         refreshDate();
         refreshInvoices();
         refreshNonRenewed();
+        refreshInvoiceNumber();
+    }
+
+    private void refreshInvoiceNumber() {
+        numberOfRecordsText.setText(String.valueOf(tabParent.getInvoices().size()));
     }
 
     private void refreshDate() {
@@ -344,8 +343,6 @@ public class VboxControls extends VBox {
         depositDatePicker.setValue(date);
     }
 
-
-
     private int getCorrectBatch() {
         if (comboBox.getValue().equals("Show All")) return 0;
         return depositDTO.getBatch();
@@ -364,10 +361,6 @@ public class VboxControls extends VBox {
         if(item.getInvoiceSummedItem().getValue() != null)
         return !item.getInvoiceSummedItem().getValue().equals("0.00");
         else return false;
-    }
-
-    private static boolean itemIsACredit(HboxInvoiceSumItem item) {
-        return item.getInvoiceSummedItem().isCredit();
     }
 
     private void getInvoiceItemRows() {
@@ -401,5 +394,4 @@ public class VboxControls extends VBox {
     public int getSelectedYear() {
         return selectedYear;
     }
-
 }
