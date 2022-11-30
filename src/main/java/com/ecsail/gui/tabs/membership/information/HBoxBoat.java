@@ -3,14 +3,12 @@ package com.ecsail.gui.tabs.membership.information;
 import com.ecsail.EditCell;
 import com.ecsail.Launcher;
 import com.ecsail.enums.KeelType;
+import com.ecsail.gui.tabs.membership.TabMembership;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.sql.select.SqlBoat;
 import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.structures.BoatDTO;
-import com.ecsail.structures.MembershipListDTO;
-import javafx.beans.Observable;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
@@ -34,15 +32,14 @@ import java.util.function.Function;
 
 public class HBoxBoat extends HBox {
 
-    MembershipListDTO membership;
-    private final ObservableList<BoatDTO> boats;  // = FXCollections.observableArrayList();
     private final TableView<BoatDTO> boatTableView;
 
+    TabMembership tm;
+
     //@SuppressWarnings("unchecked")
-    public HBoxBoat(MembershipListDTO m) {
-        this.membership = m;
-        this.boats = FXCollections.observableArrayList(param -> new Observable[]{param.hasTrailerProperty()});
-        this.boats.addAll(SqlBoat.getBoats(membership.getMsid()));
+    public HBoxBoat(TabMembership tm) {
+        this.tm = tm;
+
         this.boatTableView = new TableView<>();
         ///////////	 OBJECTS ///////////////
 
@@ -80,7 +77,7 @@ public class HBoxBoat extends HBox {
 
         ///////////////// TABLE VIEW ///////////////////////
 
-        boatTableView.setItems(boats);
+        boatTableView.setItems(tm.getBoats());
         boatTableView.setFixedCellSize(30);
         boatTableView.setEditable(true);
         boatTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -238,13 +235,13 @@ public class HBoxBoat extends HBox {
             // get next available primary key for boat table
             int boat_id = SqlSelect.getNextAvailablePrimaryKey("boat", "boat_id");
             // create boat object
-            BoatDTO b = new BoatDTO(boat_id, membership.getMsid(), "", "", "", "", "", "", true, "", "", "", "", "", "", "", false);
+            BoatDTO b = new BoatDTO(boat_id, tm.getMembership().getMsid(), "", "", "", "", "", "", true, "", "", "", "", "", "", "", false);
             // insert data from new boat object into SQL table boat, return true if successful
-            if (SqlInsert.addBoatRecord(b, membership.getMsid()))
+            if (SqlInsert.addBoatRecord(b, tm.getMembership().getMsid()))
                 // insert row into tableView to match SQL record
-                boats.add(b);
+                tm.getBoats().add(b);
             // Now we will sort it to the top
-            boats.sort(Comparator.comparing(BoatDTO::getBoat_id).reversed());
+            tm.getBoats().sort(Comparator.comparing(BoatDTO::getBoat_id).reversed());
             // this line prevents strange buggy behaviour
             boatTableView.layout();
             // edit the boat name cell after creating
@@ -255,7 +252,7 @@ public class HBoxBoat extends HBox {
             // get the index that is selected
             int selectedIndex = boatTableView.getSelectionModel().getSelectedIndex();
             if (selectedIndex >= 0) {
-                var boatDTO = boats.get(selectedIndex);
+                var boatDTO = tm.getBoats().get(selectedIndex);
                 Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
                 conformation.setTitle("Delete Boat");
                 conformation.setHeaderText("Removing Boat " + boatDTO.getBoat_id());
@@ -266,7 +263,7 @@ public class HBoxBoat extends HBox {
                 Optional<ButtonType> result = conformation.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
                     // delete boat from database
-                    SqlDelete.deleteBoatOwner(boatDTO.getBoat_id(), membership.getMsid());
+                    SqlDelete.deleteBoatOwner(boatDTO.getBoat_id(), tm.getMembership().getMsid());
                     // remove from GUI
                     boatTableView.getItems().remove(selectedIndex);
                 }
@@ -275,7 +272,7 @@ public class HBoxBoat extends HBox {
 
         boatView.setOnAction((event) -> {
             int selectedIndex = boatTableView.getSelectionModel().getSelectedIndex();
-            Launcher.openBoatViewTab(boats.get(selectedIndex));
+            Launcher.openBoatViewTab(tm.getBoats().get(selectedIndex));
         });
 
         boatTableView.setRowFactory(tv -> {

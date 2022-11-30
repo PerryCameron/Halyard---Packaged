@@ -1,7 +1,7 @@
 package com.ecsail.gui.tabs.membership.information;
 
+import com.ecsail.gui.tabs.membership.TabMembership;
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.structures.MembershipListDTO;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,10 +16,11 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 public class HBoxAddress extends HBox {
-	MembershipListDTO membership;
+    TabMembership tm;
 	
-	public HBoxAddress(MembershipListDTO me) {
-		this.membership = me;
+	public HBoxAddress(TabMembership tm) {
+        this.tm = tm;
+
 			ObservableList<String> states = 
 		    FXCollections.observableArrayList(
 		    		"AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY"
@@ -30,7 +31,6 @@ public class HBoxAddress extends HBox {
 		////////////////// OBJECTS ///////////////////////////
         final var memAddress = new Label("Street");
         final var memCity = new Label("City");
-        //final Label primaryLabel = new Label("Primary Address");
         final var stateComboBox = new ComboBox<>(states);
         final var memZipcode = new Label("Zipcode");
         var memAddressTextField = new TextField();
@@ -60,7 +60,7 @@ public class HBoxAddress extends HBox {
         var titledPane2 = new TitledPane();
 
         ///////////////// ATTRIBUTES //////////////////////////
-        stateComboBox.setValue(membership.getState());
+        stateComboBox.setValue(tm.getMembership().getState());
         hbox1.setSpacing(5);
         hbox2.setSpacing(5);
         hbox3.setSpacing(5);
@@ -106,9 +106,9 @@ public class HBoxAddress extends HBox {
 		titledPane1.setId("titled");
 		titledPane2.setId("titled");
 		
-		memAddressTextField.setText(membership.getAddress());
-		memCityTextField.setText(membership.getCity());
-		memZipcodeTextField.setText(membership.getZip());
+		memAddressTextField.setText(tm.getMembership().getAddress());
+		memCityTextField.setText(tm.getMembership().getCity());
+		memZipcodeTextField.setText(tm.getMembership().getZip());
 		titledPane1.setText("Primary Address");
 		titledPane2.setText("Secondary Address");
 		titledPane1.setCollapsible(false);
@@ -120,30 +120,30 @@ public class HBoxAddress extends HBox {
         memAddressTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 	            //focus out
 	            if (oldValue) {  // we have focused and unfocused
-                        membership.setAddress(memAddressTextField.getText());
-	            		SqlUpdate.updateAddress(membership);
+                    tm.getMembership().setAddress(memAddressTextField.getText());
+	            		SqlUpdate.updateAddress(tm.getMembership());
 	            }
 	        });
                 
         memCityTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 	            //focus out
 	            if (oldValue) {  // we have focused and unfocused
-                        membership.setCity(memCityTextField.getText());
-	            		SqlUpdate.updateCity(membership);
+                    tm.getMembership().setCity(memCityTextField.getText());
+	            		SqlUpdate.updateCity(tm.getMembership());
 	            }
 	        });
   
         memZipcodeTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 	            //focus out
 	            if (oldValue) {  // we have focused and unfocused
-                        membership.setZip(memZipcodeTextField.getText());
-	            		SqlUpdate.updateZipcode(membership);
+                    tm.getMembership().setZip(memZipcodeTextField.getText());
+	            		SqlUpdate.updateZipcode(tm.getMembership());
 	            }
 	        });
         
         stateComboBox.getSelectionModel().selectedItemProperty().addListener( (options, oldValue, newValue) -> {
-            membership.setState(newValue);
-        	SqlUpdate.updateState(membership);
+            tm.getMembership().setState(newValue);
+        	SqlUpdate.updateState(tm.getMembership());
         }); 
         
 		///////////// SET CONTENT ////////////////////
@@ -163,5 +163,4 @@ public class HBoxAddress extends HBox {
 		hboxGrey.getChildren().addAll(mainVBox);
 		getChildren().add(hboxGrey);
 	}
-	
 }

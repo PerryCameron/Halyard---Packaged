@@ -2,7 +2,7 @@ package com.ecsail.gui.tabs.membership.information;
 
 
 import com.ecsail.EditCell;
-import com.ecsail.Note;
+import com.ecsail.gui.tabs.membership.TabMembership;
 import com.ecsail.structures.MemoDTO;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
@@ -20,10 +20,10 @@ import java.util.Date;
 import java.util.function.Function;
 
 public class HBoxMembershipNotes extends HBox {
-	private final Note note;
+	TabMembership tm;
 	
-	public HBoxMembershipNotes(Note n) {
-		this.note = n;
+	public HBoxMembershipNotes(TabMembership tm) {
+		this.tm = tm;
 		
 		//////////// OBJECTS ///////////////
 		var hboxGrey = new HBox();  // this is the vbox for organizing all the widgets
@@ -54,7 +54,7 @@ public class HBoxMembershipNotes extends HBox {
 		hboxGrey.setId("box-background-light");
 		this.setId("custom-tap-pane-frame");
 		memoTableView.setEditable(true);
-		memoTableView.setItems(note.getMemos());
+		memoTableView.setItems(tm.getNote().getMemos());
 		memoTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY );
 		memoTableView.setFixedCellSize(30);
 
@@ -64,7 +64,7 @@ public class HBoxMembershipNotes extends HBox {
 					t.getTableView().getItems().get(
 							t.getTablePosition().getRow()).setMemo_date(t.getNewValue());
 					int memo_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getMemo_id();
-					note.updateMemo(memo_id, "memo_date", t.getNewValue());
+					tm.getNote().updateMemo(memo_id, "memo_date", t.getNewValue());
 				}
 		);
 		/// editable row that writes to database when enter is hit
@@ -78,7 +78,7 @@ public class HBoxMembershipNotes extends HBox {
 				t -> {
 				   t.getTableView().getItems().get(t.getTablePosition().getRow()).setMemo(t.getNewValue());
 				   int memo_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getMemo_id();
-				   note.updateMemo(memo_id, "memo", t.getNewValue());
+					tm.getNote().updateMemo(memo_id, "memo", t.getNewValue());
 				}
 		);
         
@@ -92,7 +92,7 @@ public class HBoxMembershipNotes extends HBox {
         add.setOnAction(e -> {
 			String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
 			// add a memo and return its id
-			 note.addMemoAndReturnId("new memo", date,0,"N");
+			tm.getNote().addMemoAndReturnId("new memo", date,0,"N");
 			// this line prevents strange behaviour I found the solution here:
 			// https://stackoverflow.com/questions/49531071/insert-row-in-javafx-tableview-and-start-editing-is-not-working-correctly
 			memoTableView.layout();
@@ -103,7 +103,7 @@ public class HBoxMembershipNotes extends HBox {
 		delete.setOnAction(e -> {
 			int selectedIndex = memoTableView.getSelectionModel().getSelectedIndex();
 			if (selectedIndex >= 0) {  // something is selected
-				note.removeMemo(selectedIndex);
+				tm.getNote().removeMemo(selectedIndex);
 				memoTableView.getItems().remove(selectedIndex);
 			}
 		});

@@ -12,6 +12,7 @@ import com.ecsail.gui.tabs.membership.people.HBoxPerson;
 import com.ecsail.gui.tabs.membership.people.VBoxAddPerson;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlPerson;
+import com.ecsail.sql.select.SqlBoat;
 import com.ecsail.sql.select.SqlInvoice;
 import com.ecsail.sql.select.SqlMembership_Id;
 import com.ecsail.sql.select.SqlMemos;
@@ -39,6 +40,8 @@ public class TabMembership extends Tab {
 	private final MemLabelsDTO labels = new MemLabelsDTO();
 	private final ObservableList<InvoiceDTO> invoices;
 	private final ObservableList<MembershipIdDTO> id;
+	private final ObservableList<BoatDTO> boats;
+
 	public TabMembership(MembershipListDTO me) {
 		super();
 		this.membership = me;
@@ -48,6 +51,8 @@ public class TabMembership extends Tab {
 		this.invoices = SqlInvoice.getInvoicesByMsid(membership.getMsid());
 		this.id = FXCollections.observableArrayList(param -> new Observable[]{param.isRenewProperty()});
 		this.id.addAll(SqlMembership_Id.getIds(membership.getMsid()));
+		this.boats = FXCollections.observableArrayList(param -> new Observable[]{param.hasTrailerProperty()});
+		this.boats.addAll(SqlBoat.getBoats(membership.getMsid()));
 		this.setText(setTabLabel());
 		BaseApplication.logger.info("Opening Membership tab for "
 				+ membership.getMembershipInfo()
@@ -107,11 +112,11 @@ public class TabMembership extends Tab {
 		fiscalTabPane.getTabs().add(new Tab("Slip", new HBoxSlip(this)));
 		fiscalTabPane.getTabs().add(new Tab("History", new HBoxHistory(this)));
 		fiscalTabPane.getTabs().add(new Tab("Invoices", new HBoxInvoiceList(this)));
-		informationTabPane.getTabs().add(new Tab("Boats", new HBoxBoat(membership)));
-		informationTabPane.getTabs().add(new Tab("Notes", new HBoxMembershipNotes(note)));
-		informationTabPane.getTabs().add(new Tab("Properties", new HBoxProperties(people, membership)));
-		informationTabPane.getTabs().add(new Tab("Attachments", new HBoxAttachment(membership)));
-		informationTabPane.getTabs().add(new Tab("Address", new HBoxAddress(membership)));
+		informationTabPane.getTabs().add(new Tab("Boats", new HBoxBoat(this)));
+		informationTabPane.getTabs().add(new Tab("Notes", new HBoxMembershipNotes(this)));
+		informationTabPane.getTabs().add(new Tab("Properties", new HBoxProperties(this)));
+		informationTabPane.getTabs().add(new Tab("Attachments", new HBoxAttachment(this)));
+		informationTabPane.getTabs().add(new Tab("Address", new HBoxAddress(this)));
 		hbox2.getChildren().addAll(peopleTabPane, fiscalTabPane);  // new BoxInformation(membership)
 		hbox3.getChildren().addAll(informationTabPane);
 		containerVBox.getChildren().addAll(hbox1,hbox2,hbox3);
@@ -125,10 +130,8 @@ public class TabMembership extends Tab {
 		AtomicInteger i = new AtomicInteger();
 		people.stream()
 				.filter(personDTO -> personDTO.getMemberType() == MemberType.DEPENDANT.getCode())
-				.forEach(personDTO -> {
-					peopleTabPane.getTabs().add(new Tab("Dependent " + (i.incrementAndGet()),
-							new HBoxPerson(personDTO,membership,peopleTabPane)));
-				});
+				.forEach(personDTO -> peopleTabPane.getTabs().add(new Tab("Dependent " + (i.incrementAndGet()),
+						new HBoxPerson(personDTO,membership,peopleTabPane))));
 	}
 	
 	private PersonDTO getPerson(int memberType) {  /// selects a person by memberType
@@ -173,31 +176,28 @@ public class TabMembership extends Tab {
 	public TabPane getFiscalTabPane() {
 		return fiscalTabPane;
 	}
-
 	public TabPane getPeopleTabPane() {
 		return peopleTabPane;
 	}
-
 	public MembershipListDTO getMembership() {
 		return membership;
 	}
-
 	public ObservableList<PersonDTO> getPeople() {
 		return people;
 	}
-
 	public Note getNote() {
 		return note;
 	}
-
 	public MemLabelsDTO getLabels() {
 		return labels;
 	}
-
 	public ObservableList<InvoiceDTO> getInvoices() {
 		return invoices;
 	}
 	public ObservableList<MembershipIdDTO> getMembershipId() {
 		return id;
+	}
+	public ObservableList<BoatDTO> getBoats() {
+		return boats;
 	}
 }

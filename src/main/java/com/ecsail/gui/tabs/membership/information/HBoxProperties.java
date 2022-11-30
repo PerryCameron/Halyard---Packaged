@@ -2,10 +2,10 @@ package com.ecsail.gui.tabs.membership.information;
 
 import com.ecsail.LabelPrinter;
 import com.ecsail.Launcher;
+import com.ecsail.gui.tabs.membership.TabMembership;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.select.SqlPerson;
-import com.ecsail.structures.MembershipListDTO;
 import com.ecsail.structures.PersonDTO;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -20,12 +20,11 @@ import java.util.Optional;
 
 ///  this class is for the properties tab for the entire membership
 public class HBoxProperties extends HBox {
-    private final MembershipListDTO membership;
 
     //private TextField duesText;
-    public HBoxProperties(ObservableList<PersonDTO> people, MembershipListDTO m) {
+    public HBoxProperties(TabMembership tm) {
         super();
-        this.membership = m;
+
         //this.duesText = dt;
         //////////// OBJECTS ///////////////
         HBox hboxGrey = new HBox();  // this is the vbox for organizing all the widgets
@@ -71,24 +70,24 @@ public class HBoxProperties extends HBox {
         removeMembershipButton.setOnAction(e -> {
             Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
             conformation.setTitle("Delete Membership");
-            conformation.setHeaderText("Membership " + membership.getMembershipId());
+            conformation.setHeaderText("Membership " + tm.getMembership().getMembershipId());
             conformation.setContentText("Are sure you want to delete this membership?\n\n");
             DialogPane dialogPane = conformation.getDialogPane();
             dialogPane.getStylesheets().add("css/dark/dialogue.css");
             dialogPane.getStyleClass().add("dialog");
             Optional<ButtonType> result = conformation.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                deleteMembership(membership.getMsid());
+                deleteMembership(tm.getMembership().getMsid());
             }
         });
 
-        printLabelsButton.setOnAction((actionEvent -> people.stream()
+        printLabelsButton.setOnAction((actionEvent -> tm.getPeople().stream()
 				.filter(personDTO -> personDTO.getMemberType() < 3)
 				.forEach(p -> {
 					String[] lines = {
 							p.getFname() + " " + p.getLname()
-							, String.valueOf(membership.getMembershipId())
-							, membership.getMemType()
+							, String.valueOf(tm.getMembership().getMembershipId())
+							, tm.getMembership().getMemType()
 							, "03/01/2023"};
 					// TODO fix the date above
 					LabelPrinter.printMembershipLabel(lines);

@@ -1,5 +1,6 @@
 package com.ecsail.gui.tabs.membership.information;
 
+import com.ecsail.gui.tabs.membership.TabMembership;
 import com.ecsail.structures.MembershipDTO;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -8,11 +9,10 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 public class HBoxAttachment extends HBox {
-	MembershipDTO membership;
+	TabMembership tm;
 
-	public HBoxAttachment(MembershipDTO membership) {
-		//super();
-		this.membership = membership;
+	public HBoxAttachment(TabMembership tm) {
+		this.tm = tm;
 
 		//////////// OBJECTS ///////////////
 		var hboxGrey = new HBox();  // this is the vbox for organizing all the widgets
@@ -26,14 +26,9 @@ public class HBoxAttachment extends HBox {
 
 		HBox.setHgrow(hboxGrey, Priority.ALWAYS);
 		mainVBox.setSpacing(5);
-		
-		//vboxPink.setPadding(new Insets(2,2,2,2)); // spacing to make pink fram around table
-		//yearSpinner.setPrefWidth(80);
+
 		this.setId("custom-tap-pane-frame");
 		hboxGrey.setId("box-background-light");
-		//vboxPink.setId("box-pink");
-
-		//hboxGrey.setPrefWidth(942);
 		
 		///////////// SET CONTENT ////////////////////
 		mainVBox.getChildren().addAll(new Label("Attachments will go here"));

@@ -2,8 +2,9 @@ package com.ecsail.gui.tabs.membership.fiscal;
 
 
 import com.ecsail.BaseApplication;
-import com.ecsail.gui.tabs.membership.fiscal.invoice.HBoxInvoice;
+
 import com.ecsail.gui.tabs.membership.TabMembership;
+import com.ecsail.gui.tabs.membership.fiscal.invoice.HBoxInvoice;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlInsert;

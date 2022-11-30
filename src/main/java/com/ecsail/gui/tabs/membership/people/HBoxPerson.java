@@ -271,6 +271,7 @@ public class HBoxPerson extends HBox {
                     birthdayDatePicker.getEditor().setText(birthdayDatePicker.getConverter().toString(birthdayDatePicker.getValue()));
                 }
                 LocalDate i = birthdayDatePicker.getValue();
+                System.out.println(i.toString());
                 SqlUpdate.updateBirthday(i, person);
             }
         });
