@@ -25,7 +25,7 @@ public enum Awards {
 	 
 	   public static Awards getByCode(String awardCode) {
 		   return Arrays.stream(Awards.values())
-				   .filter(g -> g.code == awardCode)
+				   .filter(g -> g.code.equals(awardCode))
 				   .findFirst().orElse(null);
 	   }
 	   
