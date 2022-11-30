@@ -1,0 +1,220 @@
+package com.ecsail.gui.tabs.membership.fiscal;
+
+
+import com.ecsail.BaseApplication;
+import com.ecsail.gui.tabs.membership.fiscal.invoice.HBoxInvoice;
+import com.ecsail.gui.tabs.membership.TabMembership;
+import com.ecsail.sql.SqlDelete;
+import com.ecsail.sql.SqlExists;
+import com.ecsail.sql.SqlInsert;
+import com.ecsail.sql.select.SqlDbInvoice;
+import com.ecsail.sql.select.SqlSelect;
+import com.ecsail.structures.DbInvoiceDTO;
+import com.ecsail.structures.InvoiceDTO;
+import com.ecsail.structures.InvoiceItemDTO;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class HBoxInvoiceList extends HBox {
+	String currentYear;
+	TabMembership t;
+	public HBoxInvoiceList(TabMembership t) {
+		super();
+		this.t = t;
+		this.currentYear = BaseApplication.selectedYear;
+
+		////////////////////////  OBJECTS   ///////////////////////////////
+		var vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
+		var hbox1 = new HBox();  // holds membershipID, Type and Active
+		var vboxPink = new VBox(); // this creates a pink border around the table
+		var deleteButtonHBox = new HBox();
+		var addFiscalRecord = new Button("Add");
+		var deleteFiscalRecord = new Button("Delete");
+		var fiscalTableView = new TableView<InvoiceDTO>();
+		var Col1 = new TableColumn<InvoiceDTO, Integer>("Year");
+		var Col2 = new TableColumn<InvoiceDTO, Integer>("Fees");
+		var Col3 = new TableColumn<InvoiceDTO, Integer>("Credit");
+		var Col4 = new TableColumn<InvoiceDTO, Integer>("Paid");
+		var Col5 = new TableColumn<InvoiceDTO, Integer>("Balance");
+		var comboBox = new ComboBox<Integer>();
+		populateComboBox(comboBox);
+		
+		///////////////////// SORT ///////////////////////////////////////////
+		t.getInvoices().sort((p1, p2) -> Integer.compare(p2.getYear(), (p1.getYear())));
+		
+		///////////////////// ATTRIBUTES /////////////////////////////////////
+
+		fiscalTableView.setEditable(false);
+		fiscalTableView.setFixedCellSize(30);
+		fiscalTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY );
+		
+		Col1.setCellValueFactory(new PropertyValueFactory<>("year"));
+		Col2.setCellValueFactory(new PropertyValueFactory<>("total"));
+		Col3.setCellValueFactory(new PropertyValueFactory<>("credit"));
+		Col4.setCellValueFactory(new PropertyValueFactory<>("paid"));
+		Col5.setCellValueFactory(new PropertyValueFactory<>("balance"));
+
+		Col2.setStyle( "-fx-alignment: CENTER;");
+		Col2.setStyle( "-fx-alignment: CENTER-RIGHT;");
+		Col3.setStyle( "-fx-alignment: CENTER-RIGHT;");
+		Col4.setStyle( "-fx-alignment: CENTER-RIGHT;");
+		Col5.setStyle( "-fx-alignment: CENTER-RIGHT;");
+		
+		/////////////  ATTRIBUTES /////////////
+		fiscalTableView.getColumns().addAll(Arrays.asList(Col1, Col2, Col3, Col4, Col5));
+		fiscalTableView.getSortOrder().add(Col1);  // start sorted by membershipID
+		fiscalTableView.sort();
+
+		Col1.setMaxWidth( 1f * Integer.MAX_VALUE * 20 );   // Year
+		Col2.setMaxWidth( 1f * Integer.MAX_VALUE * 20 );  // Mem Id
+		Col3.setMaxWidth( 1f * Integer.MAX_VALUE * 20 );   // Mem Type
+		Col4.setMaxWidth( 1f * Integer.MAX_VALUE * 20 );   // Renewed
+		Col5.setMaxWidth( 1f * Integer.MAX_VALUE * 20 );   // Renew Late
+		
+		vboxGrey.setPrefWidth(460);
+		comboBox.setPrefWidth(80);
+		
+		vboxPink.setPadding(new Insets(2,2,2,2)); // spacing to make pink frame around table
+		vboxGrey.setPadding(new Insets(10, 10, 10, 10));
+		deleteButtonHBox.setPadding(new Insets(0,0,0,40));
+		setPadding(new Insets(5, 5, 5, 5));  // creates space for blue frame
+		
+		hbox1.setSpacing(5);  // membership HBox
+        vboxGrey.setSpacing(10);
+        hbox1.setAlignment(Pos.CENTER_LEFT);
+
+		vboxGrey.setId("box-background-light");
+		setId("custom-tap-pane-frame");
+		VBox.setVgrow(vboxPink, Priority.ALWAYS);
+		VBox.setVgrow(fiscalTableView, Priority.ALWAYS);
+		HBox.setHgrow(fiscalTableView, Priority.ALWAYS);
+		HBox.setHgrow(vboxGrey, Priority.ALWAYS);
+		HBox.setHgrow(vboxPink, Priority.ALWAYS);
+
+        ////////////////  LISTENERS ///////////////////
+		addFiscalRecord.setOnAction((event) -> {
+				// get the next available key for money_id table
+				int invoiceId = SqlSelect.getNextAvailablePrimaryKey("invoice","id");
+				// create appropriate money object for this membership
+				var newInvoice = new InvoiceDTO(invoiceId, t.getMembership().getMsid(),
+						comboBox.getValue(), "0.00", "0.00", "0.00", "0.00", 0,
+						false, false, false,"0.00");
+
+				// if a record already exists for this year then this is a supplemental record
+				if (SqlExists.invoiceExists(String.valueOf(comboBox.getValue()), t.getMembership())) {
+					newInvoice.setSupplemental(true);
+				}
+
+				// insert the new record into the SQL database
+				SqlInsert.addInvoiceRecord(newInvoice);
+				// insert items for the invoice
+				createInvoiceItems(invoiceId, comboBox.getValue(), t.getMembership().getMsid());
+				// add new money row to tableview
+			t.getInvoices().add(newInvoice);
+				// send new money row to top
+			t.getInvoices().sort(Comparator.comparing(InvoiceDTO::getYear).reversed());
+				// open a tab for the year we just created
+				createTabByYear(newInvoice);
+		});
+        
+		deleteFiscalRecord.setOnAction((event) -> {
+			int selectedIndex = fiscalTableView.getSelectionModel().getSelectedIndex();
+			var conformation = new Alert(Alert.AlertType.CONFIRMATION);
+			conformation.setTitle("Remove Invoice");
+			conformation.setHeaderText("Invoice #" + t.getInvoices().get(selectedIndex).getId());
+			conformation.setContentText("Are sure you want to delete this invoice from " + t.getInvoices().get(selectedIndex).getYear() + "?");
+			DialogPane dialogPane = conformation.getDialogPane();
+			dialogPane.getStylesheets().add("css/dark/dialogue.css");
+			dialogPane.getStyleClass().add("dialog");
+			var result = conformation.showAndWait();
+			if (result.isPresent() && result.get() == ButtonType.OK){
+				BaseApplication.logger.info("deleting fiscal record " + selectedIndex);
+				SqlDelete.deletePaymentByMoneyID(t.getInvoices().get(selectedIndex).getId());
+				// TODO get rid of this when I get rid of work credit table
+				SqlDelete.deleteInvoiceItemByInvoiceID(t.getInvoices().get(selectedIndex).getId());
+				SqlDelete.deleteInvoiceByID(t.getInvoices().get(selectedIndex).getId());
+				t.getInvoices().remove(selectedIndex);
+			}
+		});
+		
+		fiscalTableView.setRowFactory(tv -> {
+			TableRow<InvoiceDTO> row = new TableRow<>();
+			row.setOnMouseClicked(event -> {
+				if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+					int rowIndex = row.getIndex();
+					createTab(rowIndex);
+				}
+			});
+			return row;
+		});
+        
+		///////////// SET CONTENT ////////////////////
+        fiscalTableView.setItems(t.getInvoices());
+        deleteButtonHBox.getChildren().add(deleteFiscalRecord);
+        vboxPink.getChildren().add(fiscalTableView);
+		hbox1.getChildren().addAll(new Label("Create new Fiscal Year Record:"),comboBox,addFiscalRecord,deleteButtonHBox);
+		vboxGrey.getChildren().addAll(hbox1,vboxPink);
+		getChildren().addAll(vboxGrey);	
+	}
+
+	private void createInvoiceItems(int invoiceId, Integer year, int msid) {
+		AtomicInteger id = new AtomicInteger();
+		ArrayList<DbInvoiceDTO> categories = SqlDbInvoice.getInvoiceWidgetsByYear(year);
+		id.set(SqlSelect.getNextAvailablePrimaryKey("invoice_item","ID"));
+		categories.forEach(c -> {
+			InvoiceItemDTO item = new InvoiceItemDTO(id.get(),invoiceId,msid,year,c.getObjectName(),c.isMultiplied(),c.isIs_credit(),"0.00",0);
+			id.incrementAndGet();
+			SqlInsert.addInvoiceItemRecord(item);
+		});
+	}
+
+	/////////////////////  CLASS METHODS /////////////////////////////
+	private void populateComboBox(ComboBox<Integer> comboBox) {
+		int selectedElement = 0;
+		for(int i = Integer.parseInt(BaseApplication.selectedYear) + 1; i > 1969; i--) {
+			if(i == Integer.parseInt(t.getLabels().getSelectedYear().getText())) selectedElement = i;
+			comboBox.getItems().add(i);
+		}
+		comboBox.setValue(selectedElement);
+	}
+
+	private void createTab(int rowIndex) {
+		t.getFiscalTabPane().getTabs().add(new Tab(String.valueOf(t.getInvoices().get(rowIndex).getYear()),
+				new HBoxInvoice(t.getMembership(), t.getInvoices().get(rowIndex), t.getNote()))); // current year tab
+		for(Tab tab: t.getFiscalTabPane().getTabs()) {
+			if(tab.getText().equals(String.valueOf(t.getInvoices().get(rowIndex).getYear())))
+				t.getFiscalTabPane().getSelectionModel().select(tab);
+		}
+	}
+
+	private void createTabByYear(InvoiceDTO invoice) {
+		// create a tab with the correct year
+		Tab newTab = new Tab(String.valueOf(invoice.getYear()));
+		// add tab to pane
+		t.getFiscalTabPane().getTabs().add(newTab);
+		// find the index value of the correct Object_Money in fiscals ArrayList
+		int fiscalsIndex = getFiscalIndexByYear(invoice.getId());
+		// add appropriate invoice to the tab using the index of fiscals
+		newTab.setContent(new HBoxInvoice(t.getMembership(), t.getInvoices().get(fiscalsIndex), t.getNote()));
+		// open the correct tab
+		t.getFiscalTabPane().getSelectionModel().select(newTab);
+	}
+
+	// searches through list and counts the index value it finds correct money_id at.
+	private int getFiscalIndexByYear(int money_id) {
+		AtomicInteger i = new AtomicInteger();
+		return t.getInvoices().stream().sequential().peek(v -> i.incrementAndGet())
+				.anyMatch(fis -> fis.getId() == money_id) ? i.get() - 1 : -1;
+	}
+}

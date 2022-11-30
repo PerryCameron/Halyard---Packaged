@@ -1,9 +1,9 @@
 package com.ecsail;
 
 import com.ecsail.enums.Officer;
-import com.ecsail.gui.boxes.HBoxWelcome;
+import com.ecsail.gui.tabs.welcome.HBoxWelcome;
 import com.ecsail.gui.tabs.TabLogin;
-import com.ecsail.gui.tabs.TabWelcome;
+import com.ecsail.gui.tabs.welcome.TabWelcome;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.structures.Object_Login;
 import javafx.application.Platform;
