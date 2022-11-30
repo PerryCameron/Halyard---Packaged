@@ -100,6 +100,7 @@ public class VboxFooter extends VBox {
         vboxTotalLabels.setSpacing(5);
         vboxCommitButton.setSpacing(10);
         vboxButtons.setSpacing(5);
+        renewCheckBox.setSelected(true);
 
         vboxTableView.setPrefWidth(360);
         vboxTotalLabels.setPrefWidth(260);
@@ -196,4 +197,7 @@ public class VboxFooter extends VBox {
         return totalPaymentText;
     }
 
+    public CheckBox getRenewCheckBox() {
+        return renewCheckBox;
+    }
 }

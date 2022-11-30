@@ -72,7 +72,9 @@ public class HBoxInvoice extends HBox {
             header.setCommitMode(invoice.isCommitted());
             invoiceItemMap.values().forEach(e -> e.setCommitMode(invoice.isCommitted()));
             footer.setCommitMode(invoice.isCommitted());
+            // need to set membership_id as active
             SqlUpdate.updateInvoice(invoice);
+            SqlUpdate.updateMembershipId(membership.getMsid(),invoice.getYear(),footer.getRenewCheckBox().isSelected());
         });
 
 		// take list of invoiceWidgets, insert appropriate fee into widget, insert reference to invoice items
