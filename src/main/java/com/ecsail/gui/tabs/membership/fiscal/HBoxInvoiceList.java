@@ -29,10 +29,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class HBoxInvoiceList extends HBox {
 	String currentYear;
-	TabMembership t;
-	public HBoxInvoiceList(TabMembership t) {
+	TabMembership tm;
+	public HBoxInvoiceList(TabMembership tm) {
 		super();
-		this.t = t;
+		this.tm = tm;
 		this.currentYear = BaseApplication.selectedYear;
 
 		////////////////////////  OBJECTS   ///////////////////////////////
@@ -52,7 +52,7 @@ public class HBoxInvoiceList extends HBox {
 		populateComboBox(comboBox);
 		
 		///////////////////// SORT ///////////////////////////////////////////
-		t.getInvoices().sort((p1, p2) -> Integer.compare(p2.getYear(), (p1.getYear())));
+		tm.getInvoices().sort((p1, p2) -> Integer.compare(p2.getYear(), (p1.getYear())));
 		
 		///////////////////// ATTRIBUTES /////////////////////////////////////
 
@@ -108,23 +108,23 @@ public class HBoxInvoiceList extends HBox {
 				// get the next available key for money_id table
 				int invoiceId = SqlSelect.getNextAvailablePrimaryKey("invoice","id");
 				// create appropriate money object for this membership
-				var newInvoice = new InvoiceDTO(invoiceId, t.getMembership().getMsid(),
+				var newInvoice = new InvoiceDTO(invoiceId, tm.getMembership().getMsid(),
 						comboBox.getValue(), "0.00", "0.00", "0.00", "0.00", 0,
 						false, false, false,"0.00");
 
 				// if a record already exists for this year then this is a supplemental record
-				if (SqlExists.invoiceExists(String.valueOf(comboBox.getValue()), t.getMembership())) {
+				if (SqlExists.invoiceExists(String.valueOf(comboBox.getValue()), tm.getMembership())) {
 					newInvoice.setSupplemental(true);
 				}
 
 				// insert the new record into the SQL database
 				SqlInsert.addInvoiceRecord(newInvoice);
 				// insert items for the invoice
-				createInvoiceItems(invoiceId, comboBox.getValue(), t.getMembership().getMsid());
+				createInvoiceItems(invoiceId, comboBox.getValue(), tm.getMembership().getMsid());
 				// add new money row to tableview
-			t.getInvoices().add(newInvoice);
+			tm.getInvoices().add(newInvoice);
 				// send new money row to top
-			t.getInvoices().sort(Comparator.comparing(InvoiceDTO::getYear).reversed());
+			tm.getInvoices().sort(Comparator.comparing(InvoiceDTO::getYear).reversed());
 				// open a tab for the year we just created
 				createTabByYear(newInvoice);
 		});
@@ -133,19 +133,19 @@ public class HBoxInvoiceList extends HBox {
 			int selectedIndex = fiscalTableView.getSelectionModel().getSelectedIndex();
 			var conformation = new Alert(Alert.AlertType.CONFIRMATION);
 			conformation.setTitle("Remove Invoice");
-			conformation.setHeaderText("Invoice #" + t.getInvoices().get(selectedIndex).getId());
-			conformation.setContentText("Are sure you want to delete this invoice from " + t.getInvoices().get(selectedIndex).getYear() + "?");
+			conformation.setHeaderText("Invoice #" + tm.getInvoices().get(selectedIndex).getId());
+			conformation.setContentText("Are sure you want to delete this invoice from " + tm.getInvoices().get(selectedIndex).getYear() + "?");
 			DialogPane dialogPane = conformation.getDialogPane();
 			dialogPane.getStylesheets().add("css/dark/dialogue.css");
 			dialogPane.getStyleClass().add("dialog");
 			var result = conformation.showAndWait();
 			if (result.isPresent() && result.get() == ButtonType.OK){
 				BaseApplication.logger.info("deleting fiscal record " + selectedIndex);
-				SqlDelete.deletePaymentByMoneyID(t.getInvoices().get(selectedIndex).getId());
+				SqlDelete.deletePaymentByMoneyID(tm.getInvoices().get(selectedIndex).getId());
 				// TODO get rid of this when I get rid of work credit table
-				SqlDelete.deleteInvoiceItemByInvoiceID(t.getInvoices().get(selectedIndex).getId());
-				SqlDelete.deleteInvoiceByID(t.getInvoices().get(selectedIndex).getId());
-				t.getInvoices().remove(selectedIndex);
+				SqlDelete.deleteInvoiceItemByInvoiceID(tm.getInvoices().get(selectedIndex).getId());
+				SqlDelete.deleteInvoiceByID(tm.getInvoices().get(selectedIndex).getId());
+				tm.getInvoices().remove(selectedIndex);
 			}
 		});
 		
@@ -161,7 +161,7 @@ public class HBoxInvoiceList extends HBox {
 		});
         
 		///////////// SET CONTENT ////////////////////
-        fiscalTableView.setItems(t.getInvoices());
+        fiscalTableView.setItems(tm.getInvoices());
         deleteButtonHBox.getChildren().add(deleteFiscalRecord);
         vboxPink.getChildren().add(fiscalTableView);
 		hbox1.getChildren().addAll(new Label("Create new Fiscal Year Record:"),comboBox,addFiscalRecord,deleteButtonHBox);
@@ -184,18 +184,18 @@ public class HBoxInvoiceList extends HBox {
 	private void populateComboBox(ComboBox<Integer> comboBox) {
 		int selectedElement = 0;
 		for(int i = Integer.parseInt(BaseApplication.selectedYear) + 1; i > 1969; i--) {
-			if(i == Integer.parseInt(t.getLabels().getSelectedYear().getText())) selectedElement = i;
+			if(i == Integer.parseInt(tm.getLabels().getSelectedYear().getText())) selectedElement = i;
 			comboBox.getItems().add(i);
 		}
-		comboBox.setValue(selectedElement);
+		comboBox.setValue(selectedElement); // sets year for combo box to record year
 	}
 
 	private void createTab(int rowIndex) {
-		t.getFiscalTabPane().getTabs().add(new Tab(String.valueOf(t.getInvoices().get(rowIndex).getYear()),
-				new HBoxInvoice(t.getMembership(), t.getInvoices().get(rowIndex), t.getNote()))); // current year tab
-		for(Tab tab: t.getFiscalTabPane().getTabs()) {
-			if(tab.getText().equals(String.valueOf(t.getInvoices().get(rowIndex).getYear())))
-				t.getFiscalTabPane().getSelectionModel().select(tab);
+		tm.getFiscalTabPane().getTabs().add(new Tab(String.valueOf(tm.getInvoices().get(rowIndex).getYear()),
+				new HBoxInvoice(this, rowIndex))); // current year tab
+		for(Tab tab: tm.getFiscalTabPane().getTabs()) {
+			if(tab.getText().equals(String.valueOf(tm.getInvoices().get(rowIndex).getYear())))
+				tm.getFiscalTabPane().getSelectionModel().select(tab);
 		}
 	}
 
@@ -203,19 +203,23 @@ public class HBoxInvoiceList extends HBox {
 		// create a tab with the correct year
 		Tab newTab = new Tab(String.valueOf(invoice.getYear()));
 		// add tab to pane
-		t.getFiscalTabPane().getTabs().add(newTab);
+		tm.getFiscalTabPane().getTabs().add(newTab);
 		// find the index value of the correct Object_Money in fiscals ArrayList
 		int fiscalsIndex = getFiscalIndexByYear(invoice.getId());
 		// add appropriate invoice to the tab using the index of fiscals
-		newTab.setContent(new HBoxInvoice(t.getMembership(), t.getInvoices().get(fiscalsIndex), t.getNote()));
+		newTab.setContent(new HBoxInvoice(this, fiscalsIndex));
 		// open the correct tab
-		t.getFiscalTabPane().getSelectionModel().select(newTab);
+		tm.getFiscalTabPane().getSelectionModel().select(newTab);
 	}
 
 	// searches through list and counts the index value it finds correct money_id at.
 	private int getFiscalIndexByYear(int money_id) {
 		AtomicInteger i = new AtomicInteger();
-		return t.getInvoices().stream().sequential().peek(v -> i.incrementAndGet())
+		return tm.getInvoices().stream().sequential().peek(v -> i.incrementAndGet())
 				.anyMatch(fis -> fis.getId() == money_id) ? i.get() - 1 : -1;
+	}
+
+	public TabMembership getTabMembership() {
+		return tm;
 	}
 }

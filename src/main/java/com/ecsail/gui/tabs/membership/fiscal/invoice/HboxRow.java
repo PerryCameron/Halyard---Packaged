@@ -1,5 +1,6 @@
 package com.ecsail.gui.tabs.membership.fiscal.invoice;
 
+import com.ecsail.BaseApplication;
 import com.ecsail.FixInput;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlUpdate;
@@ -48,13 +49,15 @@ public class HboxRow extends HBox {
         this.items = invoiceWidget.getItems();
 
         // get officer credit
-        if(invoiceWidget.getObjectName().equals("Position Credit")) {
-            if (getOfficerCredit())
-                invoiceItem.setValue(items.get(0).getValue()); // is putting dues into here
+        if (invoiceWidget.getObjectName().equals("Position Credit")) {
+            if (!invoice.isCommitted())
+                if (getOfficerCredit())
+                    invoiceItem.setValue(items.get(0).getValue()); // is putting dues value into here
             total.setText(items.get(0).getValue());
-            SqlUpdate.updateInvoiceItem(invoiceItem);
+            checkIfNotCommittedAndUpdateSql();
             // TODO maybe find better way than putting element 0 in (not dynamic or robust)
         }
+
 
         setSpacing(15);
 
@@ -165,7 +168,8 @@ public class HboxRow extends HBox {
     }
 
     private void autoPopulateField() {
-        if(invoiceWidget.isAutoPopulate()) {
+        // if it is a row that can autoPopulate i.e. dues, and the record is not committed
+        if(invoiceWidget.isAutoPopulate() && !invoice.isCommitted()) {
             if (!invoice.isSupplemental()) {
                 textField.setText(String.valueOf(fee.getFieldValue()));
                 invoiceItem.setValue(String.valueOf(fee.getFieldValue()));
@@ -189,7 +193,7 @@ public class HboxRow extends HBox {
 			total.setText(calculatedTotal);
             invoiceItem.setQty(newValue);
             invoiceItem.setValue(calculatedTotal);
-            SqlUpdate.updateInvoiceItem(invoiceItem);
+            checkIfNotCommittedAndUpdateSql();
 			updateBalance();
 		});
     }
@@ -200,7 +204,7 @@ public class HboxRow extends HBox {
             total.setText(calculatedTotal);
             invoiceItem.setQty(newValue);
             invoiceItem.setValue(calculatedTotal);
-            SqlUpdate.updateInvoiceItem(invoiceItem);
+            checkIfNotCommittedAndUpdateSql();
             updateBalance();
         });
     }
@@ -213,15 +217,20 @@ public class HboxRow extends HBox {
 	            	if(!FixInput.isBigDecimal(textField.getText())) {
 						textField.setText("0");
 	            	}
-	            	BigDecimal dues = new BigDecimal(textField.getText());
-					textField.setText(String.valueOf(dues.setScale(2, RoundingMode.HALF_UP)));
+	            	BigDecimal item = new BigDecimal(textField.getText());
+					textField.setText(String.valueOf(item.setScale(2, RoundingMode.HALF_UP)));
                     invoiceItem.setQty(1);
                     invoiceItem.setValue(textField.getText());
                     total.setText(textField.getText());
-                    SqlUpdate.updateInvoiceItem(invoiceItem);
+                    checkIfNotCommittedAndUpdateSql();
 	            	updateBalance();
 	            }
 	        });
+    }
+
+    private void checkIfNotCommittedAndUpdateSql() {
+        if(invoice.isCommitted()) BaseApplication.logger.info("Record is committed: database can not be updated");
+        else SqlUpdate.updateInvoiceItem(invoiceItem);
     }
 
     private void setPriceChangeListener(TextField textField) {
@@ -233,13 +242,12 @@ public class HboxRow extends HBox {
                 }
                 BigDecimal calculatedValue = new BigDecimal(textField.getText());
                 String stringValue = String.valueOf(calculatedValue.multiply(BigDecimal.valueOf(spinner.getValue())).setScale(2, RoundingMode.HALF_UP));
-                System.out.println("stringValue= " + stringValue);
                 textField.setText(stringValue);
                 price.setText(stringValue);
                 String value = String.valueOf(new BigDecimal(price.getText()).multiply(BigDecimal.valueOf(spinner.getValue())));
-                System.out.println("value=" + value);
                 invoiceItem.setValue(value);
                 total.setText(value);
+                checkIfNotCommittedAndUpdateSql();
                 SqlUpdate.updateInvoiceItem(invoiceItem);
                 updateBalance();
                 vBox4.getChildren().clear();
