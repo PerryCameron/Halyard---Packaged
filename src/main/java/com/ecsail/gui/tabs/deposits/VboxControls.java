@@ -3,12 +3,14 @@ package com.ecsail.gui.tabs.deposits;
 import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.gui.dialogues.Dialogue_DepositPDF;
+import com.ecsail.pdf.PDF_DepositReport;
 import com.ecsail.sql.SqlCount;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.*;
 import com.ecsail.structures.DepositDTO;
+import com.ecsail.structures.DepositPDFDTO;
 import com.ecsail.structures.DepositTotal;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -39,12 +41,11 @@ public class VboxControls extends VBox {
     private int selectedYear;
     private final DatePicker depositDatePicker = new DatePicker();
     private int numberOfDeposits;
-    private Text nonRenewed = new Text("0");
+    private final Text nonRenewed = new Text("0");
     private final Spinner<Integer> batchSpinner;
-    private HBox hboxDepositRecords = new HBox();
-    private Button newDepositButton = new Button("New Deposit");
-
-    private Button insertInvoicesButton = new Button("Insert New Invoices");
+    private final HBox hboxDepositRecords = new HBox();
+    private final Button newDepositButton = new Button("New Deposit");
+    private final Button insertInvoicesButton = new Button("Insert New Invoices");
 
     public VboxControls(TabDeposits tabDeposits) {
         this.tabParent = tabDeposits;
@@ -201,7 +202,7 @@ public class VboxControls extends VBox {
         newDepositButton.setOnAction(event -> {
             if(okToMakeNewDeposit()) { // checks to see that last deposit is not empty, so ok to make new one
                 numberOfDeposits++; // must be first
-                cleanDeposit(true);
+                cleanDeposit();
                 SqlInsert.addDeposit(depositDTO);
                 refreshDepositCount();
                 depositDTO.setBatch(numberOfDeposits);
@@ -227,7 +228,14 @@ public class VboxControls extends VBox {
             refreshAllData(false); // refreshes screen to match data
         });
 
-        printPdfButton.setOnAction((event) -> new Dialogue_DepositPDF(tabDeposits, true));
+        printPdfButton.setOnAction((event) -> {
+            switch (comboBox.getValue()) {
+                case "Show All" -> new Dialogue_DepositPDF(tabDeposits, true);
+                case "Show Current" -> // Show Last always comes back to Show Current after the switch
+                        new PDF_DepositReport(tabParent, new DepositPDFDTO(true,
+                                true,true, getCorrectBatch()));
+            }
+        });
 
         VBox.setVgrow(vboxBlue, Priority.ALWAYS);
         VBox.setVgrow(vboxPink, Priority.ALWAYS);
@@ -279,23 +287,23 @@ public class VboxControls extends VBox {
     }
 
     private void refreshWidgets() {
-        switch(comboBox.getValue()) {
-            case "Show All":
+        switch (comboBox.getValue()) {
+            case "Show All" -> {
                 System.out.println("Showing All");
                 hboxDepositRecords.setVisible(true);
                 newDepositButton.setVisible(true);
                 newDepositButton.setManaged(true);
                 insertInvoicesButton.setVisible(false);
                 insertInvoicesButton.setManaged(false);
-                break;
-            case "Show Current": // Show Last always comes back to Show Current after the switch
+            }
+            case "Show Current" -> { // Show Last always comes back to Show Current after the switch
                 System.out.println("Showing Current");
                 hboxDepositRecords.setVisible(false);
                 newDepositButton.setVisible(false);
                 newDepositButton.setManaged(false);
                 insertInvoicesButton.setVisible(true);
                 insertInvoicesButton.setManaged(true);
-                break;
+            }
         }
         refreshInvoiceNumber();
     }
@@ -361,15 +369,10 @@ public class VboxControls extends VBox {
             System.out.println("Current Deposit is " + depositDTO);
     }
 
-    private void cleanDeposit(boolean isNewDeposit) {
-        if(isNewDeposit) {
-            depositDTO.setDeposit_id(SqlSelect.getNextAvailablePrimaryKey("deposit","DEPOSIT_ID"));
-            depositDTO.setBatch(numberOfDeposits);
-        }
-        else {
-            depositDTO.setDeposit_id(0);
-            depositDTO.setBatch(0);
-        }
+    private void cleanDeposit() {
+
+        depositDTO.setDeposit_id(SqlSelect.getNextAvailablePrimaryKey("deposit", "DEPOSIT_ID"));
+        depositDTO.setBatch(numberOfDeposits);
         depositDTO.setFiscalYear(String.valueOf(selectedYear));
         LocalDate date;
         var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

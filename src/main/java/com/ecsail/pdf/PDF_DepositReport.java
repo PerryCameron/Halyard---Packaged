@@ -6,10 +6,7 @@ import com.ecsail.HalyardPaths;
 import com.ecsail.gui.tabs.deposits.InvoiceWithMemberInfoDTO;
 import com.ecsail.gui.tabs.deposits.TabDeposits;
 import com.ecsail.sql.SqlExists;
-import com.ecsail.sql.select.SqlDeposit;
-import com.ecsail.sql.select.SqlInvoiceItem;
-import com.ecsail.sql.select.SqlMemos;
-import com.ecsail.sql.select.SqlMoney;
+import com.ecsail.sql.select.*;
 import com.ecsail.structures.*;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.ColorConstants;
@@ -30,6 +27,7 @@ import java.awt.*;
 import java.io.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Comparator;
 
 public class PDF_DepositReport {
@@ -37,9 +35,13 @@ public class PDF_DepositReport {
 //	private static ObservableList<PaidDuesDTO> paidDuesForDeposit;  // these are the paid dues for a single deposit
 	private final ObservableList<InvoiceItemDTO> invoiceItems;
 
+	private final ArrayList<InvoiceItemDTO> invoiceSummedItems = new ArrayList<>();
+
+	private final ArrayList<String> invoiceItemTypes = new ArrayList<>(); // a list of types of invoice items for a given year
 	private final ObservableList<InvoiceWithMemberInfoDTO> invoices;
 	private final DepositDTO depositDTO;
-	private DepositSummaryDTO totals;
+
+	// TODO get rid of DepositSummaryDTO
 	String fiscalYear;  // save this because I clear current Deposit
 	Boolean includeDollarSigns = false;
 //	DecimalFormat df = new DecimalFormat("#,###.00");
@@ -64,7 +66,13 @@ public class PDF_DepositReport {
 //		this.totals = updateTotals();
 		this.fiscalYear = depositDTO.getFiscalYear();
 		String dest;
-
+		// get our categories
+		invoiceItemTypes.addAll(SqlDbInvoice.getInvoiceCategoriesByYear(Integer.parseInt(depositDTO.getFiscalYear())));
+		// get our summed items
+		for (String type : invoiceItemTypes) {
+			invoiceSummedItems.add(SqlInvoiceItem.getInvoiceItemSumByYearAndType(
+					Integer.parseInt(depositDTO.getFiscalYear()), type, depositDTO.getBatch()));
+		}
 		
 		////////////// CHOOSE SORT //////////////
 //		sortByMembershipId();  ///////  will add more sorts later
@@ -128,19 +136,15 @@ public class PDF_DepositReport {
 	}
 	
 	/////////////////////////////   CLASS METHODS  /////////////////////////////////////////
-	
-	
+
 	private void createDepositTable(int batch, Document document) {
-//		depositDTO.clear();
-//		SqlDeposit.updateDeposit(fiscalYear, batch, depositDTO);
 		/////////// add the details pages ////////////
 		document.add(titlePdfTable("Deposit Report"));
 		document.add(detailPdfTable());
 		/////////// add the summary page ////////////
 		System.out.println("createDepoitTable() method called");
-//		totals = updateTotals();
 		document.add(headerPdfTable("Summary"));
-//		document.add(summaryPdfTable());
+		document.add(summaryPdfTable());
 	}
 	
 	public Table titlePdfTable(String title) {
@@ -254,12 +258,6 @@ public class PDF_DepositReport {
 		return thisMemo;
 	}
 
-	int returnWetSlipNumber(BigDecimal numberOf) {
-		int result = 0;
-		if(numberOf.compareTo(BigDecimal.ZERO) != 0) result = 1;
-		return result;
-	}
-
 	private void addItemPaidRow(Table detailTable, InvoiceDTO invoiceDTO) {
 		Cell cell;
 		for(int i = 0; i < 5; i++) {
@@ -305,240 +303,64 @@ public class PDF_DepositReport {
 
 	}
 
+	public Table summaryPdfTable() {
+		Table mainTable = new Table(TDRHeaders.length);
+		// mainTable.setKeepTogether(true);
+		Cell cell;
+		for (String str : TDRHeaders) {
+			mainTable.addCell(new Cell().setBackgroundColor(new DeviceCmyk(.5f, .24f, 0, 0.02f))
+					// .setWidth(12)
+					.add(new Paragraph(str).setFontSize(10)));
+		}
 
-//	public Table summaryPdfTable()  {
-//		Table mainTable = new Table(TDRHeaders.length);
-//		// mainTable.setKeepTogether(true);
-//		Cell cell;
-//		for (String str : TDRHeaders) {
-//			mainTable.addCell(new Cell().setBackgroundColor(new DeviceCmyk(.5f, .24f, 0, 0.02f))
-//					// .setWidth(12)
-//					.add(new Paragraph(str).setFontSize(10)));
-//		}
-//
-//		mainTable.addCell(new Cell().setWidth(80).add(new Paragraph(depositDTO.getDepositDate()).setFontSize(10)));
-//		mainTable.addCell(new Cell().setWidth(100).add(new Paragraph("" + depositDTO.getBatch()).setFontSize(10)));
-//		mainTable.addCell(new Cell().setWidth(200));
-//		mainTable.addCell(new Cell().setWidth(70));
-//		mainTable.addCell(new Cell().setWidth(40));
-//
-//		if (totals.getDuesNumber() != 0) {
-//			addSummaryRow(mainTable, "Annual Dues" , totals.getDuesNumber(), totals.getDues());
-//		}
-//		if (totals.getWinter_storageNumber() != 0) {
-//			addSummaryRow(mainTable, "Winter Storage Fee" , totals.getWinter_storageNumber(), totals.getWinter_storage());
-//		}
-//		if (totals.getWet_slip().compareTo(BigDecimal.ZERO) != 0) {
-//			addSummaryRow(mainTable, "Wet slip Fee" , totals.getWet_slipNumber(), totals.getWet_slip());
-//		}
-//		if (totals.getBeach().compareTo(BigDecimal.ZERO) != 0) {
-//			addSummaryRow(mainTable, "Beach Spot Fee" , totals.getBeachNumber(), totals.getBeach());
-//		}
-//		if (totals.getKayak_rack().compareTo(BigDecimal.ZERO) != 0) {
-//			addSummaryRow(mainTable, "Kayak Rack Fee" , totals.getKayak_rackNumber(), totals.getKayak_rack());
-//		}
-//		if (totals.getKayak_beach_rack().compareTo(BigDecimal.ZERO) != 0) {
-//			addSummaryRow(mainTable, "Beach Kayak Rack Fee" , totals.getBeach_kayak_rackNumber(), totals.getKayak_beach_rack());
-//		}
-//
-//		if (totals.getKayak_shed().compareTo(BigDecimal.ZERO) != 0) {
-//			addSummaryRow(mainTable, "Inside Kayak Storage Fee" , totals.getKayak_shedNumber(), totals.getKayak_shed());
-//		}
-//		if (totals.getSail_loft().compareTo(BigDecimal.ZERO) != 0) {
-//			addSummaryRow(mainTable, "Sail Loft Access Fee" , totals.getSail_loftNumber(), totals.getSail_loft());
-//		}
-//		if (totals.getSail_school_laser_loft().compareTo(BigDecimal.ZERO) != 0) {
-//			addSummaryRow(mainTable, "Sail School Loft Access Fee" , totals.getSail_school_laser_loftNumber(), totals.getSail_school_laser_loft());
-//		}
-//		if (totals.getInitiation().compareTo(BigDecimal.ZERO) != 0) {
-//			addSummaryRow(mainTable, "Initiation Fee" , totals.getInitiationNumber(), totals.getInitiation());
-//		}
-//		///////////////////  KEYS //////////////////////////////
-//		if (totals.getGate_key().compareTo(BigDecimal.ZERO) != 0) {
-//			addSummaryRow(mainTable, "Extra Gate Key Fee" , totals.getGate_keyNumber(), totals.getGate_key());
-//		}
-//		if (totals.getSail_loft_key().compareTo(BigDecimal.ZERO) != 0) {
-//			addSummaryRow(mainTable, "Sail Loft Key Fee" , totals.getSail_loft_keyNumber(), totals.getSail_loft_key());
-//		}
-//		if (totals.getSail_school_loft_key().compareTo(BigDecimal.ZERO) != 0) {
-//			addSummaryRow(mainTable, "Sail School Loft Key Fee" , totals.getSail_school_loft_keyNumber(), totals.getSail_school_loft_key());
-//		}
-//		if (totals.getKayac_shed_key().compareTo(BigDecimal.ZERO) != 0) {
-//			addSummaryRow(mainTable, "Kayak Shed Key Fee" , totals.getKayac_shed_keyNumber(), totals.getKayac_shed_key());
-//		}
-//		if (totals.getYsc_donation().compareTo(BigDecimal.ZERO) != 0) {
-//			addSummaryRow(mainTable, "Youth Sailing Club Donation" , totals.getYsc_donationNumber(), totals.getYsc_donation());
-//		}
-//		if (totals.getOther().compareTo(BigDecimal.ZERO) != 0) {
-//			addSummaryRow(mainTable, "Other" , totals.getOtherNumber(), totals.getOther());
-//		}
-//		if (totals.getCredit().compareTo(BigDecimal.ZERO) != 0) {
-//			// 0 for number of removes count in PDF
-//			addSummaryRow(mainTable, "Credit" , "", totals.getCredit());
-//		}
+		mainTable.addCell(new Cell().setWidth(80).add(new Paragraph(depositDTO.getDepositDate()).setFontSize(10)));
+		mainTable.addCell(new Cell().setWidth(100).add(new Paragraph("" + depositDTO.getBatch()).setFontSize(10)));
+		mainTable.addCell(new Cell().setWidth(200));
+		mainTable.addCell(new Cell().setWidth(70));
+		mainTable.addCell(new Cell().setWidth(40));
 
-		
-//		RemoveBorder(mainTable);
-//		cell = new Cell();
-//		cell.setBorder(Border.NO_BORDER);
-//		cell.setBorderTop(new SolidBorder(ColorConstants.BLACK, 1));
-//		cell.setBorderBottom(new DoubleBorder(ColorConstants.BLACK, 2));
-//		if(totals.getNumberOfRecords() == 1) {
-//			cell.add(new Paragraph("1 Record").setFontSize(10));
-//		} else {
-//			cell.add(new Paragraph(totals.getNumberOfRecords() + " Records").setFontSize(10));
-//		}
-//		mainTable.addCell(cell);
-//		cell = new Cell();
-//		cell.setBorder(Border.NO_BORDER);
-//		cell.setBorderTop(new SolidBorder(ColorConstants.BLACK, 1));
-//		cell.setBorderBottom(new DoubleBorder(ColorConstants.BLACK, 2));
-//		mainTable.addCell(cell);
-//		cell = new Cell();
-//		cell.setBorder(Border.NO_BORDER);
-//		cell.setBorderTop(new SolidBorder(ColorConstants.BLACK, 1));
-//		cell.setBorderBottom(new DoubleBorder(ColorConstants.BLACK, 2));
-//		cell.add(new Paragraph("Total Funds Received")).setFontSize(10);
-//		mainTable.addCell(cell);
-//		cell = new Cell();
-//		cell.setBorder(Border.NO_BORDER);
-//		cell.setBorderTop(new SolidBorder(ColorConstants.BLACK, 1));
-//		cell.setBorderBottom(new DoubleBorder(ColorConstants.BLACK, 2));
-//		mainTable.addCell(cell);
-//		cell = new Cell();
-//		cell.setBorder(Border.NO_BORDER);
-//		cell.setBorderTop(new SolidBorder(ColorConstants.BLACK, 1));
-//		cell.setBorderBottom(new DoubleBorder(ColorConstants.BLACK, 2));
-//		cell.setTextAlignment(TextAlignment.RIGHT);
-//		cell.add(new Paragraph(addDollarSign() + df.format(totals.getTotal()))).setFontSize(10);
-//		mainTable.addCell(cell);
-//
-//		return mainTable;
-//	}
+		for (InvoiceItemDTO item : invoiceSummedItems) {
+			if (!item.getValue().equals("0.00"))
+				addSummaryRow(mainTable, item);
+		}
 
+		RemoveBorder(mainTable);
+		cell = new Cell();
+		cell.setBorder(Border.NO_BORDER);
+		cell.setBorderTop(new SolidBorder(ColorConstants.BLACK, 1));
+		cell.setBorderBottom(new DoubleBorder(ColorConstants.BLACK, 2));
+		if(invoices.size() == 1) {
+			cell.add(new Paragraph("1 Record").setFontSize(10));
+		} else {
+			cell.add(new Paragraph(invoices.size() + " Records").setFontSize(10));
+		}
+		mainTable.addCell(cell);
+		cell = new Cell();
+		cell.setBorder(Border.NO_BORDER);
+		cell.setBorderTop(new SolidBorder(ColorConstants.BLACK, 1));
+		cell.setBorderBottom(new DoubleBorder(ColorConstants.BLACK, 2));
+		mainTable.addCell(cell);
+		cell = new Cell();
+		cell.setBorder(Border.NO_BORDER);
+		cell.setBorderTop(new SolidBorder(ColorConstants.BLACK, 1));
+		cell.setBorderBottom(new DoubleBorder(ColorConstants.BLACK, 2));
+		cell.add(new Paragraph("Total Funds Received")).setFontSize(10);
+		mainTable.addCell(cell);
+		cell = new Cell();
+		cell.setBorder(Border.NO_BORDER);
+		cell.setBorderTop(new SolidBorder(ColorConstants.BLACK, 1));
+		cell.setBorderBottom(new DoubleBorder(ColorConstants.BLACK, 2));
+		mainTable.addCell(cell);
+		cell = new Cell();
+		cell.setBorder(Border.NO_BORDER);
+		cell.setBorderTop(new SolidBorder(ColorConstants.BLACK, 1));
+		cell.setBorderBottom(new DoubleBorder(ColorConstants.BLACK, 2));
+		cell.setTextAlignment(TextAlignment.RIGHT);
+		cell.add(new Paragraph("0.00").setFontSize(10));
+		mainTable.addCell(cell);
 
-
-
-
-
-//	private DepositSummaryDTO updateTotals() {
-//		int numberOfRecordsCounted = 0; // number of records counted
-//		DepositSummaryDTO total = new DepositSummaryDTO();
-//		for (PaidDuesDTO paidDuesDTO : paidDuesForDeposit) {
-//
-//			if (paidDuesDTO.getBeach() != 0) { ///////// BEACH
-//				total.setBeachNumber(paidDuesDTO.getBeach() + total.getBeachNumber());
-//				BigDecimal totalBeachDollars = currentDefinedFee.getBeach().multiply(BigDecimal.valueOf(paidDuesDTO.getBeach()));
-//				total.setBeach(totalBeachDollars.add(total.getBeach()));
-//			}
-//
-//			BigDecimal credit = new BigDecimal(paidDuesDTO.getCredit());
-//			if (credit.compareTo(BigDecimal.ZERO) != 0) {  ////////  CREDIT
-//				total.setCreditNumber(1 + total.getCreditNumber());
-//				total.setCredit(credit.add(total.getCredit()));
-//			}
-//
-//			BigDecimal dues = new BigDecimal(paidDuesDTO.getDues());
-//			if (dues.compareTo(BigDecimal.ZERO) != 0) {  ////////  DUES
-//				total.setDuesNumber(1 + total.getDuesNumber());
-//				total.setDues(dues.add(total.getDues()));
-//			}
-//
-//			if (paidDuesDTO.getExtra_key() != 0) { /////  EXTRA GATE KEY
-//				// sets total number
-//				total.setGate_keyNumber(paidDuesDTO.getExtra_key() + total.getGate_keyNumber());
-//				// does some math
-//				BigDecimal totalGateKeyDollars = currentDefinedFee.getMain_gate_key().multiply(BigDecimal.valueOf(paidDuesDTO.getExtra_key()));
-//				// sets total dollars
-//				total.setGate_key(total.getGate_key().add(totalGateKeyDollars));
-//			}
-//
-//			BigDecimal initiation = new BigDecimal(paidDuesDTO.getInitiation());
-//			if (initiation.compareTo(BigDecimal.ZERO) != 0) {  /////// INITIATION
-//				total.setInitiationNumber(1 + total.getInitiationNumber());
-//				total.setInitiation(initiation.add(total.getInitiation()));
-//			}
-//
-//			if (paidDuesDTO.getKayac_rack() != 0) {  ///// KAYAK RACK FEE
-//				System.out.print(paidDuesDTO.getF_name() + " " + paidDuesDTO.getL_name() + " kayak rack: " + paidDuesDTO.getKayac_rack());
-//				// t = the value in t + amount in this paidDuesDTO
-//				total.setKayak_rackNumber(paidDuesDTO.getKayac_rack() + total.getKayak_rackNumber());
-//				// multiplies number of racks x the defined fee for this year
-//				BigDecimal totalKayakRackDollars = currentDefinedFee.getKayak_rack().multiply(BigDecimal.valueOf(paidDuesDTO.getKayac_rack()));
-//				// t = the value in t + the amount in the total from line above
-//				total.setKayak_rack(total.getKayak_rack().add(totalKayakRackDollars));
-//			}
-//
-//			if (paidDuesDTO.getKayak_beach_rack() != 0) {  ///// KAYAK RACK FEE
-//				total.setBeach_kayak_rackNumber(paidDuesDTO.getKayak_beach_rack() + total.getBeach_kayak_rackNumber());
-//				BigDecimal totalBeachKayakRackDollars = currentDefinedFee.getKayak_beach_rack().multiply(BigDecimal.valueOf(paidDuesDTO.getKayak_beach_rack()));
-//				total.setKayak_beach_rack(totalBeachKayakRackDollars.add(total.getKayak_beach_rack()));
-//			}
-//
-//			if (paidDuesDTO.getKayac_shed() != 0) {   //////// KAYAK SHED ACCESS
-//				total.setKayak_shedNumber(paidDuesDTO.getKayac_shed() + total.getKayak_shedNumber());
-//				BigDecimal totalKayakShedDollars = currentDefinedFee.getKayak_shed().multiply(BigDecimal.valueOf(paidDuesDTO.getKayac_shed()));
-//				total.setKayak_shed(totalKayakShedDollars.add(total.getKayak_shed()));
-//			}
-//
-//			if (paidDuesDTO.getKayac_shed_key() != 0) {   ///// KAYAK SHED KEY
-//				total.setKayac_shed_keyNumber(paidDuesDTO.getKayac_shed_key() + total.getKayac_shed_keyNumber());
-//				BigDecimal totalKayakShedKeyDollars = currentDefinedFee.getKayak_shed_key().multiply(BigDecimal.valueOf(paidDuesDTO.getKayac_shed_key()));
-//				total.setKayac_shed_key(totalKayakShedKeyDollars.add(total.getKayac_shed_key()));
-//			}
-//
-//			BigDecimal other = new BigDecimal(paidDuesDTO.getOther());
-//			if (other.compareTo(BigDecimal.ZERO) != 0) {  /////////  OTHER FEE ///////// IN DOLLARS
-//				total.setOtherNumber(1 + total.getOtherNumber());
-//				total.setOther(other.add(total.getOther()));
-//			}
-//			if (paidDuesDTO.getSail_loft() != 0) {   ////////// SAIL LOFT ACCESS ///////// IN NUMBER OF
-//				total.setSail_loftNumber(1 + total.getSail_loftNumber());
-//				total.setSail_loft(currentDefinedFee.getSail_loft().add(total.getSail_loft()));
-//			}
-//			if (paidDuesDTO.getSail_loft_key() != 0) {  ///////// SAIL LOFT KEY ///////// IN NUMBER OF
-//				total.setSail_loft_keyNumber(paidDuesDTO.getSail_loft_key() + total.getSail_loft_keyNumber());
-//				BigDecimal totalSailLoftKeyDollars = currentDefinedFee.getSail_loft_key().multiply(BigDecimal.valueOf(paidDuesDTO.getSail_loft_key()));
-//				total.setSail_loft_key(totalSailLoftKeyDollars.add(total.getSail_loft_key()));
-//			}
-//			if (paidDuesDTO.getSail_school_laser_loft() != 0) {  ///////// SAIL SCHOOL LOFT ACCESS ///////// IN NUMBER OF
-//				total.setSail_school_laser_loftNumber(paidDuesDTO.getSail_school_laser_loft() + total.getSail_school_laser_loftNumber());
-//				BigDecimal totalSailSchoolLoftDollars = currentDefinedFee.getSail_school_laser_loft().multiply(BigDecimal.valueOf(paidDuesDTO.getSail_school_laser_loft()));
-//				total.setSail_school_laser_loft(totalSailSchoolLoftDollars.add(total.getSail_school_laser_loft()));
-//			}
-//			if (paidDuesDTO.getSail_school_loft_key() != 0) {  ////////// SAIL SCHOOL LOFT KEY ///////// IN NUMBER OF
-//				total.setSail_school_loft_keyNumber(paidDuesDTO.getSail_school_loft_key() + total.getSail_school_loft_keyNumber());
-//				BigDecimal totalSailSchoolLoftKeyDollars = currentDefinedFee.getSail_school_loft_key().multiply(BigDecimal.valueOf(paidDuesDTO.getSail_school_loft_key()));
-//				total.setSail_school_loft_key(totalSailSchoolLoftKeyDollars.add(total.getSail_school_loft_key()));
-//			}
-//
-//			BigDecimal wetSlip = new BigDecimal(paidDuesDTO.getWet_slip());
-//			if (wetSlip.compareTo(BigDecimal.ZERO) != 0) {  ////////// WET SLIP FEE ///////// IN DOLLARS
-//				total.setWet_slipNumber(1 + total.getWet_slipNumber());
-//				total.setWet_slip(new BigDecimal(paidDuesDTO.getWet_slip()).add(total.getWet_slip()));
-//			}
-//			if (paidDuesDTO.getWinter_storage() != 0) {  ////////  WINTER STORAGE FEE ///////// IN NUMBER OF
-//				total.setWinter_storageNumber(paidDuesDTO.getWinter_storage() + total.getWinter_storageNumber());
-//				BigDecimal totalWinterStorageDollars = currentDefinedFee.getWinter_storage().multiply(BigDecimal.valueOf(paidDuesDTO.getWinter_storage()));
-//				total.setWinter_storage(totalWinterStorageDollars.add(total.getWinter_storage()));
-//			}
-//
-//			BigDecimal ysc = new BigDecimal(paidDuesDTO.getYsc_donation());
-//			if (ysc.compareTo(BigDecimal.ZERO) != 0) {  //////// YSC DONATION ///////// IN DOLLARS
-//				total.setYsc_donationNumber(1 + total.getYsc_donationNumber());
-//				total.setYsc_donation(new BigDecimal(paidDuesDTO.getYsc_donation()).add(total.getYsc_donation()));
-//			}
-//
-//			BigDecimal paid = new BigDecimal(paidDuesDTO.getPaid());
-//			if (paid.compareTo(BigDecimal.ZERO) != 0) {
-//				total.setPaid(new BigDecimal(paidDuesDTO.getPaid()).add(total.getPaid()));
-//			}
-//			numberOfRecordsCounted++;
-//		}
-//		total.setTotal(total.getPaid());  /// sets total to added up payments, kind of redundant but a bug fix and hurts nothing
-//		total.setNumberOfRecords(numberOfRecordsCounted);
-//		return total;
-//	}
+		return mainTable;
+	}
 
 	public String addDollarSign() {
 		String sign = "";
@@ -560,13 +382,13 @@ public class PDF_DepositReport {
 		return mainTable;
 	}
 	
-//	private <T> void addSummaryRow(Table mainTable, String label, T numberOf, BigDecimal money) {
-//		mainTable.addCell(new Cell());
-//		mainTable.addCell(new Cell());
-//		mainTable.addCell(new Cell().add(new Paragraph(label)).setFontSize(10));
-//		mainTable.addCell(new Cell().add(new Paragraph(numberOf + "")).setFontSize(10));
-//		mainTable.addCell(new Cell().add(new Paragraph(addDollarSign() + df.format(money)).setFontSize(10)).setTextAlignment(TextAlignment.RIGHT));
-//	}
+	private void addSummaryRow(Table mainTable, InvoiceItemDTO item) {
+		mainTable.addCell(new Cell());
+		mainTable.addCell(new Cell());
+		mainTable.addCell(new Cell().add(new Paragraph(item.getItemType())).setFontSize(10));
+		mainTable.addCell(new Cell().add(new Paragraph(String.valueOf(item.getQty()))).setFontSize(10));
+		mainTable.addCell(new Cell().add(new Paragraph(item.getValue()).setFontSize(10)).setTextAlignment(TextAlignment.RIGHT));
+	}
 	
 	private static void RemoveBorder(Table table)
 	{

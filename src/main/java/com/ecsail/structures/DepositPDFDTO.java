@@ -52,7 +52,14 @@ public class DepositPDFDTO {
 	public void setDepositNumber(int depositNumber) {
 		this.depositNumber = depositNumber;
 	}
-	
-	
-		
+
+	@Override
+	public String toString() {
+		return "DepositPDFDTO{" +
+				"isSingleDeposit=" + isSingleDeposit +
+				", includesDetailedReport=" + includesDetailedReport +
+				", includesSummaryReport=" + includesSummaryReport +
+				", depositNumber=" + depositNumber +
+				'}';
+	}
 }
