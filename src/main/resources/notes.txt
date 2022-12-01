@@ -11,3 +11,5 @@ Make is so it remembers last server visited
 For some reason work credits got out of whack with John Turner in 2015. It may have been user error.
 
 When making deposit report, it prints out current year instead of the selected year, see 2015 Deposit #2
+
+When adding a Note you can't add a single quote. need to fix this.

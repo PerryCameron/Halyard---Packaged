@@ -1,9 +1,9 @@
 package com.ecsail.gui.dialogues;
 
+import com.ecsail.gui.tabs.deposits.TabDeposits;
 import com.ecsail.pdf.PDF_DepositReport;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.select.SqlDeposit;
-import com.ecsail.structures.DefinedFeeDTO;
 import com.ecsail.structures.DepositDTO;
 import com.ecsail.structures.DepositPDFDTO;
 import javafx.geometry.Insets;
@@ -18,16 +18,14 @@ import javafx.stage.Stage;
 import java.util.Objects;
 
 public class Dialogue_DepositPDF extends Stage {
-    private DepositDTO currentDeposit;
-    private final DefinedFeeDTO currentDefinedFee;
+    private DepositDTO depositDTO;
+//    private final DefinedFeeDTO currentDefinedFee;
     private final DepositPDFDTO pdfOptions;
     String selectedYear;
-
-    public Dialogue_DepositPDF(DepositDTO cd, DefinedFeeDTO cdf, String y) {
-        this.currentDeposit = cd;
-        this.currentDefinedFee = cdf;
+//    DepositDTO cd, DefinedFeeDTO cdf, String y ( probably get rid of these items)
+    public Dialogue_DepositPDF(TabDeposits td, boolean isSinglePDF) {
         this.pdfOptions = new DepositPDFDTO();
-        this.selectedYear = y;
+        this.depositDTO = td.getDepositDTO();
 
         Button createPDFbutton = new Button("Create PDF");
         ToggleGroup tg1 = new ToggleGroup();
@@ -53,10 +51,10 @@ public class Dialogue_DepositPDF extends Stage {
             if (!newValue) {
                 batchSpinner.increment(0); // won't change value, but will commit editor
                 int fieldValue = Integer.parseInt(batchSpinner.getEditor().getText());
-                if (SqlExists.depositRecordExists(currentDeposit.getFiscalYear(), fieldValue))  // deposit exists
-                    currentDeposit.setBatch(fieldValue);
+                if (SqlExists.depositRecordExists(depositDTO.getFiscalYear(), fieldValue))  // deposit exists
+                    depositDTO.setBatch(fieldValue);
                 else
-                    currentDeposit.setBatch(1);
+                    depositDTO.setBatch(1);
             }
         });
 
@@ -81,11 +79,11 @@ public class Dialogue_DepositPDF extends Stage {
         setTitle("Print to PDF");
         ////////////  Check to see if batch exists first////////////
 
-        if (currentDeposit == null) { // deposit does not exist
-            currentDeposit = SqlDeposit.getDeposit(Integer.parseInt(selectedYear), 1);
+        if (depositDTO == null) { // deposit does not exist
+            depositDTO = SqlDeposit.getDeposit(Integer.parseInt(selectedYear), 1);
             batchSpinner.getValueFactory().setValue(1);
         } else {
-            batchSpinner.getValueFactory().setValue(currentDeposit.getBatch());
+            batchSpinner.getValueFactory().setValue(depositDTO.getBatch());
         }
 
         /////////////// LISTENERS ///////////////////////
@@ -98,8 +96,8 @@ public class Dialogue_DepositPDF extends Stage {
 			if (!c2.isSelected()) pdfOptions.setIncludesSummaryReport(false);
 			if (r2.isSelected()) pdfOptions.setSingleDeposit(true);
 			if (!r2.isSelected()) pdfOptions.setSingleDeposit(false);
-			pdfOptions.setDepositNumber(currentDeposit.getBatch());
-			new PDF_DepositReport(currentDeposit, currentDefinedFee, pdfOptions);  // makes the PDF
+			pdfOptions.setDepositNumber(depositDTO.getBatch());
+			new PDF_DepositReport(td, pdfOptions);  // makes the PDF
 		});
 
         //////////////// ADD CONTENT ///////////////////

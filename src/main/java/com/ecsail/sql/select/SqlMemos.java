@@ -2,6 +2,7 @@ package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
+import com.ecsail.gui.tabs.deposits.InvoiceWithMemberInfoDTO;
 import com.ecsail.structures.Memo2DTO;
 import com.ecsail.structures.MemoDTO;
 import com.ecsail.structures.PaidDuesDTO;
@@ -59,8 +60,8 @@ public class SqlMemos {
         return theseMemos;
     }
 
-    public static MemoDTO getMemos(PaidDuesDTO dues, String category) {
-        String query = "SELECT * FROM memo WHERE money_id=" + dues.getMoney_id() + " and category='" + category + "'";
+    public static MemoDTO getMemos(InvoiceWithMemberInfoDTO invoice, String category) {
+        String query = "SELECT * FROM memo WHERE money_id=" + invoice.getId() + " and category='" + category + "'";
         MemoDTO thisMemo = null;
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);

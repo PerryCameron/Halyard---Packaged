@@ -82,24 +82,28 @@ public class HBoxInvoice extends HBox {
 		for (DbInvoiceDTO i : theseWidgets) {
                 i.setFee(insertFeeIntoWidget(i));
                 i.setItems(items); // allows calculations to be made
+            System.out.println("Creating widget object for" + i.getObjectName());  // good here
                 invoiceItemMap.put(i.getObjectName(), new HboxRow(i, footer));
 		}
         //////////////// SETTING CONTENT //////////////
 
         // add table head
         header.setCommitMode(invoice.isCommitted());
+        // add the rows
         invoiceItemMap.values().forEach(e -> e.setCommitMode(invoice.isCommitted()));
         vboxMain.getChildren().add(header);
         // add rows in the correct order
-        for (int i = 0; i < invoiceItemMap.size() + 1; i++) {
+        for (int i = 0; i <= invoiceItemMap.size(); i++) {  // iterate through hashmap
             for (String key : invoiceItemMap.keySet()) {
-                if (invoiceItemMap.get(key).getInvoiceWidget().getOrder() == i)
+                if (invoiceItemMap.get(key).getInvoiceWidget().getOrder() == i) {
+                    System.out.println("Adding " + invoiceItemMap.get(key).getInvoiceWidget().getObjectName()); // bad here
                     vboxMain.getChildren().add(invoiceItemMap.get(key));
+                }
             }
         }
         // add footer
-
         footer.setCommitMode(invoice.isCommitted());
+
         vboxMain.getChildren().add(footer);
         scrollPane.setContent(vboxMain);
         mainVbox.getChildren().addAll(scrollPane);  // add error HBox in first

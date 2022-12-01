@@ -2,6 +2,7 @@ package com.ecsail.gui.tabs.deposits;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
+import com.ecsail.gui.dialogues.Dialogue_DepositPDF;
 import com.ecsail.sql.SqlCount;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlInsert;
@@ -24,6 +25,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class VboxControls extends VBox {
@@ -36,11 +38,13 @@ public class VboxControls extends VBox {
     private final ComboBox<String> comboBox;
     private int selectedYear;
     private final DatePicker depositDatePicker = new DatePicker();
-    private int numberOfDeposits = 100;
-    Text nonRenewed = new Text("0");
-    boolean isSafeToDisplay = true;
-    final Spinner<Integer> batchSpinner;
-//    private Integer batch = 1;
+    private int numberOfDeposits;
+    private Text nonRenewed = new Text("0");
+    private final Spinner<Integer> batchSpinner;
+    private HBox hboxDepositRecords = new HBox();
+    private Button newDepositButton = new Button("New Deposit");
+
+    private Button insertInvoicesButton = new Button("Insert New Invoices");
 
     public VboxControls(TabDeposits tabDeposits) {
         this.tabParent = tabDeposits;
@@ -48,7 +52,7 @@ public class VboxControls extends VBox {
         this.selectedYear = Integer.parseInt(depositDTO.getFiscalYear());
         this.invoiceItemTypes = SqlDbInvoice.getInvoiceCategoriesByYear(selectedYear);
         this.numberOfRecordsText.setText(String.valueOf(tabDeposits.getInvoices().size()));
-
+        refreshDepositCount();
         var vboxGrey = new VBox(); // this is the vbox for organizing all the widgets
         var vboxBlue = new VBox();
         var vboxPink = new VBox(); // this creates a pink border around the table
@@ -64,14 +68,13 @@ public class VboxControls extends VBox {
         var selectionHBox = new HBox();
         var vboxRecords = new VBox();
         var hboxInvoiceRecords = new HBox();
-        var hboxDepositRecords = new HBox();
         var invoiceLabel = new Text("Invoices:");
         var depositLabel = new Text("Deposits:");
         var notRenewedLabel = new Text("Not Renewed:");
         ObservableList<String> options = FXCollections.observableArrayList("Show All", "Show Current"
                 ,"Show Last");
         this.comboBox = new ComboBox<>(options);
-        var newDepositButton = new Button("New Deposit");
+
         var printPdfButton = new Button("Print PDF");
         batchSpinner = new Spinner<>();
 
@@ -126,19 +129,19 @@ public class VboxControls extends VBox {
             if (!newValue) {
                 selectedYear = Integer.parseInt(yearSpinner.getEditor().getText());
                 refreshAllData(true); // gets all for 2022 //
+                batchSpinner.setValueFactory(
+                        new SpinnerValueFactory.IntegerSpinnerValueFactory(1,numberOfDeposits,depositDTO.getBatch()));
             }
         });
 
         // 0 to batch, display batch
         batchSpinner.setEditable(true);
-        var batchValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, depositDTO.getBatch());
-        batchSpinner.setValueFactory(batchValueFactory);
+        batchSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,numberOfDeposits,depositDTO.getBatch()));
         batchSpinner.setPrefWidth(60);
         batchSpinner.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 batchSpinner.increment(0); // won't change value, but will commit editor
                 depositDTO.setBatch(Integer.parseInt(batchSpinner.getEditor().getText()));
-                refreshSafeToDisplay();
                 refreshAllData(false);
             }
         });
@@ -202,6 +205,7 @@ public class VboxControls extends VBox {
                 SqlInsert.addDeposit(depositDTO);
                 refreshDepositCount();
                 depositDTO.setBatch(numberOfDeposits);
+                batchSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,numberOfDeposits));
                 batchSpinner.getEditor().setText(String.valueOf(depositDTO.getBatch()));
             } else {
                 // TODO add error dialogue here
@@ -209,7 +213,21 @@ public class VboxControls extends VBox {
             }
         });
 
-//        printPdfButton.setOnAction((event) -> new Dialogue_DepositPDF(depositDTO, currentDefinedFee, selectedYear));
+        insertInvoicesButton.setOnAction(event -> {
+            ObservableList<InvoiceWithMemberInfoDTO> allInvoices =
+                    SqlInvoice.getInvoicesWithMembershipInfoByYear(String.valueOf(selectedYear));
+            AtomicInteger atomicBatch = new AtomicInteger(getCorrectBatch());
+            allInvoices.stream()
+                    .filter(invoice -> invoice.getBatch() == 0).forEach(invoice -> {
+                        invoice.setBatch(atomicBatch.get());
+                        invoice.setClosed(true); // allows check to be selected and invoice to be in deposit
+                        tabDeposits.getInvoices().add(invoice); // I can probably get rid of this as the refresh does it
+                        SqlUpdate.updateInvoice(invoice);
+                    });
+            refreshAllData(false); // refreshes screen to match data
+        });
+
+        printPdfButton.setOnAction((event) -> new Dialogue_DepositPDF(tabDeposits, true));
 
         VBox.setVgrow(vboxBlue, Priority.ALWAYS);
         VBox.setVgrow(vboxPink, Priority.ALWAYS);
@@ -225,7 +243,7 @@ public class VboxControls extends VBox {
 
         // gets all invoice items
         refreshAllData(false); // gets all for 2022
-        refreshDepositCount();
+
         refreshNonRenewed();
         vboxDateCombo.getChildren().addAll(depositDatePicker, comboBox);
         hboxInvoiceRecords.getChildren().addAll(invoiceLabel, numberOfRecordsText);
@@ -235,7 +253,7 @@ public class VboxControls extends VBox {
         remainingRenewalHBox.getChildren().addAll(new Text("Memberships not renewed: "), nonRenewed);
         batchNumberHBox.getChildren().addAll(new Label("Deposit Number"), batchSpinner);
         yearBatchHBox.getChildren().addAll(yearSpinner, batchNumberHBox);
-        buttonHBox.getChildren().addAll(newDepositButton, printPdfButton);
+        buttonHBox.getChildren().addAll(insertInvoicesButton, newDepositButton, printPdfButton);
         controlsHBox.getChildren().add(controlsVBox);
         vboxSumItems.getChildren().addAll(new HboxInvoiceHeader(), vBoxSumItemsInner);
         getChildren().addAll(yearBatchHBox, selectionHBox, vboxSumItems, buttonHBox,
@@ -257,6 +275,28 @@ public class VboxControls extends VBox {
         refreshDate();
         refreshInvoices();
         refreshNonRenewed();
+        refreshWidgets();
+    }
+
+    private void refreshWidgets() {
+        switch(comboBox.getValue()) {
+            case "Show All":
+                System.out.println("Showing All");
+                hboxDepositRecords.setVisible(true);
+                newDepositButton.setVisible(true);
+                newDepositButton.setManaged(true);
+                insertInvoicesButton.setVisible(false);
+                insertInvoicesButton.setManaged(false);
+                break;
+            case "Show Current": // Show Last always comes back to Show Current after the switch
+                System.out.println("Showing Current");
+                hboxDepositRecords.setVisible(false);
+                newDepositButton.setVisible(false);
+                newDepositButton.setManaged(false);
+                insertInvoicesButton.setVisible(true);
+                insertInvoicesButton.setManaged(true);
+                break;
+        }
         refreshInvoiceNumber();
     }
 
@@ -265,15 +305,10 @@ public class VboxControls extends VBox {
     }
 
     private void refreshDate() {
-        System.out.println("Refresh Date Called");
         LocalDate date;
         var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         // if no deposit selected put in today's date
-        if (!isSafeToDisplay) { // spinner is higher than number of deposits
-            date = LocalDate.parse(HalyardPaths.getDate(), formatter);
-            depositDTO.setDepositDate(HalyardPaths.getDate());
-        }
-        else date = LocalDate.parse(depositDTO.getDepositDate(), formatter);
+        date = LocalDate.parse(depositDTO.getDepositDate(), formatter);
         depositDatePicker.setValue(date);
     }
 
@@ -281,6 +316,7 @@ public class VboxControls extends VBox {
         if (refreshInvoiceTypes) {  // if a new year was selected
             refreshInvoiceTypes();
             refreshDepositCount();
+            refreshInvoiceNumber();
         }
     }
 
@@ -319,7 +355,6 @@ public class VboxControls extends VBox {
                 depositDTO.setBatch(numberOfDeposits);
                 batchSpinner.getEditor().setText(String.valueOf(depositDTO.getBatch()));
                 comboBox.setValue("Show Current");
-                // TODO move comboBox selector as well
             }
             depositDTO.setBatch(depositDTO.getBatch());
             SqlDeposit.getDeposit(depositDTO);
@@ -353,10 +388,6 @@ public class VboxControls extends VBox {
         numberOfDepositsText.setText(String.valueOf(numberOfDeposits));
     }
 
-    private void refreshSafeToDisplay() {
-        isSafeToDisplay = getCorrectBatch() <= numberOfDeposits;
-    }
-
     private boolean itemHasAValue(HboxInvoiceSumItem item) {
         if(item.getInvoiceSummedItem().getValue() != null)
         return !item.getInvoiceSummedItem().getValue().equals("0.00");
@@ -364,7 +395,6 @@ public class VboxControls extends VBox {
     }
 
     private void getInvoiceItemRows() {
-        if (isSafeToDisplay) { // prevent an exception if we go too high on selector
             for (String e : invoiceItemTypes) {
                 HboxInvoiceSumItem item = new HboxInvoiceSumItem(
                         SqlInvoiceItem.getInvoiceItemSumByYearAndType(selectedYear, e, getCorrectBatch()));
@@ -373,8 +403,6 @@ public class VboxControls extends VBox {
                 }
             }
             addFooter();
-        } else
-            BaseApplication.logger.info("Invoice selector set too high to display information");
     }
 
     // adds the footer with totals

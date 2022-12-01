@@ -4,6 +4,7 @@ package com.ecsail.gui.tabs.deposits;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.structures.DepositDTO;
 import com.ecsail.structures.InvoiceDTO;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableColumn;
@@ -15,10 +16,14 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-public class InvoicesTableView extends TableView<InvoiceWithMemberInfoDTO> {
+public class InvoicesTableView extends TableView {
     TabDeposits tabParent;
     DepositDTO depositDTO;
+
+//    Map<InvoiceWithMemberInfoDTO, BooleanProperty> checkedRows = new HashMap<>();
 
     public InvoicesTableView(TabDeposits tabParent) {
     this.tabParent = tabParent;
@@ -53,6 +58,10 @@ public class InvoicesTableView extends TableView<InvoiceWithMemberInfoDTO> {
             });
             return booleanProp;
         });
+
+        /// allows to select all checkboxes
+//        Col1.setCellFactory(CheckBoxTableCell.forTableColumn(i ->
+//                checkedRows.computeIfAbsent((InvoiceWithMemberInfoDTO) getItems().get(i), p -> new SimpleBooleanProperty())));
 
         Col1.setCellFactory(p -> {
             CheckBoxTableCell<InvoiceWithMemberInfoDTO, Boolean> cell = new CheckBoxTableCell<>();
@@ -109,4 +118,7 @@ public class InvoicesTableView extends TableView<InvoiceWithMemberInfoDTO> {
                 i.getBalance(),i.getBatch(),i.isCommitted(),i.isClosed(),i.isSupplemental(),i.getMaxCredit());
     }
 
+//    public Map<InvoiceWithMemberInfoDTO, BooleanProperty> getCheckedRows() {
+//        return checkedRows;
+//    }
 }

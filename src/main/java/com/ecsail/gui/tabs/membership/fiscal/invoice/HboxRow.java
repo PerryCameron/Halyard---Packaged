@@ -50,14 +50,14 @@ public class HboxRow extends HBox {
 
         // get officer credit
         if (invoiceWidget.getObjectName().equals("Position Credit")) {
-            if (!invoice.isCommitted())
-                if (getOfficerCredit())
+            if (!invoice.isCommitted())  // if not committed
+                if (getOfficerCredit()) { // has an officer
                     invoiceItem.setValue(items.get(0).getValue()); // is putting dues value into here
+                }
             total.setText(items.get(0).getValue());
-            checkIfNotCommittedAndUpdateSql();
+            SqlUpdate.updateInvoiceItem(invoiceItem);
             // TODO maybe find better way than putting element 0 in (not dynamic or robust)
         }
-
 
         setSpacing(15);
 
@@ -115,6 +115,7 @@ public class HboxRow extends HBox {
 
     private boolean getOfficerCredit() {
         boolean hasOfficer = SqlExists.membershipHasOfficerForYear(invoiceItem.getMsId(), invoiceItem.getYear());
+        BaseApplication.logger.info("Membership has officer: " + hasOfficer);
         return hasOfficer && !invoice.isSupplemental();
     }
 

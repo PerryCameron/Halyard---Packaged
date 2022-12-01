@@ -6,7 +6,6 @@ import com.ecsail.structures.DepositDTO;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -14,8 +13,8 @@ import javafx.scene.layout.VBox;
 public class TabDeposits extends Tab {
 	private final ObservableList<InvoiceWithMemberInfoDTO> invoices;
 	private final String selectedYear;
-	private final TableView<InvoiceWithMemberInfoDTO> tableView;
-	private VboxControls vboxControls;
+	private final InvoicesTableView tableView;
+	private final VboxControls vboxControls;
 	private final DepositDTO depositDTO = new DepositDTO();
 
 	public TabDeposits(String text) {
@@ -52,12 +51,8 @@ public class TabDeposits extends Tab {
 		return selectedYear;
 	}
 
-	public TableView<InvoiceWithMemberInfoDTO> getTableView() {
+	public InvoicesTableView getTableView() {
 		return tableView;
-	}
-
-	public VboxControls getVboxControls() {
-		return vboxControls;
 	}
 
 	public DepositDTO getDepositDTO() {
