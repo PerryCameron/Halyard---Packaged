@@ -9,7 +9,7 @@ public class PersonDTO {
 	private StringProperty fname;
 	private StringProperty lname;
 	private StringProperty occupation;
-	private StringProperty buisness;
+	private StringProperty business;
 	private StringProperty birthday;
 	private BooleanProperty active;
 	private StringProperty nname;
@@ -25,7 +25,7 @@ public class PersonDTO {
 		this.lname = new SimpleStringProperty(lastName);
 		this.birthday = new SimpleStringProperty(birthday);
 		this.occupation = new SimpleStringProperty(occupation);
-		this.buisness = new SimpleStringProperty(business);
+		this.business = new SimpleStringProperty(business);
 		this.active = new SimpleBooleanProperty(isActive);
 		this.nname = new SimpleStringProperty(nickName);
 		this.oldMsid = new SimpleIntegerProperty(oldMsid);
@@ -129,16 +129,16 @@ public class PersonDTO {
 		this.occupationProperty().set(occupation);
 	}
 
-	public final StringProperty buisnessProperty() {
-		return this.buisness;
+	public final StringProperty businessProperty() {
+		return this.business;
 	}
 
-	public final String getBuisness() {
-		return this.buisnessProperty().get();
+	public final String getBusiness() {
+		return this.businessProperty().get();
 	}
 
-	public final void setBuisness(final String buisness) {
-		this.buisnessProperty().set(buisness);
+	public final void setBusiness(final String business) {
+		this.businessProperty().set(business);
 	}
 
 	public final StringProperty birthdayProperty() {
@@ -180,7 +180,7 @@ public class PersonDTO {
 	@Override
 	public String toString() {
 		return "Object_Person [p_id=" + p_id + ", ms_id=" + ms_id + ", memberType=" + memberType + ", fname=" + fname
-				+ ", lname=" + lname + ", occupation=" + occupation + ", buisness=" + buisness + ", birthday="
+				+ ", lname=" + lname + ", occupation=" + occupation + ", business=" + business + ", birthday="
 				+ birthday + ", active=" + active + ", nname=" + nname + "]";
 	}
 

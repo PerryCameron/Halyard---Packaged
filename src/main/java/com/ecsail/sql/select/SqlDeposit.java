@@ -66,23 +66,6 @@ public class SqlDeposit {
         return thisDeposits;
     }
 
-    // can do this with a regular object but not properties for some reason
-    public static void  updateDeposit(String year, int batch, DepositDTO thisDeposit) {
-        String query = "SELECT * FROM deposit WHERE fiscal_year=" + year + " AND batch=" + batch;
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            while (rs.next()) {
-            thisDeposit.setDeposit_id(rs.getInt("DEPOSIT_ID"));
-            thisDeposit.setDepositDate(rs.getString("DEPOSIT_DATE"));
-            thisDeposit.setFiscalYear(rs.getString("fiscal_year"));
-            thisDeposit.setBatch(rs.getInt("batch"));
-            }
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
-        }
-    }
-
     public static DepositTotal getTotals(DepositDTO d) {
         DepositTotal depositTotal = null;
         String query = "select sum(TOTAL) AS TOTAL, sum(CREDIT) AS CREDIT,sum(PAID) AS PAID from invoice where " +

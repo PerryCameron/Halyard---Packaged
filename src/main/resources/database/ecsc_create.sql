@@ -118,7 +118,7 @@ create table ECSC_SQL.person
     L_NAME      varchar(20),
     BIRTHDAY    date,
     OCCUPATION  varchar(50),
-    BUISNESS    varchar(50),
+    BUSINESS    varchar(50),
     IS_ACTIVE   boolean,
     PICTURE     blob,
     NICK_NAME   varchar(30) NULL,

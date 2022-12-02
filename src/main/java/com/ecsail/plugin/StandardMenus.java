@@ -10,18 +10,13 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
-import java.io.File;
 
 import static java.lang.System.getProperty;
 
 public class StandardMenus implements Plugin {
 
-    private Stage stage;
     private MenuBar menuBar;
-    private Log output;
 
     public static boolean isMac() {
         return getProperty("os.name").contains("Mac");
@@ -76,7 +71,7 @@ public class StandardMenus implements Plugin {
         Menu membership = new Menu("Membership");
         Menu subMenuMembershipCreate = new Menu("Create");
         MenuItem newMembership = Configure("New Membership", (event) -> CreateMembership.Create(), KeyCode.P);
-        MenuItem envelopes = Configure("Envelopes", (event) -> Launcher.openEnvelopesDialogue(), KeyCode.SHIFT.L);
+        MenuItem envelopes = Configure("Envelopes", (event) -> Launcher.openEnvelopesDialogue(), KeyCode.L);
         subMenuMembershipCreate.getItems().addAll(newMembership,envelopes);
 
         Menu subMenuTabs = new Menu("Tabs");
@@ -86,17 +81,12 @@ public class StandardMenus implements Plugin {
         MenuItem boats = Configure("Boats", (event) -> Launcher.openBoatsTab(), null);
         MenuItem slips = Configure("Slips", (event) -> Launcher.openSlipsTab(), null);
         MenuItem deposits = Configure("Deposits", (event) -> Launcher.openDepositsTab(), null);
-        MenuItem fees = Configure("Fees", (event) -> Launcher.openFeeTab(), null);
-        MenuItem feesExp = Configure("Fees (experimental)", (event) -> Launcher.openFeeTab2(), null);
+        MenuItem fees = Configure("Fees", (event) -> Launcher.openFeeTab2(), null);
         MenuItem notes = Configure("Notes", (event) -> Launcher.openNotesTab(), null);
         MenuItem jotform = Configure("Jotform", (event) -> Launcher.openJotFormTab(), null);
         MenuItem dataBase = Configure("DataBase", (event) -> Launcher.openTabDataBase(), null);
-        subMenuTabs.getItems().addAll(rosters,bod,people,boats,slips,deposits,fees,feesExp,notes,jotform,dataBase);
-
+        subMenuTabs.getItems().addAll(rosters,bod,people,boats,slips,deposits,fees,notes,jotform,dataBase);
         membership.getItems().addAll(subMenuMembershipCreate, subMenuTabs);
-
-
-
         menuBar.getMenus().addAll(file, membership, reports);
     }
 
@@ -110,8 +100,6 @@ public class StandardMenus implements Plugin {
     @Override
     public void setup(Stage stage, TabPane tabPane, ToolBar toolBar, Log log, MenuBar menuBar) {
         this.menuBar = menuBar;
-        this.output = log;
-        this.stage = stage;
 
         standardMenus();
     }

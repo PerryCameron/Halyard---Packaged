@@ -55,7 +55,7 @@ public class EmailLinkBuilder {
 
             queryUrlBuilder.addQueryParameter("primaryOccupation",primaryMember.getOccupation());
 
-            queryUrlBuilder.addQueryParameter("primaryCompany",primaryMember.getBuisness());
+            queryUrlBuilder.addQueryParameter("primaryCompany",primaryMember.getBusiness());
 
             if(SqlExists.emailExists(primaryMember))
                 queryUrlBuilder.addQueryParameter("primaryemail",SqlEmail.getEmail(primaryMember));
@@ -79,7 +79,7 @@ public class EmailLinkBuilder {
 
             queryUrlBuilder.addQueryParameter("spouseOccupation",secondaryMember.getOccupation());
 
-            queryUrlBuilder.addQueryParameter("spouseCompany",secondaryMember.getBuisness());
+            queryUrlBuilder.addQueryParameter("spouseCompany",secondaryMember.getBusiness());
 
             if(SqlExists.emailExists(secondaryMember))
                 queryUrlBuilder.addQueryParameter("spouseEmail",SqlEmail.getEmail(secondaryMember));

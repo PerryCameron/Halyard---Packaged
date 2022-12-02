@@ -68,13 +68,13 @@ public class HBoxPerson extends HBox {
         VBox vbFnameLabel = new VBox();
         VBox vbNnameLabel = new VBox();
         VBox vbOccupationLabel = new VBox();
-        VBox vbBuisnessLabel = new VBox();
+        VBox vbBusinessLabel = new VBox();
         VBox vbBirthdayLabel = new VBox();
         VBox vbLnameBox = new VBox();
         VBox vbFnameBox = new VBox();
         VBox vbNnameBox = new VBox();
         VBox vbOccupationBox = new VBox();
-        VBox vbBuisnessBox = new VBox();
+        VBox vbBusinessBox = new VBox();
         VBox vbBirthdayBox = new VBox();
 
         HBox hboxPhone = new HBoxPhone(person); // Phone
@@ -110,7 +110,7 @@ public class HBoxPerson extends HBox {
         vbFnameLabel.setPrefWidth(75);
         vbNnameLabel.setPrefWidth(75);
         vbOccupationLabel.setPrefWidth(75);
-        vbBuisnessLabel.setPrefWidth(75);
+        vbBusinessLabel.setPrefWidth(75);
         vbBirthdayLabel.setPrefWidth(75);
         hboxPictureFrame.setPrefSize(196, 226);
 
@@ -128,7 +128,7 @@ public class HBoxPerson extends HBox {
         vbFnameLabel.setAlignment(Pos.CENTER_LEFT);
         vbNnameLabel.setAlignment(Pos.CENTER_LEFT);
         vbOccupationLabel.setAlignment(Pos.CENTER_LEFT);
-        vbBuisnessLabel.setAlignment(Pos.CENTER_LEFT);
+        vbBusinessLabel.setAlignment(Pos.CENTER_LEFT);
         vbBirthdayLabel.setAlignment(Pos.CENTER_LEFT);
 
 
@@ -204,9 +204,9 @@ public class HBoxPerson extends HBox {
         businessTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             //focus out
             if (oldValue) {  // we have focused and unfocused
-                SqlUpdate.updateBuisness(businessTextField.getText(), person);
+                SqlUpdate.updateBusiness(businessTextField.getText(), person);
                 if (people != null)  // this updates the people list if in people mode
-                    people.get(TabPeople.getIndexByPid(person.getP_id())).setBuisness(businessTextField.getText());
+                    people.get(TabPeople.getIndexByPid(person.getP_id())).setBusiness(businessTextField.getText());
             }
         });
 
@@ -215,7 +215,7 @@ public class HBoxPerson extends HBox {
             if (oldValue) {  // we have focused and unfocused
                 SqlUpdate.updateNickName(nnameTextField.getText(), person);
                 if (people != null)  // this updates the people list if in people mode
-                    people.get(TabPeople.getIndexByPid(person.getP_id())).setBuisness(businessTextField.getText());
+                    people.get(TabPeople.getIndexByPid(person.getP_id())).setBusiness(businessTextField.getText());
             }
         });
 
@@ -284,7 +284,7 @@ public class HBoxPerson extends HBox {
         vboxPicture.getChildren().add(hboxPictureFrame);
         fnameTextField.setText(person.getFname());
         lnameTextField.setText(person.getLname());
-        businessTextField.setText(person.getBuisness());
+        businessTextField.setText(person.getBusiness());
         occupationTextField.setText(person.getOccupation());
         nnameTextField.setText(person.getNname());
         infoTabPane.getTabs().add(propertiesTab);
@@ -297,19 +297,19 @@ public class HBoxPerson extends HBox {
         vbFnameLabel.getChildren().add(fnameLabel);
         vbNnameLabel.getChildren().add(nnameLabel);
         vbOccupationLabel.getChildren().add(occupationLabel);
-        vbBuisnessLabel.getChildren().add(businessLabel);
+        vbBusinessLabel.getChildren().add(businessLabel);
         vbBirthdayLabel.getChildren().add(birthdayLabel);
         vbLnameBox.getChildren().add(lnameTextField);
         vbFnameBox.getChildren().add(fnameTextField);
         vbNnameBox.getChildren().add(nnameTextField);
         vbOccupationBox.getChildren().add(occupationTextField);
-        vbBuisnessBox.getChildren().add(businessTextField);
+        vbBusinessBox.getChildren().add(businessTextField);
         vbBirthdayBox.getChildren().add(birthdayDatePicker);
         hboxFirstName.getChildren().addAll(vbFnameLabel, vbFnameBox);
         hboxLastName.getChildren().addAll(vbLnameLabel, vbLnameBox);
         hboxNickName.getChildren().addAll(vbNnameLabel, vbNnameBox);
         hboxOccupation.getChildren().addAll(vbOccupationLabel, vbOccupationBox);
-        hboxBusiness.getChildren().addAll(vbBuisnessLabel, vbBuisnessBox);
+        hboxBusiness.getChildren().addAll(vbBusinessLabel, vbBusinessBox);
         hboxBirthday.getChildren().addAll(vbBirthdayLabel, vbBirthdayBox);
         vboxGrey.getChildren().addAll(hboxMemberInfoAndPicture, vboxInfoGrey);
         this.getChildren().add(vboxGrey);

@@ -37,7 +37,7 @@ public class PDF_Renewal_Form {
 	private static PersonDTO primary;
 	private static PersonDTO secondary;
 //	private static MoneyDTO dues;
-	DefinedFeeDTO definedFees;
+//	DefinedFeeDTO definedFees;
 	private int borderSize = 1;
 	private List<BoatDTO> boats = new ArrayList<BoatDTO>();
 	private List<MembershipIdDTO> ids = new ArrayList<MembershipIdDTO>();
@@ -51,7 +51,7 @@ public class PDF_Renewal_Form {
 	public PDF_Renewal_Form(String y, String membershipId, boolean isOneMembership, boolean emailCopies, boolean seperateFiles) throws IOException {
 		PDF_Renewal_Form.year = y;
 		PDF_Renewal_Form.current_membership_id = membershipId;
-		this.definedFees = SqlDefinedFee.getDefinedFeeByYear(year);
+//		this.definedFees = SqlDefinedFee.getDefinedFeeByYear(year);
 		// Check if our path exists, if not create it
 		HalyardPaths.checkPath(HalyardPaths.RENEWALFORM + "/" + year);
 
@@ -385,7 +385,7 @@ public class PDF_Renewal_Form {
 		cell.setBorder(Border.NO_BORDER);
 		cell.setBorderRight(new SolidBorder(0.5f));
 		cell.setBorderBottom(new SolidBorder(0.5f));
-		p = new Paragraph("$" + definedFees.getDues_regular());  /// REGULAR MEMBER PRICE
+//		p = new Paragraph("$" + definedFees.getDues_regular());  /// REGULAR MEMBER PRICE
 		p.setFontSize(10);
 		p.setFixedLeading(10);
 		p.setTextAlignment(TextAlignment.RIGHT);
@@ -422,7 +422,7 @@ public class PDF_Renewal_Form {
 		cell.setBorder(Border.NO_BORDER);
 		cell.setBorderRight(new SolidBorder(0.5f));
 		cell.setBorderBottom(new SolidBorder(0.5f));
-		p = new Paragraph("$" + definedFees.getWet_slip());   ////// WET SLIP COST ////
+//		p = new Paragraph("$" + definedFees.getWet_slip());   ////// WET SLIP COST ////
 		p.setFontSize(10);
 		p.setFixedLeading(10);
 		p.setTextAlignment(TextAlignment.RIGHT);
@@ -468,7 +468,7 @@ public class PDF_Renewal_Form {
 		cell.setBorder(Border.NO_BORDER);
 		cell.setBorderRight(new SolidBorder(borderSize));
 		cell.setBorderBottom(new SolidBorder(0.5f));
-		p = new Paragraph("$" + definedFees.getMain_gate_key());  //// GATE KEY COST ////
+//		p = new Paragraph("$" + definedFees.getMain_gate_key());  //// GATE KEY COST ////
 		p.setFontSize(10);
 		p.setFixedLeading(10);
 		p.setTextAlignment(TextAlignment.RIGHT);
@@ -508,7 +508,7 @@ public class PDF_Renewal_Form {
 		cell.setBorder(Border.NO_BORDER);
 		cell.setBorderRight(new SolidBorder(0.5f));
 		cell.setBorderBottom(new SolidBorder(0.5f));
-		p = new Paragraph("$" + definedFees.getDues_family());   /// FAMILY MEMBERSHIP COST ////
+//		p = new Paragraph("$" + definedFees.getDues_family());   /// FAMILY MEMBERSHIP COST ////
 		p.setFontSize(10);
 		p.setFixedLeading(10);
 		p.setTextAlignment(TextAlignment.RIGHT);
@@ -544,7 +544,7 @@ public class PDF_Renewal_Form {
 		cell.setBorder(Border.NO_BORDER);
 		cell.setBorderRight(new SolidBorder(0.5f));
 		cell.setBorderBottom(new SolidBorder(0.5f));
-		p = new Paragraph("$" + definedFees.getBeach());
+//		p = new Paragraph("$" + definedFees.getBeach());
 		p.setFontSize(10);
 		p.setFixedLeading(10);
 		p.setTextAlignment(TextAlignment.RIGHT);
@@ -586,7 +586,7 @@ public class PDF_Renewal_Form {
 		cell.setBorder(Border.NO_BORDER);
 		cell.setBorderRight(new SolidBorder(borderSize));
 		cell.setBorderBottom(new SolidBorder(0.5f));
-		p = new Paragraph("$" + definedFees.getSail_loft_key());
+//		p = new Paragraph("$" + definedFees.getSail_loft_key());
 		p.setFontSize(10);
 		p.setFixedLeading(10);
 		p.setTextAlignment(TextAlignment.RIGHT);
@@ -627,7 +627,7 @@ public class PDF_Renewal_Form {
 		cell.setBorder(Border.NO_BORDER);
 		cell.setBorderRight(new SolidBorder(0.5f));
 		cell.setBorderBottom(new SolidBorder(0.5f));
-		p = new Paragraph("$" + definedFees.getDues_lake_associate());
+//		p = new Paragraph("$" + definedFees.getDues_lake_associate());
 		p.setFontSize(10);
 		p.setFixedLeading(10);
 		p.setTextAlignment(TextAlignment.RIGHT);
@@ -675,7 +675,7 @@ public class PDF_Renewal_Form {
 		cell.setBorder(Border.NO_BORDER);
 		cell.setBorderRight(new SolidBorder(0.5f));
 		cell.setBorderBottom(new SolidBorder(0.5f));
-		p = new Paragraph("$" + definedFees.getWinter_storage());
+//		p = new Paragraph("$" + definedFees.getWinter_storage());
 		p.setFontSize(10);
 		p.setFixedLeading(10);
 		p.setTextAlignment(TextAlignment.RIGHT);
@@ -717,7 +717,7 @@ public class PDF_Renewal_Form {
 		cell.setBorder(Border.NO_BORDER);
 		cell.setBorderRight(new SolidBorder(borderSize));
 		cell.setBorderBottom(new SolidBorder(0.5f));
-		p = new Paragraph("$" + definedFees.getSail_school_loft_key());
+//		p = new Paragraph("$" + definedFees.getSail_school_loft_key());
 		p.setFontSize(10);
 		p.setFixedLeading(10);
 		p.setTextAlignment(TextAlignment.RIGHT);
@@ -758,7 +758,7 @@ public class PDF_Renewal_Form {
 		cell.setBorder(Border.NO_BORDER);
 		cell.setBorderRight(new SolidBorder(0.5f));
 		cell.setBorderBottom(new SolidBorder(0.5f));
-		p = new Paragraph("$" + definedFees.getDues_social());
+//		p = new Paragraph("$" + definedFees.getDues_social());
 		p.setFontSize(10);
 		p.setFixedLeading(10);
 		p.setTextAlignment(TextAlignment.RIGHT);
@@ -794,7 +794,7 @@ public class PDF_Renewal_Form {
 		cell.setBorder(Border.NO_BORDER);
 		cell.setBorderRight(new SolidBorder(0.5f));
 		cell.setBorderBottom(new SolidBorder(0.5f));
-		p = new Paragraph("$" + definedFees.getSail_loft());
+//		p = new Paragraph("$" + definedFees.getSail_loft());
 		p.setFontSize(10);
 		p.setFixedLeading(10);
 		p.setTextAlignment(TextAlignment.RIGHT);
@@ -836,7 +836,7 @@ public class PDF_Renewal_Form {
 		cell.setBorder(Border.NO_BORDER);
 		cell.setBorderRight(new SolidBorder(borderSize));
 		cell.setBorderBottom(new SolidBorder(0.5f));
-		p = new Paragraph("$" + definedFees.getKayak_shed_key());
+//		p = new Paragraph("$" + definedFees.getKayak_shed_key());
 		p.setFontSize(10);
 		p.setFixedLeading(10);
 		p.setTextAlignment(TextAlignment.RIGHT);
@@ -902,7 +902,7 @@ public class PDF_Renewal_Form {
 		cell.setBorder(Border.NO_BORDER);
 		cell.setBorderRight(new SolidBorder(0.5f));
 		cell.setBorderBottom(new SolidBorder(0.5f));
-		p = new Paragraph("$" + definedFees.getKayak_rack());
+//		p = new Paragraph("$" + definedFees.getKayak_rack());
 		p.setFontSize(10);
 		p.setFixedLeading(10);
 		p.setTextAlignment(TextAlignment.RIGHT);
@@ -1001,7 +1001,7 @@ public class PDF_Renewal_Form {
 		cell.setBorder(Border.NO_BORDER);
 		cell.setBorderRight(new SolidBorder(0.5f));
 		cell.setBorderBottom(new SolidBorder(0.5f));
-		p = new Paragraph("$" + definedFees.getKayak_shed());
+//		p = new Paragraph("$" + definedFees.getKayak_shed());
 		p.setFontSize(10);
 		p.setFixedLeading(10);
 		p.setTextAlignment(TextAlignment.RIGHT);
@@ -1097,7 +1097,7 @@ public class PDF_Renewal_Form {
 		cell.setBorder(Border.NO_BORDER);
 		cell.setBorderRight(new SolidBorder(0.5f));
 		cell.setBorderBottom(new SolidBorder(0.5f));
-		p = new Paragraph("$" + definedFees.getSail_school_laser_loft());
+//		p = new Paragraph("$" + definedFees.getSail_school_laser_loft());
 		p.setFontSize(10);
 		p.setFixedLeading(10);
 		p.setTextAlignment(TextAlignment.RIGHT);
@@ -1720,7 +1720,7 @@ public class PDF_Renewal_Form {
 		cell.add(p);
 		mainTable.addCell(cell);
 		
-		p = new Paragraph("Company/Business: " + primary.getBuisness());
+		p = new Paragraph("Company/Business: " + primary.getBusiness());
 		p.setFontSize(10);
 		cell = new Cell(1,2);
 		cell.setBorder(Border.NO_BORDER);
@@ -1730,7 +1730,7 @@ public class PDF_Renewal_Form {
 		cell.add(p);
 		mainTable.addCell(cell);
 		
-		p = new Paragraph("Company/Business: " + secondary.getBuisness());
+		p = new Paragraph("Company/Business: " + secondary.getBusiness());
 		p.setFontSize(10);
 		cell = new Cell(1,2);
 		cell.setBorder(Border.NO_BORDER);

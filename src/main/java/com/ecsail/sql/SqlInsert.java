@@ -119,7 +119,7 @@ public class SqlInsert {
 		String query = "INSERT INTO person () VALUES ("
 				+ person.getP_id() + "," + person.getMs_id() + "," + person.getMemberType() + ",'" + person.getFname()
 				+ "','" + person.getLname() + "'," + SqlScriptMaker.getCorrectString(person.getBirthday())
-				+ ",'" + person.getOccupation() + "','" + person.getBuisness() +"',true,null,'"+person.getNname()+"',"+person.getOldMsid()+")";
+				+ ",'" + person.getOccupation() + "','" + person.getBusiness() +"',true,null,'"+person.getNname()+"',"+person.getOldMsid()+")";
 		try {
 
 			BaseApplication.connect.executeQuery(query);
@@ -150,21 +150,6 @@ public class SqlInsert {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"Unable to insert data into invoice row","See below for details");
-		}
-	}
-
-	public static void addDefinedFeeRecord(DefinedFeeDTO d) {
-		String query = "INSERT INTO defined_fee () VALUES ("
-				+ d.getFiscal_year() + "," + d.getDues_regular() + "," + d.getDues_family() + "," + d.getDues_lake_associate()
-				+ "," + d.getDues_social() + "," + d.getInitiation() + "," + d.getWet_slip() + "," + d.getBeach()
-				+ "," + d.getWinter_storage() + "," + d.getMain_gate_key() + "," + d.getSail_loft() + "," + d.getSail_loft_key()
-				+ "," + d.getSail_school_laser_loft() + "," + d.getSail_school_loft_key() + "," + d.getKayak_rack()
-				+ "," + d.getKayak_shed() + "," + d.getKayak_shed_key() + "," + d.getWork_credit()
-				+")";
-		try {
-			BaseApplication.connect.executeQuery(query);
-		 } catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
 		}
 	}
 

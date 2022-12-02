@@ -31,7 +31,6 @@ public class SqlScriptMaker {
 	static ObservableList<InvoiceDTO> invoiceDTOS;
 	static ObservableList<InvoiceItemDTO> invoiceItemDTOS;
 	static ObservableList<OfficerDTO> officers;
-	static ObservableList<DefinedFeeDTO> definedfees;
 	static ObservableList<PaymentDTO> payments;
 	static ObservableList<DepositDTO> deposits;
 	static ArrayList<WaitListDTO> waitlist;
@@ -48,7 +47,7 @@ public class SqlScriptMaker {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
 		Date date = new Date();
 		String stringDate = formatter.format(date);
-		stringDate.replaceAll("\\s+", "");
+//		stringDate.replaceAll("\\s+", "");
 		BaseApplication.logger.info("1");
 		memberships = SqlMembership.getMemberships();
 		ids = SqlMembership_Id.getIds();
@@ -62,7 +61,6 @@ public class SqlScriptMaker {
 		invoiceDTOS = SqlInvoice.getAllInvoices();
 		invoiceItemDTOS = SqlInvoiceItem.getAllInvoiceItems();
 		officers = SqlOfficer.getOfficers();
-		definedfees = SqlDefinedFee.getDefinedFees();
 		payments = SqlPayment.getPayments();
 		deposits = SqlDeposit.getDeposits();
 		waitlist = SqlWaitList.getWaitLists();
@@ -121,8 +119,6 @@ public class SqlScriptMaker {
 				writer.write(getPaymentString(obp));
 			for (OfficerDTO off : officers)
 				writer.write(getOfficerString(off));
-			for (DefinedFeeDTO def : definedfees)
-				writer.write(getDefinedFeeString(def));
 			for (WaitListDTO wal: waitlist)
 				writer.write(getWaitListString(wal));
 			for (AwardDTO oa: awards)
@@ -170,7 +166,6 @@ public class SqlScriptMaker {
 		deposits.clear();
 		payments.clear();
 		officers.clear();
-		definedfees.clear();
 		waitlist.clear();
 		awards.clear();
 		fees.clear();
@@ -348,31 +343,6 @@ public class SqlScriptMaker {
 				+ ");\n";
 	}
 
-	public static String getDefinedFeeString(DefinedFeeDTO def) {
-		return
-				"INSERT INTO defined_fee () VALUES ("
-				+ def.getFiscal_year() + ","
-				+ def.getDues_regular() + ","
-				+ def.getDues_family() + ","
-				+ def.getDues_lake_associate() + ","
-				+ def.getDues_social() + ","
-				+ def.getInitiation() + ","
-				+ def.getWet_slip() + ","
-				+ def.getBeach() + ","
-				+ def.getWinter_storage() + ","
-				+ def.getMain_gate_key() + ","
-				+ def.getSail_loft() + ","
-				+ def.getSail_loft_key() + ","
-				+ def.getSail_school_laser_loft() + ","
-				+ def.getSail_school_loft_key() + ","
-				+ def.getKayak_rack() + ","
-				+ def.getKayak_shed() + ","
-				+ def.getKayak_shed_key() + ","
-				+ def.getWork_credit() + ","
-				+ def.getKayak_beach_rack()
-				+ ");\n";
-	}
-
 	public static String getOfficerString(OfficerDTO off) {
 		return
 				"INSERT INTO officer () VALUES ("
@@ -487,7 +457,7 @@ public class SqlScriptMaker {
 				+ getCorrectString(peo.getLname()) + ","
 				+ getCorrectString(peo.getBirthday()) + ","
 				+ getCorrectString(peo.getOccupation()) + ","
-				+ getCorrectString(peo.getBuisness()) + ","
+				+ getCorrectString(peo.getBusiness()) + ","
 				+ peo.isActive() + ","
 				+ "null,"
 				+ getCorrectString(peo.getNname()) + ","
@@ -513,7 +483,6 @@ public class SqlScriptMaker {
 		InputStream io = classloader.getResourceAsStream("database/ecsc_create.sql");
 		assert io != null;
 		BufferedReader reader = new BufferedReader(new InputStreamReader(io));
-		String result = reader.lines().collect(Collectors.joining(System.lineSeparator()));
-		return result;
+		return reader.lines().collect(Collectors.joining(System.lineSeparator()));
 	}
 }

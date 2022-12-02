@@ -60,11 +60,6 @@ public class Launcher extends VBox {
         tabPane.getSelectionModel().select(getTabIndex("People"));
     }
 
-    public static void openFeeTab() {
-        tabPane.getTabs().add(new TabDefinedFee("Fees"));
-        tabPane.getSelectionModel().select(getTabIndex("Fees"));
-    }
-
     public static void openFeeTab2() {
         tabPane.getTabs().add(new TabFee("Fees"));
         tabPane.getSelectionModel().select(getTabIndex("Fees"));

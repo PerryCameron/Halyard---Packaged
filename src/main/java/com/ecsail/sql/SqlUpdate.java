@@ -231,8 +231,8 @@ public class SqlUpdate {
 		}
 	}
 
-	public static void updateNickName(String nname, PersonDTO person) {
-		String query = "UPDATE person SET NICK_NAME='" + nname
+	public static void updateNickName(String nName, PersonDTO person) {
+		String query = "UPDATE person SET NICK_NAME='" + nName
 				+ "' WHERE p_id=" + person.getP_id();
 		try {
 			BaseApplication.connect.executeQuery(query);
@@ -241,8 +241,8 @@ public class SqlUpdate {
 		}
 	}
 
-	public static void updateBuisness(String buisness, PersonDTO person ) {
-		String query = "UPDATE person SET buisness='" + buisness
+	public static void updateBusiness(String business, PersonDTO person ) {
+		String query = "UPDATE person SET business='" + business
 				+ "' WHERE p_id=" + person.getP_id();
 		try {
 			BaseApplication.connect.executeQuery(query);
@@ -271,8 +271,8 @@ public class SqlUpdate {
 		}
 	}
 
-	public static void updateFirstName(String fname, PersonDTO person) {
-		String query = "UPDATE person SET f_name='" + fname
+	public static void updateFirstName(String fName, PersonDTO person) {
+		String query = "UPDATE person SET f_name='" + fName
 				+ "' WHERE p_id=" + person.getP_id();
 		try {
 			BaseApplication.connect.executeQuery(query);
@@ -297,7 +297,7 @@ public class SqlUpdate {
 				+ "', L_NAME='" +p.getLname()
 //					+ "', BIRTHDAY='" + p.getBirthday()
 				+ "', OCCUPATION='" + p.getOccupation()
-				+ "', BUISNESS='" + p.getBuisness()
+				+ "', BUSINESS='" + p.getBusiness()
 				+ "', IS_ACTIVE=" + p.isActive()
 				+ ", NICK_NAME='" + p.getNname()
 				+ "' ,OLDMSID=" +  p.getOldMsid()
@@ -459,36 +459,6 @@ public class SqlUpdate {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with updating Invoice ID " + invoice.getId(),"");
-		}
-	}
-
-
-
-	public static void updateDefinedFeeRecord(DefinedFeeDTO d) {
-		String query = "UPDATE defined_fee SET " +
-				"DUES_REGULAR=" + d.getDues_regular() + "," +
-				"DUES_FAMILY=" + d.getDues_family() + "," +
-				"DUES_LAKE_ASSOCIATE=" + d.getDues_lake_associate() + "," +
-				"DUES_SOCIAL=" + d.getDues_social() + "," +
-				"INITIATION=" + d.getInitiation() + "," +
-				"WET_SLIP=" + d.getWet_slip() + "," +
-				"BEACH=" + d.getBeach() + "," +
-				"WINTER_STORAGE=" + d.getWinter_storage() + "," +
-				"MAIN_GATE_KEY=" + d.getMain_gate_key() + "," +
-				"SAIL_LOFT=" + d.getSail_loft() + "," +
-				"SAIL_LOFT_KEY=" + d.getSail_loft_key() + "," +
-				"SAIL_SCHOOL_LASER_LOFT=" + d.getSail_school_laser_loft() + "," +
-				"SAIL_SCHOOL_LOFT_KEY=" + d.getSail_school_loft_key() + "," +
-				"KAYAK_RACK=" + d.getKayak_rack()+ "," +
-				"KAYAK_BEACH_RACK=" + d.getKayak_beach_rack() + "," +
-				"KAYAK_SHED=" + d.getKayak_shed() + "," +
-				"KAYAK_SHED_KEY=" + d.getKayak_shed_key() + "," +
-				"WORK_CREDIT=" + d.getWork_credit() +
-				" WHERE fiscal_year=" + d.getFiscal_year();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
 	}
 }
