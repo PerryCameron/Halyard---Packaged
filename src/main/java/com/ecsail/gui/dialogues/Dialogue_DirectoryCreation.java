@@ -31,7 +31,7 @@ public class Dialogue_DirectoryCreation extends Stage {
 //		vboxPink.setId("box-pink");
 		// vboxGrey.setId("slip-box");
 		vboxGrey.setPrefHeight(688);
-		scene.getStylesheets().add("css/dark/customdialogue.css");
+		scene.getStylesheets().add("css/dark/custom_dialogue.css");
 		vboxGrey.getChildren().addAll(textArea, createDirectory);
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);

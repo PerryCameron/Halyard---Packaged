@@ -75,7 +75,7 @@ public class Dialogue_DepositPDF extends Stage {
         vboxPink.setId("box-pink");
         // vboxGrey.setId("slip-box");
         hboxGrey.setPrefHeight(688);
-        scene.getStylesheets().add("css/dark/customdialogue.css");
+        scene.getStylesheets().add("css/dark/custom_dialogue.css");
         setTitle("Print to PDF");
         ////////////  Check to see if batch exists first////////////
 

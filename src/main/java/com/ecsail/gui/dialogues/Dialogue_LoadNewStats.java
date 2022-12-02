@@ -55,7 +55,7 @@ public class Dialogue_LoadNewStats extends Stage {
 		vboxGrey.setPrefHeight(688);
 		vboxGrey.setAlignment(Pos.CENTER);
 		hboxYearChoose.setAlignment(Pos.CENTER);
-		scene.getStylesheets().add("css/dark/customdialogue.css");
+		scene.getStylesheets().add("css/dark/custom_dialogue.css");
 
 		setTitle("Updating Statistics");
 		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon_24.png")));
