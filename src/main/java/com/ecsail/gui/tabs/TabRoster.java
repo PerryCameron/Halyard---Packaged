@@ -317,15 +317,15 @@ public class TabRoster extends Tab {
 		if(rb.getRadioReturnMembers().isSelected())
 			rosters.addAll(SqlMembershipList.getReturnMembers(Integer.parseInt(selectedYear)));
 		if(rb.getRadioSlipWaitList().isSelected())
-			rosters.addAll(SqlMembershipList.getWaitListRoster("slipwait"));
+			rosters.addAll(SqlMembershipList.getWaitListRoster("slip_wait"));
 		if(rb.getRadioOpenSlips().isSelected())
-			rosters.addAll(SqlMembershipList.getWaitListRoster("wantrelease"));
+			rosters.addAll(SqlMembershipList.getWaitListRoster("want_release"));
 		if(rb.getRadioSlip().isSelected())
 			rosters.addAll(SqlMembershipList.getRosterOfSlipOwners(HalyardPaths.getYear()));
 		if(rb.getRadioWantsToSublease().isSelected())
-			rosters.addAll(SqlMembershipList.getWaitListRoster("wantsublease"));
+			rosters.addAll(SqlMembershipList.getWaitListRoster("want_sublease"));
 		if(rb.getRadioSlipChange().isSelected())
-			rosters.addAll(SqlMembershipList.getWaitListRoster("wantslipchange"));
+			rosters.addAll(SqlMembershipList.getWaitListRoster("want_slip_change"));
 		if(rb.getRadioSubLeasedSlips().isSelected())
 			rosters.addAll(SqlMembershipList.getRosterOfSubleasedSlips());
 		if(rb.getRadioShedOwner().isSelected())

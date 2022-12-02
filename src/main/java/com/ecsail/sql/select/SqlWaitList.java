@@ -11,18 +11,18 @@ import java.util.ArrayList;
 public class SqlWaitList {
     public static WaitListDTO getWaitList(int ms_id) {
         WaitListDTO thisWaitList = null;
-        String query = "SELECT * FROM waitlist WHERE ms_id=" + ms_id;
+        String query = "SELECT * FROM wait_list WHERE ms_id=" + ms_id;
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
                 thisWaitList = new WaitListDTO(
                         rs.getInt("MS_ID"),
-                        rs.getBoolean("SLIPWAIT"),
-                        rs.getBoolean("KAYAKRACKWAIT"),
-                        rs.getBoolean("SHEDWAIT"),
-                        rs.getBoolean("WANTSUBLEASE"),
-                        rs.getBoolean("WANTRELEASE"),
-                        rs.getBoolean("WANTSLIPCHANGE")
+                        rs.getBoolean("SLIP_WAIT"),
+                        rs.getBoolean("KAYAK_RACK_WAIT"),
+                        rs.getBoolean("SHED_WAIT"),
+                        rs.getBoolean("WANT_SUBLEASE"),
+                        rs.getBoolean("WANT_RELEASE"),
+                        rs.getBoolean("WANT_SLIP_CHANGE")
                         );
             }
             BaseApplication.connect.closeResultSet(rs);
@@ -34,18 +34,18 @@ public class SqlWaitList {
 
     public static ArrayList<WaitListDTO> getWaitLists() {
         ArrayList<WaitListDTO> thisWaitList = new ArrayList<>();
-        String query = "SELECT * FROM waitlist";
+        String query = "SELECT * FROM wait_list";
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
                 thisWaitList.add(new WaitListDTO(
                         rs.getInt("MS_ID"),
-                        rs.getBoolean("SLIPWAIT"),
-                        rs.getBoolean("KAYAKRACKWAIT"),
-                        rs.getBoolean("SHEDWAIT"),
-                        rs.getBoolean("WANTSUBLEASE"),
-                        rs.getBoolean("WANTRELEASE"),
-                        rs.getBoolean("WANTSLIPCHANGE")
+                        rs.getBoolean("SLIP_WAIT"),
+                        rs.getBoolean("KAYAK_RACK_WAIT"),
+                        rs.getBoolean("SHED_WAIT"),
+                        rs.getBoolean("WANT_SUBLEASE"),
+                        rs.getBoolean("WANT_RELEASE"),
+                        rs.getBoolean("WANT_SLIP_CHANGE")
                         ));
             }
             BaseApplication.connect.closeResultSet(rs);

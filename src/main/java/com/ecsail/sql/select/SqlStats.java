@@ -28,12 +28,12 @@ public class SqlStats {
                     rs.getInt("FAMILY"),
                     rs.getInt("REGULAR"),
                     rs.getInt("SOCIAL"),
-                    rs.getInt("LAKEASSOCIATES"),
-                    rs.getInt("LIFEMEMBERS"),
-                    rs.getInt("RACEFELLOWS"),
+                    rs.getInt("LAKE_ASSOCIATES"),
+                    rs.getInt("LIFE_MEMBERS"),
+                    rs.getInt("RACE_FELLOWS"),
                     rs.getInt("STUDENT"),
                     rs.getDouble("DEPOSITS"),
-                    rs.getDouble("INIATION")));
+                    rs.getDouble("INITIATION")));
         }
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {
@@ -61,9 +61,9 @@ public class SqlStats {
                         rs.getInt("FAMILY"),
                         rs.getInt("REGULAR"),
                         rs.getInt("SOCIAL"),
-                        rs.getInt("LAKEASSOCIATES"),
-                        rs.getInt("LIFEMEMBERS"),
-                        rs.getInt("RACEFELLOWS"),
+                        rs.getInt("LAKE_ASSOCIATES"),
+                        rs.getInt("LIFE_MEMBERS"),
+                        rs.getInt("RACE_FELLOWS"),
                         rs.getInt("STUDENT"),
                         0,
                         0);
@@ -84,10 +84,10 @@ public class SqlStats {
                         "COUNT(DISTINCT IF(id.mem_type = 'RM' AND id.RENEW=true,id.membership_id , NULL)) AS 'REGULAR',\n" +
                         "COUNT(DISTINCT IF(id.mem_type = 'FM' AND id.RENEW=true,id.membership_id , NULL)) AS 'FAMILY',\n" +
                         "COUNT(DISTINCT IF(id.mem_type = 'SO' AND id.RENEW=true,id.membership_id , NULL)) AS 'SOCIAL',\n" +
-                        "COUNT(DISTINCT IF(id.mem_type = 'LA' AND id.RENEW=true,id.membership_id , NULL)) AS 'LAKEASSOCIATES',\n" +
-                        "COUNT(DISTINCT IF(id.mem_type = 'LM' AND id.RENEW=true,id.membership_id , NULL)) AS 'LIFEMEMBERS',\n" +
+                        "COUNT(DISTINCT IF(id.mem_type = 'LA' AND id.RENEW=true,id.membership_id , NULL)) AS 'LAKE_ASSOCIATES',\n" +
+                        "COUNT(DISTINCT IF(id.mem_type = 'LM' AND id.RENEW=true,id.membership_id , NULL)) AS 'LIFE_MEMBERS',\n" +
                         "COUNT(DISTINCT IF(id.mem_type = 'SM' AND id.RENEW=true,id.membership_id , NULL)) AS 'STUDENT',\n" +
-                        "COUNT(DISTINCT IF(id.mem_type = 'RF' AND id.RENEW=true,id.membership_id , NULL)) AS 'RACEFELLOWS',\n" +
+                        "COUNT(DISTINCT IF(id.mem_type = 'RF' AND id.RENEW=true,id.membership_id , NULL)) AS 'RACE_FELLOWS',\n" +
                         "COUNT(DISTINCT IF(YEAR(m.JOIN_DATE)='"+year+"',id.membership_id, NULL)) AS 'NEW_MEMBERS',\n" +
                         "COUNT(DISTINCT IF(id.membership_id > \n" +
                         "  (\n" +

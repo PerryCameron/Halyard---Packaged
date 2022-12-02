@@ -19,7 +19,7 @@ public class SqlPayment {
                 thisPayments.add(new PaymentDTO(
                         rs.getInt("pay_id"),
                         rs.getInt("INVOICE_ID"),
-                        rs.getString("CHECKNUMBER"),
+                        rs.getString("CHECK_NUMBER"),
                         rs.getString("PAYMENT_TYPE"),
                         rs.getString("PAYMENT_DATE"),
                         rs.getString("AMOUNT"),
@@ -42,7 +42,7 @@ public class SqlPayment {
                 thisPayments.add(new PaymentDTO(
                         rs.getInt("pay_id"),
                         rs.getInt("INVOICE_ID"),
-                        rs.getString("CHECKNUMBER"),
+                        rs.getString("CHECK_NUMBER"),
                         rs.getString("PAYMENT_TYPE"),
                         rs.getString("PAYMENT_DATE"),
                         rs.getString("AMOUNT"),
@@ -65,7 +65,7 @@ public class SqlPayment {
                 thisPayment = new PaymentDTO(
                         rs.getInt("pay_id"),
                         rs.getInt("INVOICE_ID"),
-                        rs.getString("CHECKNUMBER"),
+                        rs.getString("CHECK_NUMBER"),
                         rs.getString("PAYMENT_TYPE"),
                         rs.getString("PAYMENT_DATE"),
                         rs.getString("AMOUNT"),

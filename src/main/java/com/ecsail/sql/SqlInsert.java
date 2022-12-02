@@ -195,7 +195,7 @@ public class SqlInsert {
 	}
 
 	public static void addWaitList(WaitListDTO w) {
-		String query = "INSERT INTO waitlist () VALUES ("
+		String query = "INSERT INTO wait_list () VALUES ("
 				+ w.getMs_id() + ","
 				+ w.isSlipWait() + ","
 				+ w.isKayakWait() + ","

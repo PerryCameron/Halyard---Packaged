@@ -295,7 +295,7 @@ public class SqlScriptMaker {
 
 	public static String getWaitListString(WaitListDTO wal) {
 		return
-		"INSERT INTO waitlist () VALUES ("
+		"INSERT INTO wait_list () VALUES ("
 		+ wal.getMs_id() + ","
 		+ wal.isSlipWait() + "," // stored as integer in database
 		+ wal.isKayakWait() + ","

@@ -160,17 +160,17 @@ public class HBoxSlip extends HBox {
         });
 
         slipWaitCheckBox.selectedProperty().addListener((observable, oldValue, newValue) ->
-                SqlUpdate.updateWaitList(t.getMembership().getMsid(), "SLIPWAIT", newValue));
+                SqlUpdate.updateWaitList(t.getMembership().getMsid(), "SLIP_WAIT", newValue));
         kayakWaitCheckBox.selectedProperty().addListener((observable, oldValue, newValue) ->
-                SqlUpdate.updateWaitList(t.getMembership().getMsid(), "KAYAKRACKWAIT", newValue));
+                SqlUpdate.updateWaitList(t.getMembership().getMsid(), "KAYAK_RACK_WAIT", newValue));
         shedWaitCheckBox.selectedProperty().addListener((observable, oldValue, newValue) ->
-                SqlUpdate.updateWaitList(t.getMembership().getMsid(), "SHEDWAIT", newValue));
+                SqlUpdate.updateWaitList(t.getMembership().getMsid(), "SHED_WAIT", newValue));
         wantsToSubleaseCheckBox.selectedProperty().addListener((observable, oldValue, newValue) ->
-                SqlUpdate.updateWaitList(t.getMembership().getMsid(), "WANTSUBLEASE", newValue));
+                SqlUpdate.updateWaitList(t.getMembership().getMsid(), "WANT_SUBLEASE", newValue));
         wantsToReleaseCheckBox.selectedProperty().addListener((observable, oldValue, newValue) ->
-                SqlUpdate.updateWaitList(t.getMembership().getMsid(), "WANTRELEASE", newValue));
+                SqlUpdate.updateWaitList(t.getMembership().getMsid(), "WANT_RELEASE", newValue));
         slipChangeCheckBox.selectedProperty().addListener((observable, oldValue, newValue) ->
-                SqlUpdate.updateWaitList(t.getMembership().getMsid(), "WANTSLIPCHANGE", newValue));
+                SqlUpdate.updateWaitList(t.getMembership().getMsid(), "WANT_SLIP_CHANGE", newValue));
 
         ///////////// ACTIONS //////////////////////////////
 

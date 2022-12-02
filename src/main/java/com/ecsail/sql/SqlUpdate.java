@@ -55,7 +55,7 @@ public class SqlUpdate {
 	}
 
 	public static void removePersonFromMembership(PersonDTO p) {
-		String query = "UPDATE person SET MS_ID=null, OLDMSID="+p.getMs_id()+" where P_ID=" + p.getP_id();
+		String query = "UPDATE person SET MS_ID=null, OLD_MSID="+p.getMs_id()+" where P_ID=" + p.getP_id();
 		try {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {
@@ -160,7 +160,7 @@ public class SqlUpdate {
 	}
 
 	public static void updateWaitList(int ms_id, String field, Boolean attribute) {
-		String query = "UPDATE waitlist SET " + field + "=" + attribute + " WHERE ms_id=" + ms_id;
+		String query = "UPDATE wait_list SET " + field + "=" + attribute + " WHERE ms_id=" + ms_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {
@@ -300,7 +300,7 @@ public class SqlUpdate {
 				+ "', BUSINESS='" + p.getBusiness()
 				+ "', IS_ACTIVE=" + p.isActive()
 				+ ", NICK_NAME='" + p.getNname()
-				+ "' ,OLDMSID=" +  p.getOldMsid()
+				+ "' ,OLD_MSID=" +  p.getOldMsid()
 				+ " WHERE p_id=" + p.getP_id();
 		try {
 			BaseApplication.connect.executeQuery(query);

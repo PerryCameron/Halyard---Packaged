@@ -74,7 +74,7 @@ public class PaymentTableView extends TableView<PaymentDTO> {
                     t.getTableView().getItems().get(
                             t.getTablePosition().getRow()).setCheckNumber(t.getNewValue());
                     var pay_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getPay_id();
-                    SqlUpdate.updatePayment(pay_id, "CHECKNUMBER", t.getNewValue());
+                    SqlUpdate.updatePayment(pay_id, "CHECK_NUMBER", t.getNewValue());
                     //	SqlUpdate.updatePhone("phone", phone_id, t.getNewValue());
                 }
         );

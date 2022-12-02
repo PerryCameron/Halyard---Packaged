@@ -36,7 +36,7 @@ public class SqlPerson {
                     rs.getString("BUSINESS"),
                     rs.getBoolean("IS_ACTIVE"),
                     rs.getString("NICK_NAME"),
-                    rs.getInt("OLDMSID")
+                    rs.getInt("OLD_MSID")
             ));
             }
         }
@@ -71,7 +71,7 @@ public class SqlPerson {
                     rs.getString("BUSINESS"),
                     rs.getBoolean("IS_ACTIVE"),
                     rs.getString("NICK_NAME"),
-                    rs.getInt("OLDMSID")));
+                    rs.getInt("OLD_MSID")));
             }
         }
             BaseApplication.connect.closeResultSet(rs);
@@ -102,7 +102,7 @@ public class SqlPerson {
                     rs.getString("BUSINESS"),
                     rs.getBoolean("IS_ACTIVE"),
                     rs.getString("NICK_NAME"),
-                    rs.getInt("OLDMSID")));
+                    rs.getInt("OLD_MSID")));
         }
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {
@@ -125,7 +125,7 @@ public class SqlPerson {
             if(rs.next()) {
                 person = (new PersonDTO(rs.getInt("p_id"), rs.getInt("MS_ID"), rs.getInt("member_type"),
                         rs.getString("F_NAME"), rs.getString("L_NAME"), rs.getString("birthday"),
-                        rs.getString("OCCUPATION"), rs.getString("BUSINESS"), rs.getBoolean("IS_ACTIVE"),rs.getString("NICK_NAME"),rs.getInt("OLDMSID")));
+                        rs.getString("OCCUPATION"), rs.getString("BUSINESS"), rs.getBoolean("IS_ACTIVE"),rs.getString("NICK_NAME"),rs.getInt("OLD_MSID")));
             } else {
                 System.out.println("There were no results for SqlPerson.getPersonByPid(int pid)");
             }
@@ -151,7 +151,7 @@ public class SqlPerson {
             if(rs.next()) {
                 person = (new PersonDTO(rs.getInt("p_id"), rs.getInt("MS_ID"), rs.getInt("member_type"),
                         rs.getString("F_NAME"), rs.getString("L_NAME"), rs.getString("birthday"),
-                        rs.getString("OCCUPATION"), rs.getString("BUSINESS"), rs.getBoolean("IS_ACTIVE"),rs.getString("NICK_NAME"),rs.getInt("OLDMSID")));
+                        rs.getString("OCCUPATION"), rs.getString("BUSINESS"), rs.getBoolean("IS_ACTIVE"),rs.getString("NICK_NAME"),rs.getInt("OLD_MSID")));
             } else {
                 System.out.println("There were no results for getPerson(int ms_id, int member_type)");
             }
@@ -178,7 +178,7 @@ public class SqlPerson {
             if(rs.next()) {
                 person = (new PersonDTO(rs.getInt("p_id"), rs.getInt("MS_ID"), rs.getInt("member_type"),
                         rs.getString("F_NAME"), rs.getString("L_NAME"), rs.getString("birthday"),
-                        rs.getString("OCCUPATION"), rs.getString("BUSINESS"), rs.getBoolean("IS_ACTIVE"),rs.getString("NICK_NAME"),rs.getInt("OLDMSID")));
+                        rs.getString("OCCUPATION"), rs.getString("BUSINESS"), rs.getBoolean("IS_ACTIVE"),rs.getString("NICK_NAME"),rs.getInt("OLD_MSID")));
             } else {
                 System.out.println("There were no results for getPersonFromMembershipID(String membershipId, String year)");
             }

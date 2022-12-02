@@ -55,7 +55,6 @@ create table ECSC_SQL.membership
     P_ID      int UNIQUE NOT NULL,
     JOIN_DATE date,
     MEM_TYPE  varchar(4),
-    # ACTIVE_MEMBERSHIP boolean, # this may be redundant because of money
     ADDRESS   varchar(40), # each membership has the same address
     CITY      varchar(20),
     STATE     varchar(4),
@@ -122,7 +121,7 @@ create table ECSC_SQL.person
     IS_ACTIVE   boolean,
     PICTURE     blob,
     NICK_NAME   varchar(30) NULL,
-    OLDMSID     INTEGER     NULL,
+    OLD_MSID     INTEGER     NULL,
     foreign key (MS_ID) references membership (MS_ID)
 );
 
@@ -155,7 +154,7 @@ create table ECSC_SQL.boat_owner
 );
 
 -- ALTER TABLE ECSC_SQL.boat_owner
--- DROP FOREIGN KEY boat_owner_ibfk_2;
+-- DROP FOREIGN KEY boat_owner_;
 -- #We want to change this to be a key but not prevent deletions, so make sure boat exists only for creation
 
 create table ECSC_SQL.deposit
@@ -203,7 +202,7 @@ create table ECSC_SQL.payment
 (
     PAY_ID       INTEGER        NOT NULL auto_increment primary key,
     INVOICE_ID     INTEGER        NOT NULL,
-    CHECKNUMBER  VARCHAR(20)    NULL,
+    CHECK_NUMBER  VARCHAR(20)    NULL,
     PAYMENT_TYPE varchar(4)     NOT NULL,
     PAYMENT_DATE date           NOT NULL,
     AMOUNT       DECIMAL(10, 2) NOT NULL,
@@ -224,29 +223,6 @@ create table ECSC_SQL.officer
     unique (P_ID, OFF_YEAR, OFF_TYPE)
 );
 
-create table ECSC_SQL.defined_fee
-(
-    FISCAL_YEAR            INTEGER unique primary key,
-    DUES_REGULAR           DECIMAL(10, 2) NULL,
-    DUES_FAMILY            DECIMAL(10, 2) NULL,
-    DUES_LAKE_ASSOCIATE    DECIMAL(10, 2) NULL,
-    DUES_SOCIAL            DECIMAL(10, 2) NULL,
-    INITIATION             DECIMAL(10, 2) NULL,
-    WET_SLIP               DECIMAL(10, 2) NULL,
-    BEACH                  DECIMAL(10, 2) NULL,
-    WINTER_STORAGE         DECIMAL(10, 2) NULL,
-    MAIN_GATE_KEY          DECIMAL(10, 2) NULL,
-    SAIL_LOFT              DECIMAL(10, 2) NULL,
-    SAIL_LOFT_KEY          DECIMAL(10, 2) NULL,
-    SAIL_SCHOOL_LASER_LOFT DECIMAL(10, 2) NULL,
-    SAIL_SCHOOL_LOFT_KEY   DECIMAL(10, 2) NULL,
-    KAYAK_RACK             DECIMAL(10, 2) NULL,
-    KAYAK_SHED             DECIMAL(10, 2) NULL,
-    KAYAK_SHED_KEY         DECIMAL(10, 2) NULL,
-    WORK_CREDIT            DECIMAL(10, 2) NULL,
-    KAYAK_BEACH_RACK       DECIMAL(10, 2) NULL
-);
-
 CREATE TABLE ECSC_SQL.stats
 (
     STAT_ID            INTEGER NOT NULL PRIMARY KEY UNIQUE,
@@ -261,12 +237,12 @@ CREATE TABLE ECSC_SQL.stats
     FAMILY             INTEGER,
     REGULAR            INTEGER,
     SOCIAL             INTEGER,
-    LAKEASSOCIATES     INTEGER,
-    LIFEMEMBERS        INTEGER,
-    RACEFELLOWS        INTEGER,
+    LAKE_ASSOCIATES    INTEGER,
+    LIFE_MEMBERS       INTEGER,
+    RACE_FELLOWS       INTEGER,
     STUDENT            INTEGER,
     DEPOSITS           DECIMAL(13, 2),
-    INIATION           DECIMAL(13, 2)
+    INITIATION         DECIMAL(13, 2)
 );
 
 CREATE TABLE ECSC_SQL.awards
@@ -279,15 +255,15 @@ CREATE TABLE ECSC_SQL.awards
 );
 
 -- #one-to-one relation with membership
-create table ECSC_SQL.waitlist
+create table ECSC_SQL.wait_list
 (
     MS_ID          int NOT NULL primary key unique,
-    SLIPWAIT       boolean,
-    KAYAKRACKWAIT  boolean,
-    SHEDWAIT       boolean,
-    WANTSUBLEASE   boolean,
-    WANTRELEASE    boolean,
-    WANTSLIPCHANGE boolean,
+    SLIP_WAIT       boolean,
+    KAYAK_RACK_WAIT  boolean,
+    SHED_WAIT       boolean,
+    WANT_SUBLEASE   boolean,
+    WANT_RELEASE    boolean,
+    WANT_SLIP_CHANGE boolean,
     foreign key (MS_ID) references membership (MS_ID) on DELETE no action on UPDATE no action
 );
 
