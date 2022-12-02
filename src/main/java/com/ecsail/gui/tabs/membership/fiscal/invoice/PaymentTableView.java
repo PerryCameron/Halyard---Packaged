@@ -3,7 +3,7 @@ package com.ecsail.gui.tabs.membership.fiscal.invoice;
 import com.ecsail.EditCell;
 import com.ecsail.enums.PaymentType;
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.sql.select.SqlMoney;
+import com.ecsail.sql.select.SqlPayment;
 import com.ecsail.structures.PaymentDTO;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
@@ -33,7 +33,7 @@ public class PaymentTableView extends TableView<PaymentDTO> {
                     var pay_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getPay_id();
                     BigDecimal amount = new BigDecimal(t.getNewValue());
                     SqlUpdate.updatePayment(pay_id, "amount", String.valueOf(amount.setScale(2, RoundingMode.HALF_UP)));
-                    BigDecimal totalPaidAmount = BigDecimal.valueOf(SqlMoney.getTotalAmount(footer.getInvoice().getId()));
+                    BigDecimal totalPaidAmount = BigDecimal.valueOf(SqlPayment.getTotalAmount(footer.getInvoice().getId()));
                     String totalAmountPaid = String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP));
                     footer.getTotalPaymentText().setText(totalAmountPaid);
                     footer.getInvoice().setPaid(totalAmountPaid);

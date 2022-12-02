@@ -3,7 +3,7 @@ package com.ecsail.gui.tabs.membership.fiscal.invoice;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.sql.select.SqlMoney;
+import com.ecsail.sql.select.SqlPayment;
 import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.structures.InvoiceDTO;
 import com.ecsail.structures.PaymentDTO;
@@ -71,7 +71,7 @@ public class VboxFooter extends VBox {
 			if (selectedIndex >= 0) // is something selected?
 				SqlDelete.deletePayment(payments.get(selectedIndex));
 			paymentTableView.getItems().remove(selectedIndex); // remove it from our GUI
-			BigDecimal totalPaidAmount = BigDecimal.valueOf(SqlMoney.getTotalAmount(invoice.getId()));
+			BigDecimal totalPaidAmount = BigDecimal.valueOf(SqlPayment.getTotalAmount(invoice.getId()));
 			totalPaymentText.setText(String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP)));
 			invoice.setPaid(String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP)));
 			updateTotals();

@@ -79,4 +79,18 @@ public class SqlPayment {
         return thisPayment;
     }
 
+    public static int getTotalAmount(int invoice_id) {
+        int number = 0;
+        String query = "SELECT SUM(amount) FROM payment WHERE money_id=" + invoice_id;
+        try {
+            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+            rs.next();
+            number = rs.getInt("SUM(amount)");
+            BaseApplication.connect.closeResultSet(rs);
+        } catch (SQLException e) {
+            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
+        }
+        return number;
+    }
+
 }

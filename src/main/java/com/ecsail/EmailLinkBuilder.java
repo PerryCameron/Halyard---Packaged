@@ -3,11 +3,9 @@ package com.ecsail;
 import com.ecsail.enums.MembershipType;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.select.SqlEmail;
-import com.ecsail.sql.select.SqlMoney;
 import com.ecsail.sql.select.SqlPerson;
 import com.ecsail.sql.select.SqlPhone;
 import com.ecsail.structures.MembershipListDTO;
-import com.ecsail.structures.MoneyDTO;
 import com.ecsail.structures.PersonDTO;
 import okhttp3.HttpUrl;
 
@@ -26,9 +24,9 @@ public class EmailLinkBuilder {
 
         PersonDTO primaryMember = null;
         PersonDTO secondaryMember = null;
-        MoneyDTO mo = SqlMoney.getMoneyRecordByMsidAndYear(ml.getMsid(),selectedYear);
-        System.out.println("Using money record from " + mo.getFiscal_year());
-        System.out.println("Work Credits=" + mo.getWork_credit());
+
+// deleted this when I deleted money, this will need a recode
+//        MoneyDTO mo = SqlMoney.getMoneyRecordByMsidAndYear(ml.getMsid(),selectedYear);
 
         HttpUrl.Builder queryUrlBuilder = HttpUrl.get(url + formId).newBuilder();
         // Membership ID
@@ -44,11 +42,11 @@ public class EmailLinkBuilder {
         // Zip
         queryUrlBuilder.addQueryParameter("address[postal]",ml.getZip());
         // Work Credits
-        queryUrlBuilder.addQueryParameter("workCredit", String.valueOf(mo.getWork_credit()));
+//        queryUrlBuilder.addQueryParameter("workCredit", String.valueOf(mo.getWork_credit()));
         // Winter Storage
-        queryUrlBuilder.addQueryParameter("winterStorage", String.valueOf(mo.getWinter_storage()));
+//        queryUrlBuilder.addQueryParameter("winterStorage", String.valueOf(mo.getWinter_storage()));
         // get all information related to primary member
-        queryUrlBuilder.addQueryParameter("otherFee", String.valueOf(mo.getOther()));
+//        queryUrlBuilder.addQueryParameter("otherFee", String.valueOf(mo.getOther()));
         if(SqlExists.personExistsByType(String.valueOf(ml.getMsid()),"1")) {
             primaryMember = SqlPerson.getPerson(ml.getMsid(), 1);
             queryUrlBuilder.addQueryParameter("primaryMember[first]",primaryMember.getFname());
