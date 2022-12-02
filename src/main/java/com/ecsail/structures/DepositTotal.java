@@ -2,6 +2,7 @@ package com.ecsail.structures;
 
 public class DepositTotal {
     String[] labels = {"Fees","Credit","Paid"};
+    String[] fullLabels = {"Total Fees","Total Credit","Total Funds Received"};
     String[] values = new String[3];
 
     public DepositTotal(String fees, String credit, String paid) {
@@ -13,8 +14,8 @@ public class DepositTotal {
     public String[] getLabels() {
         return labels;
     }
-
     public String[] getValues() {
         return values;
     }
+    public String[] getFullLabels() { return fullLabels; }
 }
