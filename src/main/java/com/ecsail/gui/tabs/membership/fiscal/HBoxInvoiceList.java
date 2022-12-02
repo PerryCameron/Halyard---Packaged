@@ -105,7 +105,7 @@ public class HBoxInvoiceList extends HBox {
 
         ////////////////  LISTENERS ///////////////////
 		addFiscalRecord.setOnAction((event) -> {
-				// get the next available key for money_id table
+				// get the next available key for INVOICE_ID table
 				int invoiceId = SqlSelect.getNextAvailablePrimaryKey("invoice","id");
 				// create appropriate money object for this membership
 				var newInvoice = new InvoiceDTO(invoiceId, tm.getMembership().getMsid(),
@@ -212,11 +212,11 @@ public class HBoxInvoiceList extends HBox {
 		tm.getFiscalTabPane().getSelectionModel().select(newTab);
 	}
 
-	// searches through list and counts the index value it finds correct money_id at.
-	private int getFiscalIndexByYear(int money_id) {
+	// searches through list and counts the index value it finds correct INVOICE_ID at.
+	private int getFiscalIndexByYear(int invoice_id) {
 		AtomicInteger i = new AtomicInteger();
 		return tm.getInvoices().stream().sequential().peek(v -> i.incrementAndGet())
-				.anyMatch(fis -> fis.getId() == money_id) ? i.get() - 1 : -1;
+				.anyMatch(fis -> fis.getId() == invoice_id) ? i.get() - 1 : -1;
 	}
 
 	public TabMembership getTabMembership() {

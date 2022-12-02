@@ -353,26 +353,6 @@ public class SqlUpdate {
 		}
 	}
 
-	public static void updateMoneyBatch(int money_id, int batchNumber) {
-		String query = "UPDATE money SET batch=" + batchNumber
-				+ " WHERE money_id=" + money_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
-
-	public static void updateMoneyClosed(int money_id, Boolean closed) {
-		String query = "UPDATE money SET closed=" + closed
-				+ " WHERE money_id=" + money_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
-
 	public static void updateMemo(int memo_id, String field, String attribute)  {
 		String query = "UPDATE memo SET " + field + "='" + attribute + "' WHERE memo_id=" + memo_id;
 		try {

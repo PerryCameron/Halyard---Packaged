@@ -104,7 +104,7 @@ create table ECSC_SQL.memo
     MS_ID     INTEGER         NOT NULL,
     MEMO_DATE date        NOT NULL,
     MEMO      varchar(2000),
-    MONEY_ID  INTEGER,
+    INVOICE_ID  INTEGER,
     CATEGORY  varchar(20) NOT NULL,
     foreign key (MS_ID) references membership (MS_ID)
 );
@@ -202,17 +202,17 @@ create table ECSC_SQL.invoice_item
 create table ECSC_SQL.payment
 (
     PAY_ID       INTEGER        NOT NULL auto_increment primary key,
-    MONEY_ID     INTEGER        NOT NULL,
+    INVOICE_ID     INTEGER        NOT NULL,
     CHECKNUMBER  VARCHAR(20)    NULL,
     PAYMENT_TYPE varchar(4)     NOT NULL,
     PAYMENT_DATE date           NOT NULL,
     AMOUNT       DECIMAL(10, 2) NOT NULL,
     DEPOSIT_ID   INTEGER        NOT NULL,
     foreign key (DEPOSIT_ID) references deposit (DEPOSIT_ID),
-    foreign key (MONEY_ID) references invoice (ID)
+    foreign key (INVOICE_ID) references invoice (ID)
 );
 
-# should attach to money_id, if put in early, just create money_id along with it
+# should attach to invoice_id, if put in early, just create invoice_id along with it
 create table ECSC_SQL.officer
 (
     O_ID       INTEGER NOT NULL auto_increment primary key,
@@ -276,18 +276,6 @@ CREATE TABLE ECSC_SQL.awards
     AWARD_YEAR varchar(10) NOT NULL,
     AWARD_TYPE varchar(10) NOT NULL,
     foreign key (P_ID) references person (P_ID)
-);
-
--- # one-to-one relation with money
-create table ECSC_SQL.work_credit
-(
-    MONEY_ID int NOT NULL primary key unique,
-    MS_ID    int NOT NULL,
-    RACING   INTEGER NULL,
-    HARBOR   INTEGER NULL,
-    SOCIAL   INTEGER NULL,
-    OTHER    INTEGER NULL,
-    foreign key (MONEY_ID) references invoice (ID) on DELETE no action on UPDATE no action
 );
 
 -- #one-to-one relation with membership

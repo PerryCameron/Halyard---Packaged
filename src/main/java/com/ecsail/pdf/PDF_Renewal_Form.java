@@ -36,7 +36,7 @@ public class PDF_Renewal_Form {
 	private static MembershipListDTO membership;
 	private static PersonDTO primary;
 	private static PersonDTO secondary;
-	private static MoneyDTO dues;
+//	private static MoneyDTO dues;
 	DefinedFeeDTO definedFees;
 	private int borderSize = 1;
 	private List<BoatDTO> boats = new ArrayList<BoatDTO>();
@@ -174,7 +174,7 @@ public class PDF_Renewal_Form {
 		document.add(signatureTable());
 		document.add(volunteerTable());
 		document.add(returnInfoTable());
-		dues.clear();
+//		dues.clear();
 		boats.clear();
 		dependants.clear();
 	}
@@ -398,7 +398,8 @@ public class PDF_Renewal_Form {
 		cell.setBorderBottom(new SolidBorder(0.5f));
 		//cell.setBorderLeft(new SolidBorder(borderSize));
 		cell.setWidth(10);
-		BigDecimal wetslip = new BigDecimal(dues.getWet_slip());
+//		BigDecimal wetslip = new BigDecimal(dues.getWet_slip());
+		BigDecimal wetslip = new BigDecimal("0.00"); // TODO temp
 		if(wetslip.compareTo(BigDecimal.ZERO) > 0.00)
 			cell.add(new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/checked-checkbox9x9.png")))));
 		else
@@ -434,8 +435,10 @@ public class PDF_Renewal_Form {
 		cell.setBorderBottom(new SolidBorder(0.5f));
 		//cell.setBorderLeft(new SolidBorder(borderSize));
 		cell.setWidth(10);
-		if(dues.getExtra_key() > 0) 
-			cell.add(new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/checked-checkbox9x9.png")))));
+//		if(dues.getExtra_key() > 0)
+			if(1 > 0)  // TODO temp
+
+				cell.add(new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/checked-checkbox9x9.png")))));
 		else
 		cell.add(new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/unchecked-checkbox9x9.png")))));  ///// MAIN GATE EXTRA KEY CHECKBOX
 		mainTable.addCell(cell);
@@ -518,7 +521,8 @@ public class PDF_Renewal_Form {
 		cell.setBorderBottom(new SolidBorder(0.5f));
 		//cell.setBorderLeft(new SolidBorder(borderSize));
 		cell.setWidth(10);
-		if(dues.getBeach() > 0) 
+//		if(dues.getBeach() > 0)
+		if(1 > 0) // TODO temp
 			cell.add(new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/checked-checkbox9x9.png")))));
 		else
 		cell.add(new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/unchecked-checkbox9x9.png")))));   //// BEACH PARKING CHECK BOX
@@ -636,7 +640,8 @@ public class PDF_Renewal_Form {
 		cell.setBorderBottom(new SolidBorder(0.5f));
 		//cell.setBorderLeft(new SolidBorder(borderSize));
 		cell.setWidth(10);
-		if(dues.getWinter_storage() > 0) 
+//		if(dues.getWinter_storage() > 0)
+		if(1 > 0) // TODO temp
 			cell.add(new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/checked-checkbox9x9.png")))));
 		else
 		cell.add(new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/unchecked-checkbox9x9.png")))));
@@ -655,9 +660,10 @@ public class PDF_Renewal_Form {
 		cell = new Cell();
 		cell.setBorder(Border.NO_BORDER);
 		cell.setBorderBottom(new SolidBorder(0.5f));
-		if(dues.getWinter_storage() > 0) 
-			p = new Paragraph(dues.getWinter_storage() + " x");
-		else
+		// TODO temp remove
+//		if(dues.getWinter_storage() > 0)
+//			p = new Paragraph(dues.getWinter_storage() + " x");
+//		else
 		p = new Paragraph("____ x");
 		p.setFontSize(10);
 		p.setFixedLeading(10);
@@ -765,9 +771,10 @@ public class PDF_Renewal_Form {
 		cell.setBorderBottom(new SolidBorder(0.5f));
 		//cell.setBorderLeft(new SolidBorder(borderSize));
 		cell.setWidth(10);
-		if(dues.getSail_loft() > 0) 
-			cell.add(new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/checked-checkbox9x9.png")))));
-		else
+		// Todo temp remove
+//		if(dues.getSail_loft() > 0)
+//			cell.add(new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/checked-checkbox9x9.png")))));
+//		else
 		cell.add(new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/unchecked-checkbox9x9.png")))));
 		mainTable.addCell(cell);
 		
@@ -860,9 +867,10 @@ public class PDF_Renewal_Form {
 		cell.setBorderBottom(new SolidBorder(0.5f));
 		cell.setBorderLeft(new SolidBorder(0.5f));
 		cell.setWidth(10);
-		if(dues.getKayac_rack() > 0) 
-			cell.add(new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/checked-checkbox9x9.png")))));
-		else
+		// TODO temp remove
+//		if(dues.getKayac_rack() > 0)
+//			cell.add(new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/checked-checkbox9x9.png")))));
+//		else
 		cell.add(new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/unchecked-checkbox9x9.png")))));
 		mainTable.addCell(cell);
 
@@ -879,9 +887,10 @@ public class PDF_Renewal_Form {
 		cell = new Cell();
 		cell.setBorder(Border.NO_BORDER);
 		cell.setBorderBottom(new SolidBorder(0.5f));
-		if(dues.getKayac_rack() > 0) 
-			p = new Paragraph(dues.getKayac_rack() + " x");
-		else
+		// TODO temp remove
+//		if(dues.getKayac_rack() > 0)
+//			p = new Paragraph(dues.getKayac_rack() + " x");
+//		else
 			p = new Paragraph("____ x");
 		p.setFontSize(10);
 		p.setFixedLeading(10);
@@ -957,9 +966,10 @@ public class PDF_Renewal_Form {
 		cell.setBorderBottom(new SolidBorder(0.5f));
 		//cell.setBorderLeft(new SolidBorder(borderSize));
 		cell.setWidth(10);
-		if(dues.getKayac_shed() > 0) 
-			cell.add(new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/checked-checkbox9x9.png")))));
-		else
+		// TODO temp remove
+//		if(dues.getKayac_shed() > 0)
+//			cell.add(new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/checked-checkbox9x9.png")))));
+//		else
 		cell.add(new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/unchecked-checkbox9x9.png")))));
 		mainTable.addCell(cell);
 		
@@ -976,9 +986,10 @@ public class PDF_Renewal_Form {
 		cell = new Cell();
 		cell.setBorder(Border.NO_BORDER);
 		cell.setBorderBottom(new SolidBorder(0.5f));
-		if(dues.getKayac_shed() > 0) 
-			p = new Paragraph(dues.getKayac_shed() + " x");
-		else
+		// TODO temp remove
+//		if(dues.getKayac_shed() > 0)
+//			p = new Paragraph(dues.getKayac_shed() + " x");
+//		else
 			p = new Paragraph("____ x");
 		p.setFontSize(10);
 		p.setFixedLeading(10);
@@ -1009,7 +1020,9 @@ public class PDF_Renewal_Form {
 				.setWidth(110)
 				.setPadding(0)
 				.setBorder(Border.NO_BORDER)
-				.add(new Paragraph("Calculated: $" + dues.getTotal())
+				// TODO temp remove
+//				.add(new Paragraph("Calculated: $" + dues.getTotal())
+				.add(new Paragraph("Calculated: $")
 						.setFontSize(10)
 						.setFixedLeading(10)
 						.setTextAlignment(TextAlignment.LEFT)));
@@ -1137,7 +1150,9 @@ public class PDF_Renewal_Form {
 				.setWidth(110)
 				.setPadding(0)
 				.setBorder(Border.NO_BORDER)
-				.add(new Paragraph("Calculated: -$" + dues.getCredit())
+				// TODO Temp remove
+//				.add(new Paragraph("Calculated: -$" + dues.getCredit())
+				.add(new Paragraph("Calculated: -$")
 						.setFontSize(10)
 						.setFixedLeading(10)
 						.setTextAlignment(TextAlignment.LEFT)));
@@ -1217,7 +1232,9 @@ public class PDF_Renewal_Form {
 				.setWidth(110)
 				.setPadding(0)
 				.setBorder(Border.NO_BORDER)
-				.add(new Paragraph("Calculated: $" + dues.getBalance())
+				// TODO temp remove
+				.add(new Paragraph("Calculated: $")
+//						.add(new Paragraph("Calculated: $" + dues.getBalance())
 						.setFontSize(10)
 						//.setFixedLeading(10)
 						.setTextAlignment(TextAlignment.LEFT)));

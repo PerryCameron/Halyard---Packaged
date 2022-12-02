@@ -35,48 +35,49 @@ public class SqlMembershipList {
         return rosters;
     }
 
-    public static ObservableList<MembershipListDTO> getRosterOfMembershipsThatPaidLate(String year) {
-        ObservableList<MembershipListDTO> rosters = FXCollections.observableArrayList();
-        String query = "SELECT distinct \n" +
-                "MAX(m.ms_id) AS ms_id,\n" +
-                "MAX(m.p_id) AS p_id,\n" +
-                "id.membership_id,\n" +
-                "id.fiscal_year,\n" +
-                "id.fiscal_year,\n" +
-                "MAX(m.join_date) AS join_date,\n" +
-                "MAX(id.mem_type) AS mem_type,\n" +
-                "MAX(s.SLIP_NUM) AS SLIP_NUM,\n" +
-                "MAX(p.l_name) AS l_name,\n" +
-                "MAX(p.f_name) AS f_name,\n" +
-                "MAX(s.subleased_to) AS subleased_to,\n" +
-                "MAX(m.address) AS address,\n" +
-                "MAX(m.city) AS city,\n" +
-                "MAX(m.state) AS state,\n" +
-                "MAX(m.zip) AS zip \n" +
-                "FROM membership_id id\n" +
-                "LEFT JOIN membership m ON id.ms_id=m.ms_id\n" +
-                "LEFT JOIN slip s ON id.ms_id=s.ms_id \n" +
-                "LEFT JOIN person p ON m.p_id=p.p_id \n" +
-                "LEFT JOIN money mo ON id.ms_id=mo.ms_id \n" +
-                "LEFT JOIN payment pa ON mo.MONEY_ID=pa.MONEY_ID \n" +
-                "WHERE id.fiscal_year=" + year + "\n" +
-                "AND mo.fiscal_year=" + year + "\n" +
-                "AND id.renew=true\n" +
-                "AND mo.dues > 0\n" +
-                "AND mo.initiation = 0 \n" +
-                "AND (SELECT exists(SELECT MID FROM membership_id WHERE fiscal_year="+(Integer.parseInt(year) -1)+" AND ms_id=(id.ms_id)))\n" +
-                "AND DATE(pa.PAYMENT_DATE) >= '"+year+"-03-01' \n" +
-                "GROUP BY id.membership_id";
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            queryToArrayList(rosters, rs);
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to SELECT roster","See below for details");
-        }
-        BaseApplication.logger.info("Creating Roster list late payments for " + year + "...");
-        return rosters;
-    }
+    //TODO change this money_id no longer around
+//    public static ObservableList<MembershipListDTO> getRosterOfMembershipsThatPaidLate(String year) {
+//        ObservableList<MembershipListDTO> rosters = FXCollections.observableArrayList();
+//        String query = "SELECT distinct \n" +
+//                "MAX(m.ms_id) AS ms_id,\n" +
+//                "MAX(m.p_id) AS p_id,\n" +
+//                "id.membership_id,\n" +
+//                "id.fiscal_year,\n" +
+//                "id.fiscal_year,\n" +
+//                "MAX(m.join_date) AS join_date,\n" +
+//                "MAX(id.mem_type) AS mem_type,\n" +
+//                "MAX(s.SLIP_NUM) AS SLIP_NUM,\n" +
+//                "MAX(p.l_name) AS l_name,\n" +
+//                "MAX(p.f_name) AS f_name,\n" +
+//                "MAX(s.subleased_to) AS subleased_to,\n" +
+//                "MAX(m.address) AS address,\n" +
+//                "MAX(m.city) AS city,\n" +
+//                "MAX(m.state) AS state,\n" +
+//                "MAX(m.zip) AS zip \n" +
+//                "FROM membership_id id\n" +
+//                "LEFT JOIN membership m ON id.ms_id=m.ms_id\n" +
+//                "LEFT JOIN slip s ON id.ms_id=s.ms_id \n" +
+//                "LEFT JOIN person p ON m.p_id=p.p_id \n" +
+//                "LEFT JOIN money mo ON id.ms_id=mo.ms_id \n" +
+//                "LEFT JOIN payment pa ON mo.MONEY_ID=pa.INVOICE_ID \n" +
+//                "WHERE id.fiscal_year=" + year + "\n" +
+//                "AND mo.fiscal_year=" + year + "\n" +
+//                "AND id.renew=true\n" +
+//                "AND mo.dues > 0\n" +
+//                "AND mo.initiation = 0 \n" +
+//                "AND (SELECT exists(SELECT MID FROM membership_id WHERE fiscal_year="+(Integer.parseInt(year) -1)+" AND ms_id=(id.ms_id)))\n" +
+//                "AND DATE(pa.PAYMENT_DATE) >= '"+year+"-03-01' \n" +
+//                "GROUP BY id.membership_id";
+//        try {
+//            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+//            queryToArrayList(rosters, rs);
+//            BaseApplication.connect.closeResultSet(rs);
+//        } catch (SQLException e) {
+//            new Dialogue_ErrorSQL(e,"Unable to SELECT roster","See below for details");
+//        }
+//        BaseApplication.logger.info("Creating Roster list late payments for " + year + "...");
+//        return rosters;
+//    }
 
     public static ObservableList<MembershipListDTO> getRosterOfKayakShedOwners(String year) {
         ObservableList<MembershipListDTO> rosters = FXCollections.observableArrayList();

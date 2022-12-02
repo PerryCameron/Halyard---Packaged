@@ -339,7 +339,7 @@ public class SqlScriptMaker {
 		return
 				"INSERT INTO payment () VALUES ("
 				+ pay.getPay_id() + ","
-				+ pay.getMoney_id() + ","
+				+ pay.getInvoice_id() + ","
 				+ pay.getCheckNumber() + ",'"
 				+ pay.getPaymentType() + "','"
 				+ pay.getPaymentDate() + "','"
@@ -384,42 +384,6 @@ public class SqlScriptMaker {
 				+ "');\n";
 	}
 
-	public static String getMoneyString(MoneyDTO mon) {
-		return
-				"INSERT INTO money () VALUES ("
-				+ mon.getMoney_id() + ","
-				+ mon.getMs_id() + ","
-				+ mon.getFiscal_year() + ","
-				+ mon.getBatch() + ","
-				+ mon.getOfficer_credit() + ","
-				+ mon.getExtra_key() + ","
-				+ mon.getKayac_shed_key() + ","
-				+ mon.getSail_loft_key() + ","
-				+ mon.getSail_school_loft_key() + ","
-				+ mon.getBeach() + ","
-				+ mon.getWet_slip() + ","
-				+ mon.getKayac_rack() + ","
-				+ mon.getKayac_shed() + ","
-				+ mon.getSail_loft() + ","
-				+ mon.getSail_school_laser_loft() + ","
-				+ mon.getWinter_storage() + ","
-				+ mon.getYsc_donation() + ","
-				+ mon.getPaid() + ","
-				+ mon.getTotal() + ","
-				+ mon.getCredit() + ","
-				+ mon.getBalance() + ","
-				+ mon.getDues() + ","
-				+ mon.isCommitted() + ","
-				+ mon.isClosed() + ","
-				+ mon.getOther() + ","
-				+ mon.getInitiation() + ","
-				+ mon.isSupplemental() + ","
-				+ mon.getWork_credit() + ","
-				+ mon.getOther_credit() + ","
-				+ mon.getKayak_beach_rack()
-				+ ");\n";
-	}
-
 	public static String getEmailString(EmailDTO eml) {
 		return
 				"INSERT INTO email () VALUES ("
@@ -438,7 +402,7 @@ public class SqlScriptMaker {
 				+ mem.getMsid() + ",\""
 				+ mem.getMemo_date() + "\",\""
 				+ mem.getMemo() + "\","
-				+ mem.getMoney_id() + ",\""
+				+ mem.getInvoice_id()+ ",\""
 				+ mem.getCategory() + "\""
 				+");\n";
 	}

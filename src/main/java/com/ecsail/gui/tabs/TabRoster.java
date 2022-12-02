@@ -332,8 +332,9 @@ public class TabRoster extends Tab {
 			rosters.addAll(SqlMembershipList.getRosterOfKayakShedOwners(HalyardPaths.getYear()));
 		if(rb.getRadioKayakRackOwners().isSelected())
 			rosters.addAll(SqlMembershipList.getRosterOfKayakRackOwners(HalyardPaths.getYear()));
-		if(rb.getRadioLatePaymentMembers().isSelected())
-			rosters.addAll(SqlMembershipList.getRosterOfMembershipsThatPaidLate(selectedYear));
+		if(rb.getRadioLatePaymentMembers().isSelected()) // TODO fix or remove it
+			System.out.println("I took this out because removing money changed everything");
+//			rosters.addAll(SqlMembershipList.getRosterOfMembershipsThatPaidLate(selectedYear));
 		records.setText(rosters.size() + " Records");
 		rosters.sort(Comparator.comparing(MembershipListDTO::getMembershipId));
 	}
@@ -371,13 +372,4 @@ public class TabRoster extends Tab {
 		printChoices.setSlipwait(false);
 	}
 
-	private Node createSlipText(String text) {
-		HBox textContainer = new HBox();
-		Text slip = new Text(text);
-		slip.setFill(Color.BLUE);
-		textContainer.getChildren().add(slip);
-		textContainer.setAlignment(Pos.CENTER);
-		textContainer.setSpacing(3);
-		return textContainer;
-	}
 }

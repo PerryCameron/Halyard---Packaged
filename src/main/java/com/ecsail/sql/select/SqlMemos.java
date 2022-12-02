@@ -5,7 +5,6 @@ import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.gui.tabs.deposits.InvoiceWithMemberInfoDTO;
 import com.ecsail.structures.Memo2DTO;
 import com.ecsail.structures.MemoDTO;
-import com.ecsail.structures.PaidDuesDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -26,7 +25,7 @@ public class SqlMemos {
                         rs.getInt("MS_ID"),
                         rs.getString("MEMO_DATE"),
                         rs.getString("MEMO"),
-                        rs.getInt("MONEY_ID"),
+                        rs.getInt("INVOICE_ID"),
                         rs.getString("CATEGORY")));
             }
             BaseApplication.connect.closeResultSet(rs);
@@ -50,7 +49,7 @@ public class SqlMemos {
                         rs.getInt("MS_ID"),
                         rs.getString("MEMO_DATE"),
                         rs.getString("MEMO"),
-                        rs.getInt("MONEY_ID"),
+                        rs.getInt("INVOICE_ID"),
                         rs.getString("CATEGORY")));
             }
             BaseApplication.connect.closeResultSet(rs);
@@ -61,7 +60,7 @@ public class SqlMemos {
     }
 
     public static MemoDTO getMemos(InvoiceWithMemberInfoDTO invoice, String category) {
-        String query = "SELECT * FROM memo WHERE money_id=" + invoice.getId() + " and category='" + category + "'";
+        String query = "SELECT * FROM memo WHERE INVOICE_ID=" + invoice.getId() + " and category='" + category + "'";
         MemoDTO thisMemo = null;
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
@@ -71,7 +70,7 @@ public class SqlMemos {
                         rs.getInt("MS_ID"),
                         rs.getString("MEMO_DATE"),
                         rs.getString("MEMO"),
-                        rs.getInt("MONEY_ID"),
+                        rs.getInt("INVOICE_ID"),
                         rs.getString("CATEGORY"));
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {

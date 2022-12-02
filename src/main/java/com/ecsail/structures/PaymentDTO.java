@@ -7,17 +7,17 @@ import javafx.beans.property.StringProperty;
 
 public class PaymentDTO {
 	private IntegerProperty pay_id;
-	private IntegerProperty money_id;
+	private IntegerProperty invoice_id;
 	private StringProperty checkNumber;
 	private StringProperty paymentType;
 	private StringProperty paymentDate;
 	private StringProperty PaymentAmount;
 	private IntegerProperty deposit_id;
 	
-	public PaymentDTO(Integer pay_id, Integer money_id, String checkNumber, String paymentType, String paymentDate,
+	public PaymentDTO(Integer pay_id, Integer invoice_id, String checkNumber, String paymentType, String paymentDate,
 					  String paymentAmount, Integer deposit_id) {
 		this.pay_id = new SimpleIntegerProperty(pay_id);
-		this.money_id = new SimpleIntegerProperty(money_id);
+		this.invoice_id = new SimpleIntegerProperty(invoice_id);
 		this.checkNumber = new SimpleStringProperty(checkNumber);
 		this.paymentType = new SimpleStringProperty(paymentType);
 		this.paymentDate = new SimpleStringProperty(paymentDate);
@@ -40,18 +40,18 @@ public class PaymentDTO {
 	}
 	
 
-	public final IntegerProperty money_idProperty() {
-		return this.money_id;
+	public final IntegerProperty invoice_idProperty() {
+		return this.invoice_id;
 	}
 	
 
-	public final int getMoney_id() {
-		return this.money_idProperty().get();
+	public final int getInvoice_id() {
+		return this.invoice_idProperty().get();
 	}
 	
 
-	public final void setMoney_id(final int money_id) {
-		this.money_idProperty().set(money_id);
+	public final void setInvoice_id(final int invoice_id) {
+		this.invoice_idProperty().set(invoice_id);
 	}
 	
 
@@ -131,7 +131,7 @@ public class PaymentDTO {
 
 	@Override
 	public String toString() {
-		return "Object_Payment [pay_id=" + pay_id + ", money_id=" + money_id + ", checkNumber=" + checkNumber
+		return "Object_Payment [pay_id=" + pay_id + ", invoice_id=" + invoice_id + ", checkNumber=" + checkNumber
 				+ ", paymentType=" + paymentType + ", paymentDate=" + paymentDate + ", PaymentAmount=" + PaymentAmount
 				+ ", deposit_id=" + deposit_id + "]";
 	}

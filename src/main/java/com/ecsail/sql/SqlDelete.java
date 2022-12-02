@@ -170,8 +170,8 @@ public class SqlDelete {
 		}
 	}
 
-	public static void deletePaymentByMoneyID(int money_id) {
-		String query = "DELETE FROM payment WHERE money_id=" + money_id;
+	public static void deletePaymentByMoneyID(int invoice_id) {
+		String query = "DELETE FROM payment WHERE invoice_id=" + invoice_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {

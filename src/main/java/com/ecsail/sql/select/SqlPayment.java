@@ -18,7 +18,7 @@ public class SqlPayment {
             while (rs.next()) {
                 thisPayments.add(new PaymentDTO(
                         rs.getInt("pay_id"),
-                        rs.getInt("MONEY_ID"),
+                        rs.getInt("INVOICE_ID"),
                         rs.getString("CHECKNUMBER"),
                         rs.getString("PAYMENT_TYPE"),
                         rs.getString("PAYMENT_DATE"),
@@ -33,15 +33,15 @@ public class SqlPayment {
         return thisPayments;
     }
 
-    public static ObservableList<PaymentDTO> getPayments(int money_id) {
+    public static ObservableList<PaymentDTO> getPayments(int invoice_id) {
         ObservableList<PaymentDTO> thisPayments = FXCollections.observableArrayList();
-        String query = "SELECT * FROM payment WHERE money_id=" + money_id;
+        String query = "SELECT * FROM payment WHERE invoice_id=" + invoice_id;
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
                 thisPayments.add(new PaymentDTO(
                         rs.getInt("pay_id"),
-                        rs.getInt("MONEY_ID"),
+                        rs.getInt("INVOICE_ID"),
                         rs.getString("CHECKNUMBER"),
                         rs.getString("PAYMENT_TYPE"),
                         rs.getString("PAYMENT_DATE"),
@@ -56,15 +56,15 @@ public class SqlPayment {
         return thisPayments;
     }
 
-    public static PaymentDTO getPayment(int money_id) {
+    public static PaymentDTO getPayment(int invoice_id) {
         PaymentDTO thisPayment = null;
-        String query = "SELECT * FROM payment WHERE money_id=" + money_id;
+        String query = "SELECT * FROM payment WHERE invoice_id=" + invoice_id;
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
                 thisPayment = new PaymentDTO(
                         rs.getInt("pay_id"),
-                        rs.getInt("MONEY_ID"),
+                        rs.getInt("INVOICE_ID"),
                         rs.getString("CHECKNUMBER"),
                         rs.getString("PAYMENT_TYPE"),
                         rs.getString("PAYMENT_DATE"),
@@ -81,7 +81,7 @@ public class SqlPayment {
 
     public static int getTotalAmount(int invoice_id) {
         int number = 0;
-        String query = "SELECT SUM(amount) FROM payment WHERE money_id=" + invoice_id;
+        String query = "SELECT SUM(amount) FROM payment WHERE invoice_id=" + invoice_id;
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             rs.next();

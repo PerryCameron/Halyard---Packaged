@@ -79,7 +79,7 @@ public class SqlInsert {
 
 	public static void addPaymentRecord(PaymentDTO op) {
 		String query = "INSERT INTO payment () VALUES (" + op.getPay_id() + ","
-				+ op.getMoney_id() + "," + op.getCheckNumber() + ",'" + op.getPaymentType() + "','"
+				+ op.getInvoice_id() + "," + op.getCheckNumber() + ",'" + op.getPaymentType() + "','"
 				+ op.getPaymentDate() + "','" + op.getPaymentAmount() + "','" + op.getDeposit_id() + "')";
 		try {
 		BaseApplication.connect.executeQuery(query);
@@ -182,7 +182,7 @@ public class SqlInsert {
 
 	public static void addMemo(MemoDTO m) {
 		String query = "INSERT INTO memo () VALUES (" + m.getMemo_id() + "," + m.getMsid() + ",'" + m.getMemo_date() + "','" + m.getMemo() + "',"
-				+ m.getMoney_id() + ",'" + m.getCategory() + "');";
+				+ m.getInvoice_id() + ",'" + m.getCategory() + "');";
 		try {
 			BaseApplication.connect.executeQuery(query);
 		 } catch (SQLException e) {

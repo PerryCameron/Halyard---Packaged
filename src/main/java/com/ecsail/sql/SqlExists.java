@@ -70,13 +70,13 @@ public class SqlExists {
 		return answer;
 	}
 	
-	public static Boolean paymentExists(int money_id) {
+	public static Boolean paymentExists(int invoice_id) {
 		boolean answer = false;
-		String query = "SELECT EXISTS(SELECT * FROM payment WHERE MONEY_ID=" + money_id + ")";
+		String query = "SELECT EXISTS(SELECT * FROM payment WHERE INVOICE_ID=" + invoice_id + ")";
 		try {
 			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
 			rs.next();
-		    answer = rs.getBoolean("EXISTS(SELECT * FROM payment WHERE MONEY_ID=" + money_id + ")");
+		    answer = rs.getBoolean("EXISTS(SELECT * FROM payment WHERE INVOICE_ID=" + invoice_id + ")");
 		BaseApplication.connect.closeResultSet(rs); }
 		catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"Unable to check if money record EXISTS","See below for details");
@@ -112,9 +112,9 @@ public class SqlExists {
 		return answer;
 	}
 	
-	public static Boolean memoExists(int money_id, String category) {
+	public static Boolean memoExists(int invoice_id, String category) {
 		boolean answer = false;
-		String query = "SELECT EXISTS(SELECT * FROM memo WHERE CATEGORY='" + category + "' AND MONEY_ID=" + money_id + ") AS memoExists";
+		String query = "SELECT EXISTS(SELECT * FROM memo WHERE CATEGORY='" + category + "' AND invoice_id=" + invoice_id + ") AS memoExists";
 		try {
 			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
 			rs.next();
@@ -320,22 +320,6 @@ public class SqlExists {
 				result = rs.getBoolean(
 						"EXISTS(SELECT * FROM officer WHERE p_id="
 							+ per.getP_id() + " AND off_year=" + year + " AND OFF_TYPE != 'BM')");
-		BaseApplication.connect.closeResultSet(rs); }
-		catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to check if EXISTS","See below for details");
-		}
-		return result;
-	}
-	
-	public static Boolean workCreditExists(int money_id) {
-		boolean result = false;
-		String query = "SELECT EXISTS(SELECT * FROM work_credit WHERE money_id=" + money_id + ")";
-		try {
-			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-			while (rs.next()) {
-				result = rs.getBoolean(
-						"EXISTS(SELECT * FROM work_credit WHERE money_id=" + money_id + ")");
-			}
 		BaseApplication.connect.closeResultSet(rs); }
 		catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"Unable to check if EXISTS","See below for details");
