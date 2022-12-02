@@ -100,6 +100,7 @@ public class TabMembership extends Tab {
         HBox.setHgrow(hbox3, Priority.ALWAYS);
         HBox.setHgrow(informationTabPane, Priority.ALWAYS);
         VBox.setVgrow(vboxBlue, Priority.ALWAYS);
+		peopleTabPane.setPrefWidth(560);
 
         ////////// SETTING CONTENT /////////////////
         
