@@ -2,6 +2,8 @@ package com.ecsail.gui.tabs.fee;
 
 import com.ecsail.datacheck.NumberCheck;
 import com.ecsail.sql.SqlUpdate;
+import com.ecsail.sql.select.SqlDbInvoice;
+import com.ecsail.structures.DbInvoiceDTO;
 import com.ecsail.structures.FeeDTO;
 import javafx.geometry.Pos;
 import javafx.scene.control.RadioButton;
@@ -15,17 +17,19 @@ import java.util.ArrayList;
 
 public class HBoxFeeRow extends HBox {
     private TabFee tab;
-    boolean isGroup = false;
     private ArrayList<FeeDTO> fees = new ArrayList<>();
-    private  FeeDTO selectedFee;
+    private FeeDTO selectedFee;
     private RadioButton radioButton;
     private TextField feeTextField;
     private Text label;
+
+    private DbInvoiceDTO dbInvoiceDTO;
     public HBoxFeeRow(FeeDTO fee, TabFee tab) {
         this.tab=tab;
         this.selectedFee = fee;
         this.fees.add(selectedFee);
-        this.isGroup = !fee.getGroupName().equals("NONE");
+        dbInvoiceDTO = SqlDbInvoice.getInvoiceByYearAndFieldName(fee.getFeeYear(),fee.getFieldName());
+        System.out.println(dbInvoiceDTO);
         setSpacing(15);
         setAlignment(Pos.CENTER_LEFT);
         getChildren().addAll(addRadioButton(), addTextField(), createLabel());

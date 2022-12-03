@@ -172,7 +172,6 @@ public class TabFee extends Tab {
         hbox.getChildren().clear();
         Button saveButton = new Button("Save");
         Label description = new Label("Description:");
-
         TextField descriptionText = new TextField(hbox.getSelectedFee().getDescription());
         CheckBox checkMultiply = new CheckBox("Multiplied by QTY");
         Label maxQty = new Label("Max Qty");
@@ -180,8 +179,6 @@ public class TabFee extends Tab {
         CheckBox price_editable = new CheckBox("Price Editable");
         CheckBox checkCredit = new CheckBox("Is Credit");
         CheckBox autoPopulate = new CheckBox("Auto-populate");
-
-
         VBox vboxEditBox = new VBox();
         HBox hboxRow1 = new HBox();
         HBox hboxRow2 = new HBox();
@@ -257,7 +254,7 @@ public class TabFee extends Tab {
         return feeBox;
     }
 
-    // used to initially place hbox rows into vbox
+    // used to initially place hbox rows into vbox for a given year
     private void addHBoxRows() {
         HashMap<String, HBoxFeeRow> groupMap = new HashMap<>();
         for (FeeDTO fee : feeDTOS)
@@ -271,11 +268,6 @@ public class TabFee extends Tab {
                 }
             else  // not part of a group
                 vboxFeeRow.getChildren().add(new HBoxFeeRow(fee, this));
-    }
-
-    private void addOrUpdateGroupHBox(int group) {
-
-
     }
 
     public HashMap<RadioButton, HBoxFeeRow> getHboxHashMap() {

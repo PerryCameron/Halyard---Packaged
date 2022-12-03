@@ -9,7 +9,6 @@ public class FeeDTO {
     private int fieldQuantity;
     private int feeYear;
     private String description;
-
     private String groupName;
 
     public FeeDTO(int feeId, String fieldName, BigDecimal fieldValue, int fieldQuantity, int feeYear, String description, String groupName) {

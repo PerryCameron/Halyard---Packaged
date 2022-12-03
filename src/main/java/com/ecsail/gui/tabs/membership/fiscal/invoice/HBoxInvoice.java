@@ -3,6 +3,7 @@ package com.ecsail.gui.tabs.membership.fiscal.invoice;
 import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.Note;
+import com.ecsail.enums.MembershipType;
 import com.ecsail.gui.tabs.membership.fiscal.HBoxInvoiceList;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlInsert;
@@ -82,7 +83,6 @@ public class HBoxInvoice extends HBox {
 		for (DbInvoiceDTO i : theseWidgets) {
                 i.setFee(insertFeeIntoWidget(i));
                 i.setItems(items); // allows calculations to be made
-            System.out.println("Creating widget object for" + i.getFieldName());  // good here
                 invoiceItemMap.put(i.getFieldName(), new HboxRow(i, footer));
 		}
         //////////////// SETTING CONTENT //////////////
@@ -111,10 +111,11 @@ public class HBoxInvoice extends HBox {
         getChildren().addAll(vboxGrey);
     }
 
+
     private FeeDTO insertFeeIntoWidget(DbInvoiceDTO i) {
         FeeDTO selectedFee = null;
         for (FeeDTO f : fees) {
-            if (i.getFieldName().equals("Dues") && f.getFieldName().equals("Dues " + membership.getMemType()))
+            if (i.getFieldName().equals("Dues") && f.getDescription().equals(MembershipType.getByCode(membership.getMemType())))
                 selectedFee = f;
             if (i.getFieldName().equals(f.getFieldName()))
                 selectedFee = f;

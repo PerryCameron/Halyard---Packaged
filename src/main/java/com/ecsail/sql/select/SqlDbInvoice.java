@@ -79,4 +79,31 @@ public class SqlDbInvoice {
         return categories;
     }
 
+    public static DbInvoiceDTO getInvoiceByYearAndFieldName(int year, String fieldName) {  //p_id
+        DbInvoiceDTO dbInvoiceDTO = null;
+        String query = "select * from db_invoice where year="+year+" and FIELD_NAME='"+fieldName+"'";
+        try {
+            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+            while (rs.next()) {
+                dbInvoiceDTO = new DbInvoiceDTO(
+                        rs.getInt("ID"),
+                        rs.getString("year"),
+                        rs.getString("FIELD_NAME"),
+                        rs.getString("widget_type"),
+                        rs.getDouble("width"),
+                        rs.getInt("order"),
+                        rs.getBoolean("multiplied"),
+                        rs.getBoolean("price_editable"),
+                        rs.getBoolean("is_credit"),
+                        rs.getInt("max_qty"),
+                        rs.getBoolean("auto_populate")
+                );
+            }
+            BaseApplication.connect.closeResultSet(rs);
+        } catch (SQLException e) {
+            new Dialogue_ErrorSQL(e,"Unable to retrieve db_invoice","See below for details");
+        }
+        return dbInvoiceDTO;
+    }
+
 }
