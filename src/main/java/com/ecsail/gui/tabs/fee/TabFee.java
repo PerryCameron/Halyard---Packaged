@@ -69,7 +69,7 @@ public class TabFee extends Tab {
         // gives primary key to selected radio button
         radioGroup.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) ->
         {
-            selectedRadio = (RadioButton) new_toggle;
+            System.out.println(selectedRadio = (RadioButton) new_toggle);
             duesLineChart.refreshChart(hboxHashMap.get(new_toggle).getSelectedFee().getDescription());
         });
         // add listener to each text field

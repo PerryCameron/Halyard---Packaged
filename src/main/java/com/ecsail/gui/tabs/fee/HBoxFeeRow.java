@@ -22,14 +22,13 @@ public class HBoxFeeRow extends HBox {
     private RadioButton radioButton;
     private TextField feeTextField;
     private Text label;
-
     private DbInvoiceDTO dbInvoiceDTO;
+
     public HBoxFeeRow(FeeDTO fee, TabFee tab) {
         this.tab=tab;
         this.selectedFee = fee;
         this.fees.add(selectedFee);
         dbInvoiceDTO = SqlDbInvoice.getInvoiceByYearAndFieldName(fee.getFeeYear(),fee.getFieldName());
-        System.out.println(dbInvoiceDTO);
         setSpacing(15);
         setAlignment(Pos.CENTER_LEFT);
         getChildren().addAll(addRadioButton(), addTextField(), createLabel());

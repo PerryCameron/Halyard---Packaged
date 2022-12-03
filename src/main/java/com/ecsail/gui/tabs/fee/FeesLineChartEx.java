@@ -8,8 +8,6 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 
 public class FeesLineChartEx extends LineChart<String, Number> {
@@ -18,24 +16,26 @@ public class FeesLineChartEx extends LineChart<String, Number> {
 
 	public FeesLineChartEx() {
 	super(new CategoryAxis(), new NumberAxis());
-	Series<String,Number> series = new Series<String, Number>();
+		this.getXAxis().setAnimated (false);
+		this.getYAxis().setAnimated (false);
 	this.Fees = FXCollections.observableArrayList();
 	}
 	
 	public void refreshChart(String description) {
 		Fees.clear();
+		System.out.println(this.getData().size());
+		if(this.getData().size() > 0)
 		this.getData().clear();
 		Fees = SqlFee.getAllFeesByDescription(description);
-		Collections.sort(Fees, Comparator.comparing(FeeDTO::getFeeYear));
-		Series<String,Number> series = new Series<String, Number>();
+		Fees.sort(Comparator.comparing(FeeDTO::getFeeYear));
+		Series<String,Number> series = new Series<>();
 		populateChart(description, series);
-
 	}
 	
 	public void populateChart(String description, Series<String, Number> series) {
-		getData().addAll(Arrays.asList(series));
+		this.getData().add(series);
 		for (FeeDTO d: Fees) {
-        		series.getData().add(new Data<String, Number>(d.getFeeYear() + "", d.getFieldValue()));
+        		series.getData().add(new Data<>(d.getFeeYear() + "", d.getFieldValue()));
 		}
 		series.setName(description);
 		setTitle(description + " by Year");
