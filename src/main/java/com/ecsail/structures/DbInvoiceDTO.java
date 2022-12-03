@@ -5,7 +5,7 @@ import javafx.collections.ObservableList;
 public class DbInvoiceDTO {
     private int id;
     private String year;
-    private String objectName;
+    private String fieldName;
     private String widgetType;
     private double width;
     private int order;
@@ -22,10 +22,10 @@ public class DbInvoiceDTO {
     private ObservableList<InvoiceItemDTO> items;
 
 
-    public DbInvoiceDTO(int id, String year, String objectName, String widgetType, double width, int order, boolean multiplied, boolean price_editable, boolean is_credit, int maxQty, boolean autoPopulate) {
+    public DbInvoiceDTO(int id, String year, String fieldName, String widgetType, double width, int order, boolean multiplied, boolean price_editable, boolean is_credit, int maxQty, boolean autoPopulate) {
         this.id = id;
         this.year = year;
-        this.objectName = objectName;
+        this.fieldName = fieldName;
         this.widgetType = widgetType;
         this.width = width;
         this.order = order;
@@ -52,12 +52,12 @@ public class DbInvoiceDTO {
         this.year = year;
     }
 
-    public String getObjectName() {
-        return objectName;
+    public String getFieldName() {
+        return fieldName;
     }
 
-    public void setObjectName(String objectName) {
-        this.objectName = objectName;
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
     }
 
     public String getWidgetType() {
@@ -145,7 +145,7 @@ public class DbInvoiceDTO {
         return "InvoiceWidgetDTO{" +
                 "id=" + id +
                 ", year='" + year + '\'' +
-                ", objectName='" + objectName + '\'' +
+                ", objectName='" + fieldName + '\'' +
                 ", widgetType='" + widgetType + '\'' +
                 ", width=" + width +
                 ", order=" + order +

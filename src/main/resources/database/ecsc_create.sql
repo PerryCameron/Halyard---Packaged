@@ -380,7 +380,7 @@ CREATE Table ECSC_SQL.db_invoice
 (
     id             INTEGER           NOT NULL primary key,
     year           INTEGER           NOT NULL,
-    objectName     varchar(30)       NOT NULL,
+    FIELD_NAME     varchar(30)       NOT NULL,
     widget_type    varchar(30)       NOT NULL,
     width          double,
     `order`        INTEGER           NOT NULL,

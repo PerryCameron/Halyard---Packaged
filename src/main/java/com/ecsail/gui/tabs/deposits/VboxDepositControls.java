@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class VboxControls extends VBox {
+public class VboxDepositControls extends VBox {
     private final TabDeposits tabParent;
     private final ArrayList<String> invoiceItemTypes; // a list of types of invoice items for a given year
     private final DepositDTO depositDTO;
@@ -47,7 +47,7 @@ public class VboxControls extends VBox {
     private final Button newDepositButton = new Button("New Deposit");
     private final Button insertInvoicesButton = new Button("Insert New Invoices");
 
-    public VboxControls(TabDeposits tabDeposits) {
+    public VboxDepositControls(TabDeposits tabDeposits) {
         this.tabParent = tabDeposits;
         this.depositDTO = tabParent.getDepositDTO();
         this.selectedYear = Integer.parseInt(depositDTO.getFiscalYear());

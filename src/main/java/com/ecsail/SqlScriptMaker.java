@@ -226,7 +226,7 @@ public class SqlScriptMaker {
 		return "INSERT INTO db_invoice () VALUES("
 				+ a.getId() + ","
 				+ a.getYear() + ","
-				+ getCorrectString(a.getObjectName()) + ","
+				+ getCorrectString(a.getFieldName()) + ","
 				+ getCorrectString(a.getWidgetType()) + ","
 				+ a.getWidth() + ","
 				+ a.getOrder() + ","

@@ -19,7 +19,7 @@ public class SqlDbInvoice {
                 theseWidgets.add(new DbInvoiceDTO(
                         rs.getInt("ID"),
                         rs.getString("year"),
-                        rs.getString("objectName"),
+                        rs.getString("FIELD_NAME"),
                         rs.getString("widget_type"),
                         rs.getDouble("width"),
                         rs.getInt("order"),
@@ -46,7 +46,7 @@ public class SqlDbInvoice {
                 theseWidgets.add(new DbInvoiceDTO(
                         rs.getInt("ID"),
                         rs.getString("year"),
-                        rs.getString("objectName"),
+                        rs.getString("FIELD_NAME"),
                         rs.getString("widget_type"),
                         rs.getDouble("width"),
                         rs.getInt("order"),
@@ -66,11 +66,11 @@ public class SqlDbInvoice {
 
     public static ArrayList<String> getInvoiceCategoriesByYear(int year) {  //p_id
         ArrayList<String> categories = new ArrayList<>();
-        String query = "select objectName from db_invoice where year=" + year;
+        String query = "select FIELD_NAME from db_invoice where year=" + year;
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
-                categories.add(rs.getString("objectName"));
+                categories.add(rs.getString("FIELD_NAME"));
             }
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {

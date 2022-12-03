@@ -14,14 +14,14 @@ public class TabDeposits extends Tab {
 	private final ObservableList<InvoiceWithMemberInfoDTO> invoices;
 	private final String selectedYear;
 	private final InvoicesTableView tableView;
-	private final VboxControls vboxControls;
+	private final VboxDepositControls vboxControls;
 	private final DepositDTO depositDTO = new DepositDTO();
 
 	public TabDeposits(String text) {
 		super(text);
 		this.selectedYear = BaseApplication.selectedYear;
 		this.invoices = getInvoiceItems(selectedYear);
-		this.vboxControls = new VboxControls(this);
+		this.vboxControls = new VboxDepositControls(this);
 		this.tableView = new InvoicesTableView(this);
 
 		var vboxGreen = new VBox(); // this is the vbox for organizing all the widgets

@@ -82,8 +82,8 @@ public class HBoxInvoice extends HBox {
 		for (DbInvoiceDTO i : theseWidgets) {
                 i.setFee(insertFeeIntoWidget(i));
                 i.setItems(items); // allows calculations to be made
-            System.out.println("Creating widget object for" + i.getObjectName());  // good here
-                invoiceItemMap.put(i.getObjectName(), new HboxRow(i, footer));
+            System.out.println("Creating widget object for" + i.getFieldName());  // good here
+                invoiceItemMap.put(i.getFieldName(), new HboxRow(i, footer));
 		}
         //////////////// SETTING CONTENT //////////////
 
@@ -96,7 +96,7 @@ public class HBoxInvoice extends HBox {
         for (int i = 0; i <= invoiceItemMap.size(); i++) {  // iterate through hashmap
             for (String key : invoiceItemMap.keySet()) {
                 if (invoiceItemMap.get(key).getInvoiceWidget().getOrder() == i) {
-                    System.out.println("Adding " + invoiceItemMap.get(key).getInvoiceWidget().getObjectName()); // bad here
+                    System.out.println("Adding " + invoiceItemMap.get(key).getInvoiceWidget().getFieldName()); // bad here
                     vboxMain.getChildren().add(invoiceItemMap.get(key));
                 }
             }
@@ -114,9 +114,9 @@ public class HBoxInvoice extends HBox {
     private FeeDTO insertFeeIntoWidget(DbInvoiceDTO i) {
         FeeDTO selectedFee = null;
         for (FeeDTO f : fees) {
-            if (i.getObjectName().equals("Dues") && f.getFieldName().equals("Dues " + membership.getMemType()))
+            if (i.getFieldName().equals("Dues") && f.getFieldName().equals("Dues " + membership.getMemType()))
                 selectedFee = f;
-            if (i.getObjectName().equals(f.getFieldName()))
+            if (i.getFieldName().equals(f.getFieldName()))
                 selectedFee = f;
         }
         return selectedFee;

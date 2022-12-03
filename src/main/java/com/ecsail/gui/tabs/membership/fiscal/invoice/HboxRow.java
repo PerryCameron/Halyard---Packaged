@@ -41,7 +41,7 @@ public class HboxRow extends HBox {
     public HboxRow(DbInvoiceDTO invoiceWidget, VboxFooter footer) {
 
         this.invoiceWidget = invoiceWidget;
-        this.itemName = invoiceWidget.getObjectName();
+        this.itemName = invoiceWidget.getFieldName();
         this.invoiceItem = setItem();
         this.footer = footer;
         this.invoice = footer.getInvoice();
@@ -49,7 +49,7 @@ public class HboxRow extends HBox {
         this.items = invoiceWidget.getItems();
 
         // get officer credit
-        if (invoiceWidget.getObjectName().equals("Position Credit")) {
+        if (invoiceWidget.getFieldName().equals("Position Credit")) {
             if (!invoice.isCommitted())  // if not committed
                 if (getOfficerCredit()) { // has an officer
                     invoiceItem.setValue(items.get(0).getValue()); // is putting dues value into here
