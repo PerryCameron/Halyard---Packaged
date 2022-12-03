@@ -25,7 +25,8 @@ public class SqlFee {
                             rs.getBigDecimal("FIELD_VALUE"),
                             rs.getInt("FIELD_QTY"),
                             rs.getInt("fee_year"),
-                            rs.getString("DESCRIPTION")
+                            rs.getString("DESCRIPTION"),
+                            rs.getInt("FEE_GROUP")
                     ));
                 }
                 BaseApplication.connect.closeResultSet(rs);
@@ -47,7 +48,8 @@ public class SqlFee {
                         rs.getBigDecimal("FIELD_VALUE"),
                         rs.getInt("FIELD_QTY"),
                         rs.getInt("fee_year"),
-                        rs.getString("DESCRIPTION")
+                        rs.getString("DESCRIPTION"),
+                        rs.getInt("FEE_GROUP")
                 ));
             }
             BaseApplication.connect.closeResultSet(rs);
@@ -69,7 +71,8 @@ public class SqlFee {
                         rs.getBigDecimal("FIELD_VALUE"),
                         rs.getInt("FIELD_QTY"),
                         rs.getInt("fee_year"),
-                        rs.getString("DESCRIPTION")
+                        rs.getString("DESCRIPTION"),
+                        rs.getInt("FEE_GROUP")
                 ));
             }
             BaseApplication.connect.closeResultSet(rs);

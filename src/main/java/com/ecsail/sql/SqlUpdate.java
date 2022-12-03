@@ -423,6 +423,7 @@ public class SqlUpdate {
 				+ ", FIELD_QTY=" + feeDTO.getFieldQuantity()
 				+ ", FEE_YEAR=" + feeDTO.getFeeYear()
 				+ ", DESCRIPTION='" + feeDTO.getDescription()
+				+ ", FEE_GROUP=" + feeDTO.getFeeGroup()
 				+ "' WHERE FEE_ID=" + feeDTO.getFeeId();
 		try {
 			BaseApplication.connect.executeQuery(query);

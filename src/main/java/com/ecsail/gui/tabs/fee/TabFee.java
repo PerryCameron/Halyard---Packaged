@@ -1,7 +1,6 @@
 package com.ecsail.gui.tabs.fee;
 
 import com.ecsail.BaseApplication;
-import com.ecsail.datacheck.NumberCheck;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
@@ -9,17 +8,14 @@ import com.ecsail.sql.select.SqlFee;
 import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.structures.FeeDTO;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 
 /// This is the new experimental version
@@ -27,28 +23,21 @@ public class TabFee extends Tab {
     private String selectedYear;
     private ArrayList<FeeDTO> feeDTOS;
     // current index selected from feeDTOS
-    private int selectedKey = 0;
+    private RadioButton selectedRadio;
     FeesLineChartEx duesLineChart;
     private final ToggleGroup radioGroup;
-    // use radio button to get id
-    private final HashMap<RadioButton, Integer> radioHashMap;
-    private final HashMap<TextField, Integer> textFieldHashMap;
-    // use id to get controls
-    private final HashMap<Integer, Label> labelHashMap;
-    private final HashMap<Integer, HBox> hboxHashMap;
-    private final NumberCheck numberCheck = new NumberCheck();
+    private final HashMap<RadioButton, HBoxFeeRow> hboxHashMap;
     private final VBox vboxFeeRow;
     private final HBox hboxControls;
     private final ComboBox<Integer> comboBox;
+
+
 
     public TabFee(String text) {
         super(text);
         this.selectedYear = BaseApplication.selectedYear;
         this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
         this.radioGroup = new ToggleGroup();
-        this.radioHashMap = new HashMap<>();
-        this.textFieldHashMap = new HashMap<>();
-        this.labelHashMap = new HashMap<>();
         this.hboxHashMap = new HashMap<>();
         this.comboBox = addComboBox();
         this.vboxFeeRow = createControlsVBox();
@@ -80,9 +69,8 @@ public class TabFee extends Tab {
         // gives primary key to selected radio button
         radioGroup.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) ->
         {
-            selectedKey = radioHashMap.get(new_toggle);
-            System.out.println(feeDTOS.get(getListIndexByKey(selectedKey)).getDescription());
-            duesLineChart.refreshChart(feeDTOS.get(getListIndexByKey(selectedKey)).getDescription());
+            selectedRadio = (RadioButton) new_toggle;
+            duesLineChart.refreshChart(hboxHashMap.get(new_toggle).getFee().getDescription());
         });
         // add listener to each text field
 
@@ -173,19 +161,19 @@ public class TabFee extends Tab {
     }
 
     private void openEditRow() {
-        if (selectedKey == 0) System.out.println("You need to select an index first");
+        if (selectedRadio == null) System.out.println("You need to select an index first");
         else {
-            createEditHBox(hboxHashMap.get(selectedKey));
+            createEditHBox(hboxHashMap.get(selectedRadio));
         }
     }
 
     // java fx controls for editing, no business logic
-    private void createEditHBox(HBox hbox) {
+    private void createEditHBox(HBoxFeeRow hbox) {
         hbox.getChildren().clear();
         Button saveButton = new Button("Save");
         Label description = new Label("Description:");
 
-        TextField descriptionText = new TextField(Objects.requireNonNull(getDTOByID(selectedKey)).getDescription());
+        TextField descriptionText = new TextField(hbox.getFee().getDescription());
         CheckBox checkMultiply = new CheckBox("Multiplied by QTY");
         Label maxQty = new Label("Max Qty");
         TextField qtyText = new TextField("0");
@@ -218,26 +206,23 @@ public class TabFee extends Tab {
     private void addButtonListener(Button saveButton, TextField fieldNameText) {
         saveButton.setOnAction((event) -> {
             // update selected object
-//            Objects.requireNonNull(getDTOByID(selectedKey)).setDescription(descriptionText.getText());
-            Objects.requireNonNull(getDTOByID(selectedKey)).setFieldName(fieldNameText.getText());
+            hboxHashMap.get(selectedRadio).getFee().setFieldName(fieldNameText.getText());
             // write object to sql
-            SqlUpdate.updateFeeRecord(Objects.requireNonNull(getDTOByID(selectedKey)));
-            // clear hbox
-            hboxHashMap.get(selectedKey).getChildren().clear();
+            SqlUpdate.updateFeeRecord(hboxHashMap.get(selectedRadio).getFee());
             // update contents of hbox
-            hboxFeeItems(Objects.requireNonNull(getDTOByID(selectedKey)), hboxHashMap.get(selectedKey));
+
         });
     }
 
     private void deleteRowIn() {
-        if (selectedKey == 0) System.out.println("You need to select an index first");
+        if (selectedRadio == null) System.out.println("You need to select an index first");
         else {
             // remove from database
-            SqlDelete.deleteFee(feeDTOS.get(getListIndexByKey(selectedKey)));
+            SqlDelete.deleteFee(hboxHashMap.get(selectedRadio).getFee());
             // remove from list
-            feeDTOS.remove(getListIndexByKey(selectedKey));
+            feeDTOS.remove(hboxHashMap.get(selectedRadio).getFee());
             // clear HBoxes from column
-            vboxFeeRow.getChildren().remove(hboxHashMap.get(selectedKey));
+            vboxFeeRow.getChildren().remove(hboxHashMap.get(selectedRadio));
         }
     }
 
@@ -245,37 +230,13 @@ public class TabFee extends Tab {
         // get next key
         int key = SqlSelect.getNextAvailablePrimaryKey("fee", "FEE_ID");
         // make DTO object
-        FeeDTO feeDTO = new FeeDTO(key, "", new BigDecimal(0), 0, Integer.parseInt(selectedYear), "Enter Description");
+        FeeDTO feeDTO = new FeeDTO(key, "", new BigDecimal(0), 0, Integer.parseInt(selectedYear), "Enter Description",0);
         // add object to database
         SqlInsert.addNewFee(feeDTO);
         // add new object to our list
         feeDTOS.add(feeDTO);
         // add hbox
-        vboxFeeRow.getChildren().add(hboxFeeItems(feeDTO, new HBox()));
-//		vboxFeeRow.getChildren().add(hboxFeeItems(createEditHBox(new HBox())));
-
-    }
-
-    private void addTextListener(TextField t) {
-        System.out.println("text listener added for " + t);
-        t.focusedProperty().addListener((observable, exitField, enterField) -> {
-            // changed textField value and left field
-            if (exitField) {
-                // checks value entered, saves it to sql, and updates field (as currency)
-                saveFieldValue(numberCheck, t);
-            }
-        });
-    }
-
-    private void saveFieldValue(NumberCheck check, TextField t) {
-        // checks value of text to be valid big decimal, if not sends 0.00
-        BigDecimal fieldValue = check.StringToBigDecimal(t.getText());
-        // gets correct DTO and updates it
-        Objects.requireNonNull(getDTOByID(textFieldHashMap.get(t))).setFieldValue(fieldValue);
-        // gets correct DTO updates SQL
-        SqlUpdate.updateFeeRecord(Objects.requireNonNull(getDTOByID(textFieldHashMap.get(t))));
-        // corrects format if missing .00 in gui
-        t.setText(String.valueOf(fieldValue.setScale(2, RoundingMode.HALF_UP)));
+        vboxFeeRow.getChildren().add(new HBoxFeeRow(feeDTO, this));
     }
 
     // year combo box at top
@@ -299,53 +260,15 @@ public class TabFee extends Tab {
     // used to initially place hbox rows into vbox
     private void addHBoxRows() {
         for (FeeDTO fee : feeDTOS)
-            vboxFeeRow.getChildren().add(hboxFeeItems(fee, new HBox()));
+            vboxFeeRow.getChildren().add(new HBoxFeeRow(fee, this));
     }
 
-    // this is a row with a radio button, textbox, label
-    private HBox hboxFeeItems(FeeDTO feeDTO, HBox feeBox) {
-        feeBox.setSpacing(15);
-        feeBox.setAlignment(Pos.CENTER_LEFT);
-        hboxHashMap.put(feeDTO.getFeeId(), feeBox);
-        feeBox.getChildren().addAll(addRadioButton(feeDTO), addTextField(feeDTO), createLabel(feeDTO));
-        return feeBox;
+    public HashMap<RadioButton, HBoxFeeRow> getHboxHashMap() {
+        return hboxHashMap;
     }
 
-    private Label createLabel(FeeDTO feeDTO) {
-        Label descriptionLabel = new Label(feeDTO.getDescription());
-        labelHashMap.put(feeDTO.getFeeId(), descriptionLabel);
-        return descriptionLabel;
+    public ToggleGroup getRadioGroup() {
+        return radioGroup;
     }
 
-    // creates radio button, puts in hashmap
-    private RadioButton addRadioButton(FeeDTO feeDTO) {
-        RadioButton feeRadioButton = new RadioButton();
-        // put radio button into a hashmap with value of the fee key
-        radioHashMap.put(feeRadioButton, feeDTO.getFeeId());
-        feeRadioButton.setToggleGroup(radioGroup);
-        feeRadioButton.setSelected(true);
-        return feeRadioButton;
-    }
-
-    private TextField addTextField(FeeDTO feeDTO) {
-        TextField feeTextField = new TextField();
-        textFieldHashMap.put(feeTextField, feeDTO.getFeeId());
-        feeTextField.setPrefWidth(60);
-        feeTextField.setText(String.valueOf(feeDTO.getFieldValue()));
-        addTextListener(feeTextField);
-        return feeTextField;
-    }
-
-    private FeeDTO getDTOByID(int id) {
-        for (FeeDTO f : feeDTOS)
-            if (f.getFeeId() == id) return f;
-        return null;
-    }
-
-    private int getListIndexByKey(int key) {
-        for (int i = 0; i < feeDTOS.size(); i++) {
-            if (feeDTOS.get(i).getFeeId() == key) return i;
-        }
-        return 99; // 99 is error
-    }
 }
