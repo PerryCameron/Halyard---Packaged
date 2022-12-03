@@ -140,8 +140,6 @@ public class SqlScriptMaker {
 			for(DbTableChangesDTO t: tableChangesDTOS)
 				writer.write(getTableChanges(t));
 
-//			positions.stream().forEach(p -> writeToFile(getPositionString(p)));
-
 			clearMemory();
 			writer.close();
 			System.out.println("SQL script file sucessfully made");
