@@ -271,7 +271,7 @@ public class SqlScriptMaker {
 		+ fe.getFieldQuantity() + ","
 		+ fe.getFeeYear() + ","
 		+ getCorrectString(fe.getDescription())  + ","
-		+ fe.getFeeGroup() + ");\n";
+		+ getCorrectString(fe.getGroupName()) + ");\n";
 	}
 
 	private static String getHashString(HashDTO hd) {

@@ -70,7 +70,7 @@ public class TabFee extends Tab {
         radioGroup.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) ->
         {
             selectedRadio = (RadioButton) new_toggle;
-            duesLineChart.refreshChart(hboxHashMap.get(new_toggle).getFee().getDescription());
+            duesLineChart.refreshChart(hboxHashMap.get(new_toggle).getSelectedFee().getDescription());
         });
         // add listener to each text field
 
@@ -173,7 +173,7 @@ public class TabFee extends Tab {
         Button saveButton = new Button("Save");
         Label description = new Label("Description:");
 
-        TextField descriptionText = new TextField(hbox.getFee().getDescription());
+        TextField descriptionText = new TextField(hbox.getSelectedFee().getDescription());
         CheckBox checkMultiply = new CheckBox("Multiplied by QTY");
         Label maxQty = new Label("Max Qty");
         TextField qtyText = new TextField("0");
@@ -206,9 +206,9 @@ public class TabFee extends Tab {
     private void addButtonListener(Button saveButton, TextField fieldNameText) {
         saveButton.setOnAction((event) -> {
             // update selected object
-            hboxHashMap.get(selectedRadio).getFee().setFieldName(fieldNameText.getText());
+            hboxHashMap.get(selectedRadio).getSelectedFee().setFieldName(fieldNameText.getText());
             // write object to sql
-            SqlUpdate.updateFeeRecord(hboxHashMap.get(selectedRadio).getFee());
+            SqlUpdate.updateFeeRecord(hboxHashMap.get(selectedRadio).getSelectedFee());
             // update contents of hbox
 
         });
@@ -218,9 +218,9 @@ public class TabFee extends Tab {
         if (selectedRadio == null) System.out.println("You need to select an index first");
         else {
             // remove from database
-            SqlDelete.deleteFee(hboxHashMap.get(selectedRadio).getFee());
+            SqlDelete.deleteFee(hboxHashMap.get(selectedRadio).getSelectedFee());
             // remove from list
-            feeDTOS.remove(hboxHashMap.get(selectedRadio).getFee());
+            feeDTOS.remove(hboxHashMap.get(selectedRadio).getSelectedFee());
             // clear HBoxes from column
             vboxFeeRow.getChildren().remove(hboxHashMap.get(selectedRadio));
         }
@@ -230,7 +230,7 @@ public class TabFee extends Tab {
         // get next key
         int key = SqlSelect.getNextAvailablePrimaryKey("fee", "FEE_ID");
         // make DTO object
-        FeeDTO feeDTO = new FeeDTO(key, "", new BigDecimal(0), 0, Integer.parseInt(selectedYear), "Enter Description",0);
+        FeeDTO feeDTO = new FeeDTO(key, "", new BigDecimal(0), 0, Integer.parseInt(selectedYear), "Enter Description","NONE");
         // add object to database
         SqlInsert.addNewFee(feeDTO);
         // add new object to our list
@@ -259,8 +259,23 @@ public class TabFee extends Tab {
 
     // used to initially place hbox rows into vbox
     private void addHBoxRows() {
+        HashMap<String, HBoxFeeRow> groupMap = new HashMap<>();
         for (FeeDTO fee : feeDTOS)
-            vboxFeeRow.getChildren().add(new HBoxFeeRow(fee, this));
+            if(!fee.getGroupName().equals("NONE")) // check if fee is part of a group
+                if(groupMap.containsKey(fee.getGroupName())) // group is already created
+                    groupMap.get(fee.getGroupName()).getFees().add(fee); // add to group
+                else {  // we need to create new group HBOX
+                    HBoxFeeRow newHbox = new HBoxFeeRow(fee, this); // create new group
+                    groupMap.put(fee.getGroupName(),newHbox); // map it for next check
+                    vboxFeeRow.getChildren().add(newHbox); // add group
+                }
+            else  // not part of a group
+                vboxFeeRow.getChildren().add(new HBoxFeeRow(fee, this));
+    }
+
+    private void addOrUpdateGroupHBox(int group) {
+
+
     }
 
     public HashMap<RadioButton, HBoxFeeRow> getHboxHashMap() {

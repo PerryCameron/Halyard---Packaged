@@ -26,7 +26,7 @@ public class SqlFee {
                             rs.getInt("FIELD_QTY"),
                             rs.getInt("fee_year"),
                             rs.getString("DESCRIPTION"),
-                            rs.getInt("FEE_GROUP")
+                            rs.getString("GROUP_NAME")
                     ));
                 }
                 BaseApplication.connect.closeResultSet(rs);
@@ -49,7 +49,7 @@ public class SqlFee {
                         rs.getInt("FIELD_QTY"),
                         rs.getInt("fee_year"),
                         rs.getString("DESCRIPTION"),
-                        rs.getInt("FEE_GROUP")
+                        rs.getString("GROUP_NAME")
                 ));
             }
             BaseApplication.connect.closeResultSet(rs);
@@ -72,7 +72,7 @@ public class SqlFee {
                         rs.getInt("FIELD_QTY"),
                         rs.getInt("fee_year"),
                         rs.getString("DESCRIPTION"),
-                        rs.getInt("FEE_GROUP")
+                        rs.getString("GROUP_NAME")
                 ));
             }
             BaseApplication.connect.closeResultSet(rs);

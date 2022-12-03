@@ -10,16 +10,16 @@ public class FeeDTO {
     private int feeYear;
     private String description;
 
-    private int feeGroup;
+    private String groupName;
 
-    public FeeDTO(int feeId, String fieldName, BigDecimal fieldValue, int fieldQuantity, int feeYear, String description, int feeGroup) {
+    public FeeDTO(int feeId, String fieldName, BigDecimal fieldValue, int fieldQuantity, int feeYear, String description, String groupName) {
         this.feeId = feeId;
         this.fieldName = fieldName;
         this.fieldValue = fieldValue;
         this.fieldQuantity = fieldQuantity;
         this.feeYear = feeYear;
         this.description = description;
-        this.feeGroup = feeGroup;
+        this.groupName = groupName;
     }
 
     public int getFeeId() {
@@ -70,12 +70,12 @@ public class FeeDTO {
         this.description = description;
     }
 
-    public int getFeeGroup() {
-        return feeGroup;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setFeeGroup(int feeGroup) {
-        this.feeGroup = feeGroup;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     @Override
@@ -87,7 +87,7 @@ public class FeeDTO {
                 ", fieldQuantity=" + fieldQuantity +
                 ", feeYear=" + feeYear +
                 ", description='" + description + '\'' +
-                ", feeGroup=" + feeGroup +
+                ", groupName='" + groupName + '\'' +
                 '}';
     }
 }

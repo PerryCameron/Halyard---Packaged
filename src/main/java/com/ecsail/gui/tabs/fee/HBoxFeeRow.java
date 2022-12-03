@@ -11,17 +11,21 @@ import javafx.scene.text.Text;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 
 public class HBoxFeeRow extends HBox {
     private TabFee tab;
-    private FeeDTO fee;
+    boolean isGroup = false;
+    private ArrayList<FeeDTO> fees = new ArrayList<>();
+    private  FeeDTO selectedFee;
     private RadioButton radioButton;
     private TextField feeTextField;
-
     private Text label;
     public HBoxFeeRow(FeeDTO fee, TabFee tab) {
         this.tab=tab;
-        this.fee=fee;
+        this.selectedFee = fee;
+        this.fees.add(selectedFee);
+        this.isGroup = !fee.getGroupName().equals("NONE");
         setSpacing(15);
         setAlignment(Pos.CENTER_LEFT);
         getChildren().addAll(addRadioButton(), addTextField(), createLabel());
@@ -38,14 +42,14 @@ public class HBoxFeeRow extends HBox {
 
     private TextField addTextField() {
         feeTextField = new TextField();
-        feeTextField.setPrefWidth(60);
-        feeTextField.setText(String.valueOf(fee.getFieldValue()));
+        feeTextField.setPrefWidth(70);
+        feeTextField.setText(String.valueOf(selectedFee.getFieldValue()));
         addTextListener(feeTextField);
         return feeTextField;
     }
 
     private Text createLabel() {
-        return label = new Text(fee.getDescription());
+        return label = new Text(selectedFee.getDescription());
     }
 
     private void addTextListener(TextField t) {
@@ -54,15 +58,15 @@ public class HBoxFeeRow extends HBox {
             if (exitField) {
                 // checks value entered, saves it to sql, and updates field (as currency)
                 BigDecimal fieldValue = NumberCheck.StringToBigDecimal(t.getText());
-                fee.setFieldValue(fieldValue);
-                SqlUpdate.updateFeeRecord(fee);
+                selectedFee.setFieldValue(fieldValue);
+                SqlUpdate.updateFeeRecord(selectedFee);
                 t.setText(String.valueOf(fieldValue.setScale(2, RoundingMode.HALF_UP)));
             }
         });
     }
 
-    public FeeDTO getFee() {
-        return fee;
+    public FeeDTO getSelectedFee() {
+        return selectedFee;
     }
 
     public RadioButton getRadioButton() {
@@ -75,5 +79,8 @@ public class HBoxFeeRow extends HBox {
 
     public void setPrice(String newPrice) {
         this.feeTextField.setText(newPrice);
+    }
+    public ArrayList<FeeDTO> getFees() {
+        return fees;
     }
 }
