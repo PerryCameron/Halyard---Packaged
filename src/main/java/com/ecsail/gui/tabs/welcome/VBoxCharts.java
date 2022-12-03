@@ -1,7 +1,5 @@
 package com.ecsail.gui.tabs.welcome;
 
-import com.ecsail.charts.MembershipBarChart;
-import com.ecsail.charts.MembershipStackedBarChart;
 import com.ecsail.gui.dialogues.Dialogue_LoadNewStats;
 import com.ecsail.HalyardPaths;
 import com.ecsail.sql.select.SqlStats;

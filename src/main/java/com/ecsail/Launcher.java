@@ -1,6 +1,7 @@
 package com.ecsail;
 
 import com.ecsail.gui.tabs.boatview.TabBoatView;
+import com.ecsail.gui.tabs.fee.TabFee;
 import com.ecsail.gui.tabs.people.TabPeople;
 import com.ecsail.gui.tabs.welcome.HBoxWelcome;
 import com.ecsail.gui.dialogues.Dialogue_EnvelopePDF;

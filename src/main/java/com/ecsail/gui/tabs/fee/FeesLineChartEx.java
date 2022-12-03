@@ -1,4 +1,4 @@
-package com.ecsail.charts;
+package com.ecsail.gui.tabs.fee;
 
 import com.ecsail.sql.select.SqlFee;
 import com.ecsail.structures.FeeDTO;

@@ -1,4 +1,4 @@
-package com.ecsail.charts;
+package com.ecsail.gui.tabs.welcome;
 
 import com.ecsail.structures.StatsDTO;
 import javafx.collections.FXCollections;

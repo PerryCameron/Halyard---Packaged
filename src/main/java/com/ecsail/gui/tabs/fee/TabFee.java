@@ -1,9 +1,7 @@
-package com.ecsail.gui.tabs;
+package com.ecsail.gui.tabs.fee;
 
 import com.ecsail.BaseApplication;
-import com.ecsail.charts.FeesLineChartEx;
 import com.ecsail.datacheck.NumberCheck;
-import com.ecsail.datacheck.StringCheck;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
@@ -39,7 +37,6 @@ public class TabFee extends Tab {
     private final HashMap<Integer, Label> labelHashMap;
     private final HashMap<Integer, HBox> hboxHashMap;
     private final NumberCheck numberCheck = new NumberCheck();
-    private final StringCheck stringCheck = new StringCheck();
     private final VBox vboxFeeRow;
     private final HBox hboxControls;
     private final ComboBox<Integer> comboBox;
@@ -187,27 +184,42 @@ public class TabFee extends Tab {
         hbox.getChildren().clear();
         Button saveButton = new Button("Save");
         Label description = new Label("Description:");
-        Label fieldName = new Label("Field Name");
+
         TextField descriptionText = new TextField(Objects.requireNonNull(getDTOByID(selectedKey)).getDescription());
-        TextField fieldNameText = new TextField(Objects.requireNonNull(getDTOByID(selectedKey)).getFieldName());
+        CheckBox checkMultiply = new CheckBox("Multiplied by QTY");
+        Label maxQty = new Label("Max Qty");
+        TextField qtyText = new TextField("0");
+        CheckBox price_editable = new CheckBox("Price Editable");
+        CheckBox checkCredit = new CheckBox("Is Credit");
+        CheckBox autoPopulate = new CheckBox("Auto-populate");
+
+
         VBox vboxEditBox = new VBox();
         HBox hboxRow1 = new HBox();
         HBox hboxRow2 = new HBox();
+        HBox hboxRow3 = new HBox();
+        HBox hboxRow4 = new HBox();
+        HBox hboxRow5 = new HBox();
+        HBox hboxRow6 = new HBox();
         vboxEditBox.setSpacing(5);
         hboxRow1.setSpacing(5);
-        hboxRow2.setSpacing(5);
+        hboxRow3.setSpacing(5);
         hboxRow1.getChildren().addAll(descriptionText, description);
-        hboxRow2.getChildren().addAll(fieldNameText, fieldName);
-        vboxEditBox.getChildren().addAll(hboxRow1, hboxRow2, saveButton);
+        hboxRow2.getChildren().addAll(checkMultiply);
+        hboxRow3.getChildren().addAll(maxQty, qtyText);
+        hboxRow4.getChildren().addAll(price_editable);
+        hboxRow5.getChildren().addAll(checkCredit);
+        hboxRow6.getChildren().addAll(autoPopulate);
+        vboxEditBox.getChildren().addAll(hboxRow1, hboxRow2, hboxRow3, hboxRow4, hboxRow5, hboxRow6, saveButton);
         hbox.getChildren().add(vboxEditBox);
-        addButtonListener(saveButton, fieldNameText, descriptionText);
+        addButtonListener(saveButton, descriptionText);
     }
 
-    private void addButtonListener(Button saveButton, TextField fieldNameText, TextField descriptionText) {
+    private void addButtonListener(Button saveButton, TextField fieldNameText) {
         saveButton.setOnAction((event) -> {
             // update selected object
-            Objects.requireNonNull(getDTOByID(selectedKey)).setDescription(descriptionText.getText());
-            Objects.requireNonNull(getDTOByID(selectedKey)).setFieldName(stringCheck.checkForProperSQLTableName(fieldNameText.getText()));
+//            Objects.requireNonNull(getDTOByID(selectedKey)).setDescription(descriptionText.getText());
+            Objects.requireNonNull(getDTOByID(selectedKey)).setFieldName(fieldNameText.getText());
             // write object to sql
             SqlUpdate.updateFeeRecord(Objects.requireNonNull(getDTOByID(selectedKey)));
             // clear hbox
