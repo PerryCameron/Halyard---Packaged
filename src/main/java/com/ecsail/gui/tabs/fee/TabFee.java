@@ -32,6 +32,7 @@ public class TabFee extends Tab {
     private final VBox vboxFeeRow;
     private final HBox hboxControls;
     private final ComboBox<Integer> comboBox;
+    HBoxEditControls hBoxEditControls;
 
     public TabFee(String text) {
         super(text);
@@ -44,13 +45,14 @@ public class TabFee extends Tab {
         this.vboxFeeRow = createControlsVBox();
         this.hboxControls = new HBox();
         this.duesLineChart = new FeesLineChartEx();
+        hBoxEditControls = new HBoxEditControls(this);
         createHBoxRows();
         addHBoxRows();
 
 
         // this is the vbox for organizing all the widgets
         VBox vbox4 = new VBox();
-        HBoxEditControls hBoxEditControls = new HBoxEditControls(this);
+
         HBox hbox2 = new HBox();
         VBox vbox1 = new VBox();
         ScrollPane itemsScrollPane = new ScrollPane();
@@ -243,7 +245,7 @@ public class TabFee extends Tab {
         // get next key
         int key = SqlSelect.getNextAvailablePrimaryKey("fee", "FEE_ID");
         // make DTO object
-        FeeDTO feeDTO = new FeeDTO(key, "", new BigDecimal(0), 0, Integer.parseInt(selectedYear), "Enter Description","NONE");
+        FeeDTO feeDTO = new FeeDTO(key, "", "0.00", 0, Integer.parseInt(selectedYear), "Enter Description","NONE");
         // add object to database
         SqlInsert.addNewFee(feeDTO);
         // add new object to our list
@@ -292,6 +294,7 @@ public class TabFee extends Tab {
             if(row.getOrder() == 1) {
                 duesLineChart.refreshChart(row.getSelectedFee().getDescription());
                 row.getRadioButton().setSelected(true);
+                hBoxEditControls.refreshData(row);
             }
         });
     }
@@ -302,5 +305,13 @@ public class TabFee extends Tab {
 
     public ToggleGroup getRadioGroup() {
         return radioGroup;
+    }
+
+    public ArrayList<DbInvoiceDTO> getInvoiceItems() {
+        return invoiceItems;
+    }
+
+    public void setInvoiceItems(ArrayList<DbInvoiceDTO> invoiceItems) {
+        this.invoiceItems = invoiceItems;
     }
 }

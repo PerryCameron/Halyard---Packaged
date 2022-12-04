@@ -22,7 +22,7 @@ public class SqlFee {
                     thisAwards.add(new FeeDTO(
                             rs.getInt("FEE_ID"),
                             rs.getString("FIELD_NAME"),
-                            rs.getBigDecimal("FIELD_VALUE"),
+                            rs.getString("FIELD_VALUE"),
                             rs.getInt("FIELD_QTY"),
                             rs.getInt("fee_year"),
                             rs.getString("DESCRIPTION"),
@@ -45,7 +45,7 @@ public class SqlFee {
                 thisAwards.add(new FeeDTO(
                         rs.getInt("FEE_ID"),
                         rs.getString("FIELD_NAME"),
-                        rs.getBigDecimal("FIELD_VALUE"),
+                        rs.getString("FIELD_VALUE"),
                         rs.getInt("FIELD_QTY"),
                         rs.getInt("fee_year"),
                         rs.getString("DESCRIPTION"),
@@ -68,7 +68,7 @@ public class SqlFee {
                 feeDTOS.add(new FeeDTO(
                         rs.getInt("FEE_ID"),
                         rs.getString("FIELD_NAME"),
-                        rs.getBigDecimal("FIELD_VALUE"),
+                        rs.getString("FIELD_VALUE"),
                         rs.getInt("FIELD_QTY"),
                         rs.getInt("fee_year"),
                         rs.getString("DESCRIPTION"),

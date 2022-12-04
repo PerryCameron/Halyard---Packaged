@@ -1,92 +1,132 @@
 package com.ecsail.structures;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import java.math.BigDecimal;
 
 public class FeeDTO {
-    private int feeId;
-    private String fieldName;
-    private BigDecimal fieldValue;
-    private int fieldQuantity;
-    private int feeYear;
-    private String description;
-    private String groupName;
+    private IntegerProperty feeId;
+    private StringProperty fieldName;
+    private StringProperty fieldValue;
+    private IntegerProperty fieldQuantity;
+    private IntegerProperty feeYear;
+    private StringProperty description;
+    private StringProperty groupName;
 
-    public FeeDTO(int feeId, String fieldName, BigDecimal fieldValue, int fieldQuantity, int feeYear, String description, String groupName) {
-        this.feeId = feeId;
-        this.fieldName = fieldName;
-        this.fieldValue = fieldValue;
-        this.fieldQuantity = fieldQuantity;
-        this.feeYear = feeYear;
-        this.description = description;
-        this.groupName = groupName;
+    public FeeDTO(Integer feeId, String fieldName, String fieldValue, Integer fieldQuantity, Integer feeYear, String description, String groupName) {
+        this.feeId = new SimpleIntegerProperty(feeId);
+        this.fieldName = new SimpleStringProperty(fieldName);
+        this.fieldValue = new SimpleStringProperty(fieldValue);
+        this.fieldQuantity = new SimpleIntegerProperty(fieldQuantity);
+        this.feeYear = new SimpleIntegerProperty(feeYear);
+        this.description = new SimpleStringProperty(description);
+        this.groupName = new SimpleStringProperty(groupName);
     }
 
-    public int getFeeId() {
-        return feeId;
+    public final IntegerProperty feeIdProperty() {
+        return this.feeId;
     }
 
-    public void setFeeId(int feeId) {
-        this.feeId = feeId;
+
+    public final int getFeeId() {
+        return this.feeIdProperty().get();
     }
 
-    public String getFieldName() {
-        return fieldName;
+
+    public final void setFeeId(final int feeId) {
+        this.feeIdProperty().set(feeId);
     }
 
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
+
+    public final StringProperty fieldNameProperty() {
+        return this.fieldName;
     }
 
-    public BigDecimal getFieldValue() {
-        return fieldValue;
+
+    public final String getFieldName() {
+        return this.fieldNameProperty().get();
     }
 
-    public void setFieldValue(BigDecimal fieldValue) {
-        this.fieldValue = fieldValue;
+
+    public final void setFieldName(final String fieldName) {
+        this.fieldNameProperty().set(fieldName);
     }
 
-    public int getFieldQuantity() {
-        return fieldQuantity;
+
+    public final StringProperty fieldValueProperty() {
+        return this.fieldValue;
     }
 
-    public void setFieldQuantity(int fieldQuantity) {
-        this.fieldQuantity = fieldQuantity;
+
+    public final String getFieldValue() {
+        return this.fieldValueProperty().get();
     }
 
-    public int getFeeYear() {
-        return feeYear;
+
+    public final void setFieldValue(final String fieldValue) {
+        this.fieldValueProperty().set(fieldValue);
     }
 
-    public void setFeeYear(int feeYear) {
-        this.feeYear = feeYear;
+
+    public final IntegerProperty fieldQuantityProperty() {
+        return this.fieldQuantity;
     }
 
-    public String getDescription() {
-        return description;
+
+    public final int getFieldQuantity() {
+        return this.fieldQuantityProperty().get();
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+
+    public final void setFieldQuantity(final int fieldQuantity) {
+        this.fieldQuantityProperty().set(fieldQuantity);
     }
 
-    public String getGroupName() {
-        return groupName;
+
+    public final IntegerProperty feeYearProperty() {
+        return this.feeYear;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+
+    public final int getFeeYear() {
+        return this.feeYearProperty().get();
     }
 
-    @Override
-    public String toString() {
-        return "FeeDTO{" +
-                "feeId=" + feeId +
-                ", fieldName='" + fieldName + '\'' +
-                ", fieldValue=" + fieldValue +
-                ", fieldQuantity=" + fieldQuantity +
-                ", feeYear=" + feeYear +
-                ", description='" + description + '\'' +
-                ", groupName='" + groupName + '\'' +
-                '}';
+
+    public final void setFeeYear(final int feeYear) {
+        this.feeYearProperty().set(feeYear);
+    }
+
+
+    public final StringProperty descriptionProperty() {
+        return this.description;
+    }
+
+
+    public final String getDescription() {
+        return this.descriptionProperty().get();
+    }
+
+
+    public final void setDescription(final String description) {
+        this.descriptionProperty().set(description);
+    }
+
+
+    public final StringProperty groupNameProperty() {
+        return this.groupName;
+    }
+
+
+    public final String getGroupName() {
+        return this.groupNameProperty().get();
+    }
+
+
+    public final void setGroupName(final String groupName) {
+        this.groupNameProperty().set(groupName);
     }
 }

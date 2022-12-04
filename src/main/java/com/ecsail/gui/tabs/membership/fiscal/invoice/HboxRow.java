@@ -190,7 +190,7 @@ public class HboxRow extends HBox {
         SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, invoiceWidget.getMaxQty(), invoiceItem.getQty());
 		spinner.setValueFactory(spinnerValueFactory);
 		spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
-            String calculatedTotal = String.valueOf(fee.getFieldValue().multiply(BigDecimal.valueOf(newValue)));
+            String calculatedTotal = String.valueOf(new BigDecimal(fee.getFieldValue()).multiply(BigDecimal.valueOf(newValue)));
 			total.setText(calculatedTotal);
             invoiceItem.setQty(newValue);
             invoiceItem.setValue(calculatedTotal);
@@ -201,7 +201,7 @@ public class HboxRow extends HBox {
 
     private void setComboBoxListener() {
         comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-            String calculatedTotal = String.valueOf(BigDecimal.valueOf(newValue).multiply(fee.getFieldValue()));
+            String calculatedTotal = String.valueOf(BigDecimal.valueOf(newValue).multiply(new BigDecimal(fee.getFieldValue())));
             total.setText(calculatedTotal);
             invoiceItem.setQty(newValue);
             invoiceItem.setValue(calculatedTotal);

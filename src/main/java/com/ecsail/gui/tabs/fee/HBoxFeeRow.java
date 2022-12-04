@@ -63,7 +63,7 @@ public class HBoxFeeRow extends HBox {
             if (exitField) {
                 // checks value entered, saves it to sql, and updates field (as currency)
                 BigDecimal fieldValue = NumberCheck.StringToBigDecimal(t.getText());
-                selectedFee.setFieldValue(fieldValue);
+                selectedFee.setFieldValue(String.valueOf(fieldValue));
                 SqlUpdate.updateFeeRecord(selectedFee);
                 t.setText(String.valueOf(fieldValue.setScale(2, RoundingMode.HALF_UP)));
             }

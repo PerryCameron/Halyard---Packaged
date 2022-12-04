@@ -8,6 +8,7 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 
 public class FeesLineChartEx extends LineChart<String, Number> {
@@ -34,7 +35,7 @@ public class FeesLineChartEx extends LineChart<String, Number> {
 	public void populateChart(String description, Series<String, Number> series) {
 		this.getData().add(series);
 		for (FeeDTO d: Fees) {
-        		series.getData().add(new Data<>(d.getFeeYear() + "", d.getFieldValue()));
+        		series.getData().add(new Data<>(d.getFeeYear() + "", new BigDecimal(d.getFieldValue())));
 		}
 		series.setName(description);
 		setTitle(description + " by Year");
