@@ -4,8 +4,10 @@ import com.ecsail.BaseApplication;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
+import com.ecsail.sql.select.SqlDbInvoice;
 import com.ecsail.sql.select.SqlFee;
 import com.ecsail.sql.select.SqlSelect;
+import com.ecsail.structures.DbInvoiceDTO;
 import com.ecsail.structures.FeeDTO;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -15,14 +17,18 @@ import javafx.scene.layout.VBox;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
 
 
 /// This is the new experimental version
 public class TabFee extends Tab {
     private String selectedYear;
     private ArrayList<FeeDTO> feeDTOS;
-    // current index selected from feeDTOS
+    private ArrayList<DbInvoiceDTO> invoiceItems;
+
+    private ArrayList<HBoxFeeRow> rows = new ArrayList<>();
     private RadioButton selectedRadio;
     FeesLineChartEx duesLineChart;
     private final ToggleGroup radioGroup;
@@ -37,12 +43,15 @@ public class TabFee extends Tab {
         super(text);
         this.selectedYear = BaseApplication.selectedYear;
         this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
+        this.invoiceItems = SqlDbInvoice.getDbInvoiceByYear(Integer.parseInt(selectedYear));
         this.radioGroup = new ToggleGroup();
         this.hboxHashMap = new HashMap<>();
         this.comboBox = addComboBox();
         this.vboxFeeRow = createControlsVBox();
         this.hboxControls = new HBox();
         this.duesLineChart = new FeesLineChartEx();
+        createHBoxRows();
+        System.out.println("Hash Map size= " + hboxHashMap.size());
         addHBoxRows();
 
 
@@ -89,6 +98,8 @@ public class TabFee extends Tab {
         vboxBlue.getChildren().add(vboxPink);
         setContent(vboxBlue);
     }
+
+
 
     private void addControlBox() {
         hboxControls.getChildren().clear();
@@ -142,7 +153,7 @@ public class TabFee extends Tab {
         // update buttons on gui
         addControlBox();
         // update fees on gui
-        addHBoxRows();
+        createHBoxRows();
     }
 
     private void setNewYear(Object newValue) {
@@ -157,7 +168,7 @@ public class TabFee extends Tab {
         // add button objects
         addControlBox();
         // add fee objects
-        addHBoxRows();
+        createHBoxRows();
     }
 
     private void openEditRow() {
@@ -233,7 +244,7 @@ public class TabFee extends Tab {
         // add new object to our list
         feeDTOS.add(feeDTO);
         // add hbox
-        vboxFeeRow.getChildren().add(new HBoxFeeRow(feeDTO, this));
+//        vboxFeeRow.getChildren().add(new HBoxFeeRow(feeDTO, this));
     }
 
     // year combo box at top
@@ -255,19 +266,29 @@ public class TabFee extends Tab {
     }
 
     // used to initially place hbox rows into vbox for a given year
-    private void addHBoxRows() {
-        HashMap<String, HBoxFeeRow> groupMap = new HashMap<>();
-        for (FeeDTO fee : feeDTOS)
-            if(!fee.getGroupName().equals("NONE")) // check if fee is part of a group
-                if(groupMap.containsKey(fee.getGroupName())) // group is already created
-                    groupMap.get(fee.getGroupName()).getFees().add(fee); // add to group
-                else {  // we need to create new group HBOX
-                    HBoxFeeRow newHbox = new HBoxFeeRow(fee, this); // create new group
-                    groupMap.put(fee.getGroupName(),newHbox); // map it for next check
-                    vboxFeeRow.getChildren().add(newHbox); // add group
+    private void createHBoxRows() {
+        HBoxFeeRow newRow;
+        for(DbInvoiceDTO item: invoiceItems) {  // make each item type
+            newRow = new HBoxFeeRow( this, item);
+            rows.add(newRow);
+            for (FeeDTO fee : feeDTOS) {
+                if(fee.getFieldName().equals(item.getFieldName())) {
+                    newRow.getFees().add(fee);
+                    newRow.setForFee();
                 }
-            else  // not part of a group
-                vboxFeeRow.getChildren().add(new HBoxFeeRow(fee, this));
+            }
+        }
+    }
+
+    public void addHBoxRows() {  // adds boxes in correct order
+        rows.sort(Comparator.comparing(HBoxFeeRow::getOrder));
+        rows.stream().forEach(row -> {
+            vboxFeeRow.getChildren().add(row);
+            if(row.getOrder() == 1) {
+                duesLineChart.refreshChart(row.getSelectedFee().getDescription());
+                row.getRadioButton().setSelected(true);
+            }
+        });
     }
 
     public HashMap<RadioButton, HBoxFeeRow> getHboxHashMap() {
@@ -277,5 +298,4 @@ public class TabFee extends Tab {
     public ToggleGroup getRadioGroup() {
         return radioGroup;
     }
-
 }

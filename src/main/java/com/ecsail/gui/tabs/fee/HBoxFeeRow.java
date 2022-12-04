@@ -23,12 +23,14 @@ public class HBoxFeeRow extends HBox {
     private TextField feeTextField;
     private Text label;
     private DbInvoiceDTO dbInvoiceDTO;
+    private boolean hasFee = false;
+    private Integer order;
 
-    public HBoxFeeRow(FeeDTO fee, TabFee tab) {
-        this.tab=tab;
-        this.selectedFee = fee;
-        this.fees.add(selectedFee);
-        dbInvoiceDTO = SqlDbInvoice.getInvoiceByYearAndFieldName(fee.getFeeYear(),fee.getFieldName());
+    public HBoxFeeRow(TabFee tab, DbInvoiceDTO dbInvoiceDTO) {
+        this.tab = tab;
+        this.dbInvoiceDTO = dbInvoiceDTO;
+        this.order = dbInvoiceDTO.getOrder();
+        System.out.println("Created row " + dbInvoiceDTO.getFieldName());
         setSpacing(15);
         setAlignment(Pos.CENTER_LEFT);
         getChildren().addAll(addRadioButton(), addTextField(), createLabel());
@@ -46,13 +48,14 @@ public class HBoxFeeRow extends HBox {
     private TextField addTextField() {
         feeTextField = new TextField();
         feeTextField.setPrefWidth(70);
-        feeTextField.setText(String.valueOf(selectedFee.getFieldValue()));
+        feeTextField.setText("NONE");
+        feeTextField.setEditable(false);
         addTextListener(feeTextField);
         return feeTextField;
     }
 
     private Text createLabel() {
-        return label = new Text(selectedFee.getDescription());
+        return label = new Text(dbInvoiceDTO.getFieldName());
     }
 
     private void addTextListener(TextField t) {
@@ -83,7 +86,51 @@ public class HBoxFeeRow extends HBox {
     public void setPrice(String newPrice) {
         this.feeTextField.setText(newPrice);
     }
+
+    public void setPriceEditable(boolean editable) {
+        this.feeTextField.setEditable(editable);
+    }
     public ArrayList<FeeDTO> getFees() {
         return fees;
+    }
+
+    public DbInvoiceDTO getDbInvoiceDTO() {
+        return dbInvoiceDTO;
+    }
+
+    public void setSelectedFee(FeeDTO selectedFee) {
+        this.selectedFee = selectedFee;
+    }
+
+    public boolean isHasFee() {
+        return hasFee;
+    }
+
+    public void setHasFee(boolean hasFee) {
+        this.hasFee = hasFee;
+    }
+
+    public void setForFee() {
+        setSelectedFee(fees.get(0));
+        setHasFee(true);
+        setLabelText(fees.get(0).getDescription());
+        setPrice(String.valueOf(fees.get(0).getFieldValue()));
+        setPriceEditable(true);
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
+    public Text getLabel() {
+        return label;
+    }
+
+    public void setLabel(Text label) {
+        this.label = label;
     }
 }

@@ -37,13 +37,13 @@ public class SqlDbInvoice {
         return theseWidgets;
     }
 
-    public static ArrayList<DbInvoiceDTO> getInvoiceWidgetsByYear(int year) {  //p_id
-        ArrayList<DbInvoiceDTO> theseWidgets = new ArrayList<>();
+    public static ArrayList<DbInvoiceDTO> getDbInvoiceByYear(int year) {  //p_id
+        ArrayList<DbInvoiceDTO> dbInvoiceDTOS = new ArrayList<>();
         String query = "select * from db_invoice where year=" + year;
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
-                theseWidgets.add(new DbInvoiceDTO(
+                dbInvoiceDTOS.add(new DbInvoiceDTO(
                         rs.getInt("ID"),
                         rs.getString("year"),
                         rs.getString("FIELD_NAME"),
@@ -61,7 +61,7 @@ public class SqlDbInvoice {
         } catch (SQLException e) {
             new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
         }
-        return theseWidgets;
+        return dbInvoiceDTOS;
     }
 
     public static ArrayList<String> getInvoiceCategoriesByYear(int year) {  //p_id

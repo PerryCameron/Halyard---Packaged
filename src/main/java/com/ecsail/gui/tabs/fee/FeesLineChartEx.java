@@ -23,7 +23,6 @@ public class FeesLineChartEx extends LineChart<String, Number> {
 	
 	public void refreshChart(String description) {
 		Fees.clear();
-		System.out.println(this.getData().size());
 		if(this.getData().size() > 0)
 		this.getData().clear();
 		Fees = SqlFee.getAllFeesByDescription(description);

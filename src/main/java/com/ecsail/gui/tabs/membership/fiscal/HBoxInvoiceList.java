@@ -171,7 +171,7 @@ public class HBoxInvoiceList extends HBox {
 
 	private void createInvoiceItems(int invoiceId, Integer year, int msid) {
 		AtomicInteger id = new AtomicInteger();
-		ArrayList<DbInvoiceDTO> categories = SqlDbInvoice.getInvoiceWidgetsByYear(year);
+		ArrayList<DbInvoiceDTO> categories = SqlDbInvoice.getDbInvoiceByYear(year);
 		id.set(SqlSelect.getNextAvailablePrimaryKey("invoice_item","ID"));
 		categories.forEach(c -> {
 			InvoiceItemDTO item = new InvoiceItemDTO(id.get(),invoiceId,msid,year,c.getFieldName(),c.isMultiplied(),c.isIs_credit(),"0.00",0);
