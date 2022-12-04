@@ -2,7 +2,6 @@ package com.ecsail.gui.tabs.fee;
 
 import com.ecsail.datacheck.NumberCheck;
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.sql.select.SqlDbInvoice;
 import com.ecsail.structures.DbInvoiceDTO;
 import com.ecsail.structures.FeeDTO;
 import javafx.geometry.Pos;
@@ -90,6 +89,11 @@ public class HBoxFeeRow extends HBox {
     public void setPriceEditable(boolean editable) {
         this.feeTextField.setEditable(editable);
     }
+
+    public String getPrice() {
+        return feeTextField.getText();
+    }
+
     public ArrayList<FeeDTO> getFees() {
         return fees;
     }

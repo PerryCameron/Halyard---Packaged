@@ -19,15 +19,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Map;
-
-
 /// This is the new experimental version
 public class TabFee extends Tab {
     private String selectedYear;
     private ArrayList<FeeDTO> feeDTOS;
     private ArrayList<DbInvoiceDTO> invoiceItems;
-
     private ArrayList<HBoxFeeRow> rows = new ArrayList<>();
     private RadioButton selectedRadio;
     FeesLineChartEx duesLineChart;
@@ -36,8 +32,6 @@ public class TabFee extends Tab {
     private final VBox vboxFeeRow;
     private final HBox hboxControls;
     private final ComboBox<Integer> comboBox;
-
-
 
     public TabFee(String text) {
         super(text);
@@ -51,55 +45,68 @@ public class TabFee extends Tab {
         this.hboxControls = new HBox();
         this.duesLineChart = new FeesLineChartEx();
         createHBoxRows();
-        System.out.println("Hash Map size= " + hboxHashMap.size());
         addHBoxRows();
 
 
         // this is the vbox for organizing all the widgets
-        VBox vboxGrey = new VBox();
-        HBox hboxGrey = new HBox();
-        VBox vboxBlue = new VBox();
+        VBox vbox4 = new VBox();
+        HBoxEditControls hBoxEditControls = new HBoxEditControls(this);
+        HBox hbox2 = new HBox();
+        VBox vbox1 = new VBox();
+        ScrollPane itemsScrollPane = new ScrollPane();
         // this creates a pink border around the table
-        VBox vboxPink = new VBox();
+//        VBox vboxPink = new VBox();
         // this holds controls
-
 
         ////////////////////// ADD PROPERTIES TO OBJECTS //////////////
         hboxControls.setSpacing(10);
-        vboxBlue.setId("box-blue");
-        vboxBlue.setPadding(new Insets(10, 10, 10, 10));
-        vboxPink.setPadding(new Insets(3, 3, 3, 3)); // spacing to make pink from around table
-        vboxGrey.setPadding(new Insets(10, 10, 10, 10));
-        vboxPink.setId("box-pink");
-        vboxGrey.setPrefHeight(688);
-        vboxGrey.setSpacing(15);
+        vbox1.setId("box-blue");
+        hBoxEditControls.setPrefHeight(400);
 
+        vbox1.setPadding(new Insets(10, 10, 10, 10));
+//        vboxPink.setPadding(new Insets(3, 3, 3, 3)); // spacing to make pink from around table
+        vbox4.setPadding(new Insets(10, 10, 10, 10));
+//        vboxPink.setId("box-pink");
+        vbox4.setPrefHeight(688);
+        vbox4.setSpacing(15);
+        vbox4.setPrefWidth(380);
+        HBox.setHgrow(vboxFeeRow,Priority.ALWAYS);
         //////////////// LISTENERS ///////////////////
         // gives primary key to selected radio button
         radioGroup.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) ->
         {
-            System.out.println(selectedRadio = (RadioButton) new_toggle);
+            if(!hboxHashMap.get(new_toggle).getPrice().equals("NONE"))
             duesLineChart.refreshChart(hboxHashMap.get(new_toggle).getSelectedFee().getDescription());
+            System.out.println(hboxHashMap.get(new_toggle).getDbInvoiceDTO());
+            hBoxEditControls.refreshData(hboxHashMap.get(new_toggle));
         });
         // add listener to each text field
 
         comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> setNewYear(newValue));
 
         //////////// SETTING CONTENT /////////////
-
+//        infoBox8.setStyle("-fx-background-color: #c5c7c1;");  // gray
+        hboxControls.setStyle("-fx-background-color: #4d6955;");  //green
+        vboxFeeRow.setStyle("-fx-background-color: #feffab;");  // yellow
+//        infoBox3.setStyle("-fx-background-color: #e83115;");  // red
+        vbox4.setStyle("-fx-background-color: #201ac9;");  // blue
+        hbox2.setStyle("-fx-background-color: #e83115;");  // purple
+        hBoxEditControls.setStyle("-fx-background-color: #15e8e4;");  // light blue
+        vbox1.setStyle("-fx-background-color: #e89715;");  // orange
         // adds buttons and year combobox
         addControlBox();
-        VBox.setVgrow(vboxPink, Priority.ALWAYS);
-        HBox.setHgrow(hboxGrey, Priority.ALWAYS);
+        HBox.setHgrow(hbox2, Priority.ALWAYS);
         HBox.setHgrow(duesLineChart, Priority.ALWAYS);
-        vboxGrey.getChildren().addAll(hboxControls, vboxFeeRow);
-        hboxGrey.getChildren().addAll(vboxGrey, duesLineChart);
-        vboxPink.getChildren().add(hboxGrey);
-        vboxBlue.getChildren().add(vboxPink);
-        setContent(vboxBlue);
+        itemsScrollPane.setContent(vboxFeeRow);
+        vbox4.getChildren().addAll(hboxControls, itemsScrollPane);
+        hbox2.getChildren().addAll(vbox4, duesLineChart);
+        vbox1.getChildren().addAll(hbox2,hBoxEditControls);
+        setContent(vbox1);
     }
 
 
+
+    // vboxOne first Box
 
     private void addControlBox() {
         hboxControls.getChildren().clear();
@@ -157,18 +164,16 @@ public class TabFee extends Tab {
     }
 
     private void setNewYear(Object newValue) {
-        // reset selected year
         this.selectedYear = newValue.toString();
-        // clear our list
         this.feeDTOS.clear();
-        // repopulate our list with new year objects
         this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
-        // clear fx objects
+        invoiceItems.clear();
+        rows.clear();
+        invoiceItems.addAll(SqlDbInvoice.getDbInvoiceByYear(Integer.parseInt(selectedYear)));
         vboxFeeRow.getChildren().clear();
-        // add button objects
         addControlBox();
-        // add fee objects
         createHBoxRows();
+        addHBoxRows();
     }
 
     private void openEditRow() {
