@@ -80,6 +80,7 @@ public class TabFee extends Tab {
             if(!hboxHashMap.get(new_toggle).getPrice().equals("NONE"))
             duesLineChart.refreshChart(hboxHashMap.get(new_toggle).getSelectedFee().getDescription());
             System.out.println(hboxHashMap.get(new_toggle).getDbInvoiceDTO());
+            hboxHashMap.get(new_toggle).getFees().stream().forEach(System.out::println);
             hBoxEditControls.refreshData(hboxHashMap.get(new_toggle));
         });
         // add listener to each text field
@@ -88,13 +89,14 @@ public class TabFee extends Tab {
 
         //////////// SETTING CONTENT /////////////
 //        infoBox8.setStyle("-fx-background-color: #c5c7c1;");  // gray
-        hboxControls.setStyle("-fx-background-color: #4d6955;");  //green
-        vboxFeeRow.setStyle("-fx-background-color: #feffab;");  // yellow
-//        infoBox3.setStyle("-fx-background-color: #e83115;");  // red
-        vbox4.setStyle("-fx-background-color: #201ac9;");  // blue
-        hbox2.setStyle("-fx-background-color: #e83115;");  // purple
-        hBoxEditControls.setStyle("-fx-background-color: #15e8e4;");  // light blue
-        vbox1.setStyle("-fx-background-color: #e89715;");  // orange
+        //        infoBox3.setStyle("-fx-background-color: #e83115;");  // red
+//        hboxControls.setStyle("-fx-background-color: #4d6955;");  //green
+//        vboxFeeRow.setStyle("-fx-background-color: #feffab;");  // yellow
+//
+//        vbox4.setStyle("-fx-background-color: #201ac9;");  // blue
+//        hbox2.setStyle("-fx-background-color: #e83115;");  // purple
+//        hBoxEditControls.setStyle("-fx-background-color: #15e8e4;");  // light blue
+//        vbox1.setStyle("-fx-background-color: #e89715;");  // orange
         // adds buttons and year combobox
         addControlBox();
         HBox.setHgrow(hbox2, Priority.ALWAYS);
