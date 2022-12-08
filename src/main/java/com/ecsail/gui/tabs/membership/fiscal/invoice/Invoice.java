@@ -93,7 +93,7 @@ public class Invoice extends HBox {
         invoiceItemMap.values().forEach(e -> e.setCommitMode(invoice.isCommitted()));
         vboxMain.getChildren().add(header);
         // add rows in the correct order
-        for (int i = 0; i <= invoiceItemMap.size(); i++) {  // iterate through hashmap
+        for (int i = invoiceItemMap.size(); i > 0; i--) {  // iterate through hashmap
             for (String key : invoiceItemMap.keySet()) {
                 if (invoiceItemMap.get(key).getInvoiceWidget().getOrder() == i) {
                     System.out.println("Adding " + invoiceItemMap.get(key).getInvoiceWidget().getFieldName()); // bad here

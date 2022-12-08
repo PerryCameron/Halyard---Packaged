@@ -16,7 +16,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -24,32 +23,33 @@ import java.util.HashMap;
 public class TabFee extends Tab {
     private String selectedYear;
     private ArrayList<FeeDTO> feeDTOS;
-    private ArrayList<DbInvoiceDTO> invoiceItems;
-    private ArrayList<HBoxFeeRow> rows = new ArrayList<>();
-    private RadioButton selectedRadio;
+    private final ArrayList<FeeRow> rows = new ArrayList<>();
     FeesLineChartEx duesLineChart;
     private final ToggleGroup radioGroup;
-    private final HashMap<RadioButton, HBoxFeeRow> hboxHashMap;
+    private final HashMap<RadioButton, FeeRow> hboxHashMap;
     private final VBox vboxFeeRow;
     private final HBox hboxControls;
     private final ComboBox<Integer> comboBox;
-    HBoxEditControls hBoxEditControls;
+    FeeEditControls feeEditControls;
     private boolean radioEnable = true;
+    boolean itemCanChange = true;
 
     public TabFee(String text) {
         super(text);
         this.selectedYear = BaseApplication.selectedYear;
         this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
-        this.invoiceItems = SqlDbInvoice.getDbInvoiceByYear(Integer.parseInt(selectedYear));
+//        this.invoiceItems = SqlDbInvoice.getDbInvoiceByYear(Integer.parseInt(selectedYear));
         this.radioGroup = new ToggleGroup();
         this.hboxHashMap = new HashMap<>();
         this.comboBox = addComboBox();
         this.vboxFeeRow = createControlsVBox();
         this.hboxControls = new HBox();
         this.duesLineChart = new FeesLineChartEx();
-        hBoxEditControls = new HBoxEditControls(this);
-        createHBoxRows();
-        addHBoxRows();
+        feeEditControls = new FeeEditControls(this);
+        createFeeRows();
+        addFeeRows();
+        feeEditControls.setOrderSpinner();
+        feeEditControls.setOrderSpinnerListener(); // might need to move this
 
         // this is the vbox for organizing all the widgets
         VBox vbox4 = new VBox();
@@ -62,7 +62,7 @@ public class TabFee extends Tab {
         ////////////////////// ADD PROPERTIES TO OBJECTS //////////////
         hboxControls.setSpacing(10);
         vbox1.setId("box-blue");
-        hBoxEditControls.setPrefHeight(400);
+        feeEditControls.setPrefHeight(400);
 
         vbox1.setPadding(new Insets(10, 10, 10, 10));
         vbox4.setPadding(new Insets(10, 10, 10, 10));
@@ -75,9 +75,12 @@ public class TabFee extends Tab {
         radioGroup.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) ->
         {
             if(radioEnable) { // prevents null exceptions on a data refresh
-                hBoxEditControls.refreshData();
+                itemCanChange = false;
+                feeEditControls.refreshData();
+                itemCanChange= true;
                 if (!hboxHashMap.get(new_toggle).getPrice().equals("NONE"))
                     duesLineChart.refreshChart(hboxHashMap.get(new_toggle).getSelectedFee().getDescription());
+                System.out.println("Number of invoice rows= " + rows.size());
             }
         });
         // add listener to each text field
@@ -85,15 +88,6 @@ public class TabFee extends Tab {
         comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> setNewYear(newValue));
 
         //////////// SETTING CONTENT /////////////
-//        infoBox8.setStyle("-fx-background-color: #c5c7c1;");  // gray
-        //        infoBox3.setStyle("-fx-background-color: #e83115;");  // red
-//        hboxControls.setStyle("-fx-background-color: #4d6955;");  //green
-//        vboxFeeRow.setStyle("-fx-background-color: #feffab;");  // yellow
-//
-//        vbox4.setStyle("-fx-background-color: #201ac9;");  // blue
-//        hbox2.setStyle("-fx-background-color: #e83115;");  // purple
-//        hBoxEditControls.setStyle("-fx-background-color: #15e8e4;");  // light blue
-//        vbox1.setStyle("-fx-background-color: #e89715;");  // orange
 
         // adds buttons and year combobox
         addControlBox();
@@ -102,7 +96,7 @@ public class TabFee extends Tab {
         itemsScrollPane.setContent(vboxFeeRow);
         vbox4.getChildren().addAll(hboxControls, itemsScrollPane);
         hbox2.getChildren().addAll(vbox4, duesLineChart);
-        vbox1.getChildren().addAll(hbox2,separator,hBoxEditControls);
+        vbox1.getChildren().addAll(hbox2,separator, feeEditControls);
         setContent(vbox1);
     }
 
@@ -160,7 +154,7 @@ public class TabFee extends Tab {
         // update buttons on gui
         addControlBox();
         // update fees on gui
-        createHBoxRows();
+        createFeeRows();
     }
 
     private void setNewYear(Object newValue) {
@@ -168,26 +162,26 @@ public class TabFee extends Tab {
         this.selectedYear = newValue.toString();
         this.feeDTOS.clear();
         this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
-        invoiceItems.clear();
+//        invoiceItems.clear();
         hboxHashMap.clear();
         rows.clear();
-        invoiceItems.addAll(SqlDbInvoice.getDbInvoiceByYear(Integer.parseInt(selectedYear)));
+//        invoiceItems.addAll(SqlDbInvoice.getDbInvoiceByYear(Integer.parseInt(selectedYear)));
         vboxFeeRow.getChildren().clear();
         addControlBox();
-        createHBoxRows();
-        addHBoxRows();
+        createFeeRows();
+        addFeeRows();
         radioEnable = true;
     }
 
     private void openEditRow() {
-        if (selectedRadio == null) System.out.println("You need to select an index first");
+        if (radioGroup.getSelectedToggle() == null) System.out.println("You need to select an index first");
         else {
-            createEditHBox(hboxHashMap.get(selectedRadio));
+            createEditHBox(hboxHashMap.get(radioGroup.getSelectedToggle()));
         }
     }
 
     // java fx controls for editing, no business logic
-    private void createEditHBox(HBoxFeeRow hbox) {
+    private void createEditHBox(FeeRow hbox) {
         hbox.getChildren().clear();
         Button saveButton = new Button("Save");
         Label description = new Label("Description:");
@@ -222,22 +216,22 @@ public class TabFee extends Tab {
     private void addButtonListener(Button saveButton, TextField fieldNameText) {
         saveButton.setOnAction((event) -> {
             // update selected object
-            hboxHashMap.get(selectedRadio).getSelectedFee().setFieldName(fieldNameText.getText());
+            hboxHashMap.get(radioGroup.getSelectedToggle()).getSelectedFee().setFieldName(fieldNameText.getText());
             // write object to sql
-            SqlUpdate.updateFeeRecord(hboxHashMap.get(selectedRadio).getSelectedFee());
+            SqlUpdate.updateFeeRecord(hboxHashMap.get(radioGroup.getSelectedToggle()).getSelectedFee());
             // update contents of hbox
         });
     }
 
     private void deleteRowIn() {
-        if (selectedRadio == null) System.out.println("You need to select an index first");
+        if (radioGroup.getSelectedToggle() == null) System.out.println("You need to select an index first");
         else {
             // remove from database
-            SqlDelete.deleteFee(hboxHashMap.get(selectedRadio).getSelectedFee());
+            SqlDelete.deleteFee(hboxHashMap.get(radioGroup.getSelectedToggle()).getSelectedFee());
             // remove from list
-            feeDTOS.remove(hboxHashMap.get(selectedRadio).getSelectedFee());
+            feeDTOS.remove(hboxHashMap.get(radioGroup.getSelectedToggle()).getSelectedFee());
             // clear HBoxes from column
-            vboxFeeRow.getChildren().remove(hboxHashMap.get(selectedRadio));
+            vboxFeeRow.getChildren().remove(hboxHashMap.get(radioGroup.getSelectedToggle()));
         }
     }
 
@@ -250,12 +244,10 @@ public class TabFee extends Tab {
         SqlInsert.addNewFee(feeDTO);
         // add new object to our list
         feeDTOS.add(feeDTO);
-        // add hbox
-//        vboxFeeRow.getChildren().add(new HBoxFeeRow(feeDTO, this));
     }
 
     // year combo box at top
-    private ComboBox addComboBox() {
+    private ComboBox<Integer> addComboBox() {
         ComboBox<Integer> comboBox = new ComboBox<>();
         // creates a combo box with a list of years
         for (int i = Integer.parseInt(BaseApplication.selectedYear) + 1; i > 1969; i--) {
@@ -273,10 +265,13 @@ public class TabFee extends Tab {
     }
 
     // used to initially place hbox rows into vbox for a given year
-    private void createHBoxRows() {
-        HBoxFeeRow newRow;
-        for(DbInvoiceDTO item: invoiceItems) {  // make each item type
-            newRow = new HBoxFeeRow( this, item);
+    private void createFeeRows() {
+        ArrayList<DbInvoiceDTO> dbInvoiceDTOS = SqlDbInvoice.getDbInvoiceByYear(Integer.parseInt(selectedYear));
+        dbInvoiceDTOS.forEach(System.out::println);
+        System.out.println("Getting db_invoices by year=" + selectedYear);
+        FeeRow newRow;
+        for(DbInvoiceDTO item: dbInvoiceDTOS) {  // make each item type
+            newRow = new FeeRow( this, item); // add db_invoice to each row
             rows.add(newRow);
             for (FeeDTO fee : feeDTOS) {
                 if(fee.getFieldName().equals(item.getFieldName())) {
@@ -287,19 +282,30 @@ public class TabFee extends Tab {
         }
     }
 
-    public void addHBoxRows() {  // adds boxes in correct order
-        rows.sort(Comparator.comparing(HBoxFeeRow::getOrder));
-        rows.stream().forEach(row -> {
+    public void addFeeRows() {  // adds boxes in correct order this is only run once when you open tab
+        rows.sort(Comparator.comparing(FeeRow::getOrder).reversed());
+        rows.forEach(row -> {
             vboxFeeRow.getChildren().add(row);
-            if(row.getOrder() == 1) {
-                duesLineChart.refreshChart(row.getSelectedFee().getDescription());
+            if(row.getOrder() == rows.size()) { // picks top entry
                 row.getRadioButton().setSelected(true);
-                hBoxEditControls.refreshData();
+                duesLineChart.refreshChart(row.getSelectedFee().getDescription());
+                feeEditControls.refreshData();
             }
+
+            System.out.println("Setting order spinner listener");
+            System.out.println("order" + row.getOrder() + " " + row.getDbInvoiceDTO().getOrder() + " " + row.getDbInvoiceDTO().getFieldName());
         });
     }
 
-    public HashMap<RadioButton, HBoxFeeRow> getHboxHashMap() {
+    public void refreshFeeRows() {
+        vboxFeeRow.getChildren().clear();
+        rows.sort(Comparator.comparing(FeeRow::getOrder).reversed());
+        rows.forEach(row -> {
+            vboxFeeRow.getChildren().add(row);
+        });
+    }
+
+    public HashMap<RadioButton, FeeRow> getHboxHashMap() {
         return hboxHashMap;
     }
 
@@ -307,11 +313,11 @@ public class TabFee extends Tab {
         return radioGroup;
     }
 
-    public ArrayList<DbInvoiceDTO> getInvoiceItems() {
-        return invoiceItems;
+    public boolean isItemCanChange() {
+        return itemCanChange;
     }
 
-    public void setInvoiceItems(ArrayList<DbInvoiceDTO> invoiceItems) {
-        this.invoiceItems = invoiceItems;
+    public ArrayList<FeeRow> getRows() {
+        return rows;
     }
 }

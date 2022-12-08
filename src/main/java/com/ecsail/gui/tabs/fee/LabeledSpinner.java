@@ -32,4 +32,12 @@ public class LabeledSpinner extends HBox {
             spinner.setValueFactory(new SpinnerValueFactory
                     .IntegerSpinnerValueFactory(min, max, initialValue));
     }
+
+    public Spinner<Integer> getSpinner() {
+        return spinner;
+    }
+
+    public void setSpinner(Spinner<Integer> spinner) {
+        this.spinner = spinner;
+    }
 }

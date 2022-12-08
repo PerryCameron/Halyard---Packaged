@@ -1,5 +1,7 @@
 package com.ecsail.structures;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 
 public class DbInvoiceDTO {
@@ -8,7 +10,7 @@ public class DbInvoiceDTO {
     private String fieldName;
     private String widgetType;
     private double width;
-    private int order;
+    private IntegerProperty order;
     private boolean multiplied;
     private boolean price_editable;
     private boolean is_credit;
@@ -22,13 +24,13 @@ public class DbInvoiceDTO {
     private ObservableList<InvoiceItemDTO> items;
 
 
-    public DbInvoiceDTO(int id, String year, String fieldName, String widgetType, double width, int order, boolean multiplied, boolean price_editable, boolean is_credit, int maxQty, boolean autoPopulate) {
+    public DbInvoiceDTO(int id, String year, String fieldName, String widgetType, double width, Integer order, boolean multiplied, boolean price_editable, boolean is_credit, int maxQty, boolean autoPopulate) {
         this.id = id;
         this.year = year;
         this.fieldName = fieldName;
         this.widgetType = widgetType;
         this.width = width;
-        this.order = order;
+        this.order = new SimpleIntegerProperty(order);
         this.multiplied = multiplied;
         this.price_editable = price_editable;
         this.is_credit = is_credit;
@@ -76,12 +78,17 @@ public class DbInvoiceDTO {
         this.width = width;
     }
 
-    public int getOrder() {
-        return order;
+    public final IntegerProperty orderProperty() {
+        return this.order;
     }
 
-    public void setOrder(int order) {
-        this.order = order;
+    public final int getOrder() {
+        return this.orderProperty().get();
+    }
+
+
+    public final void setOrder(final int order) {
+        this.orderProperty().set(order);
     }
 
     public boolean isMultiplied() {

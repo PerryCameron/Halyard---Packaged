@@ -13,9 +13,9 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 public class FeeTableView extends TableView<FeeDTO> {
-    HBoxEditControls parent;
+    FeeEditControls parent;
     ObservableList fees;
-    public FeeTableView(HBoxEditControls hBoxEditControls) {
+    public FeeTableView(FeeEditControls hBoxEditControls) {
         this.parent = hBoxEditControls;
         this.fees = parent.getFees();
         

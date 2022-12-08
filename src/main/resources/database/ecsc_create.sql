@@ -384,7 +384,7 @@ CREATE Table ECSC_SQL.db_invoice
     FIELD_NAME     varchar(30)       NOT NULL,
     widget_type    varchar(30)       NOT NULL,
     width          double,
-    `order`        INTEGER           NOT NULL,
+    invoice_order        INTEGER           NOT NULL,
     multiplied     boolean           NOT NULL,
     price_editable boolean           NOT NULL,
     is_credit      boolean           NOT NULL,

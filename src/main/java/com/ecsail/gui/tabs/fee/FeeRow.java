@@ -4,6 +4,8 @@ import com.ecsail.datacheck.NumberCheck;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.structures.DbInvoiceDTO;
 import com.ecsail.structures.FeeDTO;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
@@ -14,7 +16,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 
-public class HBoxFeeRow extends HBox {
+public class FeeRow extends HBox {
     private TabFee tab;
     private ArrayList<FeeDTO> fees = new ArrayList<>();
     private FeeDTO selectedFee;
@@ -23,12 +25,13 @@ public class HBoxFeeRow extends HBox {
     private Text label;
     private DbInvoiceDTO dbInvoiceDTO;
     private boolean hasFee = false;
-    private Integer order;
+    private IntegerProperty order;
 
-    public HBoxFeeRow(TabFee tab, DbInvoiceDTO dbInvoiceDTO) {
+    public FeeRow(TabFee tab, DbInvoiceDTO dbInvoiceDTO) {
         this.tab = tab;
         this.dbInvoiceDTO = dbInvoiceDTO;
-        this.order = dbInvoiceDTO.getOrder();
+        this.order = new SimpleIntegerProperty(0);
+        this.order.bindBidirectional(dbInvoiceDTO.orderProperty());
         setSpacing(15);
         setAlignment(Pos.CENTER_LEFT);
         getChildren().addAll(addRadioButton(), addTextField(), createLabel());
@@ -121,12 +124,16 @@ public class HBoxFeeRow extends HBox {
         setPriceEditable(true);
     }
 
-    public Integer getOrder() {
-        return order;
+    public final IntegerProperty orderProperty() {
+        return this.order;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public final int getOrder() {
+        return this.orderProperty().get();
+    }
+
+    public final void setOrder(final int order) {
+        this.orderProperty().set(order);
     }
 
     public Text getLabel() {

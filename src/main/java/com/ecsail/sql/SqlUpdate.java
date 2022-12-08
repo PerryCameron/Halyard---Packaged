@@ -462,4 +462,23 @@ public class SqlUpdate {
 			new Dialogue_ErrorSQL(e,"There was a problem with updating Invoice ID " + invoice.getId(),"");
 		}
 	}
+
+	public static void updateDbInvoice(DbInvoiceDTO dbInvoiceDTO) {
+		String query = "UPDATE db_invoice SET "
+				+ "FIELD_NAME='" + dbInvoiceDTO.getFieldName() + "',"
+				+ "widget_type='" + dbInvoiceDTO.getWidgetType() + "',"
+				+ "width=" + dbInvoiceDTO.getWidth() + ","
+				+ "invoice_order=" + dbInvoiceDTO.getOrder() + ","
+				+ "multiplied=" + dbInvoiceDTO.isMultiplied() + ","
+				+ "price_editable=" + dbInvoiceDTO.isPrice_editable() + ","
+				+ "is_credit=" + dbInvoiceDTO.isIs_credit() + ","
+				+ "max_qty=" + dbInvoiceDTO.getMaxQty() + ","
+				+ "auto_populate=" + dbInvoiceDTO.isAutoPopulate()
+				+ " WHERE ID=" + dbInvoiceDTO.getId();
+		try {
+			BaseApplication.connect.executeQuery(query);
+		} catch (SQLException e) {
+			new Dialogue_ErrorSQL(e,"There was a problem with updating db_invoice " + dbInvoiceDTO.getId(),"");
+		}
+	}
 }
