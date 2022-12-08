@@ -19,6 +19,7 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+
 /// This is the new experimental version
 public class TabFee extends Tab {
     private String selectedYear;
@@ -32,7 +33,7 @@ public class TabFee extends Tab {
     private final ComboBox<Integer> comboBox;
     FeeEditControls feeEditControls;
     private boolean radioEnable = true;
-    boolean itemCanChange = true;
+    boolean orderSpinnerCanChange = true;
 
     public TabFee(String text) {
         super(text);
@@ -75,9 +76,9 @@ public class TabFee extends Tab {
         radioGroup.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) ->
         {
             if(radioEnable) { // prevents null exceptions on a data refresh
-                itemCanChange = false;
+                orderSpinnerCanChange = false;
                 feeEditControls.refreshData();
-                itemCanChange= true;
+                orderSpinnerCanChange = true;
                 if (!hboxHashMap.get(new_toggle).getPrice().equals("NONE"))
                     duesLineChart.refreshChart(hboxHashMap.get(new_toggle).getSelectedFee().getDescription());
                 System.out.println("Number of invoice rows= " + rows.size());
@@ -159,17 +160,16 @@ public class TabFee extends Tab {
 
     private void setNewYear(Object newValue) {
         radioEnable = false; // prevent from setting radio button off a dozen times when there is nothing to select
+        orderSpinnerCanChange = false;
         this.selectedYear = newValue.toString();
         this.feeDTOS.clear();
         this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
-//        invoiceItems.clear();
         hboxHashMap.clear();
         rows.clear();
-//        invoiceItems.addAll(SqlDbInvoice.getDbInvoiceByYear(Integer.parseInt(selectedYear)));
-        vboxFeeRow.getChildren().clear();
         addControlBox();
         createFeeRows();
         addFeeRows();
+        orderSpinnerCanChange = true;
         radioEnable = true;
     }
 
@@ -268,33 +268,33 @@ public class TabFee extends Tab {
     private void createFeeRows() {
         ArrayList<DbInvoiceDTO> dbInvoiceDTOS = SqlDbInvoice.getDbInvoiceByYear(Integer.parseInt(selectedYear));
         dbInvoiceDTOS.forEach(System.out::println);
-        System.out.println("Getting db_invoices by year=" + selectedYear);
         FeeRow newRow;
         for(DbInvoiceDTO item: dbInvoiceDTOS) {  // make each item type
             newRow = new FeeRow( this, item); // add db_invoice to each row
             rows.add(newRow);
             for (FeeDTO fee : feeDTOS) {
                 if(fee.getFieldName().equals(item.getFieldName())) {
-                    newRow.getFees().add(fee);
+                    newRow.getFees().add(fee); // add fee to row
                     newRow.setForFee();
                 }
             }
         }
     }
 
-    public void addFeeRows() {  // adds boxes in correct order this is only run once when you open tab
+    public void addFeeRows() {
+        vboxFeeRow.getChildren().clear();
         rows.sort(Comparator.comparing(FeeRow::getOrder).reversed());
-        rows.forEach(row -> {
+        System.out.println("There are " + rows.size() + " rows");
+        int size = rows.size();
+        for(FeeRow row: rows) {
             vboxFeeRow.getChildren().add(row);
-            if(row.getOrder() == rows.size()) { // picks top entry
+            if(row.getOrder() == size) { // picks top entry
                 row.getRadioButton().setSelected(true);
+                if(row.getSelectedFee() != null)
                 duesLineChart.refreshChart(row.getSelectedFee().getDescription());
-                feeEditControls.refreshData();
+                feeEditControls.refreshData(); // refreshed data for selected fee
             }
-
-            System.out.println("Setting order spinner listener");
-            System.out.println("order" + row.getOrder() + " " + row.getDbInvoiceDTO().getOrder() + " " + row.getDbInvoiceDTO().getFieldName());
-        });
+        };
     }
 
     public void refreshFeeRows() {
@@ -313,8 +313,8 @@ public class TabFee extends Tab {
         return radioGroup;
     }
 
-    public boolean isItemCanChange() {
-        return itemCanChange;
+    public boolean isOrderSpinnerCanChange() {
+        return orderSpinnerCanChange;
     }
 
     public ArrayList<FeeRow> getRows() {

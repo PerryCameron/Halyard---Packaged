@@ -128,7 +128,7 @@ public class FeeEditControls extends HBox {
     public void setOrderSpinnerListener() {
         orderedSpinner.getSpinner().valueProperty().addListener((observable, oldValue, newValue) -> {
             System.out.println("orderedSpinner listener fire!");
-            if (parent.isItemCanChange()) { // don't trigger order spinner if you select another radio button
+            if (parent.isOrderSpinnerCanChange()) { // don't trigger order spinner if you select another radio button
                 FeeRow displacedRow = parent.getRows().stream()
                         .filter(e -> e.getDbInvoiceDTO().getOrder() == newValue).findFirst().orElse(null);
                 FeeRow changedRow = getSelectedHBoxFeeRow();
