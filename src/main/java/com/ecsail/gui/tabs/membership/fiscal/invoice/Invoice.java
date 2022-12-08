@@ -23,18 +23,18 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class HBoxInvoice extends HBox {
+public class Invoice extends HBox {
     private final ObservableList<PaymentDTO> payments;
     private final InvoiceDTO invoice;
     private final ArrayList<FeeDTO> fees;
     private final MembershipDTO membership;
-    private final VboxFooter footer;
+    private final InvoiceFooter footer;
     private final Map<String, InvoiceItemRow> invoiceItemMap = new LinkedHashMap<>();
     private final Button buttonCommit = new Button("Commit");
     private final Note note;
     HBoxInvoiceList il;
 
-    public HBoxInvoice(HBoxInvoiceList il, int index) {
+    public Invoice(HBoxInvoiceList il, int index) {
         this.il = il;
         this.invoice = il.getTabMembership().getInvoices().get(index);
         this.membership = il.getTabMembership().getMembership();
@@ -43,8 +43,8 @@ public class HBoxInvoice extends HBox {
         ObservableList<InvoiceItemDTO> items = SqlInvoiceItem.getInvoiceItemsByInvoiceId(invoice.getId());
         this.fees = SqlFee.getFeesFromYear(invoice.getYear());
         this.payments = getPayment();
-        this.footer = new VboxFooter(this);
-        HboxHeader header = new HboxHeader();
+        this.footer = new InvoiceFooter(this);
+        InvoiceHeader header = new InvoiceHeader();
         ScrollPane scrollPane = new ScrollPane();
         var vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
         var mainVbox = new VBox();

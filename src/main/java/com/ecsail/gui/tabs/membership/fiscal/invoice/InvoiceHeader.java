@@ -7,14 +7,14 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-public class HboxHeader extends HBox {
+public class InvoiceHeader extends HBox {
     VBox vBox1 = new VBox();
     VBox vBox2 = new VBox();
     VBox vBox3 = new VBox();
     Text priceText = new Text();
 
 
-    public HboxHeader() {
+    public InvoiceHeader() {
         Font font = Font.font("Verdana", FontWeight.BOLD, 16);
         setSpacing(15);
 

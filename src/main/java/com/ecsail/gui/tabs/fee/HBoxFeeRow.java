@@ -29,7 +29,6 @@ public class HBoxFeeRow extends HBox {
         this.tab = tab;
         this.dbInvoiceDTO = dbInvoiceDTO;
         this.order = dbInvoiceDTO.getOrder();
-        System.out.println("Created row " + dbInvoiceDTO.getFieldName());
         setSpacing(15);
         setAlignment(Pos.CENTER_LEFT);
         getChildren().addAll(addRadioButton(), addTextField(), createLabel());

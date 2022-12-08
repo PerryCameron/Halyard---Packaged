@@ -4,7 +4,7 @@ package com.ecsail.gui.tabs.membership.fiscal;
 import com.ecsail.BaseApplication;
 
 import com.ecsail.gui.tabs.membership.TabMembership;
-import com.ecsail.gui.tabs.membership.fiscal.invoice.HBoxInvoice;
+import com.ecsail.gui.tabs.membership.fiscal.invoice.Invoice;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlInsert;
@@ -192,7 +192,7 @@ public class HBoxInvoiceList extends HBox {
 
 	private void createTab(int rowIndex) {
 		tm.getFiscalTabPane().getTabs().add(new Tab(String.valueOf(tm.getInvoices().get(rowIndex).getYear()),
-				new HBoxInvoice(this, rowIndex))); // current year tab
+				new Invoice(this, rowIndex))); // current year tab
 		for(Tab tab: tm.getFiscalTabPane().getTabs()) {
 			if(tab.getText().equals(String.valueOf(tm.getInvoices().get(rowIndex).getYear())))
 				tm.getFiscalTabPane().getSelectionModel().select(tab);
@@ -207,7 +207,7 @@ public class HBoxInvoiceList extends HBox {
 		// find the index value of the correct Object_Money in fiscals ArrayList
 		int fiscalsIndex = getFiscalIndexByYear(invoice.getId());
 		// add appropriate invoice to the tab using the index of fiscals
-		newTab.setContent(new HBoxInvoice(this, fiscalsIndex));
+		newTab.setContent(new Invoice(this, fiscalsIndex));
 		// open the correct tab
 		tm.getFiscalTabPane().getSelectionModel().select(newTab);
 	}

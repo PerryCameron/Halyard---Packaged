@@ -51,18 +51,13 @@ public class TabFee extends Tab {
         createHBoxRows();
         addHBoxRows();
 
-
         // this is the vbox for organizing all the widgets
         VBox vbox4 = new VBox();
-        Separator separator =
-                new Separator(Orientation.HORIZONTAL);
+        Separator separator = new Separator(Orientation.HORIZONTAL);
         HBox.setHgrow(separator,Priority.ALWAYS);
         HBox hbox2 = new HBox();
         VBox vbox1 = new VBox();
         ScrollPane itemsScrollPane = new ScrollPane();
-        // this creates a pink border around the table
-//        VBox vboxPink = new VBox();
-        // this holds controls
 
         ////////////////////// ADD PROPERTIES TO OBJECTS //////////////
         hboxControls.setSpacing(10);
@@ -70,9 +65,7 @@ public class TabFee extends Tab {
         hBoxEditControls.setPrefHeight(400);
 
         vbox1.setPadding(new Insets(10, 10, 10, 10));
-//        vboxPink.setPadding(new Insets(3, 3, 3, 3)); // spacing to make pink from around table
         vbox4.setPadding(new Insets(10, 10, 10, 10));
-//        vboxPink.setId("box-pink");
         vbox4.setPrefHeight(688);
         vbox4.setSpacing(15);
         vbox4.setPrefWidth(380);
@@ -81,9 +74,7 @@ public class TabFee extends Tab {
         // gives primary key to selected radio button
         radioGroup.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) ->
         {
-//            System.out.println(hboxHashMap.get(new_toggle).getDbInvoiceDTO());
-//            hboxHashMap.get(new_toggle).getFees().stream().forEach(System.out::println);
-            if(radioEnable) {
+            if(radioEnable) { // prevents null exceptions on a data refresh
                 hBoxEditControls.refreshData();
                 if (!hboxHashMap.get(new_toggle).getPrice().equals("NONE"))
                     duesLineChart.refreshChart(hboxHashMap.get(new_toggle).getSelectedFee().getDescription());
@@ -114,8 +105,6 @@ public class TabFee extends Tab {
         vbox1.getChildren().addAll(hbox2,separator,hBoxEditControls);
         setContent(vbox1);
     }
-
-
 
     // vboxOne first Box
 
@@ -237,7 +226,6 @@ public class TabFee extends Tab {
             // write object to sql
             SqlUpdate.updateFeeRecord(hboxHashMap.get(selectedRadio).getSelectedFee());
             // update contents of hbox
-
         });
     }
 
@@ -326,6 +314,4 @@ public class TabFee extends Tab {
     public void setInvoiceItems(ArrayList<DbInvoiceDTO> invoiceItems) {
         this.invoiceItems = invoiceItems;
     }
-
-
 }

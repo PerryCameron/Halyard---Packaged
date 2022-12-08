@@ -22,7 +22,7 @@ import java.util.function.Function;
 
 public class PaymentTableView extends TableView<PaymentDTO> {
 
-    public PaymentTableView(VboxFooter footer) {
+    public PaymentTableView(InvoiceFooter footer) {
         TableColumn<PaymentDTO, String> col1 = createColumn("Amount", PaymentDTO::PaymentAmountProperty);
         col1.setPrefWidth(60);
         col1.setStyle("-fx-alignment: CENTER-RIGHT;");

@@ -28,7 +28,7 @@ public class InvoiceItemRow extends HBox {
     private ComboBox<Integer> comboBox;
     private final InvoiceItemDTO invoiceItem;
     private final FeeDTO fee;
-    private final VboxFooter footer;
+    private final InvoiceFooter footer;
     private final ObservableList<InvoiceItemDTO> items;
     private final VBox vBox1 = new VBox();
     private final VBox vBox2 = new VBox();
@@ -38,7 +38,7 @@ public class InvoiceItemRow extends HBox {
 
     InvoiceDTO invoice;
 
-    public InvoiceItemRow(DbInvoiceDTO invoiceWidget, VboxFooter footer) {
+    public InvoiceItemRow(DbInvoiceDTO invoiceWidget, InvoiceFooter footer) {
 
         this.invoiceWidget = invoiceWidget;
         this.itemName = invoiceWidget.getFieldName();

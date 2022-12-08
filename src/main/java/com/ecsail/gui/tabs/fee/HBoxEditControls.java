@@ -1,10 +1,5 @@
 package com.ecsail.gui.tabs.fee;
 
-
-
-
-
-import com.ecsail.gui.tabs.membership.fiscal.invoice.HboxHeader;
 import com.ecsail.structures.FeeDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,7 +27,7 @@ public class HBoxEditControls extends HBox {
     LabeledTextField groupNameText = new LabeledTextField("Group Name");
     HBoxFeeRow selectedHBoxFreeRow;
 
-    HboxHeader mockHeader = new HboxHeader();
+    MockHeader mockHeader = new MockHeader();
 
     VBox vBoxMockItems = new VBox();
     public HBoxEditControls(TabFee parent) {
@@ -45,36 +40,36 @@ public class HBoxEditControls extends HBox {
         HBox hBoxTableHeader = new HBox();
         VBox vBoxTableButtons = new VBox();
         VBox vBoxRadio = new VBox();
+        VBox vBoxDisplay = new VBox();
+        HBox hBoxDisplay = new HBox();
 
-//        HBox hBoxOrder = new HBox();
         Button addFeeButton = new Button("Add Fee");
         Button deleteButton = new Button("Delete");
         vBoxCheckBox.setPadding(new Insets(0,0,0,30));
-        mockHeader.setCommitMode(false);
+        vBoxTableButtons.setPadding(new Insets(46,0,0,0));
 
         vBoxSpinner.setSpacing(10);
         vBoxCheckBox.setSpacing(10);
         vBoxTable.setSpacing(10);
         hBoxTableHeader.setSpacing(10);
         vBoxRadio.setSpacing(5);
-//        hBoxOrder.setSpacing(5);
         hBoxTableGroup.setSpacing(5);
         vBoxTableButtons.setSpacing(5);
-        vBoxTableButtons.setPadding(new Insets(45,0,0,0));
-        VBox vBoxDisplay = new VBox();
-        HBox hBoxDisplay = new HBox();
+        vBoxDisplay.setSpacing(10);
+
         TitledPane titledPane = new TitledPane("Display Area", vBoxMockItems);
 
-        vBoxSpinner.setPrefWidth(200);
+        vBoxSpinner.setPrefWidth(160);
         vBoxCheckBox.setPrefWidth(200);
         vBoxRadio.setPrefWidth(150);
         addFeeButton.setPrefWidth(70);
         deleteButton.setPrefWidth(70);
         HBox.setHgrow(vBoxTable, Priority.ALWAYS);
         vBoxTableButtons.setPrefWidth(70);
-//        hBoxOrder.setAlignment(Pos.CENTER_LEFT);
         vBoxTable.setAlignment(Pos.CENTER_RIGHT);
         vBoxMockItems.setAlignment(Pos.CENTER);
+        vBoxMockItems.setId("box-background-light");
+        vBoxDisplay.setPadding(new Insets(0,20,0,0));
         hBoxDisplay.setPrefHeight(100);
 
         ToggleGroup tg = new ToggleGroup();
@@ -94,31 +89,25 @@ public class HBoxEditControls extends HBox {
 //        hBoxTableGroup.setStyle("-fx-background-color: rgb(139,145,156);");  // orange
 
         setMultipliedByCheckBoxListener();
-//        hBoxOrder.getChildren().add(labeledSpinner);
         vBoxTableButtons.getChildren().addAll(addFeeButton,deleteButton);
         hBoxTableHeader.getChildren().addAll(fieldNameText,groupNameText);
         vBoxRadio.getChildren().addAll(rbSpinner,rbTextField,rbComboBox,rbNone);
         vBoxSpinner.getChildren().addAll(labeledSpinner,maxQtySpinner);
         vBoxCheckBox.getChildren().addAll(isMultipliedCheckBox, autoPopulate,isCredit,priceIsEditable,vBoxRadio);
-
         vBoxTable.getChildren().addAll(hBoxTableHeader, new FeeTableView(this));
         hBoxTableGroup.getChildren().addAll(vBoxTable,vBoxTableButtons);
         hBoxDisplay.getChildren().addAll(vBoxSpinner,vBoxCheckBox,vBoxRadio);
-//        refreshMockBox();
-//        vBoxMockItems.getChildren().add(mockHeader);
         vBoxDisplay.getChildren().addAll(hBoxDisplay,titledPane); // add displayed item to bottom
         getChildren().addAll(vBoxDisplay,hBoxTableGroup); // this is hbox
     }
 
     public void refreshMockBox() {
-//        this.selectedHBoxFreeRow = getSelectedHBoxFeeRow();
-        System.out.println(selectedHBoxFreeRow);
             vBoxMockItems.getChildren().clear();
-            vBoxMockItems.getChildren().addAll(mockHeader, new MockInvoiceItemRow(selectedHBoxFreeRow.getDbInvoiceDTO(), fees.get(0)));
-//            vBoxMockItems.getChildren().addAll(mockHeader, new Label("TESTING ROW"));
-
+            if(fees.size() > 0) // make sure items has associated fee
+                vBoxMockItems.getChildren().addAll(mockHeader, new MockInvoiceItemRow(selectedHBoxFreeRow.getDbInvoiceDTO(), fees.get(0)));
     }
 
+    @SuppressWarnings("SuspiciousMethodCalls")
     public HBoxFeeRow getSelectedHBoxFeeRow() {
         return parent.getHboxHashMap().get(parent.getRadioGroup().getSelectedToggle());
     }

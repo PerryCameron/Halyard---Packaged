@@ -25,7 +25,7 @@ import java.math.RoundingMode;
 
 import static com.ecsail.HalyardPaths.date;
 
-public class VboxFooter extends VBox {
+public class InvoiceFooter extends VBox {
 
     private final TableView<PaymentDTO> paymentTableView;
     private final InvoiceDTO invoice;
@@ -45,7 +45,7 @@ public class VboxFooter extends VBox {
     private final Button buttonCommit;
     private final Button buttonAddNote = new Button("Add Note");
 
-    public VboxFooter(HBoxInvoice hBoxInvoice) {
+    public InvoiceFooter(Invoice hBoxInvoice) {
         this.invoice = hBoxInvoice.getInvoice();
         totalFeesText.setText(invoice.getTotal());
         totalCreditText.setText(invoice.getCredit());

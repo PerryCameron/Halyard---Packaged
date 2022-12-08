@@ -1,7 +1,7 @@
 package com.ecsail.gui.tabs.fee;
 
 import com.ecsail.FixInput;
-import com.ecsail.gui.tabs.membership.fiscal.invoice.VboxFooter;
+import com.ecsail.gui.tabs.membership.fiscal.invoice.InvoiceFooter;
 import com.ecsail.structures.DbInvoiceDTO;
 import com.ecsail.structures.FeeDTO;
 import com.ecsail.structures.InvoiceDTO;
@@ -29,7 +29,7 @@ public class MockInvoiceItemRow extends HBox {
     private ComboBox<Integer> comboBox;
     private final InvoiceItemDTO invoiceItem;
     private final FeeDTO fee;
-    private final VboxFooter footer;
+    private final InvoiceFooter footer;
     private final ObservableList<InvoiceItemDTO> items;
     private final VBox vBox1 = new VBox();
     private final VBox vBox2 = new VBox();
@@ -118,6 +118,7 @@ public class MockInvoiceItemRow extends HBox {
                 spinner = new Spinner<>();
                 spinner.setPrefWidth(i.getWidth());
                 price.setText(String.valueOf(fee.getFieldValue()));
+                setSpinnerListener();
                 if (invoiceWidget.isPrice_editable())
                     setPriceChangeListener(new TextField(price.getText()));
                 return spinner;
