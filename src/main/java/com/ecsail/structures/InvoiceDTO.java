@@ -37,10 +37,10 @@ public class InvoiceDTO {
         this.id = new SimpleIntegerProperty(0);
         this.msId = new SimpleIntegerProperty(0);
         this.year = new SimpleIntegerProperty(0);
-        this.paid = new SimpleStringProperty("");
-        this.total = new SimpleStringProperty("");
-        this.credit = new SimpleStringProperty("");
-        this.balance = new SimpleStringProperty("");
+        this.paid = new SimpleStringProperty("0.00");
+        this.total = new SimpleStringProperty("0.00");
+        this.credit = new SimpleStringProperty("0.00");
+        this.balance = new SimpleStringProperty("0.00");
         this.batch = new SimpleIntegerProperty(0);
         this.committed = new SimpleBooleanProperty(false);
         this.closed = new SimpleBooleanProperty(false);

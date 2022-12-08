@@ -1,5 +1,10 @@
 package com.ecsail.gui.tabs.fee;
 
+
+
+
+
+import com.ecsail.gui.tabs.membership.fiscal.invoice.HboxHeader;
 import com.ecsail.structures.FeeDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,7 +14,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 public class HBoxEditControls extends HBox {
     TabFee parent;
@@ -24,43 +28,54 @@ public class HBoxEditControls extends HBox {
     RadioButton rbTextField = new RadioButton("Text Field");
     RadioButton rbComboBox = new RadioButton("Drop Down");
     RadioButton rbNone = new RadioButton("None");
-
     LabeledTextField fieldNameText = new LabeledTextField("Field Name");
     LabeledTextField groupNameText = new LabeledTextField("Group Name");
+    HBoxFeeRow selectedHBoxFreeRow;
 
-    HBoxFeeRow hfr;
+    HboxHeader mockHeader = new HboxHeader();
+
+    VBox vBoxMockItems = new VBox();
     public HBoxEditControls(TabFee parent) {
         this.parent = parent;
         setPadding(new Insets(15,5,5,7));
-        VBox vBox1 = new VBox();
-        VBox vBox2 = new VBox();
+        VBox vBoxSpinner = new VBox();
+        VBox vBoxCheckBox = new VBox();
         HBox hBoxTableGroup = new HBox();
         VBox vBoxTable = new VBox();
         HBox hBoxTableHeader = new HBox();
         VBox vBoxTableButtons = new VBox();
         VBox vBoxRadio = new VBox();
-        HBox hBoxOrder = new HBox();
+
+//        HBox hBoxOrder = new HBox();
         Button addFeeButton = new Button("Add Fee");
         Button deleteButton = new Button("Delete");
-        vBox2.setPadding(new Insets(0,0,0,30));
-        vBox1.setSpacing(10);
-        vBox2.setSpacing(10);
+        vBoxCheckBox.setPadding(new Insets(0,0,0,30));
+        mockHeader.setCommitMode(false);
+
+        vBoxSpinner.setSpacing(10);
+        vBoxCheckBox.setSpacing(10);
         vBoxTable.setSpacing(10);
         hBoxTableHeader.setSpacing(10);
         vBoxRadio.setSpacing(5);
-        hBoxOrder.setSpacing(5);
+//        hBoxOrder.setSpacing(5);
         hBoxTableGroup.setSpacing(5);
         vBoxTableButtons.setSpacing(5);
         vBoxTableButtons.setPadding(new Insets(45,0,0,0));
+        VBox vBoxDisplay = new VBox();
+        HBox hBoxDisplay = new HBox();
+        TitledPane titledPane = new TitledPane("Display Area", vBoxMockItems);
 
-        vBox1.setPrefWidth(250);
-        vBox2.setPrefWidth(250);
+        vBoxSpinner.setPrefWidth(200);
+        vBoxCheckBox.setPrefWidth(200);
+        vBoxRadio.setPrefWidth(150);
         addFeeButton.setPrefWidth(70);
         deleteButton.setPrefWidth(70);
         HBox.setHgrow(vBoxTable, Priority.ALWAYS);
         vBoxTableButtons.setPrefWidth(70);
-        hBoxOrder.setAlignment(Pos.CENTER_LEFT);
+//        hBoxOrder.setAlignment(Pos.CENTER_LEFT);
         vBoxTable.setAlignment(Pos.CENTER_RIGHT);
+        vBoxMockItems.setAlignment(Pos.CENTER);
+        hBoxDisplay.setPrefHeight(100);
 
         ToggleGroup tg = new ToggleGroup();
         rbSpinner.setToggleGroup(tg);
@@ -68,49 +83,76 @@ public class HBoxEditControls extends HBox {
         rbComboBox.setToggleGroup(tg);
         rbNone.setToggleGroup(tg);
 
-        setMultipliedByCheckBoxListener();
 
-        hBoxOrder.getChildren().add(labeledSpinner);
+//        hBoxDisplay.setStyle("-fx-background-color: #fdfdfd;");  // light blue
+//        vBoxDisplay.setStyle("-fx-background-color: #201ac9;");  // blue
+//        vBoxTableButtons.setStyle("-fx-background-color: #e83115;");  // purple
+//        hBoxTableHeader.setStyle("-fx-background-color: #15e8e4;");  // light blue
+//        vBoxRadio.setStyle("-fx-background-color: #e89715;");  // orange
+//        vBoxSpinner.setStyle("-fx-background-color: #74e815;");  // light blue
+//        vBoxCheckBox.setStyle("-fx-background-color: rgba(219,226,21,0.51);");  // orange
+//        hBoxTableGroup.setStyle("-fx-background-color: rgb(139,145,156);");  // orange
+
+        setMultipliedByCheckBoxListener();
+//        hBoxOrder.getChildren().add(labeledSpinner);
         vBoxTableButtons.getChildren().addAll(addFeeButton,deleteButton);
         hBoxTableHeader.getChildren().addAll(fieldNameText,groupNameText);
         vBoxRadio.getChildren().addAll(rbSpinner,rbTextField,rbComboBox,rbNone);
-        vBox1.getChildren().addAll(hBoxOrder,maxQtySpinner);
-        vBox2.getChildren().addAll(isMultipliedCheckBox, autoPopulate,isCredit,priceIsEditable,vBoxRadio);
+        vBoxSpinner.getChildren().addAll(labeledSpinner,maxQtySpinner);
+        vBoxCheckBox.getChildren().addAll(isMultipliedCheckBox, autoPopulate,isCredit,priceIsEditable,vBoxRadio);
 
         vBoxTable.getChildren().addAll(hBoxTableHeader, new FeeTableView(this));
-        hBoxTableGroup.getChildren().addAll(vBoxTableButtons,vBoxTable);
-        getChildren().addAll(vBox1,vBox2,hBoxTableGroup);
+        hBoxTableGroup.getChildren().addAll(vBoxTable,vBoxTableButtons);
+        hBoxDisplay.getChildren().addAll(vBoxSpinner,vBoxCheckBox,vBoxRadio);
+//        refreshMockBox();
+//        vBoxMockItems.getChildren().add(mockHeader);
+        vBoxDisplay.getChildren().addAll(hBoxDisplay,titledPane); // add displayed item to bottom
+        getChildren().addAll(vBoxDisplay,hBoxTableGroup); // this is hbox
     }
 
-    public void refreshData(HBoxFeeRow hBoxFeeRow) {
-        this.hfr = hBoxFeeRow;
-        autoPopulate.setSelected(hfr.getDbInvoiceDTO().isAutoPopulate());
-        isMultipliedCheckBox.setSelected(hfr.getDbInvoiceDTO().isMultiplied());
-        isCredit.setSelected(hfr.getDbInvoiceDTO().isIs_credit());
-        priceIsEditable.setSelected(hfr.getDbInvoiceDTO().isPrice_editable());
-        fieldNameText.setText(hfr.getDbInvoiceDTO().getFieldName());
-        if(hfr.getFees().size() > 0) { // we have at least one fee
-            groupNameText.setText(hfr.getFees().get(0).getGroupName());
+    public void refreshMockBox() {
+//        this.selectedHBoxFreeRow = getSelectedHBoxFeeRow();
+        System.out.println(selectedHBoxFreeRow);
+            vBoxMockItems.getChildren().clear();
+            vBoxMockItems.getChildren().addAll(mockHeader, new MockInvoiceItemRow(selectedHBoxFreeRow.getDbInvoiceDTO(), fees.get(0)));
+//            vBoxMockItems.getChildren().addAll(mockHeader, new Label("TESTING ROW"));
+
+    }
+
+    public HBoxFeeRow getSelectedHBoxFeeRow() {
+        return parent.getHboxHashMap().get(parent.getRadioGroup().getSelectedToggle());
+    }
+
+    public void refreshData() {
+        this.selectedHBoxFreeRow = getSelectedHBoxFeeRow();
+        autoPopulate.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isAutoPopulate());
+        isMultipliedCheckBox.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isMultiplied());
+        isCredit.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isIs_credit());
+        priceIsEditable.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isPrice_editable());
+        fieldNameText.setText(selectedHBoxFreeRow.getDbInvoiceDTO().getFieldName());
+        if(selectedHBoxFreeRow.getFees().size() > 0) { // we have at least one fee
+            groupNameText.setText(selectedHBoxFreeRow.getFees().get(0).getGroupName());
         }
         setRadioButtons();
         setOrderSpinner();
         fees.clear();
-        fees.addAll(hfr.getFees());
+        fees.addAll(selectedHBoxFreeRow.getFees());
+        refreshMockBox();
     }
 
     private void setOrderSpinner() {
-        labeledSpinner.setSpinner(1, parent.getInvoiceItems().size(), hfr.getOrder());
-        maxQtySpinner.setSpinner(1,10000,hfr.getDbInvoiceDTO().getMaxQty());
+        labeledSpinner.setSpinner(1, parent.getInvoiceItems().size(), selectedHBoxFreeRow.getOrder());
+        maxQtySpinner.setSpinner(1,10000, selectedHBoxFreeRow.getDbInvoiceDTO().getMaxQty());
     }
 
     private void setRadioButtons() {
-        switch (hfr.getDbInvoiceDTO().getWidgetType()) {
+        switch (selectedHBoxFreeRow.getDbInvoiceDTO().getWidgetType()) {
             case "text-field" -> rbTextField.setSelected(true);
             case "spinner" -> rbSpinner.setSelected(true);
             case "combo-box" -> rbComboBox.setSelected(true);
             case "none" -> rbNone.setSelected(true);
         }
-        setVisibleRadioButtons(hfr.getDbInvoiceDTO().isMultiplied());
+        setVisibleRadioButtons(selectedHBoxFreeRow.getDbInvoiceDTO().isMultiplied());
     }
 
     private void setVisibleRadioButtons(boolean isMultiplied) {

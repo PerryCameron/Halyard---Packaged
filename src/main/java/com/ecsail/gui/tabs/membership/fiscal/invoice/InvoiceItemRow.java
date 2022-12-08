@@ -17,7 +17,7 @@ import javafx.scene.text.Text;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class HboxRow extends HBox {
+public class InvoiceItemRow extends HBox {
 
     String itemName;
     private Text price = new Text();
@@ -38,7 +38,7 @@ public class HboxRow extends HBox {
 
     InvoiceDTO invoice;
 
-    public HboxRow(DbInvoiceDTO invoiceWidget, VboxFooter footer) {
+    public InvoiceItemRow(DbInvoiceDTO invoiceWidget, VboxFooter footer) {
 
         this.invoiceWidget = invoiceWidget;
         this.itemName = invoiceWidget.getFieldName();
@@ -47,7 +47,12 @@ public class HboxRow extends HBox {
         this.invoice = footer.getInvoice();
         this.fee = invoiceWidget.getFee();
         this.items = invoiceWidget.getItems();
+        getOfficerCredit(invoiceWidget);
+        // settings common to edit and commit modes
+        addChildren(invoiceWidget);
+    }
 
+    private void getOfficerCredit(DbInvoiceDTO invoiceWidget) {
         // get officer credit
         if (invoiceWidget.getFieldName().equals("Position Credit")) {
             if (!invoice.isCommitted())  // if not committed
@@ -58,10 +63,10 @@ public class HboxRow extends HBox {
             SqlUpdate.updateInvoiceItem(invoiceItem);
             // TODO maybe find better way than putting element 0 in (not dynamic or robust)
         }
+    }
 
+    private void addChildren(DbInvoiceDTO invoiceWidget) {
         setSpacing(15);
-
-        // settings common to edit and commit modes
         vBox1.setAlignment(Pos.CENTER_LEFT);
         Text feeText = new Text(itemName + ":");
         feeText.setId("invoice-text-light");

@@ -29,7 +29,7 @@ public class HBoxInvoice extends HBox {
     private final ArrayList<FeeDTO> fees;
     private final MembershipDTO membership;
     private final VboxFooter footer;
-    private final Map<String, HboxRow> invoiceItemMap = new LinkedHashMap<>();
+    private final Map<String, InvoiceItemRow> invoiceItemMap = new LinkedHashMap<>();
     private final Button buttonCommit = new Button("Commit");
     private final Note note;
     HBoxInvoiceList il;
@@ -83,7 +83,7 @@ public class HBoxInvoice extends HBox {
 		for (DbInvoiceDTO i : theseWidgets) {
                 i.setFee(insertFeeIntoWidget(i));
                 i.setItems(items); // allows calculations to be made
-                invoiceItemMap.put(i.getFieldName(), new HboxRow(i, footer));
+                invoiceItemMap.put(i.getFieldName(), new InvoiceItemRow(i, footer));
 		}
         //////////////// SETTING CONTENT //////////////
 

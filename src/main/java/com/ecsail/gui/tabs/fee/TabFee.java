@@ -10,6 +10,7 @@ import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.structures.DbInvoiceDTO;
 import com.ecsail.structures.FeeDTO;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -33,6 +34,7 @@ public class TabFee extends Tab {
     private final HBox hboxControls;
     private final ComboBox<Integer> comboBox;
     HBoxEditControls hBoxEditControls;
+    private boolean radioEnable = true;
 
     public TabFee(String text) {
         super(text);
@@ -52,7 +54,9 @@ public class TabFee extends Tab {
 
         // this is the vbox for organizing all the widgets
         VBox vbox4 = new VBox();
-
+        Separator separator =
+                new Separator(Orientation.HORIZONTAL);
+        HBox.setHgrow(separator,Priority.ALWAYS);
         HBox hbox2 = new HBox();
         VBox vbox1 = new VBox();
         ScrollPane itemsScrollPane = new ScrollPane();
@@ -77,11 +81,13 @@ public class TabFee extends Tab {
         // gives primary key to selected radio button
         radioGroup.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) ->
         {
-            if(!hboxHashMap.get(new_toggle).getPrice().equals("NONE"))
-            duesLineChart.refreshChart(hboxHashMap.get(new_toggle).getSelectedFee().getDescription());
-            System.out.println(hboxHashMap.get(new_toggle).getDbInvoiceDTO());
-            hboxHashMap.get(new_toggle).getFees().stream().forEach(System.out::println);
-            hBoxEditControls.refreshData(hboxHashMap.get(new_toggle));
+//            System.out.println(hboxHashMap.get(new_toggle).getDbInvoiceDTO());
+//            hboxHashMap.get(new_toggle).getFees().stream().forEach(System.out::println);
+            if(radioEnable) {
+                hBoxEditControls.refreshData();
+                if (!hboxHashMap.get(new_toggle).getPrice().equals("NONE"))
+                    duesLineChart.refreshChart(hboxHashMap.get(new_toggle).getSelectedFee().getDescription());
+            }
         });
         // add listener to each text field
 
@@ -97,6 +103,7 @@ public class TabFee extends Tab {
 //        hbox2.setStyle("-fx-background-color: #e83115;");  // purple
 //        hBoxEditControls.setStyle("-fx-background-color: #15e8e4;");  // light blue
 //        vbox1.setStyle("-fx-background-color: #e89715;");  // orange
+
         // adds buttons and year combobox
         addControlBox();
         HBox.setHgrow(hbox2, Priority.ALWAYS);
@@ -104,7 +111,7 @@ public class TabFee extends Tab {
         itemsScrollPane.setContent(vboxFeeRow);
         vbox4.getChildren().addAll(hboxControls, itemsScrollPane);
         hbox2.getChildren().addAll(vbox4, duesLineChart);
-        vbox1.getChildren().addAll(hbox2,hBoxEditControls);
+        vbox1.getChildren().addAll(hbox2,separator,hBoxEditControls);
         setContent(vbox1);
     }
 
@@ -168,16 +175,19 @@ public class TabFee extends Tab {
     }
 
     private void setNewYear(Object newValue) {
+        radioEnable = false; // prevent from setting radio button off a dozen times when there is nothing to select
         this.selectedYear = newValue.toString();
         this.feeDTOS.clear();
         this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
         invoiceItems.clear();
+        hboxHashMap.clear();
         rows.clear();
         invoiceItems.addAll(SqlDbInvoice.getDbInvoiceByYear(Integer.parseInt(selectedYear)));
         vboxFeeRow.getChildren().clear();
         addControlBox();
         createHBoxRows();
         addHBoxRows();
+        radioEnable = true;
     }
 
     private void openEditRow() {
@@ -296,7 +306,7 @@ public class TabFee extends Tab {
             if(row.getOrder() == 1) {
                 duesLineChart.refreshChart(row.getSelectedFee().getDescription());
                 row.getRadioButton().setSelected(true);
-                hBoxEditControls.refreshData(row);
+                hBoxEditControls.refreshData();
             }
         });
     }
@@ -316,4 +326,6 @@ public class TabFee extends Tab {
     public void setInvoiceItems(ArrayList<DbInvoiceDTO> invoiceItems) {
         this.invoiceItems = invoiceItems;
     }
+
+
 }

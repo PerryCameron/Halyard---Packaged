@@ -127,7 +127,6 @@ public class DbInvoiceDTO {
     public ObservableList<InvoiceItemDTO> getItems() {
         return items;
     }
-
     public void setItems(ObservableList<InvoiceItemDTO> items) {
         this.items = items;
     }
