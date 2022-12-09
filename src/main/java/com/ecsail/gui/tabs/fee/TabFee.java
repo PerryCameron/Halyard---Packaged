@@ -267,7 +267,6 @@ public class TabFee extends Tab {
     // used to initially place hbox rows into vbox for a given year
     private void createFeeRows() {
         ArrayList<DbInvoiceDTO> dbInvoiceDTOS = SqlDbInvoice.getDbInvoiceByYear(Integer.parseInt(selectedYear));
-        dbInvoiceDTOS.forEach(System.out::println);
         FeeRow newRow;
         for(DbInvoiceDTO item: dbInvoiceDTOS) {  // make each item type
             newRow = new FeeRow( this, item); // add db_invoice to each row
@@ -284,7 +283,6 @@ public class TabFee extends Tab {
     public void addFeeRows() {
         vboxFeeRow.getChildren().clear();
         rows.sort(Comparator.comparing(FeeRow::getOrder).reversed());
-        System.out.println("There are " + rows.size() + " rows");
         int size = rows.size();
         for(FeeRow row: rows) {
             vboxFeeRow.getChildren().add(row);

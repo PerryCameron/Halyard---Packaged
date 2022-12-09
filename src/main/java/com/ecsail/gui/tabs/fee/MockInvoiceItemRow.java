@@ -59,7 +59,7 @@ public class MockInvoiceItemRow extends HBox {
                 2022,
                 feeDTO.getFieldName(),
                 dbInvoiceDTO.isMultiplied(),
-                dbInvoiceDTO.isIs_credit(),
+                dbInvoiceDTO.isCredit(),
                 feeDTO.getFieldValue(),
                 1
         );

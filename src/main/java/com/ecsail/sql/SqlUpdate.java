@@ -471,7 +471,7 @@ public class SqlUpdate {
 				+ "invoice_order=" + dbInvoiceDTO.getOrder() + ","
 				+ "multiplied=" + dbInvoiceDTO.isMultiplied() + ","
 				+ "price_editable=" + dbInvoiceDTO.isPrice_editable() + ","
-				+ "is_credit=" + dbInvoiceDTO.isIs_credit() + ","
+				+ "is_credit=" + dbInvoiceDTO.isCredit() + ","
 				+ "max_qty=" + dbInvoiceDTO.getMaxQty() + ","
 				+ "auto_populate=" + dbInvoiceDTO.isAutoPopulate()
 				+ " WHERE ID=" + dbInvoiceDTO.getId();

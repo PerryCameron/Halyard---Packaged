@@ -99,6 +99,7 @@ public class VBoxPersonMove extends VBox {
                                     "to this or another membership."
                     );
                     if (result.isPresent() && result.get() == ButtonType.OK) {
+                        // TODO set the secondary to primary if this person is a primary user
                         SqlUpdate.removePersonFromMembership(person);
                         removeThisTab(personTabPane);
                     }

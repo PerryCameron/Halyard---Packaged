@@ -232,7 +232,7 @@ public class SqlScriptMaker {
 				+ a.getOrder() + ","
 				+ a.isMultiplied() + ","
 				+ a.isPrice_editable() + ","
-				+ a.isIs_credit() + ","
+				+ a.isCredit() + ","
 				+ a.getMaxQty() + ","
 				+ a.isAutoPopulate() + ");\n";
 	}

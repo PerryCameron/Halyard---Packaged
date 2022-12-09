@@ -107,11 +107,11 @@ public class DbInvoiceDTO {
         this.price_editable = price_editable;
     }
 
-    public boolean isIs_credit() {
+    public boolean isCredit() {
         return is_credit;
     }
 
-    public void setIs_credit(boolean is_credit) {
+    public void setIsCredit(boolean is_credit) {
         this.is_credit = is_credit;
     }
 

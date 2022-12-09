@@ -11,24 +11,25 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.util.Arrays;
+import java.util.HashMap;
+
 public class FeeEditControls extends HBox {
     private TabFee parent;
     private ObservableList<FeeDTO> fees = FXCollections.observableArrayList();
     private LabeledSpinner orderedSpinner = new LabeledSpinner("Order");
     private LabeledSpinner maxQtySpinner = new LabeledSpinner("Max Qty");
-    private CheckBox isMultipliedCheckBox = new CheckBox("Multiplied By Qty.");
     private CheckBox autoPopulate = new CheckBox("Auto Populate");
     private CheckBox isCredit = new CheckBox("Credit");
     private CheckBox priceIsEditable = new CheckBox("Price Editable");
-    private RadioButton rbSpinner = new RadioButton("Spinner");
-    private RadioButton rbTextField = new RadioButton("Text Field");
-    private RadioButton rbComboBox = new RadioButton("Drop Down");
-    private RadioButton rbNone = new RadioButton("None");
+    HashMap<String,RadioButton> rbHash = new HashMap<>();
+    String[] radioButtonTitles = {"Spinner","TextField","Drop Down","None"};
     private LabeledTextField fieldNameText = new LabeledTextField("Field Name");
     private LabeledTextField groupNameText = new LabeledTextField("Group Name");
     private FeeRow selectedHBoxFreeRow;
     private MockHeader mockHeader = new MockHeader();
     private VBox vBoxMockItems = new VBox();
+    ToggleGroup tg = new ToggleGroup();
 
     public FeeEditControls(TabFee parent) {
         this.parent = parent;
@@ -44,7 +45,11 @@ public class FeeEditControls extends HBox {
         HBox hBoxDisplay = new HBox();
         Button addFeeButton = new Button("Add Fee");
         Button deleteButton = new Button("Delete");
-        ToggleGroup tg = new ToggleGroup();
+        Arrays.stream(radioButtonTitles).forEach(title -> {
+            rbHash.put(title, new RadioButton(title));
+            rbHash.get(title).setToggleGroup(tg);
+        });
+
 
         vBoxCheckBox.setPadding(new Insets(0,0,0,30));
         vBoxTableButtons.setPadding(new Insets(46,0,0,0));
@@ -73,18 +78,15 @@ public class FeeEditControls extends HBox {
         vBoxMockItems.setAlignment(Pos.CENTER);
         vBoxMockItems.setId("box-background-light");
 
-        rbSpinner.setToggleGroup(tg);
-        rbTextField.setToggleGroup(tg);
-        rbComboBox.setToggleGroup(tg);
-        rbNone.setToggleGroup(tg);
-
-
-        setMultipliedByCheckBoxListener();
+        setRadioGroupListener();
+        setAutoPopulateCheckBoxListener();
+        setIsCreditCheckBoxListener();
         vBoxTableButtons.getChildren().addAll(addFeeButton,deleteButton);
         hBoxTableHeader.getChildren().addAll(fieldNameText,groupNameText);
-        vBoxRadio.getChildren().addAll(rbSpinner,rbTextField,rbComboBox,rbNone);
+        vBoxRadio.getChildren()
+                .addAll(rbHash.get("Spinner"),rbHash.get("TextField"),rbHash.get("Drop Down"),rbHash.get("None"));
         vBoxSpinner.getChildren().addAll(orderedSpinner,maxQtySpinner);
-        vBoxCheckBox.getChildren().addAll(isMultipliedCheckBox, autoPopulate,isCredit,priceIsEditable,vBoxRadio);
+        vBoxCheckBox.getChildren().addAll(autoPopulate,isCredit,priceIsEditable,vBoxRadio);
         vBoxTable.getChildren().addAll(hBoxTableHeader, new FeeTableView(this));
         hBoxTableGroup.getChildren().addAll(vBoxTable,vBoxTableButtons);
         hBoxDisplay.getChildren().addAll(vBoxSpinner,vBoxCheckBox,vBoxRadio);
@@ -106,14 +108,12 @@ public class FeeEditControls extends HBox {
         System.out.println("RefreshData fire!");
         this.selectedHBoxFreeRow = getSelectedHBoxFeeRow();
         autoPopulate.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isAutoPopulate());
-        isMultipliedCheckBox.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isMultiplied());
-        isCredit.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isIs_credit());
+        isCredit.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isCredit());
         priceIsEditable.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isPrice_editable());
         fieldNameText.setText(selectedHBoxFreeRow.getDbInvoiceDTO().getFieldName());
         if(selectedHBoxFreeRow.getFees().size() > 0) { // we have at least one fee
             groupNameText.setText(selectedHBoxFreeRow.getFees().get(0).getGroupName());
         }
-        setRadioButtons();
         setOrderSpinner();
         fees.clear();
         fees.addAll(selectedHBoxFreeRow.getFees());
@@ -141,31 +141,45 @@ public class FeeEditControls extends HBox {
         });
     }
 
-    private void setRadioButtons() {
-        switch (selectedHBoxFreeRow.getDbInvoiceDTO().getWidgetType()) {
-            case "text-field" -> rbTextField.setSelected(true);
-            case "spinner" -> rbSpinner.setSelected(true);
-            case "combo-box" -> rbComboBox.setSelected(true);
-            case "none" -> rbNone.setSelected(true);
-        }
-        setVisibleRadioButtons(selectedHBoxFreeRow.getDbInvoiceDTO().isMultiplied());
+    private void setRadioGroupListener() {
+        tg.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) ->
+        {
+            RadioButton rb = (RadioButton) new_toggle;
+            if(rb.getText().equals("TextField")) {
+                selectedHBoxFreeRow.getDbInvoiceDTO().setWidgetType("text-field");
+                setMultipliedWidgets(false);
+            }
+            else if(rb.getText().equals("Spinner")) {
+                selectedHBoxFreeRow.getDbInvoiceDTO().setWidgetType("spinner");
+                setMultipliedWidgets(true);
+            }
+            else if(rb.getText().equals("Drop Down")) {
+                selectedHBoxFreeRow.getDbInvoiceDTO().setWidgetType("combo-box");
+                setMultipliedWidgets(true);
+            }
+            else if(rb.getText().equals("None")) {
+                selectedHBoxFreeRow.getDbInvoiceDTO().setWidgetType("none");
+                setMultipliedWidgets(false);
+            }
+            refreshMockBox();
+        });
     }
 
-    private void setVisibleRadioButtons(boolean isMultiplied) {
-        rbTextField.setVisible(!isMultiplied);
-        rbTextField.setManaged(!isMultiplied);
-        rbNone.setVisible(!isMultiplied);
-        rbNone.setManaged(!isMultiplied);
-        rbSpinner.setVisible(isMultiplied);
-        rbSpinner.setManaged(isMultiplied);
-        rbComboBox.setVisible(isMultiplied);
-        rbComboBox.setManaged(isMultiplied);
-        maxQtySpinner.setVisible(isMultiplied);
-        maxQtySpinner.setManaged(isMultiplied);
+    private void setMultipliedWidgets(boolean value) {
+        selectedHBoxFreeRow.getDbInvoiceDTO().setMultiplied(value);
+        maxQtySpinner.setVisible(value);
     }
 
-    private void setMultipliedByCheckBoxListener() {
-        isMultipliedCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> setVisibleRadioButtons(newValue));
+    public void setAutoPopulateCheckBoxListener() {
+        autoPopulate.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            getSelectedHBoxFeeRow().getDbInvoiceDTO().setAutoPopulate(newValue);
+        });
+    }
+
+    public void setIsCreditCheckBoxListener() {
+        isCredit.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            getSelectedHBoxFeeRow().getDbInvoiceDTO().setIsCredit(newValue);
+        });
     }
 
     public ObservableList<FeeDTO> getFees() {
