@@ -49,6 +49,7 @@ public class InvoiceFooter extends VBox {
         this.invoice = hBoxInvoice.getInvoice();
         totalFeesText.setText(invoice.getTotal());
         totalCreditText.setText(invoice.getCredit());
+        totalCreditText.setId("invoice-text-credit");
         totalBalanceText.setText(invoice.getBalance());
         totalPaymentText.setText(invoice.getPaid());
         this.payments = hBoxInvoice.getPayments();

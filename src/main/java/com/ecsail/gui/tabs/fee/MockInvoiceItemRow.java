@@ -46,6 +46,7 @@ public class MockInvoiceItemRow extends HBox {
         this.footer = null;
         this.invoice = new InvoiceDTO();
         this.fee = feeDTO;
+        System.out.println(feeDTO);
         this.items = dbInvoiceDTO.getItems();
         addChildren(dbInvoiceDTO);
         setEdit();
@@ -56,12 +57,12 @@ public class MockInvoiceItemRow extends HBox {
                 0,
                 0,
                 0,
-                2022,
-                feeDTO.getFieldName(),
+                Integer.parseInt(dbInvoiceDTO.getYear()),
+                dbInvoiceDTO.getFieldName(),
                 dbInvoiceDTO.isMultiplied(),
                 dbInvoiceDTO.isCredit(),
                 feeDTO.getFieldValue(),
-                1
+                feeDTO.getFieldQuantity()
         );
         return invoiceItemDTO;
     }
@@ -81,6 +82,7 @@ public class MockInvoiceItemRow extends HBox {
         vBox4.getChildren().add(price);
         vBox5.setAlignment(Pos.CENTER_RIGHT);
         total.setText(invoiceItem.getValue());
+        if(this.invoiceItem.isCredit()) total.setId("invoice-text-credit");
         vBox5.getChildren().add(total);
     }
 
@@ -111,7 +113,9 @@ public class MockInvoiceItemRow extends HBox {
         switch (i.getWidgetType()) {
             case "text-field" -> {
                 textField = new TextField();
+                textField.setText(fee.getFieldValue());
                 textField.setPrefWidth(i.getWidth());
+                setTextFieldListener();
                 return textField;
             }
             case "spinner" -> {

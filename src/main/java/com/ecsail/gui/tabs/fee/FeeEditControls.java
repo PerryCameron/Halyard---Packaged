@@ -81,6 +81,7 @@ public class FeeEditControls extends HBox {
         setRadioGroupListener();
         setAutoPopulateCheckBoxListener();
         setIsCreditCheckBoxListener();
+        setPriceIsEditableCheckBoxListener();
         vBoxTableButtons.getChildren().addAll(addFeeButton,deleteButton);
         hBoxTableHeader.getChildren().addAll(fieldNameText,groupNameText);
         vBoxRadio.getChildren()
@@ -98,6 +99,12 @@ public class FeeEditControls extends HBox {
             vBoxMockItems.getChildren().clear();
             if(fees.size() > 0) // make sure items has associated fee
                 vBoxMockItems.getChildren().addAll(mockHeader, new MockInvoiceItemRow(selectedHBoxFreeRow.getDbInvoiceDTO(), fees.get(0)));
+            else {
+                FeeDTO feeDTO = new FeeDTO(0,
+                        getSelectedHBoxFeeRow().getDbInvoiceDTO().getFieldName(),
+                        "0.00",0,0,"","");
+                vBoxMockItems.getChildren().addAll(mockHeader, new MockInvoiceItemRow(selectedHBoxFreeRow.getDbInvoiceDTO(), feeDTO));
+            }
     }
 
     public FeeRow getSelectedHBoxFeeRow() {
@@ -118,6 +125,7 @@ public class FeeEditControls extends HBox {
         fees.clear();
         fees.addAll(selectedHBoxFreeRow.getFees());
         refreshMockBox();
+        setRadioToMatchDBInvoice();
     }
 
     public void setOrderSpinner() {
@@ -141,7 +149,18 @@ public class FeeEditControls extends HBox {
         });
     }
 
-    private void setRadioGroupListener() {
+    private void setRadioToMatchDBInvoice() {  // this sets the radio buttons to the invoice
+        if(getSelectedHBoxFeeRow().getDbInvoiceDTO().getWidgetType().equals("text-field"))
+            rbHash.get("TextField").setSelected(true);
+        else if(getSelectedHBoxFeeRow().getDbInvoiceDTO().getWidgetType().equals("spinner"))
+            rbHash.get("Spinner").setSelected(true);
+        else if(getSelectedHBoxFeeRow().getDbInvoiceDTO().getWidgetType().equals("combo-box"))
+            rbHash.get("Drop-Down").setSelected(true);
+        else if(getSelectedHBoxFeeRow().getDbInvoiceDTO().getWidgetType().equals("none"))
+            rbHash.get("None").setSelected(true);
+    }
+
+    private void setRadioGroupListener() { // this detects which radio is selected then does something
         tg.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) ->
         {
             RadioButton rb = (RadioButton) new_toggle;
@@ -179,6 +198,15 @@ public class FeeEditControls extends HBox {
     public void setIsCreditCheckBoxListener() {
         isCredit.selectedProperty().addListener((observable, oldValue, newValue) -> {
             getSelectedHBoxFeeRow().getDbInvoiceDTO().setIsCredit(newValue);
+            refreshMockBox();
+        });
+    }
+
+    public void setPriceIsEditableCheckBoxListener() {
+        priceIsEditable.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            getSelectedHBoxFeeRow().getDbInvoiceDTO().setPrice_editable(newValue);
+            System.out.println(getSelectedHBoxFeeRow().getDbInvoiceDTO());
+            refreshMockBox();
         });
     }
 

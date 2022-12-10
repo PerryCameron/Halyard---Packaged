@@ -79,6 +79,7 @@ public class InvoiceItemRow extends HBox {
         vBox4.getChildren().add(price);
         vBox5.setAlignment(Pos.CENTER_RIGHT);
         total.setText(invoiceItem.getValue());
+        if(this.invoiceItem.isCredit()) total.setId("invoice-text-credit");
         vBox5.getChildren().add(total);
     }
 
