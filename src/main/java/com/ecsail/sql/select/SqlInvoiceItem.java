@@ -24,7 +24,6 @@ public class SqlInvoiceItem {
                         rs.getInt("MS_ID"),
                         rs.getInt("FISCAL_YEAR"),
                         rs.getString("FIELD_NAME"),
-                        rs.getBoolean("MULTIPLIED"),
                         rs.getBoolean("IS_CREDIT"),
                         rs.getString("VALUE"),
                         rs.getInt("QTY")));
@@ -50,7 +49,6 @@ public class SqlInvoiceItem {
                         rs.getInt("MS_ID"),
                         rs.getInt("FISCAL_YEAR"),
                         rs.getString("FIELD_NAME"),
-                        rs.getBoolean("MULTIPLIED"),
                         rs.getBoolean("IS_CREDIT"),
                         rs.getString("VALUE"),
                         rs.getInt("QTY")));
@@ -76,7 +74,6 @@ public class SqlInvoiceItem {
                         rs.getInt("MS_ID"),
                         rs.getInt("FISCAL_YEAR"),
                         rs.getString("FIELD_NAME"),
-                        rs.getBoolean("MULTIPLIED"),
                         rs.getBoolean("IS_CREDIT"),
                         rs.getString("VALUE"),
                         rs.getInt("QTY")));
@@ -100,7 +97,6 @@ public class SqlInvoiceItem {
                         rs.getInt("MS_ID"),
                         rs.getInt("FISCAL_YEAR"),
                         rs.getString("FIELD_NAME"),
-                        rs.getBoolean("MULTIPLIED"),
                         rs.getBoolean("IS_CREDIT"),
                         rs.getString("VALUE"),
                         rs.getInt("QTY")));
@@ -130,7 +126,6 @@ public class SqlInvoiceItem {
                         0,
                         year,
                         type,
-                        false,
                         rs.getBoolean("IS_CREDIT"),
                         rs.getString("VALUE"),
                         rs.getInt("QTY"));

@@ -10,18 +10,16 @@ public class InvoiceItemDTO {
     IntegerProperty msId;
     IntegerProperty year;
     StringProperty fieldName;
-    BooleanProperty multiplied;
     BooleanProperty credit;
     StringProperty value;
     IntegerProperty qty;
 
-    public InvoiceItemDTO(Integer id, Integer invoiceId, Integer msId, Integer year, String fieldName, Boolean multiplied, Boolean credit, String value, Integer qty) {
+    public InvoiceItemDTO(Integer id, Integer invoiceId, Integer msId, Integer year, String fieldName, Boolean credit, String value, Integer qty) {
         this.id = new SimpleIntegerProperty(id);
         this.invoiceId = new SimpleIntegerProperty(invoiceId);
         this.msId = new SimpleIntegerProperty(msId);
         this.year = new SimpleIntegerProperty(year);
         this.fieldName = new SimpleStringProperty(fieldName);
-        this.multiplied = new SimpleBooleanProperty(multiplied);
         this.credit = new SimpleBooleanProperty(credit);
         this.value = new SimpleStringProperty(value);
         this.qty = new SimpleIntegerProperty(qty);
@@ -33,7 +31,6 @@ public class InvoiceItemDTO {
         this.msId = new SimpleIntegerProperty(msId);
         this.year = new SimpleIntegerProperty(year);
         this.fieldName = new SimpleStringProperty(fieldName);
-        this.multiplied = new SimpleBooleanProperty(false);
         this.credit = new SimpleBooleanProperty(false);
         this.value = new SimpleStringProperty("0.00");
         this.qty = new SimpleIntegerProperty(0);
@@ -111,15 +108,6 @@ public class InvoiceItemDTO {
     }
 
 
-    public final BooleanProperty multipliedProperty() {
-        return this.multiplied;
-    }
-
-
-    public final boolean isMultiplied() {
-        return this.multipliedProperty().get();
-    }
-
 
     public final BooleanProperty creditProperty() {
         return this.credit;
@@ -173,7 +161,6 @@ public class InvoiceItemDTO {
                 ", msId=" + msId +
                 ", year=" + year +
                 ", fieldName=" + fieldName +
-                ", multiplied=" + multiplied +
                 ", credit=" + credit +
                 ", value=" + value +
                 ", qty=" + qty +

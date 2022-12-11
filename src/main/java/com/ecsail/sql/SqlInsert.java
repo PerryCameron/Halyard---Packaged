@@ -161,7 +161,7 @@ public class SqlInsert {
 	public static void addInvoiceItemRecord(InvoiceItemDTO i) {
 		String query = "INSERT INTO invoice_item () VALUES ("
 				+ i.getId() + "," + i.getInvoiceId() + "," + i.getMsId() + "," + i.getYear()
-				+ ",'" + i.getFieldName() + "'," + i.isMultiplied() + "," + i.isCredit()
+				+ ",'" + i.getFieldName() + "'," + i.isCredit()
 				+ ",'" + i.getValue() + "'," + i.getQty() + ")";
 		try {
 			BaseApplication.connect.executeQuery(query);

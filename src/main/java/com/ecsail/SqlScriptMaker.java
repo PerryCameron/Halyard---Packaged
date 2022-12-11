@@ -216,7 +216,6 @@ public class SqlScriptMaker {
 				+ i.getMsId() + ","
 				+ i.getYear() + ","
 				+ getCorrectString(i.getFieldName()) + ","
-				+ i.isMultiplied() + ","
 				+ i.isCredit()+ ","
 				+ i.getValue() + ","
 				+ i.getQty() + ");\n";
