@@ -81,4 +81,36 @@ public class SqlFee {
         }
         return feeDTOS;
     }
+
+    public static FeeDTO getFeeByMembershipTypeForFiscalYear(int year, int msId) {  //p_id
+        FeeDTO thisFee = null;
+        String query = "select f.* from fee f where f.Description=(select\n" +
+                "CASE\n" +
+                "    WHEN (select MEM_TYPE from membership_id where FISCAL_YEAR="+year+" and MS_ID="+msId+") = 'FM' THEN 'Family'\n" +
+                "    WHEN (select MEM_TYPE from membership_id where FISCAL_YEAR="+year+" and MS_ID="+msId+") = 'RM' THEN 'Regular'\n" +
+                "    WHEN (select MEM_TYPE from membership_id where FISCAL_YEAR="+year+" and MS_ID="+msId+") = 'LA' THEN 'Lake Associate'\n" +
+                "    WHEN (select MEM_TYPE from membership_id where FISCAL_YEAR="+year+" and MS_ID="+msId+") = 'SO' THEN 'Social'\n" +
+                "    ELSE 'None'\n" +
+                "END AS TYPE\n" +
+                "from membership_id where FISCAL_YEAR="+year+" and MS_ID="+msId+"\n" +
+                ") and FEE_YEAR="+year+";";
+        try {
+            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+            while (rs.next()) {
+                thisFee = new FeeDTO(
+                        rs.getInt("FEE_ID"),
+                        rs.getString("FIELD_NAME"),
+                        rs.getString("FIELD_VALUE"),
+                        rs.getInt("FIELD_QTY"),
+                        rs.getInt("fee_year"),
+                        rs.getString("DESCRIPTION"),
+                        rs.getString("GROUP_NAME")
+                );
+            }
+            BaseApplication.connect.closeResultSet(rs);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return thisFee;
+    }
 }

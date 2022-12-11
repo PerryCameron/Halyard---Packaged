@@ -108,8 +108,8 @@ public class Invoice extends HBox {
         getChildren().addAll(vboxGrey);
         updateAllowed = true; // may write to database
         if (getOfficerCredit()) { // has an officer
-            invoiceItemMap.get("Dues").getTotal().textProperty()
-                    .bindBidirectional(invoiceItemMap.get("Position Credit").getTotal().textProperty());
+            invoiceItemMap.get("Position Credit").getRowTotal().textProperty()
+                    .bind(invoiceItemMap.get("Dues").getRowTotal().textProperty());
         }
     }
 

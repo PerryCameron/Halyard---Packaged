@@ -4,6 +4,7 @@ import com.ecsail.BaseApplication;
 import com.ecsail.FixInput;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
+import com.ecsail.sql.select.SqlFee;
 import com.ecsail.structures.DbInvoiceDTO;
 import com.ecsail.structures.FeeDTO;
 import com.ecsail.structures.InvoiceDTO;
@@ -24,13 +25,13 @@ public class InvoiceItemRow extends HBox {
 
     String itemName;
     private Text price = new Text();
-    private Text total = new Text();
+    private Text rowTotal = new Text();
     private TextField textField;
     private Spinner<Integer> spinner;
     private final DbInvoiceDTO dbInvoiceDTO;
     private ComboBox<Integer> comboBox;
     private final InvoiceItemDTO invoiceItem;
-    private final FeeDTO fee;
+    private FeeDTO fee;
     private final InvoiceFooter footer;
     private final ObservableList<InvoiceItemDTO> items;
     private final VBox vBox1 = new VBox();
@@ -48,16 +49,15 @@ public class InvoiceItemRow extends HBox {
         this.invoice = footer.getInvoice();
         this.items = dbInvoiceDTO.getItems();
         this.invoiceItem = setItem();
-        this.fee = dbInvoiceDTO.getFee();
+        this.fee = getFee();
 
-//        if (!invoice.isCommitted())
-
+        if (!invoice.isCommitted())
         addChildren(dbInvoiceDTO);
     }
 
     private void updateInvoiceItem(InvoiceItemDTO invoiceItem) {
         if(footer.getBoxInvoice().isUpdateAllowed())
-        SqlUpdate.updateInvoiceItem(invoiceItem);
+            SqlUpdate.updateInvoiceItem(invoiceItem);
     }
 
     private void addChildren(DbInvoiceDTO invoiceWidget) {
@@ -73,10 +73,10 @@ public class InvoiceItemRow extends HBox {
         vBox4.setAlignment(Pos.CENTER_RIGHT);
         vBox4.getChildren().add(price);
         vBox5.setAlignment(Pos.CENTER_RIGHT);
-        total.setText(invoiceItem.getValue());
-        invoiceItem.valueProperty().bindBidirectional(total.textProperty()); // binds value of Text to DTO
-        if(this.invoiceItem.isCredit()) total.setId("invoice-text-credit");
-        vBox5.getChildren().add(total);
+        rowTotal.setText(invoiceItem.getValue());
+        invoiceItem.valueProperty().bind(rowTotal.textProperty()); //  value of Text to DTO
+        if(this.invoiceItem.isCredit()) rowTotal.setId("invoice-text-credit");
+        vBox5.getChildren().add(rowTotal);
     }
 
     private void setEdit() {
@@ -130,8 +130,7 @@ public class InvoiceItemRow extends HBox {
             case "text-field" -> {
                 textField = new TextField();
                 textField.setPrefWidth(i.getWidth());
-                autoPopulateField();
-                textField.textProperty().bindBidirectional(total.textProperty());
+                textField.textProperty().bindBidirectional(rowTotal.textProperty());
                 setTextFieldListener();
                 return textField;
             }
@@ -165,8 +164,15 @@ public class InvoiceItemRow extends HBox {
         return null;
     }
 
-    private void autoPopulateField() {
-
+    private FeeDTO getFee() {
+        FeeDTO duesFee;
+        if(getDbInvoiceDTO().isAutoPopulate()) {
+            duesFee = SqlFee.getFeeByMembershipTypeForFiscalYear(invoice.getYear(), invoice.getMsId());
+            invoiceItem.setValue(duesFee.getFieldValue());
+            return duesFee;
+        }
+        else
+            return dbInvoiceDTO.getFee();
     }
 
     private InvoiceItemDTO setItem() {
@@ -193,7 +199,7 @@ public class InvoiceItemRow extends HBox {
 		spinner.setValueFactory(spinnerValueFactory);
 		spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
             String calculatedTotal = String.valueOf(new BigDecimal(fee.getFieldValue()).multiply(BigDecimal.valueOf(newValue)));
-			total.setText(calculatedTotal);
+			rowTotal.setText(calculatedTotal);
             invoiceItem.setQty(newValue);
             checkIfNotCommittedAndUpdateSql();
 			updateBalance();
@@ -203,7 +209,7 @@ public class InvoiceItemRow extends HBox {
     private void setComboBoxListener() {
         comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             String calculatedTotal = String.valueOf(BigDecimal.valueOf(newValue).multiply(new BigDecimal(fee.getFieldValue())));
-            total.setText(calculatedTotal);
+            rowTotal.setText(calculatedTotal);
             invoiceItem.setQty(newValue);
             checkIfNotCommittedAndUpdateSql();
             updateBalance();
@@ -242,7 +248,7 @@ public class InvoiceItemRow extends HBox {
                 textField.setText(stringValue);
                 price.setText(stringValue);
                 String value = String.valueOf(new BigDecimal(price.getText()).multiply(BigDecimal.valueOf(spinner.getValue())));
-                total.setText(value);
+                rowTotal.setText(value);
                 updateBalance();
                 checkIfNotCommittedAndUpdateSql();
                 vBox4.getChildren().clear();
@@ -279,12 +285,12 @@ public class InvoiceItemRow extends HBox {
         this.price = price;
     }
 
-    public Text getTotal() {
-        return total;
+    public Text getRowTotal() {
+        return rowTotal;
     }
 
-    public void setTotal(Text total) {
-        this.total = total;
+    public void setRowTotal(Text rowTotal) {
+        this.rowTotal = rowTotal;
     }
 
     public DbInvoiceDTO getDbInvoiceDTO() {
