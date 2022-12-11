@@ -1,5 +1,6 @@
 package com.ecsail.structures;
 
+import com.ecsail.sql.select.SqlSelect;
 import javafx.beans.property.*;
 
 public class InvoiceItemDTO {
@@ -26,17 +27,19 @@ public class InvoiceItemDTO {
         this.qty = new SimpleIntegerProperty(qty);
     }
 
-    public InvoiceItemDTO() {
-//        id.set(0);
-//        invoiceId.set(0);
-//        msId.set(0);
-//        year.set(0);
-//        itemType.set("");
-//        multiplied.set(false);
-//        credit.set(false);
-//        value.set("");
-//        qty.set(0);
+    public InvoiceItemDTO(Integer invoiceId, Integer msId, Integer year, String itemType) {
+        this.id = new SimpleIntegerProperty(SqlSelect.getNextAvailablePrimaryKey("invoice_item", "ID"));
+        this.invoiceId = new SimpleIntegerProperty(invoiceId);
+        this.msId = new SimpleIntegerProperty(msId);
+        this.year = new SimpleIntegerProperty(year);
+        this.itemType = new SimpleStringProperty(itemType);
+        this.multiplied = new SimpleBooleanProperty(false);
+        this.credit = new SimpleBooleanProperty(false);
+        this.value = new SimpleStringProperty("0.00");
+        this.qty = new SimpleIntegerProperty(0);
     }
+
+
 
     public final IntegerProperty idProperty() {
         return this.id;
@@ -78,11 +81,6 @@ public class InvoiceItemDTO {
     }
 
 
-    public final void setMsId(final int msId) {
-        this.msIdProperty().set(msId);
-    }
-
-
     public final IntegerProperty yearProperty() {
         return this.year;
     }
@@ -120,11 +118,6 @@ public class InvoiceItemDTO {
 
     public final boolean isMultiplied() {
         return this.multipliedProperty().get();
-    }
-
-
-    public final void setMultiplied(final boolean multiplied) {
-        this.multipliedProperty().set(multiplied);
     }
 
 

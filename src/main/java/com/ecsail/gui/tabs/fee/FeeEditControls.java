@@ -15,20 +15,20 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class FeeEditControls extends HBox {
-    private TabFee parent;
+    private final TabFee parent;
     private ObservableList<FeeDTO> fees = FXCollections.observableArrayList();
-    private LabeledSpinner orderedSpinner = new LabeledSpinner("Order");
-    private LabeledSpinner maxQtySpinner = new LabeledSpinner("Max Qty");
-    private CheckBox autoPopulate = new CheckBox("Auto Populate");
-    private CheckBox isCredit = new CheckBox("Credit");
-    private CheckBox priceIsEditable = new CheckBox("Price Editable");
+    private final LabeledSpinner orderedSpinner = new LabeledSpinner("Order");
+    private final LabeledSpinner maxQtySpinner = new LabeledSpinner("Max Qty");
+    private final CheckBox autoPopulate = new CheckBox("Auto Populate");
+    private final CheckBox isCredit = new CheckBox("Credit");
+    private final CheckBox priceIsEditable = new CheckBox("Price Editable");
     HashMap<String,RadioButton> rbHash = new HashMap<>();
     String[] radioButtonTitles = {"Spinner","TextField","Drop Down","None"};
-    private LabeledTextField fieldNameText = new LabeledTextField("Field Name");
-    private LabeledTextField groupNameText = new LabeledTextField("Group Name");
+    private final LabeledTextField fieldNameText = new LabeledTextField("Field Name");
+    private final LabeledTextField groupNameText = new LabeledTextField("Group Name");
     private FeeRow selectedHBoxFreeRow;
-    private MockHeader mockHeader = new MockHeader();
-    private VBox vBoxMockItems = new VBox();
+    private final MockHeader mockHeader = new MockHeader();
+    private final VBox vBoxMockItems = new VBox();
     ToggleGroup tg = new ToggleGroup();
 
     public FeeEditControls(TabFee parent) {
@@ -49,7 +49,6 @@ public class FeeEditControls extends HBox {
             rbHash.put(title, new RadioButton(title));
             rbHash.get(title).setToggleGroup(tg);
         });
-
 
         vBoxCheckBox.setPadding(new Insets(0,0,0,30));
         vBoxTableButtons.setPadding(new Insets(46,0,0,0));
@@ -112,7 +111,6 @@ public class FeeEditControls extends HBox {
     }
 
     public void refreshData() {
-        System.out.println("RefreshData fire!");
         this.selectedHBoxFreeRow = getSelectedHBoxFeeRow();
         autoPopulate.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isAutoPopulate());
         isCredit.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isCredit());
@@ -135,7 +133,6 @@ public class FeeEditControls extends HBox {
 
     public void setOrderSpinnerListener() {
         orderedSpinner.getSpinner().valueProperty().addListener((observable, oldValue, newValue) -> {
-            System.out.println("orderedSpinner listener fire!");
             if (parent.isOrderSpinnerCanChange()) { // don't trigger order spinner if you select another radio button
                 FeeRow displacedRow = parent.getRows().stream()
                         .filter(e -> e.getDbInvoiceDTO().getOrder() == newValue).findFirst().orElse(null);
@@ -181,32 +178,41 @@ public class FeeEditControls extends HBox {
                 setMultipliedWidgets(false);
             }
             refreshMockBox();
+            updateDbInvoice();
         });
     }
 
     private void setMultipliedWidgets(boolean value) {
         selectedHBoxFreeRow.getDbInvoiceDTO().setMultiplied(value);
         maxQtySpinner.setVisible(value);
+        priceIsEditable.setVisible(value);
+    }
+
+    public void updateDbInvoice() {
+        SqlUpdate.updateDbInvoice(getSelectedHBoxFeeRow().getDbInvoiceDTO());
     }
 
     public void setAutoPopulateCheckBoxListener() {
-        autoPopulate.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            getSelectedHBoxFeeRow().getDbInvoiceDTO().setAutoPopulate(newValue);
-        });
+        autoPopulate.selectedProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    getSelectedHBoxFeeRow().getDbInvoiceDTO().setAutoPopulate(newValue);
+                    updateDbInvoice();
+                });
     }
 
     public void setIsCreditCheckBoxListener() {
         isCredit.selectedProperty().addListener((observable, oldValue, newValue) -> {
             getSelectedHBoxFeeRow().getDbInvoiceDTO().setIsCredit(newValue);
             refreshMockBox();
+            updateDbInvoice();
         });
     }
 
     public void setPriceIsEditableCheckBoxListener() {
         priceIsEditable.selectedProperty().addListener((observable, oldValue, newValue) -> {
             getSelectedHBoxFeeRow().getDbInvoiceDTO().setPrice_editable(newValue);
-            System.out.println(getSelectedHBoxFeeRow().getDbInvoiceDTO());
             refreshMockBox();
+            updateDbInvoice();
         });
     }
 

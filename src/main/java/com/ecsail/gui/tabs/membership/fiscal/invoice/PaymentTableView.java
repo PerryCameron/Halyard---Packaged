@@ -38,6 +38,7 @@ public class PaymentTableView extends TableView<PaymentDTO> {
                     footer.getTotalPaymentText().setText(totalAmountPaid);
                     footer.getInvoice().setPaid(totalAmountPaid);
                     footer.updateTotals();
+                    System.out.println("PaymentTableView col1.setOnEditCommit");
                 }
         );
 

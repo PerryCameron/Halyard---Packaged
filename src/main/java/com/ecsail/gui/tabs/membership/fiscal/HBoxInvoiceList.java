@@ -105,28 +105,22 @@ public class HBoxInvoiceList extends HBox {
 
         ////////////////  LISTENERS ///////////////////
 		addFiscalRecord.setOnAction((event) -> {
-				// get the next available key for INVOICE_ID table
-				int invoiceId = SqlSelect.getNextAvailablePrimaryKey("invoice","id");
-				// create appropriate money object for this membership
-				var newInvoice = new InvoiceDTO(invoiceId, tm.getMembership().getMsid(),
-						comboBox.getValue(), "0.00", "0.00", "0.00", "0.00", 0,
-						false, false, false,"0.00");
-
-				// if a record already exists for this year then this is a supplemental record
-				if (SqlExists.invoiceExists(String.valueOf(comboBox.getValue()), tm.getMembership())) {
-					newInvoice.setSupplemental(true);
-				}
-
-				// insert the new record into the SQL database
-				SqlInsert.addInvoiceRecord(newInvoice);
-				// insert items for the invoice
-				createInvoiceItems(invoiceId, comboBox.getValue(), tm.getMembership().getMsid());
-				// add new money row to tableview
+			// create appropriate money object for this membership
+			var newInvoice = new InvoiceDTO(tm.getMembership().getMsid(), comboBox.getValue());
+			// if a record already exists for this year then this is a supplemental record
+			if (SqlExists.invoiceExists(String.valueOf(comboBox.getValue()), tm.getMembership())) {
+				newInvoice.setSupplemental(true);
+			}
+			// insert the new record into the SQL database
+			SqlInsert.addInvoiceRecord(newInvoice);
+			// insert items for the invoice
+			createInvoiceItems(newInvoice.getId(), comboBox.getValue(), tm.getMembership().getMsid());
+			// add new money row to tableview
 			tm.getInvoices().add(newInvoice);
-				// send new money row to top
+			// send new money row to top
 			tm.getInvoices().sort(Comparator.comparing(InvoiceDTO::getYear).reversed());
-				// open a tab for the year we just created
-				createTabByYear(newInvoice);
+			// open a tab for the year we just created
+			createTabByYear(newInvoice);
 		});
         
 		deleteFiscalRecord.setOnAction((event) -> {

@@ -3,7 +3,6 @@ package com.ecsail.gui.tabs.membership.fiscal.invoice;
 import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.Note;
-import com.ecsail.enums.MembershipType;
 import com.ecsail.gui.tabs.membership.fiscal.HBoxInvoiceList;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlInsert;
@@ -32,10 +31,9 @@ public class Invoice extends HBox {
     private final Map<String, InvoiceItemRow> invoiceItemMap = new LinkedHashMap<>();
     private final Button buttonCommit = new Button("Commit");
     private final Note note;
-    HBoxInvoiceList il;
+    private boolean updateAllowed; // prevents any writing to database on load
 
     public Invoice(HBoxInvoiceList il, int index) {
-        this.il = il;
         this.invoice = il.getTabMembership().getInvoices().get(index);
         this.membership = il.getTabMembership().getMembership();
         this.note = il.getTabMembership().getNote();
@@ -69,16 +67,16 @@ public class Invoice extends HBox {
         //////////////// LISTENER //////////////////
 
         buttonCommit.setOnAction((event) -> {
-			invoice.setCommitted(!invoice.isCommitted()); // change to opposite of what it currently is
+            invoice.setCommitted(!invoice.isCommitted()); // change to opposite of what it currently is
             header.setCommitMode(invoice.isCommitted());
             invoiceItemMap.values().forEach(e -> e.setCommitMode(invoice.isCommitted()));
             footer.setCommitMode(invoice.isCommitted());
             // need to set membership_id as active
-            SqlUpdate.updateInvoice(invoice);
+            updateDatabase(invoice);
             SqlUpdate.updateMembershipId(membership.getMsid(),invoice.getYear(),footer.getRenewCheckBox().isSelected());
         });
 
-		// take list of invoiceWidgets, insert appropriate fee into widget, insert reference to invoice items
+		// take list of DBInvoiceDTOs, insert appropriate fee into widget, insert reference to invoice items
 		// the put an HBOX with all this attached into a hash map
 		for (DbInvoiceDTO i : theseWidgets) {
                 i.setFee(insertFeeIntoWidget(i));
@@ -95,8 +93,7 @@ public class Invoice extends HBox {
         // add rows in the correct order
         for (int i = invoiceItemMap.size(); i > 0; i--) {  // iterate through hashmap
             for (String key : invoiceItemMap.keySet()) {
-                if (invoiceItemMap.get(key).getInvoiceWidget().getOrder() == i) {
-                    System.out.println("Adding " + invoiceItemMap.get(key).getInvoiceWidget().getFieldName()); // bad here
+                if (invoiceItemMap.get(key).getDbInvoiceDTO().getOrder() == i) {
                     vboxMain.getChildren().add(invoiceItemMap.get(key));
                 }
             }
@@ -109,14 +106,27 @@ public class Invoice extends HBox {
         mainVbox.getChildren().addAll(scrollPane);  // add error HBox in first
         vboxGrey.getChildren().addAll(mainVbox);
         getChildren().addAll(vboxGrey);
+        updateAllowed = true; // may write to database
+        if (getOfficerCredit()) { // has an officer
+            invoiceItemMap.get("Dues").getTotal().textProperty()
+                    .bindBidirectional(invoiceItemMap.get("Position Credit").getTotal().textProperty());
+        }
     }
 
+    private boolean getOfficerCredit() {
+        boolean hasOfficer = SqlExists.membershipHasOfficerForYear(invoice.getMsId(), invoice.getYear());
+        BaseApplication.logger.info("Membership has officer: " + hasOfficer);
+        return hasOfficer && !invoice.isSupplemental();
+    }
+
+    public void updateDatabase(InvoiceDTO invoice) {
+        if(updateAllowed)
+            SqlUpdate.updateInvoice(invoice);
+    }
 
     private FeeDTO insertFeeIntoWidget(DbInvoiceDTO i) {
         FeeDTO selectedFee = null;
         for (FeeDTO f : fees) {
-            if (i.getFieldName().equals("Dues") && f.getDescription().equals(MembershipType.getByCode(membership.getMemType())))
-                selectedFee = f;
             if (i.getFieldName().equals(f.getFieldName()))
                 selectedFee = f;
         }
@@ -154,5 +164,9 @@ public class Invoice extends HBox {
 
     public Note getNote() {
         return note;
+    }
+
+    public boolean isUpdateAllowed() {
+        return updateAllowed;
     }
 }

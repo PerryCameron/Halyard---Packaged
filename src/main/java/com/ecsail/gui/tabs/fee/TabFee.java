@@ -83,6 +83,7 @@ public class TabFee extends Tab {
                     duesLineChart.refreshChart(hboxHashMap.get(new_toggle).getSelectedFee().getDescription());
                 System.out.println("Number of invoice rows= " + rows.size());
             }
+            System.out.println(hboxHashMap.get(new_toggle).getDbInvoiceDTO());
         });
         // add listener to each text field
 
@@ -114,8 +115,19 @@ public class TabFee extends Tab {
 
     private Button createAddButton() {
         Button addButton = new Button("New");
-        addButton.setOnAction((event) -> addNewRow());
+        addButton.setOnAction(event -> {
+            radioEnable=false;
+            vboxFeeRow.getChildren().add(addNewRow());
+//            feeEditControls.refreshData();
+            radioEnable=true;
+        });
         return addButton;
+    }
+
+    private FeeRow addNewRow() {
+        DbInvoiceDTO dbInvoiceDTO = new DbInvoiceDTO(selectedYear, rows.size() + 1);
+        SqlInsert.addNewDbInvoice(dbInvoiceDTO);
+        return new FeeRow(this, dbInvoiceDTO);
     }
 
     private Button createDeleteButton() {
@@ -235,16 +247,7 @@ public class TabFee extends Tab {
         }
     }
 
-    private void addNewRow() {
-        // get next key
-        int key = SqlSelect.getNextAvailablePrimaryKey("fee", "FEE_ID");
-        // make DTO object
-        FeeDTO feeDTO = new FeeDTO(key, "", "0.00", 0, Integer.parseInt(selectedYear), "Enter Description","NONE");
-        // add object to database
-        SqlInsert.addNewFee(feeDTO);
-        // add new object to our list
-        feeDTOS.add(feeDTO);
-    }
+
 
     // year combo box at top
     private ComboBox<Integer> addComboBox() {
@@ -289,18 +292,16 @@ public class TabFee extends Tab {
             if(row.getOrder() == size) { // picks top entry
                 row.getRadioButton().setSelected(true);
                 if(row.getSelectedFee() != null)
-                duesLineChart.refreshChart(row.getSelectedFee().getDescription());
+                    duesLineChart.refreshChart(row.getSelectedFee().getDescription());
                 feeEditControls.refreshData(); // refreshed data for selected fee
             }
-        };
+        }
     }
 
     public void refreshFeeRows() {
         vboxFeeRow.getChildren().clear();
         rows.sort(Comparator.comparing(FeeRow::getOrder).reversed());
-        rows.forEach(row -> {
-            vboxFeeRow.getChildren().add(row);
-        });
+        rows.forEach(row -> vboxFeeRow.getChildren().add(row));
     }
 
     public HashMap<RadioButton, FeeRow> getHboxHashMap() {

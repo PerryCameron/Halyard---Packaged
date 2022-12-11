@@ -1,5 +1,6 @@
 package com.ecsail.structures;
 
+import com.ecsail.sql.select.SqlSelect;
 import javafx.beans.property.*;
 
 public class InvoiceDTO {
@@ -33,7 +34,22 @@ public class InvoiceDTO {
         this.maxCredit = new SimpleStringProperty(maxCredit);
     }
 
-    public InvoiceDTO() {
+    public InvoiceDTO(Integer msId, Integer year) {
+        this.id = new SimpleIntegerProperty(SqlSelect.getNextAvailablePrimaryKey("invoice","id"));
+        this.msId = new SimpleIntegerProperty(msId);
+        this.year = new SimpleIntegerProperty(year);
+        this.paid = new SimpleStringProperty("0.00");
+        this.total = new SimpleStringProperty("0.00");
+        this.credit = new SimpleStringProperty("0.00");
+        this.balance = new SimpleStringProperty("0.00");
+        this.batch = new SimpleIntegerProperty(0);
+        this.committed = new SimpleBooleanProperty(false);
+        this.closed = new SimpleBooleanProperty(false);
+        this.supplemental = new SimpleBooleanProperty(false);
+        this.maxCredit = new SimpleStringProperty("0.00");
+    }
+
+    public InvoiceDTO() {  // used for mock invoice
         this.id = new SimpleIntegerProperty(0);
         this.msId = new SimpleIntegerProperty(0);
         this.year = new SimpleIntegerProperty(0);

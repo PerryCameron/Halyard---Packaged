@@ -44,8 +44,10 @@ public class InvoiceFooter extends VBox {
     private final CheckBox renewCheckBox = new CheckBox("Renew");
     private final Button buttonCommit;
     private final Button buttonAddNote = new Button("Add Note");
+    private final Invoice hBoxInvoice;
 
     public InvoiceFooter(Invoice hBoxInvoice) {
+        this.hBoxInvoice = hBoxInvoice;
         this.invoice = hBoxInvoice.getInvoice();
         totalFeesText.setText(invoice.getTotal());
         totalCreditText.setText(invoice.getCredit());
@@ -94,7 +96,6 @@ public class InvoiceFooter extends VBox {
         totalPaymentLabelText.setId("invoice-text-light");
         totalBalanceLabelText.setId("invoice-text-light");
 
-//        vboxTableView.setStyle("-fx-background-color: #e83115;");  // red
         hboxTop.setSpacing(10);
         hboxBottom.setSpacing(25);
         vboxTotalAmounts.setSpacing(5);
@@ -184,7 +185,6 @@ public class InvoiceFooter extends VBox {
         SqlUpdate.updateInvoice(invoice);
     }
 
-
     public ObservableList<PaymentDTO> getPayments() {
         return payments;
     }
@@ -200,5 +200,9 @@ public class InvoiceFooter extends VBox {
 
     public CheckBox getRenewCheckBox() {
         return renewCheckBox;
+    }
+
+    public Invoice getBoxInvoice() {
+        return hBoxInvoice;
     }
 }

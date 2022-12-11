@@ -1,5 +1,6 @@
 package com.ecsail.structures;
 
+import com.ecsail.sql.select.SqlSelect;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
@@ -36,6 +37,20 @@ public class DbInvoiceDTO {
         this.is_credit = is_credit;
         this.maxQty = maxQty;
         this.autoPopulate = autoPopulate;
+    }
+
+    public DbInvoiceDTO(String year, Integer order) {  // for creation of new DTO
+        this.id = SqlSelect.getNextAvailablePrimaryKey("db_invoice", "ID");
+        this.year = year;
+        this.fieldName = "new entry";
+        this.widgetType = "none";
+        this.width = 65;
+        this.order = new SimpleIntegerProperty(order);
+        this.multiplied = false;
+        this.price_editable = false;
+        this.is_credit = false;
+        this.maxQty = 0;
+        this.autoPopulate = false;
     }
 
     public int getId() {

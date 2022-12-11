@@ -14,7 +14,26 @@ import java.time.Instant;
 public class SqlInsert {
 	
 	///////////////  CLASS OF STATIC PURE FUNCTIONS /////////////////////////////
-
+	public static void addNewDbInvoice(DbInvoiceDTO d) {
+		String query = "INSERT INTO db_invoice () VALUES ("
+				+ d.getId() + ","
+				+ d.getYear() + ",'"
+				+ d.getFieldName() + "','"
+				+ d.getWidgetType() + "',"
+				+ d.getWidth() + ","
+				+ d.getOrder() + ","
+				+ d.isMultiplied() + ","
+				+ d.isPrice_editable() + ","
+				+ d.isCredit() + ","
+				+ d.getMaxQty() + ","
+				+ d.isAutoPopulate()
+				+")";
+		try {
+			BaseApplication.connect.executeQuery(query);
+		} catch (SQLException e) {
+			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
+		}
+	}
 	public static void addNewDbTableChanges(String tableName, int mainRecordId) {
 		int primaryKey = SqlSelect.getNextAvailablePrimaryKey("db_table_changes","ID");
 		String query = "INSERT INTO db_table_changes () VALUES (" + primaryKey + ","

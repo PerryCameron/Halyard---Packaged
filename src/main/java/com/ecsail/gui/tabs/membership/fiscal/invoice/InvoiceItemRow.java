@@ -2,9 +2,12 @@ package com.ecsail.gui.tabs.membership.fiscal.invoice;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.FixInput;
-import com.ecsail.sql.SqlExists;
+import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.structures.*;
+import com.ecsail.structures.DbInvoiceDTO;
+import com.ecsail.structures.FeeDTO;
+import com.ecsail.structures.InvoiceDTO;
+import com.ecsail.structures.InvoiceItemDTO;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -24,7 +27,7 @@ public class InvoiceItemRow extends HBox {
     private Text total = new Text();
     private TextField textField;
     private Spinner<Integer> spinner;
-    private final DbInvoiceDTO invoiceWidget;
+    private final DbInvoiceDTO dbInvoiceDTO;
     private ComboBox<Integer> comboBox;
     private final InvoiceItemDTO invoiceItem;
     private final FeeDTO fee;
@@ -38,31 +41,23 @@ public class InvoiceItemRow extends HBox {
 
     InvoiceDTO invoice;
 
-    public InvoiceItemRow(DbInvoiceDTO invoiceWidget, InvoiceFooter footer) {
-
-        this.invoiceWidget = invoiceWidget;
-        this.itemName = invoiceWidget.getFieldName();
-        this.invoiceItem = setItem();
+    public InvoiceItemRow(DbInvoiceDTO dbInvoiceDTO, InvoiceFooter footer) {
+        this.dbInvoiceDTO = dbInvoiceDTO;
+        this.itemName = dbInvoiceDTO.getFieldName();
         this.footer = footer;
         this.invoice = footer.getInvoice();
-        this.fee = invoiceWidget.getFee();
-        this.items = invoiceWidget.getItems();
-        getOfficerCredit(invoiceWidget);
-        // settings common to edit and commit modes
-        addChildren(invoiceWidget);
+        this.items = dbInvoiceDTO.getItems();
+        this.invoiceItem = setItem();
+        this.fee = dbInvoiceDTO.getFee();
+
+//        if (!invoice.isCommitted())
+
+        addChildren(dbInvoiceDTO);
     }
 
-    private void getOfficerCredit(DbInvoiceDTO invoiceWidget) {
-        // get officer credit
-        if (invoiceWidget.getFieldName().equals("Position Credit")) {
-            if (!invoice.isCommitted())  // if not committed
-                if (getOfficerCredit()) { // has an officer
-                    invoiceItem.setValue(items.get(0).getValue()); // is putting dues value into here
-                }
-            total.setText(items.get(0).getValue());
-            SqlUpdate.updateInvoiceItem(invoiceItem);
-            // TODO maybe find better way than putting element 0 in (not dynamic or robust)
-        }
+    private void updateInvoiceItem(InvoiceItemDTO invoiceItem) {
+        if(footer.getBoxInvoice().isUpdateAllowed())
+        SqlUpdate.updateInvoiceItem(invoiceItem);
     }
 
     private void addChildren(DbInvoiceDTO invoiceWidget) {
@@ -79,6 +74,7 @@ public class InvoiceItemRow extends HBox {
         vBox4.getChildren().add(price);
         vBox5.setAlignment(Pos.CENTER_RIGHT);
         total.setText(invoiceItem.getValue());
+        invoiceItem.valueProperty().bindBidirectional(total.textProperty()); // binds value of Text to DTO
         if(this.invoiceItem.isCredit()) total.setId("invoice-text-credit");
         vBox5.getChildren().add(total);
     }
@@ -90,7 +86,7 @@ public class InvoiceItemRow extends HBox {
         vBox2.setPrefWidth(65);
         vBox3.setPrefWidth(30);
         vBox3.getChildren().clear();
-        vBox3.getChildren().add(setX(invoiceWidget));
+        vBox3.getChildren().add(setX(dbInvoiceDTO));
         vBox4.setPrefWidth(50);
         vBox5.setPrefWidth(70);
         getChildren().addAll(vBox1,vBox2,vBox3,vBox4,vBox5);
@@ -119,12 +115,6 @@ public class InvoiceItemRow extends HBox {
             setEdit();
     }
 
-    private boolean getOfficerCredit() {
-        boolean hasOfficer = SqlExists.membershipHasOfficerForYear(invoiceItem.getMsId(), invoiceItem.getYear());
-        BaseApplication.logger.info("Membership has officer: " + hasOfficer);
-        return hasOfficer && !invoice.isSupplemental();
-    }
-
     private Text setX(DbInvoiceDTO i) {
         Text x = new Text("");
         x.setId("invoice-text-light");
@@ -141,6 +131,7 @@ public class InvoiceItemRow extends HBox {
                 textField = new TextField();
                 textField.setPrefWidth(i.getWidth());
                 autoPopulateField();
+                textField.textProperty().bindBidirectional(total.textProperty());
                 setTextFieldListener();
                 return textField;
             }
@@ -149,7 +140,7 @@ public class InvoiceItemRow extends HBox {
                 spinner.setPrefWidth(i.getWidth());
                 price.setText(String.valueOf(fee.getFieldValue()));
                 setSpinnerListener();
-                if (invoiceWidget.isPrice_editable())
+                if (dbInvoiceDTO.isPrice_editable())
                     setPriceChangeListener(new TextField(price.getText()));
                 return spinner;
             }
@@ -158,10 +149,10 @@ public class InvoiceItemRow extends HBox {
                 comboBox.setPrefWidth(i.getWidth());
                 price.setText(String.valueOf(fee.getFieldValue()));
                 // fill comboBox
-                for (int j = 0; j < invoiceWidget.getMaxQty(); j++) comboBox.getItems().add(j);
+                for (int j = 0; j < dbInvoiceDTO.getMaxQty(); j++) comboBox.getItems().add(j);
                 comboBox.getSelectionModel().select(invoiceItem.getQty());
                 setComboBoxListener();
-                if (invoiceWidget.isPrice_editable())
+                if (dbInvoiceDTO.isPrice_editable())
                     setPriceChangeListener(new TextField(price.getText()));
                 return comboBox;
             }
@@ -175,31 +166,35 @@ public class InvoiceItemRow extends HBox {
     }
 
     private void autoPopulateField() {
-        // if it is a row that can autoPopulate i.e. dues, and the record is not committed
-        if(invoiceWidget.isAutoPopulate() && !invoice.isCommitted()) {
-            if (!invoice.isSupplemental()) {
-                textField.setText(String.valueOf(fee.getFieldValue()));
-                invoiceItem.setValue(String.valueOf(fee.getFieldValue()));
-                updateBalance();
-            }
-            else
-                textField.setText(invoiceItem.getValue());
-        } else
-            textField.setText(invoiceItem.getValue());
+
     }
 
     private InvoiceItemDTO setItem() {
-        return invoiceWidget.getItems().stream().filter(i -> i.getItemType().equals(itemName)).findFirst().orElse(null);
+        // we will match this db_invoice to invoiceItem, if nothing found then create an invoice item
+        InvoiceItemDTO currentInvoiceItem = dbInvoiceDTO.getItems().stream()
+                .filter(i -> i.getItemType().equals(itemName)).findFirst().orElse(null);
+        if(currentInvoiceItem == null) return addNewInvoiceItem();
+        return currentInvoiceItem;
+    }
+
+    /**
+     * If a db_invoice is created, this creates an invoiceItem. All this occurs if the db_invoice was created
+     * after the invoice was created. It is a way to update them. In theory should never be needed.
+     */
+    private InvoiceItemDTO addNewInvoiceItem() { //
+        InvoiceItemDTO newInvoiceItem = new InvoiceItemDTO(invoice.getId(),invoice.getMsId(),invoice.getYear(),itemName);
+        items.add(newInvoiceItem);
+        SqlInsert.addInvoiceItemRecord(newInvoiceItem);
+        return newInvoiceItem;
     }
 
     private void setSpinnerListener() {
-        SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, invoiceWidget.getMaxQty(), invoiceItem.getQty());
+        SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, dbInvoiceDTO.getMaxQty(), invoiceItem.getQty());
 		spinner.setValueFactory(spinnerValueFactory);
 		spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
             String calculatedTotal = String.valueOf(new BigDecimal(fee.getFieldValue()).multiply(BigDecimal.valueOf(newValue)));
 			total.setText(calculatedTotal);
             invoiceItem.setQty(newValue);
-            invoiceItem.setValue(calculatedTotal);
             checkIfNotCommittedAndUpdateSql();
 			updateBalance();
 		});
@@ -210,7 +205,6 @@ public class InvoiceItemRow extends HBox {
             String calculatedTotal = String.valueOf(BigDecimal.valueOf(newValue).multiply(new BigDecimal(fee.getFieldValue())));
             total.setText(calculatedTotal);
             invoiceItem.setQty(newValue);
-            invoiceItem.setValue(calculatedTotal);
             checkIfNotCommittedAndUpdateSql();
             updateBalance();
         });
@@ -221,23 +215,19 @@ public class InvoiceItemRow extends HBox {
 	            //focus out
 	            if (oldValue) {  // we have focused and unfocused
                     // fix it or set to 0 if can't
-	            	if(!FixInput.isBigDecimal(textField.getText())) {
-						textField.setText("0");
-	            	}
+	            	if(!FixInput.isBigDecimal(textField.getText())) textField.setText("0");
 	            	BigDecimal item = new BigDecimal(textField.getText());
 					textField.setText(String.valueOf(item.setScale(2, RoundingMode.HALF_UP)));
                     invoiceItem.setQty(1);
-                    invoiceItem.setValue(textField.getText());
-                    total.setText(textField.getText());
+                    updateBalance();
                     checkIfNotCommittedAndUpdateSql();
-	            	updateBalance();
 	            }
 	        });
     }
 
     private void checkIfNotCommittedAndUpdateSql() {
         if(invoice.isCommitted()) BaseApplication.logger.info("Record is committed: database can not be updated");
-        else SqlUpdate.updateInvoiceItem(invoiceItem);
+        else updateInvoiceItem(invoiceItem);
     }
 
     private void setPriceChangeListener(TextField textField) {
@@ -252,11 +242,9 @@ public class InvoiceItemRow extends HBox {
                 textField.setText(stringValue);
                 price.setText(stringValue);
                 String value = String.valueOf(new BigDecimal(price.getText()).multiply(BigDecimal.valueOf(spinner.getValue())));
-                invoiceItem.setValue(value);
                 total.setText(value);
-                checkIfNotCommittedAndUpdateSql();
-                SqlUpdate.updateInvoiceItem(invoiceItem);
                 updateBalance();
+                checkIfNotCommittedAndUpdateSql();
                 vBox4.getChildren().clear();
                 vBox4.getChildren().add(price);
             }
@@ -299,7 +287,7 @@ public class InvoiceItemRow extends HBox {
         this.total = total;
     }
 
-    public DbInvoiceDTO getInvoiceWidget() {
-        return invoiceWidget;
+    public DbInvoiceDTO getDbInvoiceDTO() {
+        return dbInvoiceDTO;
     }
 }
