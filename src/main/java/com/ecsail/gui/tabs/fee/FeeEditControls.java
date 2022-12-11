@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,11 +26,12 @@ public class FeeEditControls extends HBox {
     HashMap<String,RadioButton> rbHash = new HashMap<>();
     String[] radioButtonTitles = {"Spinner","TextField","Drop Down","None"};
     private final LabeledTextField fieldNameText = new LabeledTextField("Field Name");
-//    private final LabeledTextField groupNameText = new LabeledTextField("Group Name");
     private FeeRow selectedHBoxFreeRow;
     private final MockHeader mockHeader = new MockHeader();
     private final VBox vBoxMockItems = new VBox();
     ToggleGroup tg = new ToggleGroup();
+
+    Text currentTextObject = new Text();
 
     public FeeEditControls(TabFee parent) {
         this.parent = parent;
@@ -81,6 +83,7 @@ public class FeeEditControls extends HBox {
         setAutoPopulateCheckBoxListener();
         setIsCreditCheckBoxListener();
         setPriceIsEditableCheckBoxListener();
+        setFieldNameTextListener();
         vBoxTableButtons.getChildren().addAll(addFeeButton,deleteButton);
         hBoxTableHeader.getChildren().add(fieldNameText);
         vBoxRadio.getChildren()
@@ -116,14 +119,27 @@ public class FeeEditControls extends HBox {
         isCredit.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isCredit());
         priceIsEditable.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isPrice_editable());
         fieldNameText.setText(selectedHBoxFreeRow.getDbInvoiceDTO().getFieldName());
-//        if(selectedHBoxFreeRow.getFees().size() > 0) { // we have at least one fee
-//            groupNameText.setText(selectedHBoxFreeRow.getFees().get(0).getGroupName());
-//        }
+
+//        selectedHBoxFreeRow.getLabel().textProperty().unbind();
+//        fieldNameText.getTextField().textProperty().unbind();
+//        currentTextObject.textProperty().unbind();
+//        System.out.println("lastTextObject=" + currentTextObject.hashCode());
+//        System.out.println("selectedHBox " + selectedHBoxFreeRow.getLabel().hashCode());
+//        System.out.println("fieldNameText " + fieldNameText.getTextField());
+//        currentTextObject = selectedHBoxFreeRow.getLabel();
+//        fieldNameText.getTextField().textProperty().bind(selectedHBoxFreeRow.getLabel().textProperty());
+//        selectedHBoxFreeRow.getLabel().textProperty().bind(fieldNameText.getTextField().textProperty());
         setOrderSpinner();
         fees.clear();
         fees.addAll(selectedHBoxFreeRow.getFees());
         refreshMockBox();
         setRadioToMatchDBInvoice();
+    }
+
+    private void setFieldNameTextListener() {
+        fieldNameText.getTextField().textProperty().addListener((observable, oldValue, newValue) -> {
+            selectedHBoxFreeRow.getLabel().setText(newValue);
+        });
     }
 
     public void setOrderSpinner() {

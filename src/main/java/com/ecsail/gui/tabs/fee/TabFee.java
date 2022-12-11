@@ -81,11 +81,8 @@ public class TabFee extends Tab {
                 orderSpinnerCanChange = true;
                 if (!hboxHashMap.get(new_toggle).getPrice().equals("NONE"))
                     duesLineChart.refreshChart(hboxHashMap.get(new_toggle).getSelectedFee().getDescription());
-                System.out.println("Number of invoice rows= " + rows.size());
             }
-            System.out.println(hboxHashMap.get(new_toggle).getDbInvoiceDTO());
         });
-        // add listener to each text field
 
         comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> setNewYear(newValue));
 

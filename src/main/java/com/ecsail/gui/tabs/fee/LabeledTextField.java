@@ -32,4 +32,7 @@ public class LabeledTextField extends HBox {
         this.textField.setText(text);
     }
 
+    public TextField getTextField() {
+        return textField;
+    }
 }

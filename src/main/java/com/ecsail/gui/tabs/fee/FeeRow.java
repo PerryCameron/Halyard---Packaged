@@ -119,7 +119,6 @@ public class FeeRow extends HBox {
     public void setForFee() {
         setSelectedFee(fees.get(0));
         setHasFee(true);
-        setLabelText(fees.get(0).getDescription());
         setPrice(String.valueOf(fees.get(0).getFieldValue()));
         setPriceEditable(true);
     }
