@@ -268,10 +268,9 @@ public class SqlScriptMaker {
 		+ fe.getFeeId() + ","
 		+ getCorrectString(fe.getFieldName()) + ","
 		+ fe.getFieldValue() + ","
-		+ fe.getFieldQuantity() + ","
+		+ fe.getDbInvoiceID() + ","
 		+ fe.getFeeYear() + ","
-		+ getCorrectString(fe.getDescription())  + ","
-		+ getCorrectString(fe.getGroupName()) + ");\n";
+		+ getCorrectString(fe.getDescription())  + ");\n";
 	}
 
 	private static String getHashString(HashDTO hd) {

@@ -420,10 +420,9 @@ public class SqlUpdate {
 	public static void updateFeeRecord(FeeDTO feeDTO) {
 		String query = "UPDATE fee SET FIELD_NAME='" + feeDTO.getFieldName()
 				+ "', FIELD_VALUE=" + feeDTO.getFieldValue()
-				+ ", FIELD_QTY=" + feeDTO.getFieldQuantity()
+				+ ", FIELD_QTY=" + feeDTO.getDbInvoiceID()
 				+ ", FEE_YEAR=" + feeDTO.getFeeYear()
 				+ ", DESCRIPTION='" + feeDTO.getDescription()
-				+ "', GROUP_NAME='" + feeDTO.getGroupName()
 				+ "' WHERE FEE_ID=" + feeDTO.getFeeId();
 		try {
 			BaseApplication.connect.executeQuery(query);

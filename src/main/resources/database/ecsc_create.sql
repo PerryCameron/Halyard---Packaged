@@ -89,13 +89,13 @@ create table ECSC_SQL.slip
 
 CREATE TABLE ECSC_SQL.fee
 (
-    FEE_ID      INTEGER                    NOT NULL auto_increment primary key,
-    FIELD_NAME  varchar(40),
-    FIELD_VALUE DECIMAL(10, 2),
-    FIELD_QTY   INTEGER,
-    FEE_YEAR    INTEGER                    NOT NULL,
-    GROUP_NAME  varchar(30) default 'NONE' not null,
-    Description varchar(40)                NULL
+    FEE_ID        INTEGER                    NOT NULL auto_increment primary key,
+    FIELD_NAME    varchar(40),
+    FIELD_VALUE   DECIMAL(10, 2),
+    DB_INVOICE_ID INTEGER                    NOT NULL,
+    FEE_YEAR      INTEGER                    NOT NULL,
+    Description   varchar(40)                NULL,
+    foreign key (DB_INVOICE_ID) references db_invoice (ID)
 );
 
 create table ECSC_SQL.memo

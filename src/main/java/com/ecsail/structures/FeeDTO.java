@@ -5,25 +5,21 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import java.math.BigDecimal;
-
 public class FeeDTO {
-    private IntegerProperty feeId;
-    private StringProperty fieldName;
-    private StringProperty fieldValue;
-    private IntegerProperty fieldQuantity;
-    private IntegerProperty feeYear;
-    private StringProperty description;
-    private StringProperty groupName;
+    private final IntegerProperty feeId;
+    private final StringProperty fieldName;
+    private final StringProperty fieldValue;
+    private final IntegerProperty dbInvoiceID;
+    private final IntegerProperty feeYear;
+    private final StringProperty description;
 
-    public FeeDTO(Integer feeId, String fieldName, String fieldValue, Integer fieldQuantity, Integer feeYear, String description, String groupName) {
+    public FeeDTO(Integer feeId, String fieldName, String fieldValue, Integer dbInvoiceID, Integer feeYear, String description) {
         this.feeId = new SimpleIntegerProperty(feeId);
         this.fieldName = new SimpleStringProperty(fieldName);
         this.fieldValue = new SimpleStringProperty(fieldValue);
-        this.fieldQuantity = new SimpleIntegerProperty(fieldQuantity);
+        this.dbInvoiceID = new SimpleIntegerProperty(dbInvoiceID);
         this.feeYear = new SimpleIntegerProperty(feeYear);
         this.description = new SimpleStringProperty(description);
-        this.groupName = new SimpleStringProperty(groupName);
     }
 
     public final IntegerProperty feeIdProperty() {
@@ -71,18 +67,16 @@ public class FeeDTO {
     }
 
 
-    public final IntegerProperty fieldQuantityProperty() {
-        return this.fieldQuantity;
+    public final IntegerProperty dbInvoiceIDProperty() {
+        return this.dbInvoiceID;
     }
 
-
-    public final int getFieldQuantity() {
-        return this.fieldQuantityProperty().get();
+    public final int getDbInvoiceID() {
+        return this.dbInvoiceIDProperty().get();
     }
 
-
-    public final void setFieldQuantity(final int fieldQuantity) {
-        this.fieldQuantityProperty().set(fieldQuantity);
+    public final void setDbInvoiceID(final int dbInvoiceID) {
+        this.dbInvoiceIDProperty().set(dbInvoiceID);
     }
 
 
@@ -115,31 +109,15 @@ public class FeeDTO {
         this.descriptionProperty().set(description);
     }
 
-
-    public final StringProperty groupNameProperty() {
-        return this.groupName;
-    }
-
-
-    public final String getGroupName() {
-        return this.groupNameProperty().get();
-    }
-
-
-    public final void setGroupName(final String groupName) {
-        this.groupNameProperty().set(groupName);
-    }
-
     @Override
     public String toString() {
         return "FeeDTO{" +
                 "feeId=" + feeId +
                 ", fieldName=" + fieldName +
                 ", fieldValue=" + fieldValue +
-                ", fieldQuantity=" + fieldQuantity +
+                ", dbInvoiceID=" + dbInvoiceID +
                 ", feeYear=" + feeYear +
                 ", description=" + description +
-                ", groupName=" + groupName +
                 '}';
     }
 }

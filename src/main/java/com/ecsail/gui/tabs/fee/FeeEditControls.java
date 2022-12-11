@@ -25,7 +25,7 @@ public class FeeEditControls extends HBox {
     HashMap<String,RadioButton> rbHash = new HashMap<>();
     String[] radioButtonTitles = {"Spinner","TextField","Drop Down","None"};
     private final LabeledTextField fieldNameText = new LabeledTextField("Field Name");
-    private final LabeledTextField groupNameText = new LabeledTextField("Group Name");
+//    private final LabeledTextField groupNameText = new LabeledTextField("Group Name");
     private FeeRow selectedHBoxFreeRow;
     private final MockHeader mockHeader = new MockHeader();
     private final VBox vBoxMockItems = new VBox();
@@ -82,7 +82,7 @@ public class FeeEditControls extends HBox {
         setIsCreditCheckBoxListener();
         setPriceIsEditableCheckBoxListener();
         vBoxTableButtons.getChildren().addAll(addFeeButton,deleteButton);
-        hBoxTableHeader.getChildren().addAll(fieldNameText,groupNameText);
+        hBoxTableHeader.getChildren().add(fieldNameText);
         vBoxRadio.getChildren()
                 .addAll(rbHash.get("Spinner"),rbHash.get("TextField"),rbHash.get("Drop Down"),rbHash.get("None"));
         vBoxSpinner.getChildren().addAll(orderedSpinner,maxQtySpinner);
@@ -101,7 +101,7 @@ public class FeeEditControls extends HBox {
             else {
                 FeeDTO feeDTO = new FeeDTO(0,
                         getSelectedHBoxFeeRow().getDbInvoiceDTO().getFieldName(),
-                        "0.00",0,0,"","");
+                        "0.00",0,0,"");
                 vBoxMockItems.getChildren().addAll(mockHeader, new MockInvoiceItemRow(selectedHBoxFreeRow.getDbInvoiceDTO(), feeDTO));
             }
     }
@@ -116,9 +116,9 @@ public class FeeEditControls extends HBox {
         isCredit.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isCredit());
         priceIsEditable.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isPrice_editable());
         fieldNameText.setText(selectedHBoxFreeRow.getDbInvoiceDTO().getFieldName());
-        if(selectedHBoxFreeRow.getFees().size() > 0) { // we have at least one fee
-            groupNameText.setText(selectedHBoxFreeRow.getFees().get(0).getGroupName());
-        }
+//        if(selectedHBoxFreeRow.getFees().size() > 0) { // we have at least one fee
+//            groupNameText.setText(selectedHBoxFreeRow.getFees().get(0).getGroupName());
+//        }
         setOrderSpinner();
         fees.clear();
         fees.addAll(selectedHBoxFreeRow.getFees());
@@ -152,7 +152,7 @@ public class FeeEditControls extends HBox {
         else if(getSelectedHBoxFeeRow().getDbInvoiceDTO().getWidgetType().equals("spinner"))
             rbHash.get("Spinner").setSelected(true);
         else if(getSelectedHBoxFeeRow().getDbInvoiceDTO().getWidgetType().equals("combo-box"))
-            rbHash.get("Drop-Down").setSelected(true);
+            rbHash.get("Drop Down").setSelected(true);
         else if(getSelectedHBoxFeeRow().getDbInvoiceDTO().getWidgetType().equals("none"))
             rbHash.get("None").setSelected(true);
     }

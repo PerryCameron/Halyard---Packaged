@@ -30,7 +30,7 @@ public class InvoiceItemRow extends HBox {
     private Spinner<Integer> spinner;
     private final DbInvoiceDTO dbInvoiceDTO;
     private ComboBox<Integer> comboBox;
-    private final InvoiceItemDTO invoiceItem;
+    private final InvoiceItemDTO invoiceItemDTO;
     private FeeDTO fee;
     private final InvoiceFooter footer;
     private final ObservableList<InvoiceItemDTO> items;
@@ -48,10 +48,9 @@ public class InvoiceItemRow extends HBox {
         this.footer = footer;
         this.invoice = footer.getInvoice();
         this.items = dbInvoiceDTO.getItems();
-        this.invoiceItem = setItem();
+        this.invoiceItemDTO = setItem();
+        System.out.println(invoiceItemDTO);
         this.fee = getFee();
-
-        if (!invoice.isCommitted())
         addChildren(dbInvoiceDTO);
     }
 
@@ -73,9 +72,9 @@ public class InvoiceItemRow extends HBox {
         vBox4.setAlignment(Pos.CENTER_RIGHT);
         vBox4.getChildren().add(price);
         vBox5.setAlignment(Pos.CENTER_RIGHT);
-        rowTotal.setText(invoiceItem.getValue());
-        invoiceItem.valueProperty().bind(rowTotal.textProperty()); //  value of Text to DTO
-        if(this.invoiceItem.isCredit()) rowTotal.setId("invoice-text-credit");
+        rowTotal.setText(invoiceItemDTO.getValue());
+        invoiceItemDTO.valueProperty().bind(rowTotal.textProperty()); //  value of Text to DTO
+        if(this.invoiceItemDTO.isCredit()) rowTotal.setId("invoice-text-credit");
         vBox5.getChildren().add(rowTotal);
     }
 
@@ -93,12 +92,12 @@ public class InvoiceItemRow extends HBox {
     }
 
     private void setCommit() {
-        if (!invoiceItem.getValue().equals("0.00")) { // list only items in use
+        if (!invoiceItemDTO.getValue().equals("0.00")) { // list only items in use
             vBox1.setPrefWidth(160);
             vBox3.setPrefWidth(40);
             vBox3.getChildren().clear();
-            if (invoiceItem.getQty() != 0) // don't print the 0's
-                vBox3.getChildren().add(new Text(String.valueOf(invoiceItem.getQty())));
+            if (invoiceItemDTO.getQty() != 0) // don't print the 0's
+                vBox3.getChildren().add(new Text(String.valueOf(invoiceItemDTO.getQty())));
             vBox5.setPrefWidth(190);
             getChildren().addAll(vBox1, vBox3, vBox5);
         } else {
@@ -149,7 +148,7 @@ public class InvoiceItemRow extends HBox {
                 price.setText(String.valueOf(fee.getFieldValue()));
                 // fill comboBox
                 for (int j = 0; j < dbInvoiceDTO.getMaxQty(); j++) comboBox.getItems().add(j);
-                comboBox.getSelectionModel().select(invoiceItem.getQty());
+                comboBox.getSelectionModel().select(invoiceItemDTO.getQty());
                 setComboBoxListener();
                 if (dbInvoiceDTO.isPrice_editable())
                     setPriceChangeListener(new TextField(price.getText()));
@@ -168,7 +167,7 @@ public class InvoiceItemRow extends HBox {
         FeeDTO duesFee;
         if(getDbInvoiceDTO().isAutoPopulate()) {
             duesFee = SqlFee.getFeeByMembershipTypeForFiscalYear(invoice.getYear(), invoice.getMsId());
-            invoiceItem.setValue(duesFee.getFieldValue());
+            invoiceItemDTO.setValue(duesFee.getFieldValue());
             return duesFee;
         }
         else
@@ -195,12 +194,12 @@ public class InvoiceItemRow extends HBox {
     }
 
     private void setSpinnerListener() {
-        SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, dbInvoiceDTO.getMaxQty(), invoiceItem.getQty());
+        SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, dbInvoiceDTO.getMaxQty(), invoiceItemDTO.getQty());
 		spinner.setValueFactory(spinnerValueFactory);
 		spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
             String calculatedTotal = String.valueOf(new BigDecimal(fee.getFieldValue()).multiply(BigDecimal.valueOf(newValue)));
 			rowTotal.setText(calculatedTotal);
-            invoiceItem.setQty(newValue);
+            invoiceItemDTO.setQty(newValue);
             checkIfNotCommittedAndUpdateSql();
 			updateBalance();
 		});
@@ -210,7 +209,7 @@ public class InvoiceItemRow extends HBox {
         comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             String calculatedTotal = String.valueOf(BigDecimal.valueOf(newValue).multiply(new BigDecimal(fee.getFieldValue())));
             rowTotal.setText(calculatedTotal);
-            invoiceItem.setQty(newValue);
+            invoiceItemDTO.setQty(newValue);
             checkIfNotCommittedAndUpdateSql();
             updateBalance();
         });
@@ -224,7 +223,7 @@ public class InvoiceItemRow extends HBox {
 	            	if(!FixInput.isBigDecimal(textField.getText())) textField.setText("0");
 	            	BigDecimal item = new BigDecimal(textField.getText());
 					textField.setText(String.valueOf(item.setScale(2, RoundingMode.HALF_UP)));
-                    invoiceItem.setQty(1);
+                    invoiceItemDTO.setQty(1);
                     updateBalance();
                     checkIfNotCommittedAndUpdateSql();
 	            }
@@ -233,7 +232,7 @@ public class InvoiceItemRow extends HBox {
 
     private void checkIfNotCommittedAndUpdateSql() {
         if(invoice.isCommitted()) BaseApplication.logger.info("Record is committed: database can not be updated");
-        else updateInvoiceItem(invoiceItem);
+        else updateInvoiceItem(invoiceItemDTO);
     }
 
     private void setPriceChangeListener(TextField textField) {

@@ -23,10 +23,9 @@ public class SqlFee {
                             rs.getInt("FEE_ID"),
                             rs.getString("FIELD_NAME"),
                             rs.getString("FIELD_VALUE"),
-                            rs.getInt("FIELD_QTY"),
+                            rs.getInt("DB_INVOICE_ID"),
                             rs.getInt("fee_year"),
-                            rs.getString("DESCRIPTION"),
-                            rs.getString("GROUP_NAME")
+                            rs.getString("DESCRIPTION")
                     ));
                 }
                 BaseApplication.connect.closeResultSet(rs);
@@ -46,10 +45,9 @@ public class SqlFee {
                         rs.getInt("FEE_ID"),
                         rs.getString("FIELD_NAME"),
                         rs.getString("FIELD_VALUE"),
-                        rs.getInt("FIELD_QTY"),
+                        rs.getInt("DB_INVOICE_ID"),
                         rs.getInt("fee_year"),
-                        rs.getString("DESCRIPTION"),
-                        rs.getString("GROUP_NAME")
+                        rs.getString("DESCRIPTION")
                 ));
             }
             BaseApplication.connect.closeResultSet(rs);
@@ -69,10 +67,9 @@ public class SqlFee {
                         rs.getInt("FEE_ID"),
                         rs.getString("FIELD_NAME"),
                         rs.getString("FIELD_VALUE"),
-                        rs.getInt("FIELD_QTY"),
+                        rs.getInt("DB_INVOICE_ID"),
                         rs.getInt("fee_year"),
-                        rs.getString("DESCRIPTION"),
-                        rs.getString("GROUP_NAME")
+                        rs.getString("DESCRIPTION")
                 ));
             }
             BaseApplication.connect.closeResultSet(rs);
@@ -101,10 +98,9 @@ public class SqlFee {
                         rs.getInt("FEE_ID"),
                         rs.getString("FIELD_NAME"),
                         rs.getString("FIELD_VALUE"),
-                        rs.getInt("FIELD_QTY"),
+                        rs.getInt("DB_INVOICE_ID"),
                         rs.getInt("fee_year"),
-                        rs.getString("DESCRIPTION"),
-                        rs.getString("GROUP_NAME")
+                        rs.getString("DESCRIPTION")
                 );
             }
             BaseApplication.connect.closeResultSet(rs);

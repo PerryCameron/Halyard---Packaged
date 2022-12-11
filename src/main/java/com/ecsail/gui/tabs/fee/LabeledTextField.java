@@ -16,7 +16,7 @@ public class LabeledTextField extends HBox {
         this.textField = new TextField();
         VBox vBox1 = new VBox();
         vBox1.setPrefWidth(90);
-        textField.setPrefWidth(80);
+        textField.setPrefWidth(150);
         VBox vBox2 = new VBox();
         HBox.setHgrow(vBox2, Priority.ALWAYS);
         vBox1.setAlignment(Pos.CENTER_RIGHT);

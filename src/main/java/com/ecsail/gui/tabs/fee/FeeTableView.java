@@ -33,7 +33,6 @@ public class FeeTableView extends TableView<FeeDTO> {
 //        ObservableList<PaymentType> paymentTypeList = FXCollections.observableArrayList(PaymentType.values());
 
         TableColumn<FeeDTO, String> col2 = createColumn("Price", FeeDTO::fieldValueProperty);
-//        col2.setPrefWidth(60);
         col2.setStyle("-fx-alignment: CENTER-RIGHT;");
         col2.setOnEditCommit(
                 t -> {
@@ -43,7 +42,6 @@ public class FeeTableView extends TableView<FeeDTO> {
         );
 
         TableColumn<FeeDTO, String> col3 = createColumn("Description", FeeDTO::descriptionProperty);
-//        col3.setPrefWidth(55);
         col3.setStyle("-fx-alignment: CENTER-LEFT;");
         col3.setOnEditCommit(
                 t -> {

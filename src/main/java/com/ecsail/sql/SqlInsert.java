@@ -268,7 +268,7 @@ public class SqlInsert {
 
 	public static void addNewFee(FeeDTO feeDTO) {
 		String query = "INSERT INTO fee () VALUES (" + feeDTO.getFeeId() + ",'" + feeDTO.getFieldName() + "'," + feeDTO.getFieldValue()
-				+ "," + feeDTO.getFieldQuantity() + "," + feeDTO.getFeeYear() + ",'" + feeDTO.getDescription() + "')";
+				+ "," + feeDTO.getDbInvoiceID() + "," + feeDTO.getFeeYear() + ",'" + feeDTO.getDescription() + "')";
 		try {
 			BaseApplication.connect.executeQuery(query);
 		 } catch (SQLException e) {

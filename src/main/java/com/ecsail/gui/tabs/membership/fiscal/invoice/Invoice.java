@@ -80,6 +80,7 @@ public class Invoice extends HBox {
 		// the put an HBOX with all this attached into a hash map
 		for (DbInvoiceDTO i : theseWidgets) {
                 i.setFee(insertFeeIntoWidget(i));
+//            System.out.println(insertFeeIntoWidget(i));
                 i.setItems(items); // allows calculations to be made
                 invoiceItemMap.put(i.getFieldName(), new InvoiceItemRow(i, footer));
 		}
