@@ -149,7 +149,7 @@ public class MockInvoiceItemRow extends HBox {
     }
 
     private InvoiceItemDTO setItem() {
-        return invoiceWidget.getItems().stream().filter(i -> i.getItemType().equals(itemName)).findFirst().orElse(null);
+        return invoiceWidget.getItems().stream().filter(i -> i.getFieldName().equals(itemName)).findFirst().orElse(null);
     }
 
     private void setSpinnerListener() {

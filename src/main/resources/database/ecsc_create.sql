@@ -190,7 +190,7 @@ create table ECSC_SQL.invoice_item
     INVOICE_ID  INTEGER        NOT NULL,
     MS_ID       INTEGER        NOT NULL,
     FISCAL_YEAR INTEGER        NULL,
-    ITEM_TYPE   varchar(50)    NOT NULL,
+    FIELD_NAME   varchar(50)    NOT NULL,
     MULTIPLIED  boolean        NOT NULL,
     IS_CREDIT   boolean        NOT NULL,
     VALUE       DECIMAL(10, 2) NULL,

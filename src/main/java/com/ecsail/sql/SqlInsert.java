@@ -8,8 +8,6 @@ import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.structures.*;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.Instant;
 
 public class SqlInsert {
 	
@@ -163,7 +161,7 @@ public class SqlInsert {
 	public static void addInvoiceItemRecord(InvoiceItemDTO i) {
 		String query = "INSERT INTO invoice_item () VALUES ("
 				+ i.getId() + "," + i.getInvoiceId() + "," + i.getMsId() + "," + i.getYear()
-				+ ",'" + i.getItemType() + "'," + i.isMultiplied() + "," + i.isCredit()
+				+ ",'" + i.getFieldName() + "'," + i.isMultiplied() + "," + i.isCredit()
 				+ ",'" + i.getValue() + "'," + i.getQty() + ")";
 		try {
 			BaseApplication.connect.executeQuery(query);

@@ -439,7 +439,7 @@ public class SqlUpdate {
 		try {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with updating item " + item.getItemType(),"");
+			new Dialogue_ErrorSQL(e,"There was a problem with updating item " + item.getFieldName(),"");
 		}
 	}
 

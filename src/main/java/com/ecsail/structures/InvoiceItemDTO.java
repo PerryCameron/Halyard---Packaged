@@ -9,30 +9,30 @@ public class InvoiceItemDTO {
     IntegerProperty invoiceId;
     IntegerProperty msId;
     IntegerProperty year;
-    StringProperty itemType;
+    StringProperty fieldName;
     BooleanProperty multiplied;
     BooleanProperty credit;
     StringProperty value;
     IntegerProperty qty;
 
-    public InvoiceItemDTO(Integer id, Integer invoiceId, Integer msId, Integer year, String itemType, Boolean multiplied, Boolean credit, String value, Integer qty) {
+    public InvoiceItemDTO(Integer id, Integer invoiceId, Integer msId, Integer year, String fieldName, Boolean multiplied, Boolean credit, String value, Integer qty) {
         this.id = new SimpleIntegerProperty(id);
         this.invoiceId = new SimpleIntegerProperty(invoiceId);
         this.msId = new SimpleIntegerProperty(msId);
         this.year = new SimpleIntegerProperty(year);
-        this.itemType = new SimpleStringProperty(itemType);
+        this.fieldName = new SimpleStringProperty(fieldName);
         this.multiplied = new SimpleBooleanProperty(multiplied);
         this.credit = new SimpleBooleanProperty(credit);
         this.value = new SimpleStringProperty(value);
         this.qty = new SimpleIntegerProperty(qty);
     }
 
-    public InvoiceItemDTO(Integer invoiceId, Integer msId, Integer year, String itemType) {
+    public InvoiceItemDTO(Integer invoiceId, Integer msId, Integer year, String fieldName) {
         this.id = new SimpleIntegerProperty(SqlSelect.getNextAvailablePrimaryKey("invoice_item", "ID"));
         this.invoiceId = new SimpleIntegerProperty(invoiceId);
         this.msId = new SimpleIntegerProperty(msId);
         this.year = new SimpleIntegerProperty(year);
-        this.itemType = new SimpleStringProperty(itemType);
+        this.fieldName = new SimpleStringProperty(fieldName);
         this.multiplied = new SimpleBooleanProperty(false);
         this.credit = new SimpleBooleanProperty(false);
         this.value = new SimpleStringProperty("0.00");
@@ -96,18 +96,18 @@ public class InvoiceItemDTO {
     }
 
 
-    public final StringProperty itemTypeProperty() {
-        return this.itemType;
+    public final StringProperty fieldNameProperty() {
+        return this.fieldName;
     }
 
 
-    public final String getItemType() {
-        return this.itemTypeProperty().get();
+    public final String getFieldName() {
+        return this.fieldNameProperty().get();
     }
 
 
-    public final void setItemType(final String itemType) {
-        this.itemTypeProperty().set(itemType);
+    public final void setFieldName(final String fieldName) {
+        this.fieldNameProperty().set(fieldName);
     }
 
 
@@ -172,7 +172,7 @@ public class InvoiceItemDTO {
                 ", invoiceId=" + invoiceId +
                 ", msId=" + msId +
                 ", year=" + year +
-                ", itemType=" + itemType +
+                ", fieldName=" + fieldName +
                 ", multiplied=" + multiplied +
                 ", credit=" + credit +
                 ", value=" + value +

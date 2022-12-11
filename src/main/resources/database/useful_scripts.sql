@@ -77,5 +77,5 @@ WHERE FISCAL_YEAR=2022;
 select i.VALUE from invoice_item i
          left join invoice i2 on i2.ID = i.INVOICE_ID
          where i.FISCAL_YEAR=2016 and i2.FISCAL_YEAR=2016.
-           and ITEM_TYPE='Initiation'
+           and FIELD_NAME='Initiation'
            and VALUE < 1000 and VALUE > 0 and i2.COMMITTED=true

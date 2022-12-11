@@ -184,7 +184,7 @@ public class PDF_DepositReport {
 			for(InvoiceItemDTO ii: invoiceItems) { // Scroll through invoice items
 				if(ii.getInvoiceId() == i.getId()) {  // get invoice item that matches this invoice
 					if(!ii.getValue().equals("0.00")) {  // if invoice item is not 0.00
-						addItemRow(detailTable, ii.getItemType(), ii.getValue(),ii.getQty());
+						addItemRow(detailTable, ii.getFieldName(), ii.getValue(),ii.getQty());
 					}
 				}
 			}
@@ -323,7 +323,7 @@ public class PDF_DepositReport {
 	private void addSummaryRow(Table mainTable, InvoiceItemDTO item) {
 		mainTable.addCell(new Cell());
 		mainTable.addCell(new Cell());
-		mainTable.addCell(new Cell().add(new Paragraph(item.getItemType())).setFontSize(10));
+		mainTable.addCell(new Cell().add(new Paragraph(item.getFieldName())).setFontSize(10));
 		mainTable.addCell(new Cell()
 				.add(new Paragraph(String.valueOf(item.getQty()))).setFontSize(10).setTextAlignment(TextAlignment.CENTER));
 		mainTable.addCell(new Cell()

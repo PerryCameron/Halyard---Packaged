@@ -25,7 +25,7 @@ public class HboxInvoiceSumItem extends HBox {
         vboxQty.setAlignment(Pos.CENTER_RIGHT);
         vboxValue.setAlignment(Pos.CENTER_RIGHT);
 
-        typeText.setText(invoiceSummedItem.getItemType());
+        typeText.setText(invoiceSummedItem.getFieldName());
         qtyText.setText(String.valueOf(invoiceSummedItem.getQty()));
         valueText.setText("$" + invoiceSummedItem.getValue());
         typeText.setId("invoice-text-light");

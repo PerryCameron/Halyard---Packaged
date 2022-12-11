@@ -215,7 +215,7 @@ public class SqlScriptMaker {
 				+ i.getInvoiceId() + ","
 				+ i.getMsId() + ","
 				+ i.getYear() + ","
-				+ getCorrectString(i.getItemType()) + ","
+				+ getCorrectString(i.getFieldName()) + ","
 				+ i.isMultiplied() + ","
 				+ i.isCredit()+ ","
 				+ i.getValue() + ","

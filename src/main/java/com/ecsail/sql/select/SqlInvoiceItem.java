@@ -23,7 +23,7 @@ public class SqlInvoiceItem {
                         rs.getInt("INVOICE_ID"),
                         rs.getInt("MS_ID"),
                         rs.getInt("FISCAL_YEAR"),
-                        rs.getString("ITEM_TYPE"),
+                        rs.getString("FIELD_NAME"),
                         rs.getBoolean("MULTIPLIED"),
                         rs.getBoolean("IS_CREDIT"),
                         rs.getString("VALUE"),
@@ -49,7 +49,7 @@ public class SqlInvoiceItem {
                         rs.getInt("INVOICE_ID"),
                         rs.getInt("MS_ID"),
                         rs.getInt("FISCAL_YEAR"),
-                        rs.getString("ITEM_TYPE"),
+                        rs.getString("FIELD_NAME"),
                         rs.getBoolean("MULTIPLIED"),
                         rs.getBoolean("IS_CREDIT"),
                         rs.getString("VALUE"),
@@ -75,7 +75,7 @@ public class SqlInvoiceItem {
                         rs.getInt("INVOICE_ID"),
                         rs.getInt("MS_ID"),
                         rs.getInt("FISCAL_YEAR"),
-                        rs.getString("ITEM_TYPE"),
+                        rs.getString("FIELD_NAME"),
                         rs.getBoolean("MULTIPLIED"),
                         rs.getBoolean("IS_CREDIT"),
                         rs.getString("VALUE"),
@@ -99,7 +99,7 @@ public class SqlInvoiceItem {
                         rs.getInt("INVOICE_ID"),
                         rs.getInt("MS_ID"),
                         rs.getInt("FISCAL_YEAR"),
-                        rs.getString("ITEM_TYPE"),
+                        rs.getString("FIELD_NAME"),
                         rs.getBoolean("MULTIPLIED"),
                         rs.getBoolean("IS_CREDIT"),
                         rs.getString("VALUE"),
@@ -116,11 +116,11 @@ public class SqlInvoiceItem {
         InvoiceItemDTO invoiceItem = null;
         String query = "select sum(ii.value) AS VALUE,sum(ii.QTY) AS QTY,IF(SUM(ii.IS_CREDIT) > 0,true,false) AS IS_CREDIT" +
                 " from invoice_item  ii left join invoice i on ii.INVOICE_ID = i.ID where i.FISCAL_YEAR="+year+" " +
-                " and ii.FISCAL_YEAR="+year+" and ITEM_TYPE='"+type+"' and COMMITTED=true";
+                " and ii.FISCAL_YEAR="+year+" and FIELD_NAME='"+type+"' and COMMITTED=true";
         if(batch > 0)
             query = "select sum(ii.value) AS VALUE,sum(ii.QTY) AS QTY, IF(SUM(ii.IS_CREDIT) > 0,true,false)" +
                     " AS IS_CREDIT from invoice_item ii left join invoice i on ii.INVOICE_ID = i.ID where" +
-                    " i.FISCAL_YEAR="+year+" and ii.FISCAL_YEAR="+year+" and ITEM_TYPE='"+type+"' and BATCH="+batch;
+                    " i.FISCAL_YEAR="+year+" and ii.FISCAL_YEAR="+year+" and FIELD_NAME='"+type+"' and BATCH="+batch;
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
