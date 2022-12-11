@@ -7,7 +7,7 @@ import javafx.collections.ObservableList;
 
 public class DbInvoiceDTO {
     private int id;
-    private String year;
+    private String fiscalYear;
     private String fieldName;
     private String widgetType;
     private double width;
@@ -25,9 +25,9 @@ public class DbInvoiceDTO {
     private ObservableList<InvoiceItemDTO> items;
 
 
-    public DbInvoiceDTO(int id, String year, String fieldName, String widgetType, double width, Integer order, boolean multiplied, boolean price_editable, boolean is_credit, int maxQty, boolean autoPopulate) {
+    public DbInvoiceDTO(int id, String fiscalYear, String fieldName, String widgetType, double width, Integer order, boolean multiplied, boolean price_editable, boolean is_credit, int maxQty, boolean autoPopulate) {
         this.id = id;
-        this.year = year;
+        this.fiscalYear = fiscalYear;
         this.fieldName = fieldName;
         this.widgetType = widgetType;
         this.width = width;
@@ -39,9 +39,9 @@ public class DbInvoiceDTO {
         this.autoPopulate = autoPopulate;
     }
 
-    public DbInvoiceDTO(String year, Integer order) {  // for creation of new DTO
+    public DbInvoiceDTO(String fiscalYear, Integer order) {  // for creation of new DTO
         this.id = SqlSelect.getNextAvailablePrimaryKey("db_invoice", "ID");
-        this.year = year;
+        this.fiscalYear = fiscalYear;
         this.fieldName = "new entry";
         this.widgetType = "none";
         this.width = 65;
@@ -61,12 +61,12 @@ public class DbInvoiceDTO {
         this.id = id;
     }
 
-    public String getYear() {
-        return year;
+    public String getFiscalYear() {
+        return fiscalYear;
     }
 
-    public void setYear(String year) {
-        this.year = year;
+    public void setFiscalYear(String fiscalYear) {
+        this.fiscalYear = fiscalYear;
     }
 
     public String getFieldName() {
@@ -165,7 +165,7 @@ public class DbInvoiceDTO {
     public String toString() {
         return "InvoiceWidgetDTO{" +
                 "id=" + id +
-                ", year='" + year + '\'' +
+                ", year='" + fiscalYear + '\'' +
                 ", objectName='" + fieldName + '\'' +
                 ", widgetType='" + widgetType + '\'' +
                 ", width=" + width +

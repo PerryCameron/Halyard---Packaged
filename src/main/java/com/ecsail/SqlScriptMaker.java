@@ -224,7 +224,7 @@ public class SqlScriptMaker {
 	private static String getInvoiceWidgetString(DbInvoiceDTO a) {
 		return "INSERT INTO db_invoice () VALUES("
 				+ a.getId() + ","
-				+ a.getYear() + ","
+				+ a.getFiscalYear() + ","
 				+ getCorrectString(a.getFieldName()) + ","
 				+ getCorrectString(a.getWidgetType()) + ","
 				+ a.getWidth() + ","

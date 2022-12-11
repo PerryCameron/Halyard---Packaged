@@ -380,7 +380,7 @@ CREATE TABLE ECSC_SQL.db_table_changes
 CREATE Table ECSC_SQL.db_invoice
 (
     id             INTEGER           NOT NULL primary key,
-    year           INTEGER           NOT NULL,
+    FISCAL_YEAR    INTEGER           NOT NULL,
     FIELD_NAME     varchar(30)       NOT NULL,
     widget_type    varchar(30)       NOT NULL,
     width          double,

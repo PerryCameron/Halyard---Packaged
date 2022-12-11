@@ -57,7 +57,7 @@ public class MockInvoiceItemRow extends HBox {
                 0,
                 0,
                 0,
-                Integer.parseInt(dbInvoiceDTO.getYear()),
+                Integer.parseInt(dbInvoiceDTO.getFiscalYear()),
                 dbInvoiceDTO.getFieldName(),
                 dbInvoiceDTO.isCredit(),
                 feeDTO.getFieldValue(),

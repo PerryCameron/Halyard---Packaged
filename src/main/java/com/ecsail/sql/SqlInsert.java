@@ -15,7 +15,7 @@ public class SqlInsert {
 	public static void addNewDbInvoice(DbInvoiceDTO d) {
 		String query = "INSERT INTO db_invoice () VALUES ("
 				+ d.getId() + ","
-				+ d.getYear() + ",'"
+				+ d.getFiscalYear() + ",'"
 				+ d.getFieldName() + "','"
 				+ d.getWidgetType() + "',"
 				+ d.getWidth() + ","

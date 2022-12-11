@@ -18,7 +18,7 @@ public class SqlDbInvoice {
             while (rs.next()) {
                 theseWidgets.add(new DbInvoiceDTO(
                         rs.getInt("ID"),
-                        rs.getString("year"),
+                        rs.getString("FISCAL_YEAR"),
                         rs.getString("FIELD_NAME"),
                         rs.getString("widget_type"),
                         rs.getDouble("width"),
@@ -39,13 +39,13 @@ public class SqlDbInvoice {
 
     public static ArrayList<DbInvoiceDTO> getDbInvoiceByYear(int year) {  //p_id
         ArrayList<DbInvoiceDTO> dbInvoiceDTOS = new ArrayList<>();
-        String query = "select * from db_invoice where year=" + year;
+        String query = "select * from db_invoice where FISCAL_YEAR=" + year;
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
                 dbInvoiceDTOS.add(new DbInvoiceDTO(
                         rs.getInt("ID"),
-                        rs.getString("year"),
+                        rs.getString("FISCAL_YEAR"),
                         rs.getString("FIELD_NAME"),
                         rs.getString("widget_type"),
                         rs.getDouble("width"),
@@ -66,7 +66,7 @@ public class SqlDbInvoice {
 
     public static ArrayList<String> getInvoiceCategoriesByYear(int year) {  //p_id
         ArrayList<String> categories = new ArrayList<>();
-        String query = "select FIELD_NAME from db_invoice where year=" + year;
+        String query = "select FIELD_NAME from db_invoice where FISCAL_YEAR=" + year;
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
@@ -81,13 +81,13 @@ public class SqlDbInvoice {
 
     public static DbInvoiceDTO getInvoiceByYearAndFieldName(int year, String fieldName) {  //p_id
         DbInvoiceDTO dbInvoiceDTO = null;
-        String query = "select * from db_invoice where year="+year+" and FIELD_NAME='"+fieldName+"'";
+        String query = "select * from db_invoice where FISCAL_YEAR="+year+" and FIELD_NAME='"+fieldName+"'";
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
                 dbInvoiceDTO = new DbInvoiceDTO(
                         rs.getInt("ID"),
-                        rs.getString("year"),
+                        rs.getString("FISCAL_YEAR"),
                         rs.getString("FIELD_NAME"),
                         rs.getString("widget_type"),
                         rs.getDouble("width"),
