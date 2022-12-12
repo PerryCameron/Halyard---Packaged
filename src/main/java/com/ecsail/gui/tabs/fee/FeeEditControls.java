@@ -104,7 +104,7 @@ public class FeeEditControls extends HBox {
             else {
                 FeeDTO feeDTO = new FeeDTO(0,
                         getSelectedHBoxFeeRow().getDbInvoiceDTO().getFieldName(),
-                        "0.00",0,0,"");
+                        "0.00",0,0,"",true);
                 vBoxMockItems.getChildren().addAll(mockHeader, new MockInvoiceItemRow(selectedHBoxFreeRow.getDbInvoiceDTO(), feeDTO));
             }
     }

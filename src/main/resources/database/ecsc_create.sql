@@ -95,17 +95,18 @@ CREATE TABLE ECSC_SQL.fee
     DB_INVOICE_ID INTEGER                    NOT NULL,
     FEE_YEAR      INTEGER                    NOT NULL,
     Description   varchar(40)                NULL,
+    DEFAULT_FEE   boolean                    NOT NULL,
     foreign key (DB_INVOICE_ID) references db_invoice (ID)
 );
 
 create table ECSC_SQL.memo
 (
-    MEMO_ID   INTEGER         NOT NULL auto_increment primary key,
-    MS_ID     INTEGER         NOT NULL,
-    MEMO_DATE date        NOT NULL,
-    MEMO      varchar(2000),
-    INVOICE_ID  INTEGER,
-    CATEGORY  varchar(20) NOT NULL,
+    MEMO_ID    INTEGER     NOT NULL auto_increment primary key,
+    MS_ID      INTEGER     NOT NULL,
+    MEMO_DATE  date        NOT NULL,
+    MEMO       varchar(2000),
+    INVOICE_ID INTEGER,
+    CATEGORY   varchar(20) NOT NULL,
     foreign key (MS_ID) references membership (MS_ID)
 );
 
@@ -191,7 +192,6 @@ create table ECSC_SQL.invoice_item
     MS_ID       INTEGER        NOT NULL,
     FISCAL_YEAR INTEGER        NULL,
     FIELD_NAME   varchar(50)    NOT NULL,
-    MULTIPLIED  boolean        NOT NULL,
     IS_CREDIT   boolean        NOT NULL,
     VALUE       DECIMAL(10, 2) NULL,
     QTY         INTEGER        NULL,

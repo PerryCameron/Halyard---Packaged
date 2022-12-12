@@ -1,9 +1,6 @@
 package com.ecsail.structures;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 
 public class FeeDTO {
     private final IntegerProperty feeId;
@@ -12,14 +9,16 @@ public class FeeDTO {
     private final IntegerProperty dbInvoiceID;
     private final IntegerProperty feeYear;
     private final StringProperty description;
+    private final BooleanProperty defaultFee;
 
-    public FeeDTO(Integer feeId, String fieldName, String fieldValue, Integer dbInvoiceID, Integer feeYear, String description) {
+    public FeeDTO(Integer feeId, String fieldName, String fieldValue, Integer dbInvoiceID, Integer feeYear, String description, boolean defaultFee) {
         this.feeId = new SimpleIntegerProperty(feeId);
         this.fieldName = new SimpleStringProperty(fieldName);
         this.fieldValue = new SimpleStringProperty(fieldValue);
         this.dbInvoiceID = new SimpleIntegerProperty(dbInvoiceID);
         this.feeYear = new SimpleIntegerProperty(feeYear);
         this.description = new SimpleStringProperty(description);
+        this.defaultFee = new SimpleBooleanProperty(defaultFee);
     }
 
     public final IntegerProperty feeIdProperty() {
@@ -109,6 +108,18 @@ public class FeeDTO {
         this.descriptionProperty().set(description);
     }
 
+    public final BooleanProperty defaultFeeProperty() {
+        return this.defaultFee;
+    }
+
+    public final boolean isDefaultFee() {
+        return this.defaultFeeProperty().get();
+    }
+
+    public final void setDefaultFee(final boolean defaultFee) {
+        this.defaultFeeProperty().set(defaultFee);
+    }
+
     @Override
     public String toString() {
         return "FeeDTO{" +
@@ -118,6 +129,7 @@ public class FeeDTO {
                 ", dbInvoiceID=" + dbInvoiceID +
                 ", feeYear=" + feeYear +
                 ", description=" + description +
+                ", defaultFee=" + defaultFee +
                 '}';
     }
 }

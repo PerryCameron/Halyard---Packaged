@@ -25,7 +25,8 @@ public class SqlFee {
                             rs.getString("FIELD_VALUE"),
                             rs.getInt("DB_INVOICE_ID"),
                             rs.getInt("fee_year"),
-                            rs.getString("DESCRIPTION")
+                            rs.getString("DESCRIPTION"),
+                            rs.getBoolean("DEFAULT_FEE")
                     ));
                 }
                 BaseApplication.connect.closeResultSet(rs);
@@ -47,7 +48,8 @@ public class SqlFee {
                         rs.getString("FIELD_VALUE"),
                         rs.getInt("DB_INVOICE_ID"),
                         rs.getInt("fee_year"),
-                        rs.getString("DESCRIPTION")
+                        rs.getString("DESCRIPTION"),
+                        rs.getBoolean("DEFAULT_FEE")
                 ));
             }
             BaseApplication.connect.closeResultSet(rs);
@@ -69,7 +71,8 @@ public class SqlFee {
                         rs.getString("FIELD_VALUE"),
                         rs.getInt("DB_INVOICE_ID"),
                         rs.getInt("fee_year"),
-                        rs.getString("DESCRIPTION")
+                        rs.getString("DESCRIPTION"),
+                        rs.getBoolean("DEFAULT_FEE")
                 ));
             }
             BaseApplication.connect.closeResultSet(rs);
@@ -100,7 +103,8 @@ public class SqlFee {
                         rs.getString("FIELD_VALUE"),
                         rs.getInt("DB_INVOICE_ID"),
                         rs.getInt("fee_year"),
-                        rs.getString("DESCRIPTION")
+                        rs.getString("DESCRIPTION"),
+                        rs.getBoolean("DEFAULT_FEE")
                 );
             }
             BaseApplication.connect.closeResultSet(rs);
