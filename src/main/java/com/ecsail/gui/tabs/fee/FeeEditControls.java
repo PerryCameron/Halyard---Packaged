@@ -10,7 +10,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,8 +30,6 @@ public class FeeEditControls extends HBox {
     private final VBox vBoxMockItems = new VBox();
     ToggleGroup tg = new ToggleGroup();
 
-    Text currentTextObject = new Text();
-
     public FeeEditControls(TabFee parent) {
         this.parent = parent;
         setPadding(new Insets(15,5,5,7));
@@ -51,6 +48,8 @@ public class FeeEditControls extends HBox {
             rbHash.put(title, new RadioButton(title));
             rbHash.get(title).setToggleGroup(tg);
         });
+
+
 
         vBoxCheckBox.setPadding(new Insets(0,0,0,30));
         vBoxTableButtons.setPadding(new Insets(46,0,0,0));
@@ -84,6 +83,7 @@ public class FeeEditControls extends HBox {
         setIsCreditCheckBoxListener();
         setPriceIsEditableCheckBoxListener();
         setFieldNameTextListener();
+        setAddButtonListener(addFeeButton);
         vBoxTableButtons.getChildren().addAll(addFeeButton,deleteButton);
         hBoxTableHeader.getChildren().add(fieldNameText);
         vBoxRadio.getChildren()
@@ -95,6 +95,15 @@ public class FeeEditControls extends HBox {
         hBoxDisplay.getChildren().addAll(vBoxSpinner,vBoxCheckBox,vBoxRadio);
         vBoxDisplay.getChildren().addAll(hBoxDisplay,titledPane); // add displayed item to bottom
         getChildren().addAll(vBoxDisplay,hBoxTableGroup); // this is hbox
+    }
+
+    private void setAddButtonListener(Button addFeeButton) {
+        addFeeButton.setOnAction(event -> {
+        FeeDTO feeDTO = new FeeDTO(selectedHBoxFreeRow.getDbInvoiceDTO().getFieldName(),
+                "0.00",selectedHBoxFreeRow.getDbInvoiceDTO().getId(),
+                Integer.parseInt(selectedHBoxFreeRow.getDbInvoiceDTO().getFiscalYear()),"Description");
+        fees.add(feeDTO);
+        });
     }
 
     public void refreshMockBox() {
@@ -119,21 +128,21 @@ public class FeeEditControls extends HBox {
         isCredit.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isCredit());
         priceIsEditable.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isPrice_editable());
         fieldNameText.setText(selectedHBoxFreeRow.getDbInvoiceDTO().getFieldName());
-
-//        selectedHBoxFreeRow.getLabel().textProperty().unbind();
-//        fieldNameText.getTextField().textProperty().unbind();
-//        currentTextObject.textProperty().unbind();
-//        System.out.println("lastTextObject=" + currentTextObject.hashCode());
-//        System.out.println("selectedHBox " + selectedHBoxFreeRow.getLabel().hashCode());
-//        System.out.println("fieldNameText " + fieldNameText.getTextField());
-//        currentTextObject = selectedHBoxFreeRow.getLabel();
-//        fieldNameText.getTextField().textProperty().bind(selectedHBoxFreeRow.getLabel().textProperty());
-//        selectedHBoxFreeRow.getLabel().textProperty().bind(fieldNameText.getTextField().textProperty());
         setOrderSpinner();
         fees.clear();
         fees.addAll(selectedHBoxFreeRow.getFees());
+        tempUpdatefees();
         refreshMockBox();
         setRadioToMatchDBInvoice();
+    }
+
+    private void tempUpdatefees() {  // this will be removed once all are updated.
+        System.out.println("db_invoice.id= " + selectedHBoxFreeRow.getDbInvoiceDTO().getId());
+        fees.stream().filter(fee -> fee.getDbInvoiceID() == 0).forEach(feeDTO -> {
+            feeDTO.setDbInvoiceID(selectedHBoxFreeRow.getDbInvoiceDTO().getId());
+            SqlUpdate.updateFeeRecord(feeDTO);
+            System.out.println(feeDTO);
+        });
     }
 
     private void setFieldNameTextListener() {

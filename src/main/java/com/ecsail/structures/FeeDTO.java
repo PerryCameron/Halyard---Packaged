@@ -1,5 +1,6 @@
 package com.ecsail.structures;
 
+import com.ecsail.sql.select.SqlSelect;
 import javafx.beans.property.*;
 
 public class FeeDTO {
@@ -19,6 +20,16 @@ public class FeeDTO {
         this.feeYear = new SimpleIntegerProperty(feeYear);
         this.description = new SimpleStringProperty(description);
         this.defaultFee = new SimpleBooleanProperty(defaultFee);
+    }
+
+    public FeeDTO(String fieldName, String fieldValue, Integer dbInvoiceID, Integer feeYear, String description) {
+        this.feeId = new SimpleIntegerProperty(SqlSelect.getNextAvailablePrimaryKey("fee","fee_id"));
+        this.fieldName = new SimpleStringProperty(fieldName);
+        this.fieldValue = new SimpleStringProperty(fieldValue);
+        this.dbInvoiceID = new SimpleIntegerProperty(dbInvoiceID);
+        this.feeYear = new SimpleIntegerProperty(feeYear);
+        this.description = new SimpleStringProperty(description);
+        this.defaultFee = new SimpleBooleanProperty(true);
     }
 
     public final IntegerProperty feeIdProperty() {
