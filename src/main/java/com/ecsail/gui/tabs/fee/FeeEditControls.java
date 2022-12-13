@@ -1,6 +1,10 @@
 package com.ecsail.gui.tabs.fee;
 
+import com.ecsail.BaseApplication;
+import com.ecsail.sql.SqlDelete;
+import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
+import com.ecsail.structures.EmailDTO;
 import com.ecsail.structures.FeeDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,6 +17,7 @@ import javafx.scene.layout.VBox;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Optional;
 
 public class FeeEditControls extends HBox {
     private final TabFee parent;
@@ -30,6 +35,8 @@ public class FeeEditControls extends HBox {
     private final VBox vBoxMockItems = new VBox();
     ToggleGroup tg = new ToggleGroup();
 
+    private FeeTableView feeTableView = new FeeTableView(this);
+
     public FeeEditControls(TabFee parent) {
         this.parent = parent;
         setPadding(new Insets(15,5,5,7));
@@ -42,8 +49,6 @@ public class FeeEditControls extends HBox {
         VBox vBoxRadio = new VBox();
         VBox vBoxDisplay = new VBox();
         HBox hBoxDisplay = new HBox();
-        Button addFeeButton = new Button("Add Fee");
-        Button deleteButton = new Button("Delete");
         Arrays.stream(radioButtonTitles).forEach(title -> {
             rbHash.put(title, new RadioButton(title));
             rbHash.get(title).setToggleGroup(tg);
@@ -68,8 +73,7 @@ public class FeeEditControls extends HBox {
         vBoxSpinner.setPrefWidth(160);
         vBoxCheckBox.setPrefWidth(200);
         vBoxRadio.setPrefWidth(150);
-        addFeeButton.setPrefWidth(70);
-        deleteButton.setPrefWidth(70);
+
         vBoxTableButtons.setPrefWidth(70);
         hBoxDisplay.setPrefHeight(100);
         HBox.setHgrow(vBoxTable, Priority.ALWAYS);
@@ -83,27 +87,54 @@ public class FeeEditControls extends HBox {
         setIsCreditCheckBoxListener();
         setPriceIsEditableCheckBoxListener();
         setFieldNameTextListener();
-        setAddButtonListener(addFeeButton);
-        vBoxTableButtons.getChildren().addAll(addFeeButton,deleteButton);
+        vBoxTableButtons.getChildren().addAll(setAddButton(),setDeleteButton());
         hBoxTableHeader.getChildren().add(fieldNameText);
         vBoxRadio.getChildren()
                 .addAll(rbHash.get("Spinner"),rbHash.get("TextField"),rbHash.get("Drop Down"),rbHash.get("None"));
         vBoxSpinner.getChildren().addAll(orderedSpinner,maxQtySpinner);
         vBoxCheckBox.getChildren().addAll(autoPopulate,isCredit,priceIsEditable,vBoxRadio);
-        vBoxTable.getChildren().addAll(hBoxTableHeader, new FeeTableView(this));
+        vBoxTable.getChildren().addAll(hBoxTableHeader, feeTableView);
         hBoxTableGroup.getChildren().addAll(vBoxTable,vBoxTableButtons);
         hBoxDisplay.getChildren().addAll(vBoxSpinner,vBoxCheckBox,vBoxRadio);
         vBoxDisplay.getChildren().addAll(hBoxDisplay,titledPane); // add displayed item to bottom
         getChildren().addAll(vBoxDisplay,hBoxTableGroup); // this is hbox
     }
 
-    private void setAddButtonListener(Button addFeeButton) {
-        addFeeButton.setOnAction(event -> {
-        FeeDTO feeDTO = new FeeDTO(selectedHBoxFreeRow.getDbInvoiceDTO().getFieldName(),
-                "0.00",selectedHBoxFreeRow.getDbInvoiceDTO().getId(),
-                Integer.parseInt(selectedHBoxFreeRow.getDbInvoiceDTO().getFiscalYear()),"Description");
-        fees.add(feeDTO);
+    private Button setDeleteButton() {
+        Button deleteButton = new Button("Delete");
+        deleteButton.setPrefWidth(70);
+        deleteButton.setOnAction(event -> {
+            int selectedIndex = feeTableView.getSelectionModel().getSelectedIndex();
+            if (selectedIndex >= 0) {// make sure something is selected
+                FeeDTO feeDTO = fees.get(selectedIndex);
+                Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
+                conformation.setTitle("Delete Email Entry");
+                conformation.setHeaderText(feeDTO.getDescription());
+                conformation.setContentText("Are sure you want to delete this fee entry?");
+                DialogPane dialogPane = conformation.getDialogPane();
+                dialogPane.getStylesheets().add("css/dark/dialogue.css");
+                dialogPane.getStyleClass().add("dialog");
+                Optional<ButtonType> result = conformation.showAndWait();
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    SqlDelete.deleteFee(feeDTO);  // if deleted in database
+                    feeTableView.getItems().remove(selectedIndex); // remove from GUI
+                }
+            }
         });
+        return deleteButton;
+    }
+
+    private Button setAddButton() {
+        Button addFeeButton = new Button("Add Fee");
+        addFeeButton.setPrefWidth(70);
+        addFeeButton.setOnAction(event -> {
+            FeeDTO feeDTO = new FeeDTO(selectedHBoxFreeRow.getDbInvoiceDTO().getFieldName(),
+                    "0.00", selectedHBoxFreeRow.getDbInvoiceDTO().getId(),
+                    Integer.parseInt(selectedHBoxFreeRow.getDbInvoiceDTO().getFiscalYear()), "Description");
+            fees.add(feeDTO);
+            SqlInsert.addNewFee(feeDTO);
+        });
+        return addFeeButton;
     }
 
     public void refreshMockBox() {
