@@ -286,4 +286,9 @@ public class FeeEditControls extends HBox {
     public void setFees(ObservableList<FeeDTO> fees) {
         this.fees = fees;
     }
+
+
+    public TabFee getTabFee() {
+        return parent;
+    }
 }

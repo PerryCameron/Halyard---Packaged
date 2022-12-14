@@ -24,7 +24,7 @@ public class TabFee extends Tab {
     private String selectedYear;
     private ArrayList<FeeDTO> feeDTOS;
     private final ArrayList<FeeRow> rows = new ArrayList<>();
-    FeesLineChartEx duesLineChart;
+    private FeesLineChartEx duesLineChart;
     private final ToggleGroup radioGroup;
     private final HashMap<RadioButton, FeeRow> hboxHashMap;
     private final VBox vboxFeeRow;
@@ -309,5 +309,9 @@ public class TabFee extends Tab {
 
     public ArrayList<FeeRow> getRows() {
         return rows;
+    }
+
+    public FeesLineChartEx getDuesLineChart() {
+        return duesLineChart;
     }
 }

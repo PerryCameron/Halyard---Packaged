@@ -1,4 +1,4 @@
-package com.ecsail.gui.tabs;
+package com.ecsail.gui.tabs.roster;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
@@ -106,11 +106,8 @@ public class TabRoster extends Tab {
 		c3.setSelected(true);
 		
 		tabPane.setId("custom-mini-tab-pane");
-//		vboxBlue.setId("hboxExport"); // outside frame around tableview and TitledPane
-//		vboxPink.setId("hboxExport");  // inside frame around tableview and TitledPane
 		hboxExportFrame.setId("hboxExport");
-//		hboxExport.setId("hboxExport");  // background for export part
-		
+
 		hboxExport.setSpacing(10);
 		vboxCheckBox4.setSpacing(5);
 		controlsHbox.setSpacing(10);

@@ -10,6 +10,7 @@ import com.ecsail.gui.tabs.*;
 import com.ecsail.gui.tabs.database.TabDataBase;
 import com.ecsail.gui.tabs.deposits.TabDeposits;
 import com.ecsail.gui.tabs.membership.TabMembership;
+import com.ecsail.gui.tabs.roster.TabRoster;
 import com.ecsail.gui.tabs.welcome.TabWelcome;
 import com.ecsail.jotform.TabJotForm;
 import com.ecsail.pdf.PDF_BoatReport;
