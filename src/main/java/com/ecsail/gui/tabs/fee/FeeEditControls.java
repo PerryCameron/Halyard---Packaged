@@ -1,10 +1,8 @@
 package com.ecsail.gui.tabs.fee;
 
-import com.ecsail.BaseApplication;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.structures.EmailDTO;
 import com.ecsail.structures.FeeDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -34,7 +32,6 @@ public class FeeEditControls extends HBox {
     private final MockHeader mockHeader = new MockHeader();
     private final VBox vBoxMockItems = new VBox();
     ToggleGroup tg = new ToggleGroup();
-
     private FeeTableView feeTableView = new FeeTableView(this);
 
     public FeeEditControls(TabFee parent) {
@@ -53,9 +50,6 @@ public class FeeEditControls extends HBox {
             rbHash.put(title, new RadioButton(title));
             rbHash.get(title).setToggleGroup(tg);
         });
-
-
-
         vBoxCheckBox.setPadding(new Insets(0,0,0,30));
         vBoxTableButtons.setPadding(new Insets(46,0,0,0));
         vBoxDisplay.setPadding(new Insets(0,20,0,0));
@@ -177,9 +171,22 @@ public class FeeEditControls extends HBox {
     }
 
     private void setFieldNameTextListener() {
-        fieldNameText.getTextField().textProperty().addListener((observable, oldValue, newValue) -> {
-            selectedHBoxFreeRow.getLabel().setText(newValue);
+        fieldNameText.getTextField().focusedProperty().addListener((observable, oldValue, newValue) -> {
+            selectedHBoxFreeRow.getLabel().setText(fieldNameText.getTextField().getText());
+            // must change both db_invoice and matching fees
+            updateFees();
+            selectedHBoxFreeRow.getDbInvoiceDTO().setFieldName(fieldNameText.getTextField().getText());
+            SqlUpdate.updateFeeRecord(selectedHBoxFreeRow.getSelectedFee());
         });
+    }
+
+    private void updateFees() {
+        if(fees.size() > 0) {
+            fees.stream().forEach(feeDTO -> {
+                feeDTO.setFieldName(fieldNameText.getTextField().getText());
+                SqlUpdate.updateFeeRecord(feeDTO);
+            });
+        }
     }
 
     public void setOrderSpinner() {

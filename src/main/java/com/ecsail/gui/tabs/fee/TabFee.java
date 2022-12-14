@@ -10,7 +10,6 @@ import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.structures.DbInvoiceDTO;
 import com.ecsail.structures.FeeDTO;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -39,7 +38,6 @@ public class TabFee extends Tab {
         super(text);
         this.selectedYear = BaseApplication.selectedYear;
         this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
-//        this.invoiceItems = SqlDbInvoice.getDbInvoiceByYear(Integer.parseInt(selectedYear));
         this.radioGroup = new ToggleGroup();
         this.hboxHashMap = new HashMap<>();
         this.comboBox = addComboBox();
@@ -54,8 +52,6 @@ public class TabFee extends Tab {
 
         // this is the vbox for organizing all the widgets
         VBox vbox4 = new VBox();
-        Separator separator = new Separator(Orientation.HORIZONTAL);
-        HBox.setHgrow(separator,Priority.ALWAYS);
         HBox hbox2 = new HBox();
         VBox vbox1 = new VBox();
         ScrollPane itemsScrollPane = new ScrollPane();
@@ -87,7 +83,8 @@ public class TabFee extends Tab {
         comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> setNewYear(newValue));
 
         //////////// SETTING CONTENT /////////////
-
+        TitledPane feeEditControlsTitlePane = new TitledPane();
+        feeEditControlsTitlePane.setContent(feeEditControls);
         // adds buttons and year combobox
         addControlBox();
         HBox.setHgrow(hbox2, Priority.ALWAYS);
@@ -95,7 +92,7 @@ public class TabFee extends Tab {
         itemsScrollPane.setContent(vboxFeeRow);
         vbox4.getChildren().addAll(hboxControls, itemsScrollPane);
         hbox2.getChildren().addAll(vbox4, duesLineChart);
-        vbox1.getChildren().addAll(hbox2,separator, feeEditControls);
+        vbox1.getChildren().addAll(hbox2, feeEditControlsTitlePane);
         setContent(vbox1);
     }
 
@@ -115,7 +112,6 @@ public class TabFee extends Tab {
         addButton.setOnAction(event -> {
             radioEnable=false;
             vboxFeeRow.getChildren().add(addNewRow());
-//            feeEditControls.refreshData();
             radioEnable=true;
         });
         return addButton;
@@ -244,8 +240,6 @@ public class TabFee extends Tab {
         }
     }
 
-
-
     // year combo box at top
     private ComboBox<Integer> addComboBox() {
         ComboBox<Integer> comboBox = new ComboBox<>();
@@ -272,7 +266,7 @@ public class TabFee extends Tab {
             newRow = new FeeRow( this, item); // add db_invoice to each row
             rows.add(newRow);
             for (FeeDTO fee : feeDTOS) {
-                if(fee.getFieldName().equals(item.getFieldName())) {
+                if(fee.getDbInvoiceID() == item.getId()) {
                     newRow.getFees().add(fee); // add fee to row
                     newRow.setForFee();
                 }
