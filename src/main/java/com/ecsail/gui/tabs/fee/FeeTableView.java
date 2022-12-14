@@ -1,9 +1,7 @@
 package com.ecsail.gui.tabs.fee;
 
 import com.ecsail.EditCell;
-import com.ecsail.Launcher;
 import com.ecsail.structures.FeeDTO;
-import com.ecsail.structures.MembershipListDTO;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -13,6 +11,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.function.Function;
 
@@ -24,13 +24,15 @@ public class FeeTableView extends TableView<FeeDTO> {
         this.parent = hBoxEditControls;
         this.fees = parent.getFees();
 
-
         TableColumn<FeeDTO, String> col2 = createColumn("Price", FeeDTO::fieldValueProperty);
         col2.setStyle("-fx-alignment: CENTER-RIGHT;");
-        col2.setOnEditCommit(
-                t -> t.getTableView().getItems().get(
-                        t.getTablePosition().getRow()).setFieldValue(t.getNewValue())
-        );
+        col2.setOnEditCommit(t -> {
+            BigDecimal dollarValue = new BigDecimal(t.getNewValue());
+            String fixedDollarValue = String.valueOf(dollarValue.setScale(2, RoundingMode.HALF_UP));
+            t.getTableView().getItems().get(t.getTablePosition().getRow()).setFieldValue(fixedDollarValue);
+            FeeDTO feeDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            System.out.println(feeDTO);
+        });
 
         TableColumn<FeeDTO, String> col3 = createColumn("Description", FeeDTO::descriptionProperty);
         col3.setStyle("-fx-alignment: CENTER-LEFT;");
@@ -39,19 +41,18 @@ public class FeeTableView extends TableView<FeeDTO> {
                         t.getTablePosition().getRow()).setDescription(t.getNewValue())
         );
 
-//        col1.setMaxWidth(1f * Integer.MAX_VALUE * 5);  // Fee Name
         col2.setMaxWidth(1f * Integer.MAX_VALUE * 15);  // Fee Price
         col3.setMaxWidth(1f * Integer.MAX_VALUE * 85);   // Description
 
         //////////////// ATTRIBUTES ///////////////////
         HBox.setHgrow(this, Priority.ALWAYS);
-//        setEditable(!footer.getInvoice().isCommitted());
-
+        setEditable(true);
         setItems(fees);
         setRowListener();
         setPrefHeight(150);
         setPrefWidth(380);
         setFixedCellSize(30);
+        getSelectionModel().selectFirst();
         setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         getColumns().addAll(Arrays.asList(col2, col3));
     }
@@ -71,7 +72,6 @@ public class FeeTableView extends TableView<FeeDTO> {
             return row;
         });
     }
-
 
     private <T> TableColumn<T, String> createColumn(String title, Function<T, StringProperty> property) {
         TableColumn<T, String> col = new TableColumn<>(title);
