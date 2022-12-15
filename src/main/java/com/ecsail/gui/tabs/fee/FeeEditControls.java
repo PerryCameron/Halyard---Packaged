@@ -25,13 +25,13 @@ public class FeeEditControls extends HBox {
     private final CheckBox autoPopulate = new CheckBox("Auto Populate");
     private final CheckBox isCredit = new CheckBox("Credit");
     private final CheckBox priceIsEditable = new CheckBox("Price Editable");
-    HashMap<String,RadioButton> rbHash = new HashMap<>();
-    String[] radioButtonTitles = {"Spinner","TextField","Drop Down","None"};
+    private HashMap<String,RadioButton> rbHash = new HashMap<>();
+    private String[] radioButtonTitles = {"Spinner","TextField","Drop Down","None"};
     private final LabeledTextField fieldNameText = new LabeledTextField("Field Name");
     private FeeRow selectedHBoxFreeRow;
     private final MockHeader mockHeader = new MockHeader();
     private final VBox vBoxMockItems = new VBox();
-    ToggleGroup tg = new ToggleGroup();
+    private ToggleGroup tg = new ToggleGroup();
     private FeeTableView feeTableView = new FeeTableView(this);
 
     private boolean okToWriteToDatabase;
@@ -162,7 +162,7 @@ public class FeeEditControls extends HBox {
         // sets spinners in edit box
         setOrderSpinner();
         fees.clear();
-        fees.addAll(selectedHBoxFreeRow.getFees());
+        fees.addAll(selectedHBoxFreeRow.fees);
         refreshMockBox();
         // sets correct radio button for widget in edit box
         setRadioToMatchDBInvoice();
@@ -171,13 +171,14 @@ public class FeeEditControls extends HBox {
 
     private void setFieldNameTextListener() {
         fieldNameText.getTextField().focusedProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println(parent.selectedFeeRow.label);
             // changes label to match entered text
-            selectedHBoxFreeRow.getLabel().setText(fieldNameText.getTextField().getText());
+//            parent.selectedFeeRow.getLabel().setText(fieldNameText.getTextField().getText());
             // must change both db_invoice and matching fees
-            updateFees();
-            selectedHBoxFreeRow.getDbInvoiceDTO().setFieldName(fieldNameText.getTextField().getText());
+//            updateFees();
+//            parent.selectedFeeRow.getDbInvoiceDTO().setFieldName(fieldNameText.getTextField().getText());
             // TODO
-            SqlUpdate.updateDbInvoice(selectedHBoxFreeRow.getDbInvoiceDTO());
+//            SqlUpdate.updateDbInvoice(parent.selectedFeeRow.getDbInvoiceDTO());
         });
     }
 

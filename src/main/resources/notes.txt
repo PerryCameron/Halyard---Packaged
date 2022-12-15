@@ -15,4 +15,6 @@ When making deposit report, it prints out current year instead of the selected y
 
 When adding a Note you can't add a single quote. need to fix this.
 
+When adding a fee, need to refresh the fee list or add the fee
+
 

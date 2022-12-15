@@ -23,7 +23,6 @@ public class TabFee extends Tab {
     private String selectedYear;
     private ArrayList<FeeDTO> feeDTOS;
     private final ArrayList<FeeRow> rows = new ArrayList<>();
-
     private final ToggleGroup radioGroup;
     private final HashMap<RadioButton, FeeRow> hboxHashMap;
     private final VBox vboxFeeRow;
@@ -32,6 +31,8 @@ public class TabFee extends Tab {
     protected FeesLineChartEx duesLineChart;
     protected FeeEditControls feeEditControls;
     protected boolean okToWriteToDataBase = true;
+
+    protected FeeRow selectedFeeRow;
 
     public TabFee(String text) {
         super(text);
@@ -148,7 +149,7 @@ public class TabFee extends Tab {
         this.selectedYear = newValue.toString();
         this.feeDTOS.clear();
         this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
-        hboxHashMap.clear();
+//        hboxHashMap.clear();
         rows.clear();
         addControlBox();
         createFeeRows();
@@ -202,9 +203,9 @@ public class TabFee extends Tab {
     private void deleteRowIn() {
         if (radioGroup.getSelectedToggle() != null) {
             // remove from database
-            SqlDelete.deleteFee(hboxHashMap.get(radioGroup.getSelectedToggle()).getSelectedFee());
+            SqlDelete.deleteFee(hboxHashMap.get(radioGroup.getSelectedToggle()).selectedFee);
             // remove from list
-            feeDTOS.remove(hboxHashMap.get(radioGroup.getSelectedToggle()).getSelectedFee());
+            feeDTOS.remove(hboxHashMap.get(radioGroup.getSelectedToggle()).selectedFee);
             // clear HBoxes from column
             vboxFeeRow.getChildren().remove(hboxHashMap.get(radioGroup.getSelectedToggle()));
         }
@@ -237,7 +238,7 @@ public class TabFee extends Tab {
             rows.add(newRow);
             for (FeeDTO fee : feeDTOS) {
                 if(fee.getDbInvoiceID() == item.getId()) {
-                    newRow.getFees().add(fee); // add fee to row
+                    newRow.fees.add(fee); // add fee to row
                 }
             }
         }
@@ -251,8 +252,8 @@ public class TabFee extends Tab {
             vboxFeeRow.getChildren().add(row);
             if(row.getOrder() == size) { // picks top entry
                 row.getRadioButton().setSelected(true);
-                if(row.getSelectedFee() != null)
-                    duesLineChart.refreshChart(row.getSelectedFee().getDescription());
+                if(row.selectedFee != null)
+                    duesLineChart.refreshChart(row.selectedFee.getDescription());
                 feeEditControls.refreshData(); // refreshed data for selected fee
             }
         }

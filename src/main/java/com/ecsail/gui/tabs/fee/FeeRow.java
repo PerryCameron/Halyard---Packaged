@@ -13,23 +13,23 @@ import java.util.ArrayList;
 
 public class FeeRow extends HBox {
     private final TabFee parent;
-    private final ArrayList<FeeDTO> fees = new ArrayList<>();
-    private FeeDTO selectedFee;
     private RadioButton radioButton;
-    private Text label;
-    private final DbInvoiceDTO dbInvoiceDTO;
-
-    private final boolean hasFee = false;
     private final IntegerProperty order;
+    protected final ArrayList<FeeDTO> fees = new ArrayList<>();
+    protected FeeDTO selectedFee;
+    protected Text label;
+    protected final DbInvoiceDTO dbInvoiceDTO;
+
 
     public FeeRow(TabFee parent, DbInvoiceDTO dbInvoiceDTO) {
         this.parent = parent;
         this.dbInvoiceDTO = dbInvoiceDTO;
         this.order = new SimpleIntegerProperty(0);
         this.order.bindBidirectional(dbInvoiceDTO.orderProperty());
+        this.label = createLabel();
         setSpacing(15);
         setAlignment(Pos.CENTER_LEFT);
-        getChildren().addAll(addRadioButton(), createLabel());
+        getChildren().addAll(addRadioButton(), label);
     }
 
     private RadioButton addRadioButton() {
@@ -48,6 +48,7 @@ public class FeeRow extends HBox {
                 parent.okToWriteToDataBase = false;
                 parent.feeEditControls.refreshData();
                 parent.okToWriteToDataBase = true;
+                parent.selectedFeeRow = this;
                 this.selectedFee = deriveSelectedFee();
                 System.out.println("selectedFee= " + selectedFee);
                 System.out.println("fees.size()= " + fees.size());
@@ -69,21 +70,11 @@ public class FeeRow extends HBox {
         return newLabel;
     }
 
-    public FeeDTO getSelectedFee() {
-        return selectedFee;
-    }
 
     public RadioButton getRadioButton() {
         return radioButton;
     }
 
-    public void setLabelText(String newLabel) {
-        this.label.setText(newLabel);
-    }
-
-    public ArrayList<FeeDTO> getFees() {
-        return fees;
-    }
 
     public DbInvoiceDTO getDbInvoiceDTO() {
         return dbInvoiceDTO;
