@@ -40,6 +40,5 @@ public class FeesLineChartEx extends LineChart<String, Number> {
 		series.setName(description);
 		setTitle(description + " by Year");
 	}
-
 }
 

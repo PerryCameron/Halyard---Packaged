@@ -46,7 +46,6 @@ public class MockInvoiceItemRow extends HBox {
         this.footer = null;
         this.invoice = new InvoiceDTO();
         this.fee = feeDTO;
-        System.out.println(feeDTO);
         this.items = dbInvoiceDTO.getItems();
         addChildren(dbInvoiceDTO);
         setEdit();

@@ -34,6 +34,8 @@ public class FeeEditControls extends HBox {
     ToggleGroup tg = new ToggleGroup();
     private FeeTableView feeTableView = new FeeTableView(this);
 
+    private boolean okToWriteToDatabase;
+
     public FeeEditControls(TabFee parent) {
         this.parent = parent;
         setPadding(new Insets(15,5,5,7));
@@ -75,7 +77,7 @@ public class FeeEditControls extends HBox {
         vBoxTable.setAlignment(Pos.CENTER_RIGHT);
         vBoxMockItems.setAlignment(Pos.CENTER);
         vBoxMockItems.setId("box-background-light");
-
+        okToWriteToDatabase = false;
         setRadioGroupListener();
         setAutoPopulateCheckBoxListener();
         setIsCreditCheckBoxListener();
@@ -92,6 +94,7 @@ public class FeeEditControls extends HBox {
         hBoxDisplay.getChildren().addAll(vBoxSpinner,vBoxCheckBox,vBoxRadio);
         vBoxDisplay.getChildren().addAll(hBoxDisplay,titledPane); // add displayed item to bottom
         getChildren().addAll(vBoxDisplay,hBoxTableGroup); // this is hbox
+
     }
 
     private Button setDeleteButton() {
@@ -148,35 +151,33 @@ public class FeeEditControls extends HBox {
     }
 
     public void refreshData() {
+        okToWriteToDatabase = false;
+        // gets the selected Fee Row
         this.selectedHBoxFreeRow = getSelectedHBoxFeeRow();
+        // sets various controls in edit box
         autoPopulate.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isAutoPopulate());
         isCredit.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isCredit());
         priceIsEditable.setSelected(selectedHBoxFreeRow.getDbInvoiceDTO().isPrice_editable());
         fieldNameText.setText(selectedHBoxFreeRow.getDbInvoiceDTO().getFieldName());
+        // sets spinners in edit box
         setOrderSpinner();
         fees.clear();
         fees.addAll(selectedHBoxFreeRow.getFees());
-        tempUpdatefees();
         refreshMockBox();
+        // sets correct radio button for widget in edit box
         setRadioToMatchDBInvoice();
-    }
-
-    private void tempUpdatefees() {  // this will be removed once all are updated.
-        System.out.println("db_invoice.id= " + selectedHBoxFreeRow.getDbInvoiceDTO().getId());
-        fees.stream().filter(fee -> fee.getDbInvoiceID() == 0).forEach(feeDTO -> {
-            feeDTO.setDbInvoiceID(selectedHBoxFreeRow.getDbInvoiceDTO().getId());
-            SqlUpdate.updateFeeRecord(feeDTO);
-            System.out.println(feeDTO);
-        });
+        okToWriteToDatabase = true;
     }
 
     private void setFieldNameTextListener() {
         fieldNameText.getTextField().focusedProperty().addListener((observable, oldValue, newValue) -> {
+            // changes label to match entered text
             selectedHBoxFreeRow.getLabel().setText(fieldNameText.getTextField().getText());
             // must change both db_invoice and matching fees
             updateFees();
             selectedHBoxFreeRow.getDbInvoiceDTO().setFieldName(fieldNameText.getTextField().getText());
-            SqlUpdate.updateFeeRecord(selectedHBoxFreeRow.getSelectedFee());
+            // TODO
+            SqlUpdate.updateDbInvoice(selectedHBoxFreeRow.getDbInvoiceDTO());
         });
     }
 
@@ -196,12 +197,13 @@ public class FeeEditControls extends HBox {
 
     public void setOrderSpinnerListener() {
         orderedSpinner.getSpinner().valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (parent.isOrderSpinnerCanChange()) { // don't trigger order spinner if you select another radio button
+            if (parent.isOkToWriteToDataBase()) { // don't trigger order spinner if you select another radio button
                 FeeRow displacedRow = parent.getRows().stream()
                         .filter(e -> e.getDbInvoiceDTO().getOrder() == newValue).findFirst().orElse(null);
                 FeeRow changedRow = getSelectedHBoxFeeRow();
                 displacedRow.setOrder(oldValue);
                 changedRow.setOrder(newValue);
+//                System.out.println("calling sqlupdate - setOrderSpinnerListener");
                 SqlUpdate.updateDbInvoice(displacedRow.getDbInvoiceDTO());
                 SqlUpdate.updateDbInvoice(changedRow.getDbInvoiceDTO());
                 parent.refreshFeeRows();
@@ -241,7 +243,11 @@ public class FeeEditControls extends HBox {
                 setMultipliedWidgets(false);
             }
             refreshMockBox();
-            updateDbInvoice();
+//            System.out.println("write database FeeEditControls 246");
+//            System.out.println("OktoWriteToDatabase=" + okToWriteToDatabase);
+            if(okToWriteToDatabase)
+            SqlUpdate.updateDbInvoice(getSelectedHBoxFeeRow().getDbInvoiceDTO());
+            okToWriteToDatabase = true;
         });
     }
 
@@ -251,15 +257,13 @@ public class FeeEditControls extends HBox {
         priceIsEditable.setVisible(value);
     }
 
-    public void updateDbInvoice() {
-        SqlUpdate.updateDbInvoice(getSelectedHBoxFeeRow().getDbInvoiceDTO());
-    }
-
     public void setAutoPopulateCheckBoxListener() {
         autoPopulate.selectedProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     getSelectedHBoxFeeRow().getDbInvoiceDTO().setAutoPopulate(newValue);
-                    updateDbInvoice();
+//                    System.out.println("write database FeeEditControls 261");
+                    if(parent.isOkToWriteToDataBase())
+                    SqlUpdate.updateDbInvoice(getSelectedHBoxFeeRow().getDbInvoiceDTO());
                 });
     }
 
@@ -267,7 +271,9 @@ public class FeeEditControls extends HBox {
         isCredit.selectedProperty().addListener((observable, oldValue, newValue) -> {
             getSelectedHBoxFeeRow().getDbInvoiceDTO().setIsCredit(newValue);
             refreshMockBox();
-            updateDbInvoice();
+//            System.out.println("write database FeeEditControls 269");
+            if(parent.isOkToWriteToDataBase())
+            SqlUpdate.updateDbInvoice(getSelectedHBoxFeeRow().getDbInvoiceDTO());
         });
     }
 
@@ -275,7 +281,9 @@ public class FeeEditControls extends HBox {
         priceIsEditable.selectedProperty().addListener((observable, oldValue, newValue) -> {
             getSelectedHBoxFeeRow().getDbInvoiceDTO().setPrice_editable(newValue);
             refreshMockBox();
-            updateDbInvoice();
+//            System.out.println("write database FeeEditControls 283");
+            if(parent.isOkToWriteToDataBase())
+            SqlUpdate.updateDbInvoice(getSelectedHBoxFeeRow().getDbInvoiceDTO());
         });
     }
 

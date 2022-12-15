@@ -1,8 +1,11 @@
 package com.ecsail.gui.tabs.fee;
 
 import com.ecsail.EditCell;
+import com.ecsail.FixInput;
+import com.ecsail.sql.SqlUpdate;
 import com.ecsail.structures.FeeDTO;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -14,32 +17,50 @@ import javafx.scene.layout.Priority;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.function.Function;
 
 public class FeeTableView extends TableView<FeeDTO> {
     FeeEditControls parent;
-    ObservableList fees;
-
+    ObservableList<FeeDTO> fees;
+    HashMap<Integer,String> hashMap = new HashMap<>();
     public FeeTableView(FeeEditControls hBoxEditControls) {
         this.parent = hBoxEditControls;
         this.fees = parent.getFees();
 
+        // adds old values to hashmap for later use in SQL Query
+        fees.addListener((ListChangeListener<FeeDTO>) c -> {
+            hashMap.clear();
+            if(fees.size() > 0) // old description used for updating fee
+                fees.forEach(feeDTO -> hashMap.put(feeDTO.getFeeId(),feeDTO.getDescription()));
+        });
+
+
+        if(fees.size() > 0) // old description used for updating fee
+            fees.forEach(feeDTO -> hashMap.put(feeDTO.getFeeId(),feeDTO.getDescription()));
+
         TableColumn<FeeDTO, String> col2 = createColumn("Price", FeeDTO::fieldValueProperty);
         col2.setStyle("-fx-alignment: CENTER-RIGHT;");
         col2.setOnEditCommit(t -> {
-            BigDecimal dollarValue = new BigDecimal(t.getNewValue());
+            String checkedValue = FixInput.changeEmptyStringToZero(t.getNewValue());
+            BigDecimal dollarValue = new BigDecimal(checkedValue);
             String fixedDollarValue = String.valueOf(dollarValue.setScale(2, RoundingMode.HALF_UP));
             t.getTableView().getItems().get(t.getTablePosition().getRow()).setFieldValue(fixedDollarValue);
             FeeDTO feeDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
-            System.out.println(feeDTO);
+            SqlUpdate.updateFeeRecord(feeDTO);
         });
 
         TableColumn<FeeDTO, String> col3 = createColumn("Description", FeeDTO::descriptionProperty);
         col3.setStyle("-fx-alignment: CENTER-LEFT;");
-        col3.setOnEditCommit(
-                t -> t.getTableView().getItems().get(
-                        t.getTablePosition().getRow()).setDescription(t.getNewValue())
-        );
+        col3.setOnEditCommit(t -> {
+            t.getTableView().getItems().get(t.getTablePosition().getRow()).setDescription(t.getNewValue());
+            FeeDTO feeDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            int fee_id = feeDTO.getFeeId();
+            System.out.println("old= " + hashMap.get(fee_id));
+            System.out.println("new= " + feeDTO.getDescription());
+            SqlUpdate.updateFeeByDescriptionAndFieldName(feeDTO, hashMap.get(fee_id));
+            hashMap.put(fee_id, feeDTO.getDescription()); // in case you change it again right away
+        });
 
         col2.setMaxWidth(1f * Integer.MAX_VALUE * 15);  // Fee Price
         col3.setMaxWidth(1f * Integer.MAX_VALUE * 85);   // Description

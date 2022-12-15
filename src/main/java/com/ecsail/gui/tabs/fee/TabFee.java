@@ -3,7 +3,6 @@ package com.ecsail.gui.tabs.fee;
 import com.ecsail.BaseApplication;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
-import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlDbInvoice;
 import com.ecsail.sql.select.SqlFee;
 import com.ecsail.sql.select.SqlSelect;
@@ -24,15 +23,15 @@ public class TabFee extends Tab {
     private String selectedYear;
     private ArrayList<FeeDTO> feeDTOS;
     private final ArrayList<FeeRow> rows = new ArrayList<>();
-    private FeesLineChartEx duesLineChart;
+
     private final ToggleGroup radioGroup;
     private final HashMap<RadioButton, FeeRow> hboxHashMap;
     private final VBox vboxFeeRow;
     private final HBox hboxControls;
     private final ComboBox<Integer> comboBox;
-    FeeEditControls feeEditControls;
-    private boolean radioEnable = true;
-    boolean orderSpinnerCanChange = true;
+    protected FeesLineChartEx duesLineChart;
+    protected FeeEditControls feeEditControls;
+    protected boolean okToWriteToDataBase = true;
 
     public TabFee(String text) {
         super(text);
@@ -65,20 +64,9 @@ public class TabFee extends Tab {
         vbox4.setPadding(new Insets(10, 10, 10, 10));
         vbox4.setPrefHeight(688);
         vbox4.setSpacing(15);
-        vbox4.setPrefWidth(380);
+        vbox4.setPrefWidth(225);
         HBox.setHgrow(vboxFeeRow,Priority.ALWAYS);
         //////////////// LISTENERS ///////////////////
-        // gives primary key to selected radio button
-        radioGroup.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) ->
-        {
-            if(radioEnable) { // prevents null exceptions on a data refresh
-                orderSpinnerCanChange = false;
-                feeEditControls.refreshData();
-                orderSpinnerCanChange = true;
-                if (!hboxHashMap.get(new_toggle).getPrice().equals("NONE"))
-                    duesLineChart.refreshChart(hboxHashMap.get(new_toggle).getSelectedFee().getDescription());
-            }
-        });
 
         comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> setNewYear(newValue));
 
@@ -101,7 +89,7 @@ public class TabFee extends Tab {
     private void addControlBox() {
         hboxControls.getChildren().clear();
         if (feeDTOS.size() > 0)
-            hboxControls.getChildren().addAll(comboBox, createAddButton(), createEditButton(), createDeleteButton());
+            hboxControls.getChildren().addAll(comboBox, createAddButton(), createDeleteButton());
             // if we donn't have entries set buttons add, copy fees
         else
             hboxControls.getChildren().addAll(comboBox, createAddButton(), createCopyFeeButton());
@@ -110,9 +98,7 @@ public class TabFee extends Tab {
     private Button createAddButton() {
         Button addButton = new Button("New");
         addButton.setOnAction(event -> {
-            radioEnable=false;
             vboxFeeRow.getChildren().add(addNewRow());
-            radioEnable=true;
         });
         return addButton;
     }
@@ -127,12 +113,6 @@ public class TabFee extends Tab {
         Button delButton = new Button("Delete");
         delButton.setOnAction((event) -> deleteRowIn());
         return delButton;
-    }
-
-    private Button createEditButton() {
-        Button editButton = new Button(("Edit"));
-        editButton.setOnAction((event) -> openEditRow());
-        return editButton;
     }
 
     private Button createCopyFeeButton() {
@@ -164,8 +144,7 @@ public class TabFee extends Tab {
     }
 
     private void setNewYear(Object newValue) {
-        radioEnable = false; // prevent from setting radio button off a dozen times when there is nothing to select
-        orderSpinnerCanChange = false;
+        okToWriteToDataBase = false;
         this.selectedYear = newValue.toString();
         this.feeDTOS.clear();
         this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
@@ -174,63 +153,54 @@ public class TabFee extends Tab {
         addControlBox();
         createFeeRows();
         addFeeRows();
-        orderSpinnerCanChange = true;
-        radioEnable = true;
-    }
-
-    private void openEditRow() {
-        if (radioGroup.getSelectedToggle() == null) System.out.println("You need to select an index first");
-        else {
-            createEditHBox(hboxHashMap.get(radioGroup.getSelectedToggle()));
-        }
+        okToWriteToDataBase = true;
     }
 
     // java fx controls for editing, no business logic
-    private void createEditHBox(FeeRow hbox) {
-        hbox.getChildren().clear();
-        Button saveButton = new Button("Save");
-        Label description = new Label("Description:");
-        TextField descriptionText = new TextField(hbox.getSelectedFee().getDescription());
-        CheckBox checkMultiply = new CheckBox("Multiplied by QTY");
-        Label maxQty = new Label("Max Qty");
-        TextField qtyText = new TextField("0");
-        CheckBox price_editable = new CheckBox("Price Editable");
-        CheckBox checkCredit = new CheckBox("Is Credit");
-        CheckBox autoPopulate = new CheckBox("Auto-populate");
-        VBox vboxEditBox = new VBox();
-        HBox hboxRow1 = new HBox();
-        HBox hboxRow2 = new HBox();
-        HBox hboxRow3 = new HBox();
-        HBox hboxRow4 = new HBox();
-        HBox hboxRow5 = new HBox();
-        HBox hboxRow6 = new HBox();
-        vboxEditBox.setSpacing(5);
-        hboxRow1.setSpacing(5);
-        hboxRow3.setSpacing(5);
-        hboxRow1.getChildren().addAll(descriptionText, description);
-        hboxRow2.getChildren().addAll(checkMultiply);
-        hboxRow3.getChildren().addAll(maxQty, qtyText);
-        hboxRow4.getChildren().addAll(price_editable);
-        hboxRow5.getChildren().addAll(checkCredit);
-        hboxRow6.getChildren().addAll(autoPopulate);
-        vboxEditBox.getChildren().addAll(hboxRow1, hboxRow2, hboxRow3, hboxRow4, hboxRow5, hboxRow6, saveButton);
-        hbox.getChildren().add(vboxEditBox);
-        addButtonListener(saveButton, descriptionText);
-    }
+//    private void createEditHBox(FeeRow hbox) {
+//        hbox.getChildren().clear();
+//        Button saveButton = new Button("Save");
+//        Label description = new Label("Description:");
+//        TextField descriptionText = new TextField(hbox.getSelectedFee().getDescription());
+//        CheckBox checkMultiply = new CheckBox("Multiplied by QTY");
+//        Label maxQty = new Label("Max Qty");
+//        TextField qtyText = new TextField("0");
+//        CheckBox price_editable = new CheckBox("Price Editable");
+//        CheckBox checkCredit = new CheckBox("Is Credit");
+//        CheckBox autoPopulate = new CheckBox("Auto-populate");
+//        VBox vboxEditBox = new VBox();
+//        HBox hboxRow1 = new HBox();
+//        HBox hboxRow2 = new HBox();
+//        HBox hboxRow3 = new HBox();
+//        HBox hboxRow4 = new HBox();
+//        HBox hboxRow5 = new HBox();
+//        HBox hboxRow6 = new HBox();
+//        vboxEditBox.setSpacing(5);
+//        hboxRow1.setSpacing(5);
+//        hboxRow3.setSpacing(5);
+//        hboxRow1.getChildren().addAll(descriptionText, description);
+//        hboxRow2.getChildren().addAll(checkMultiply);
+//        hboxRow3.getChildren().addAll(maxQty, qtyText);
+//        hboxRow4.getChildren().addAll(price_editable);
+//        hboxRow5.getChildren().addAll(checkCredit);
+//        hboxRow6.getChildren().addAll(autoPopulate);
+//        vboxEditBox.getChildren().addAll(hboxRow1, hboxRow2, hboxRow3, hboxRow4, hboxRow5, hboxRow6, saveButton);
+//        hbox.getChildren().add(vboxEditBox);
+//        addButtonListener(saveButton, descriptionText);
+//    }
 
-    private void addButtonListener(Button saveButton, TextField fieldNameText) {
-        saveButton.setOnAction((event) -> {
-            // update selected object
-            hboxHashMap.get(radioGroup.getSelectedToggle()).getSelectedFee().setFieldName(fieldNameText.getText());
-            // write object to sql
-            SqlUpdate.updateFeeRecord(hboxHashMap.get(radioGroup.getSelectedToggle()).getSelectedFee());
-            // update contents of hbox
-        });
-    }
+//    private void addButtonListener(Button saveButton, TextField fieldNameText) {
+//        saveButton.setOnAction((event) -> {
+//            // update selected object
+//            hboxHashMap.get(radioGroup.getSelectedToggle()).getSelectedFee().setFieldName(fieldNameText.getText());
+//            // write object to sql
+//            SqlUpdate.updateFeeRecord(hboxHashMap.get(radioGroup.getSelectedToggle()).getSelectedFee());
+//            // update contents of hbox
+//        });
+//    }
 
     private void deleteRowIn() {
-        if (radioGroup.getSelectedToggle() == null) System.out.println("You need to select an index first");
-        else {
+        if (radioGroup.getSelectedToggle() != null) {
             // remove from database
             SqlDelete.deleteFee(hboxHashMap.get(radioGroup.getSelectedToggle()).getSelectedFee());
             // remove from list
@@ -268,7 +238,6 @@ public class TabFee extends Tab {
             for (FeeDTO fee : feeDTOS) {
                 if(fee.getDbInvoiceID() == item.getId()) {
                     newRow.getFees().add(fee); // add fee to row
-                    newRow.setForFee();
                 }
             }
         }
@@ -303,8 +272,8 @@ public class TabFee extends Tab {
         return radioGroup;
     }
 
-    public boolean isOrderSpinnerCanChange() {
-        return orderSpinnerCanChange;
+    public boolean isOkToWriteToDataBase() {
+        return okToWriteToDataBase;
     }
 
     public ArrayList<FeeRow> getRows() {
