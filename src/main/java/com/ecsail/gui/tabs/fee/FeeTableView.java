@@ -85,7 +85,7 @@ public class FeeTableView extends TableView<FeeDTO> {
                 if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
                     // int rowIndex = row.getIndex();
                     FeeDTO clickedRow = row.getItem();
-                    parent.getSelectedHBoxFeeRow().setSelectedFee(clickedRow);
+                    parent.parent.selectedFeeRow.selectedFee = clickedRow;
                     parent.getTabFee().getDuesLineChart().refreshChart(clickedRow.getDescription());
                     System.out.println(clickedRow);
                 }

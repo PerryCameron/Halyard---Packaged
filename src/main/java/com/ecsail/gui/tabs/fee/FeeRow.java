@@ -20,7 +20,6 @@ public class FeeRow extends HBox {
     protected Text label;
     protected final DbInvoiceDTO dbInvoiceDTO;
 
-
     public FeeRow(TabFee parent, DbInvoiceDTO dbInvoiceDTO) {
         this.parent = parent;
         this.dbInvoiceDTO = dbInvoiceDTO;
@@ -34,24 +33,22 @@ public class FeeRow extends HBox {
 
     private RadioButton addRadioButton() {
         radioButton = new RadioButton();
-        // puts this object into the hash map
-        parent.getHboxHashMap().put(radioButton, this);
-        radioButton.setToggleGroup(parent.getRadioGroup());
-        setRadioButtonListener();
+        radioButton.setToggleGroup(parent.getRadioGroup()); // for the purpose of toggle only
+        setRadioButtonListener(); // each feeRow radio button gets its own listener
         return radioButton;
     }
 
     private void setRadioButtonListener() {
         radioButton.selectedProperty().addListener((obs, wasPreviouslySelected, isNowSelected) -> {
             if (isNowSelected) {
-                System.out.println(dbInvoiceDTO);
+//                System.out.println(dbInvoiceDTO);
                 parent.okToWriteToDataBase = false;
+                parent.selectedFeeRow = this;
                 parent.feeEditControls.refreshData();
                 parent.okToWriteToDataBase = true;
-                parent.selectedFeeRow = this;
                 this.selectedFee = deriveSelectedFee();
-                System.out.println("selectedFee= " + selectedFee);
-                System.out.println("fees.size()= " + fees.size());
+//                System.out.println("selectedFee= " + selectedFee);
+//                System.out.println("fees.size()= " + fees.size());
             }
         });
     }
@@ -70,18 +67,8 @@ public class FeeRow extends HBox {
         return newLabel;
     }
 
-
     public RadioButton getRadioButton() {
         return radioButton;
-    }
-
-
-    public DbInvoiceDTO getDbInvoiceDTO() {
-        return dbInvoiceDTO;
-    }
-
-    public void setSelectedFee(FeeDTO selectedFee) {
-        this.selectedFee = selectedFee;
     }
 
     public final IntegerProperty orderProperty() {

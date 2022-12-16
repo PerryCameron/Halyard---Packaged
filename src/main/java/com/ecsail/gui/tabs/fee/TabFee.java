@@ -24,14 +24,12 @@ public class TabFee extends Tab {
     private ArrayList<FeeDTO> feeDTOS;
     private final ArrayList<FeeRow> rows = new ArrayList<>();
     private final ToggleGroup radioGroup;
-    private final HashMap<RadioButton, FeeRow> hboxHashMap;
     private final VBox vboxFeeRow;
     private final HBox hboxControls;
     private final ComboBox<Integer> comboBox;
     protected FeesLineChartEx duesLineChart;
     protected FeeEditControls feeEditControls;
     protected boolean okToWriteToDataBase = true;
-
     protected FeeRow selectedFeeRow;
 
     public TabFee(String text) {
@@ -39,7 +37,6 @@ public class TabFee extends Tab {
         this.selectedYear = BaseApplication.selectedYear;
         this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
         this.radioGroup = new ToggleGroup();
-        this.hboxHashMap = new HashMap<>();
         this.comboBox = addComboBox();
         this.vboxFeeRow = createControlsVBox();
         this.hboxControls = new HBox();
@@ -112,7 +109,7 @@ public class TabFee extends Tab {
 
     private Button createDeleteButton() {
         Button delButton = new Button("Delete");
-        delButton.setOnAction((event) -> deleteRowIn());
+        delButton.setOnAction((event) -> deleteFeeRow());
         return delButton;
     }
 
@@ -149,7 +146,6 @@ public class TabFee extends Tab {
         this.selectedYear = newValue.toString();
         this.feeDTOS.clear();
         this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
-//        hboxHashMap.clear();
         rows.clear();
         addControlBox();
         createFeeRows();
@@ -157,57 +153,14 @@ public class TabFee extends Tab {
         okToWriteToDataBase = true;
     }
 
-    // java fx controls for editing, no business logic
-//    private void createEditHBox(FeeRow hbox) {
-//        hbox.getChildren().clear();
-//        Button saveButton = new Button("Save");
-//        Label description = new Label("Description:");
-//        TextField descriptionText = new TextField(hbox.getSelectedFee().getDescription());
-//        CheckBox checkMultiply = new CheckBox("Multiplied by QTY");
-//        Label maxQty = new Label("Max Qty");
-//        TextField qtyText = new TextField("0");
-//        CheckBox price_editable = new CheckBox("Price Editable");
-//        CheckBox checkCredit = new CheckBox("Is Credit");
-//        CheckBox autoPopulate = new CheckBox("Auto-populate");
-//        VBox vboxEditBox = new VBox();
-//        HBox hboxRow1 = new HBox();
-//        HBox hboxRow2 = new HBox();
-//        HBox hboxRow3 = new HBox();
-//        HBox hboxRow4 = new HBox();
-//        HBox hboxRow5 = new HBox();
-//        HBox hboxRow6 = new HBox();
-//        vboxEditBox.setSpacing(5);
-//        hboxRow1.setSpacing(5);
-//        hboxRow3.setSpacing(5);
-//        hboxRow1.getChildren().addAll(descriptionText, description);
-//        hboxRow2.getChildren().addAll(checkMultiply);
-//        hboxRow3.getChildren().addAll(maxQty, qtyText);
-//        hboxRow4.getChildren().addAll(price_editable);
-//        hboxRow5.getChildren().addAll(checkCredit);
-//        hboxRow6.getChildren().addAll(autoPopulate);
-//        vboxEditBox.getChildren().addAll(hboxRow1, hboxRow2, hboxRow3, hboxRow4, hboxRow5, hboxRow6, saveButton);
-//        hbox.getChildren().add(vboxEditBox);
-//        addButtonListener(saveButton, descriptionText);
-//    }
-
-//    private void addButtonListener(Button saveButton, TextField fieldNameText) {
-//        saveButton.setOnAction((event) -> {
-//            // update selected object
-//            hboxHashMap.get(radioGroup.getSelectedToggle()).getSelectedFee().setFieldName(fieldNameText.getText());
-//            // write object to sql
-//            SqlUpdate.updateFeeRecord(hboxHashMap.get(radioGroup.getSelectedToggle()).getSelectedFee());
-//            // update contents of hbox
-//        });
-//    }
-
-    private void deleteRowIn() {
+    private void deleteFeeRow() {
         if (radioGroup.getSelectedToggle() != null) {
-            // remove from database
-            SqlDelete.deleteFee(hboxHashMap.get(radioGroup.getSelectedToggle()).selectedFee);
-            // remove from list
-            feeDTOS.remove(hboxHashMap.get(radioGroup.getSelectedToggle()).selectedFee);
+            // remove fees for this db_invoice from database
+            SqlDelete.deleteFee(selectedFeeRow.selectedFee);
+            // remove feeRow from list
+            feeDTOS.remove(selectedFeeRow.selectedFee);
             // clear HBoxes from column
-            vboxFeeRow.getChildren().remove(hboxHashMap.get(radioGroup.getSelectedToggle()));
+            vboxFeeRow.getChildren().remove(selectedFeeRow);
         }
     }
 
@@ -263,10 +216,6 @@ public class TabFee extends Tab {
         vboxFeeRow.getChildren().clear();
         rows.sort(Comparator.comparing(FeeRow::getOrder).reversed());
         rows.forEach(row -> vboxFeeRow.getChildren().add(row));
-    }
-
-    public HashMap<RadioButton, FeeRow> getHboxHashMap() {
-        return hboxHashMap;
     }
 
     public ToggleGroup getRadioGroup() {
