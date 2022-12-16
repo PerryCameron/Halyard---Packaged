@@ -3,6 +3,7 @@ package com.ecsail.gui.tabs.fee;
 import com.ecsail.BaseApplication;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
+import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlDbInvoice;
 import com.ecsail.sql.select.SqlFee;
 import com.ecsail.sql.select.SqlSelect;
@@ -161,6 +162,8 @@ public class TabFee extends Tab {
 
     private void deleteFeeRow() {
         if (radioGroup.getSelectedToggle() != null) {
+            // gets the number we are removing
+            int order = selectedFeeRow.dbInvoiceDTO.getOrder();
             // remove fees for this db_invoice from database
             SqlDelete.deleteFeesByDbInvoiceId(selectedFeeRow.dbInvoiceDTO);
             // remove dbInvoice
@@ -169,8 +172,21 @@ public class TabFee extends Tab {
             feeDTOS.remove(selectedFeeRow.selectedFee);
             // clear HBoxes from column
             vboxFeeRow.getChildren().remove(selectedFeeRow);
+            // need to reorder the order
+            setNewOrderForFeeRows(order);
             // select fist item in row
             rows.get(0).getRadioButton().setSelected(true);
+        }
+    }
+
+    private void setNewOrderForFeeRows(int order) {
+        for(FeeRow row: rows) {
+            int currentOrder = row.dbInvoiceDTO.getOrder();
+            if(currentOrder > order) {
+                row.dbInvoiceDTO.setOrder(currentOrder -1);
+                row.setOrder(currentOrder -1);
+                SqlUpdate.updateDbInvoice(row.dbInvoiceDTO);
+            }
         }
     }
 
