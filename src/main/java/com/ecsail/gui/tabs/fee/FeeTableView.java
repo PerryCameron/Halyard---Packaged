@@ -48,6 +48,7 @@ public class FeeTableView extends TableView<FeeDTO> {
             t.getTableView().getItems().get(t.getTablePosition().getRow()).setFieldValue(fixedDollarValue);
             FeeDTO feeDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
             SqlUpdate.updateFeeRecord(feeDTO);
+            parent.parent.duesLineChart.refreshChart(feeDTO.getDescription());
         });
 
         TableColumn<FeeDTO, String> col3 = createColumn("Description", FeeDTO::descriptionProperty);

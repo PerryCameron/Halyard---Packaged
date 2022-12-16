@@ -47,6 +47,16 @@ public class SqlDelete {
 		}
 	}
 
+	public static void deleteDbInvoice(DbInvoiceDTO dbInvoiceDTO) {
+		String query = "DELETE FROM db_invoice WHERE id=" + dbInvoiceDTO.getId();
+		try {
+			BaseApplication.connect.executeQuery(query);
+		} catch (SQLException e) {
+			new Dialogue_ErrorSQL(e,"Unable to DELETE fees for dbInvoiceID " + dbInvoiceDTO.getId(),
+					"See below for details");
+		}
+	}
+
 	public static boolean deletePhone(PhoneDTO phone) {
 	    boolean noError = false;
 		String query = "DELETE FROM phone WHERE phone_id=" + phone.getPhone_ID();

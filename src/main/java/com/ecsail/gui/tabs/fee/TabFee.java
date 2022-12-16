@@ -16,7 +16,6 @@ import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 
 /// This is the new experimental version
 public class TabFee extends Tab {
@@ -107,7 +106,7 @@ public class TabFee extends Tab {
         return new FeeRow(this, dbInvoiceDTO);
     }
 
-    private Button createDeleteButton() {
+    private Button createDeleteButton() {  // for deleting invoice items, and corresponding fees
         Button delButton = new Button("Delete");
         delButton.setOnAction((event) -> deleteFeeRow());
         return delButton;
@@ -136,7 +135,7 @@ public class TabFee extends Tab {
             key++;
         }
         // update buttons on gui
-        addControlBox();
+        addControlBox(); // do these really need updated?
         // update fees on gui
         createFeeRows();
     }
@@ -156,7 +155,9 @@ public class TabFee extends Tab {
     private void deleteFeeRow() {
         if (radioGroup.getSelectedToggle() != null) {
             // remove fees for this db_invoice from database
-            SqlDelete.deleteFee(selectedFeeRow.selectedFee);
+            SqlDelete.deleteFeesByDbInvoiceId(selectedFeeRow.dbInvoiceDTO);
+            // remove dbInvoice
+            SqlDelete.deleteDbInvoice(selectedFeeRow.dbInvoiceDTO);
             // remove feeRow from list
             feeDTOS.remove(selectedFeeRow.selectedFee);
             // clear HBoxes from column

@@ -172,12 +172,11 @@ public class FeeEditControls extends HBox {
     }
 
     private void updateFees() {
-        if(fees.size() > 0) {
+        if(fees.size() > 0)
             fees.stream().forEach(feeDTO -> {
                 feeDTO.setFieldName(fieldNameText.getTextField().getText());
                 SqlUpdate.updateFeeRecord(feeDTO);
             });
-        }
     }
 
     public void setOrderSpinner() {
