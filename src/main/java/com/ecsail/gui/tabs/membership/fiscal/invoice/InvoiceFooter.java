@@ -74,9 +74,9 @@ public class InvoiceFooter extends VBox {
 			if (selectedIndex >= 0) // is something selected?
 				SqlDelete.deletePayment(payments.get(selectedIndex));
 			paymentTableView.getItems().remove(selectedIndex); // remove it from our GUI
-			BigDecimal totalPaidAmount = BigDecimal.valueOf(SqlPayment.getTotalAmount(invoice.getId()));
-			totalPaymentText.setText(String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP)));
-			invoice.setPaid(String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP)));
+			BigDecimal totalPaidAmount = new BigDecimal(SqlPayment.getTotalAmount(invoice.getId()));
+			totalPaymentText.setText(String.valueOf(totalPaidAmount.setScale(2)));
+			invoice.setPaid(String.valueOf(totalPaidAmount.setScale(2)));
 			updateTotals();
 		});
 

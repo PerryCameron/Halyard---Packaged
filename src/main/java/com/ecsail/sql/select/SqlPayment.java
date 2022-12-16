@@ -6,6 +6,7 @@ import com.ecsail.structures.PaymentDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -79,13 +80,14 @@ public class SqlPayment {
         return thisPayment;
     }
 
-    public static int getTotalAmount(int invoice_id) {
-        int number = 0;
+    public static String getTotalAmount(int invoice_id) {
+        String number = "0.00";
         String query = "SELECT SUM(amount) FROM payment WHERE invoice_id=" + invoice_id;
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             rs.next();
-            number = rs.getInt("SUM(amount)");
+            number = rs.getString("SUM(amount)");
+            System.out.println("Number retrieved is " + number);
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {
             new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");

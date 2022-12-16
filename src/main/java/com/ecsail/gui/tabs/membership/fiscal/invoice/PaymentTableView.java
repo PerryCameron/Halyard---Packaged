@@ -29,16 +29,16 @@ public class PaymentTableView extends TableView<PaymentDTO> {
         col1.setOnEditCommit(
                 t -> {
                     t.getTableView().getItems().get(
-                            t.getTablePosition().getRow()).setPaymentAmount(String.valueOf(new BigDecimal(t.getNewValue()).setScale(2, RoundingMode.CEILING)));
+                            t.getTablePosition().getRow()).setPaymentAmount(String.valueOf(new BigDecimal(t.getNewValue()).setScale(2)));
                     var pay_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getPay_id();
                     BigDecimal amount = new BigDecimal(t.getNewValue());
-                    SqlUpdate.updatePayment(pay_id, "amount", String.valueOf(amount.setScale(2, RoundingMode.HALF_UP)));
-                    BigDecimal totalPaidAmount = BigDecimal.valueOf(SqlPayment.getTotalAmount(footer.getInvoice().getId()));
-                    String totalAmountPaid = String.valueOf(totalPaidAmount.setScale(2, RoundingMode.HALF_UP));
+                    SqlUpdate.updatePayment(pay_id, "amount", String.valueOf(amount.setScale(2)));
+                    // This adds all the amounts together
+                    BigDecimal totalPaidAmount = new BigDecimal(SqlPayment.getTotalAmount(footer.getInvoice().getId())).setScale(2);
+                    String totalAmountPaid = String.valueOf(totalPaidAmount.setScale(2));
                     footer.getTotalPaymentText().setText(totalAmountPaid);
                     footer.getInvoice().setPaid(totalAmountPaid);
                     footer.updateTotals();
-                    System.out.println("PaymentTableView col1.setOnEditCommit");
                 }
         );
 

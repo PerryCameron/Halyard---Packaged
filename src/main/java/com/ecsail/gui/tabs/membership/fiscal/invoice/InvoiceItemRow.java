@@ -23,7 +23,7 @@ import java.math.RoundingMode;
 
 public class InvoiceItemRow extends HBox {
 
-    String itemName;
+    protected String itemName;
     private Text price = new Text();
     private Text rowTotal = new Text();
     private TextField textField;
@@ -39,10 +39,11 @@ public class InvoiceItemRow extends HBox {
     private final VBox vBox3 = new VBox();
     private final VBox vBox4 = new VBox();
     private final VBox vBox5 = new VBox();
-
     InvoiceDTO invoice;
+    Invoice parent;
 
-    public InvoiceItemRow(DbInvoiceDTO dbInvoiceDTO, InvoiceFooter footer) {
+    public InvoiceItemRow(Invoice invoice, DbInvoiceDTO dbInvoiceDTO, InvoiceFooter footer) {
+        this.parent = invoice;
         this.dbInvoiceDTO = dbInvoiceDTO;
         this.itemName = dbInvoiceDTO.getFieldName();
         this.footer = footer;
@@ -51,6 +52,8 @@ public class InvoiceItemRow extends HBox {
         this.invoiceItemDTO = setItem();
         System.out.println(invoiceItemDTO);
         this.fee = getFee();
+        System.out.println(fee);
+        parent.invoiceItemMap.put(dbInvoiceDTO.getFieldName(),this);
         addChildren(dbInvoiceDTO);
     }
 

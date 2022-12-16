@@ -28,7 +28,7 @@ public class Invoice extends HBox {
     private final ArrayList<FeeDTO> fees;
     private final MembershipDTO membership;
     private final InvoiceFooter footer;
-    private final Map<String, InvoiceItemRow> invoiceItemMap = new LinkedHashMap<>();
+    protected final Map<String, InvoiceItemRow> invoiceItemMap = new LinkedHashMap<>();
     private final Button buttonCommit = new Button("Commit");
     private final Note note;
     private boolean updateAllowed; // prevents any writing to database on load
@@ -80,9 +80,8 @@ public class Invoice extends HBox {
 		// the put an HBOX with all this attached into a hash map
 		for (DbInvoiceDTO i : theseWidgets) {
                 i.setFee(insertFeeIntoWidget(i));
-//            System.out.println(insertFeeIntoWidget(i));
                 i.setItems(items); // allows calculations to be made
-                invoiceItemMap.put(i.getFieldName(), new InvoiceItemRow(i, footer));
+                new InvoiceItemRow(this, i, footer);
 		}
         //////////////// SETTING CONTENT //////////////
 
@@ -96,6 +95,7 @@ public class Invoice extends HBox {
             for (String key : invoiceItemMap.keySet()) {
                 if (invoiceItemMap.get(key).getDbInvoiceDTO().getOrder() == i) {
                     vboxMain.getChildren().add(invoiceItemMap.get(key));
+                    System.out.println(i + ") " + invoiceItemMap.get(key).itemName);
                 }
             }
         }
