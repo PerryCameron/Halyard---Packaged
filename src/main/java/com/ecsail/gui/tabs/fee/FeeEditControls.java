@@ -152,6 +152,7 @@ public class FeeEditControls extends HBox {
         fieldNameText.setText(parent.selectedFeeRow.dbInvoiceDTO.getFieldName());
         // sets spinners in edit box
         setOrderSpinner();
+        setMaxQtySpinner();
         fees.clear();
         fees.addAll(parent.selectedFeeRow.fees);
         refreshMockBox();
@@ -181,6 +182,10 @@ public class FeeEditControls extends HBox {
 
     public void setOrderSpinner() {
         orderedSpinner.setSpinner(1, parent.getRows().size(), parent.selectedFeeRow.getOrder());
+
+    }
+
+    public void setMaxQtySpinner() {
         maxQtySpinner.setSpinner(1,10000, parent.selectedFeeRow.dbInvoiceDTO.getMaxQty());
     }
 
@@ -195,6 +200,15 @@ public class FeeEditControls extends HBox {
                 SqlUpdate.updateDbInvoice(displacedRow.dbInvoiceDTO);
                 SqlUpdate.updateDbInvoice(changedRow.dbInvoiceDTO);
                 parent.refreshFeeRows();
+            }
+        });
+    }
+
+    public void setMaxQtySpinnerListener() {
+        maxQtySpinner.getSpinner().valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (parent.isOkToWriteToDataBase()) { // don't trigger order spinner if you select another radio button
+                parent.selectedFeeRow.dbInvoiceDTO.setMaxQty(newValue);
+                SqlUpdate.updateDbInvoice(parent.selectedFeeRow.dbInvoiceDTO);
             }
         });
     }

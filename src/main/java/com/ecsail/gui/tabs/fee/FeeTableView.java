@@ -35,7 +35,6 @@ public class FeeTableView extends TableView<FeeDTO> {
                 fees.forEach(feeDTO -> hashMap.put(feeDTO.getFeeId(),feeDTO.getDescription()));
         });
 
-
         if(fees.size() > 0) // old description used for updating fee
             fees.forEach(feeDTO -> hashMap.put(feeDTO.getFeeId(),feeDTO.getDescription()));
 
@@ -57,10 +56,9 @@ public class FeeTableView extends TableView<FeeDTO> {
             t.getTableView().getItems().get(t.getTablePosition().getRow()).setDescription(t.getNewValue());
             FeeDTO feeDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
             int fee_id = feeDTO.getFeeId();
-            System.out.println("old= " + hashMap.get(fee_id));
-            System.out.println("new= " + feeDTO.getDescription());
-            SqlUpdate.updateFeeByDescriptionAndFieldName(feeDTO, hashMap.get(fee_id));
-            hashMap.put(fee_id, feeDTO.getDescription()); // in case you change it again right away
+            SqlUpdate.updateFeeByDescriptionAndFieldName(feeDTO, hashMap.get(fee_id)); // hashMap.get(fee_id) = old
+            hashMap.put(fee_id, feeDTO.getDescription()); // = change hash value in case you change it again right away
+            parent.parent.duesLineChart.refreshChart(feeDTO.getDescription());
         });
 
         col2.setMaxWidth(1f * Integer.MAX_VALUE * 15);  // Fee Price

@@ -44,7 +44,9 @@ public class TabFee extends Tab {
         createFeeRows();
         addFeeRows();
         feeEditControls.setOrderSpinner();
+        feeEditControls.setMaxQtySpinner();
         feeEditControls.setOrderSpinnerListener(); // might need to move this
+        feeEditControls.setMaxQtySpinnerListener();
 
         // this is the vbox for organizing all the widgets
         VBox vbox4 = new VBox();
@@ -61,7 +63,7 @@ public class TabFee extends Tab {
         vbox4.setPadding(new Insets(10, 10, 10, 10));
         vbox4.setPrefHeight(688);
         vbox4.setSpacing(15);
-        vbox4.setPrefWidth(225);
+        vbox4.setPrefWidth(350); //225
         HBox.setHgrow(vboxFeeRow,Priority.ALWAYS);
         //////////////// LISTENERS ///////////////////
 
@@ -86,7 +88,7 @@ public class TabFee extends Tab {
     private void addControlBox() {
         hboxControls.getChildren().clear();
         if (feeDTOS.size() > 0)
-            hboxControls.getChildren().addAll(comboBox, createAddButton(), createDeleteButton());
+            hboxControls.getChildren().addAll(comboBox, createAddButton(), createDeleteButton(),createCopyFeeButton());
             // if we donn't have entries set buttons add, copy fees
         else
             hboxControls.getChildren().addAll(comboBox, createAddButton(), createCopyFeeButton());
@@ -96,6 +98,7 @@ public class TabFee extends Tab {
         Button addButton = new Button("New");
         addButton.setOnAction(event -> {
             vboxFeeRow.getChildren().add(addNewRow());
+            refreshFeeRows();
         });
         return addButton;
     }
@@ -103,7 +106,10 @@ public class TabFee extends Tab {
     private FeeRow addNewRow() {
         DbInvoiceDTO dbInvoiceDTO = new DbInvoiceDTO(selectedYear, rows.size() + 1);
         SqlInsert.addNewDbInvoice(dbInvoiceDTO);
-        return new FeeRow(this, dbInvoiceDTO);
+        FeeRow feeRow = new FeeRow(this, dbInvoiceDTO);
+        rows.add(feeRow);
+        feeEditControls.refreshData();
+        return feeRow;
     }
 
     private Button createDeleteButton() {  // for deleting invoice items, and corresponding fees
@@ -119,25 +125,26 @@ public class TabFee extends Tab {
     }
 
     private void copyPreviousYearsFees() {
-        // clear the current list
-        feeDTOS.clear();
-        // get next available primary key
-        int key = SqlSelect.getNextAvailablePrimaryKey("fee", "FEE_ID");
-        // choose year to copy
-        int copyYear = Integer.parseInt(selectedYear) + 1;
-        // populate that list with objects from copy year
-        feeDTOS = SqlFee.getFeesFromYear(copyYear);
-        // change the year from old objets to current year and save it to SQL
-        for (FeeDTO feeDTO : feeDTOS) {
-            feeDTO.setFeeYear(Integer.parseInt(selectedYear));
-            feeDTO.setFeeId(key);
-            SqlInsert.addNewFee(feeDTO);
-            key++;
+        for(FeeRow row: rows) {
+            String year = String.valueOf(Integer.parseInt(selectedYear) - 1);
+            DbInvoiceDTO dbInvoiceDTO = new DbInvoiceDTO(year, row.dbInvoiceDTO.getOrder());
+            dbInvoiceDTO.setFieldName(row.dbInvoiceDTO.getFieldName());
+            dbInvoiceDTO.setWidgetType(row.dbInvoiceDTO.getWidgetType());
+            dbInvoiceDTO.setMultiplied(row.dbInvoiceDTO.isMultiplied());
+            dbInvoiceDTO.setPrice_editable(row.dbInvoiceDTO.isPrice_editable());
+            dbInvoiceDTO.setIsCredit(row.dbInvoiceDTO.isCredit());
+            dbInvoiceDTO.setMaxQty(row.dbInvoiceDTO.getMaxQty());
+            dbInvoiceDTO.setAutoPopulate(row.dbInvoiceDTO.isAutoPopulate());
+//            System.out.println(dbInvoiceDTO);
+            SqlInsert.addNewDbInvoice(dbInvoiceDTO);
+            if(row.fees.size() > 0)
+                for(FeeDTO fee: row.fees) {
+                    FeeDTO newFee = new FeeDTO(fee.getFieldName(),fee.getFieldValue(),dbInvoiceDTO.getId(),Integer.parseInt(year),fee.getDescription());
+                    newFee.setFeeId(SqlSelect.getNextAvailablePrimaryKey("fee", "Fee_ID"));
+//                    System.out.println("    " + newFee);
+                    SqlInsert.addNewFee(newFee);
+                }
         }
-        // update buttons on gui
-        addControlBox(); // do these really need updated?
-        // update fees on gui
-        createFeeRows();
     }
 
     private void setNewYear(Object newValue) {
@@ -162,6 +169,8 @@ public class TabFee extends Tab {
             feeDTOS.remove(selectedFeeRow.selectedFee);
             // clear HBoxes from column
             vboxFeeRow.getChildren().remove(selectedFeeRow);
+            // select fist item in row
+            rows.get(0).getRadioButton().setSelected(true);
         }
     }
 
