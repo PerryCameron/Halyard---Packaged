@@ -64,7 +64,7 @@ public class TabFee extends Tab {
         vbox4.setPadding(new Insets(10, 10, 10, 10));
         vbox4.setPrefHeight(688);
         vbox4.setSpacing(15);
-        vbox4.setPrefWidth(350); //225
+        vbox4.setPrefWidth(250); //225
         HBox.setHgrow(vboxFeeRow,Priority.ALWAYS);
         //////////////// LISTENERS ///////////////////
 
@@ -89,7 +89,7 @@ public class TabFee extends Tab {
     private void addControlBox() {
         hboxControls.getChildren().clear();
         if (feeDTOS.size() > 0)
-            hboxControls.getChildren().addAll(comboBox, createAddButton(), createDeleteButton(),createCopyFeeButton());
+            hboxControls.getChildren().addAll(comboBox, createAddButton(), createDeleteButton());
             // if we donn't have entries set buttons add, copy fees
         else
             hboxControls.getChildren().addAll(comboBox, createAddButton(), createCopyFeeButton());
@@ -121,10 +121,11 @@ public class TabFee extends Tab {
 
     private Button createCopyFeeButton() {
         Button copyFeesBtn = new Button("Copy Fees");
-        copyFeesBtn.setOnAction((event) -> copyPreviousYearsFees());
+//        copyFeesBtn.setOnAction((event) -> copyPreviousYearsFees());
         return copyFeesBtn;
     }
 
+    // this worked great for going back, I need to make it work going forward now
     private void copyPreviousYearsFees() {
         for(FeeRow row: rows) {
             String year = String.valueOf(Integer.parseInt(selectedYear) - 1);
@@ -151,13 +152,28 @@ public class TabFee extends Tab {
     private void setNewYear(Object newValue) {
         okToWriteToDataBase = false;
         this.selectedYear = newValue.toString();
+        String fieldName = selectedFeeRow.dbInvoiceDTO.getFieldName();
         this.feeDTOS.clear();
         this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
         rows.clear();
         addControlBox();
         createFeeRows();
         addFeeRows();
+        selectDesiredFeeRow(fieldName);
         okToWriteToDataBase = true;
+    }
+    // when switching years this will keep it selected on correct one.
+    private void selectDesiredFeeRow(String fieldName) {
+        System.out.println(fieldName);
+        boolean rowSelected = false;
+        for(FeeRow row: rows) {
+            if(row.label.getText().equals(fieldName)) {
+                row.getRadioButton().setSelected(true);
+                rowSelected = true;
+            }
+        }
+        if(!rowSelected)
+            rows.get(0).getRadioButton().setSelected(true);
     }
 
     private void deleteFeeRow() {
@@ -169,7 +185,7 @@ public class TabFee extends Tab {
             // remove dbInvoice
             SqlDelete.deleteDbInvoice(selectedFeeRow.dbInvoiceDTO);
             // remove feeRow from list
-            feeDTOS.remove(selectedFeeRow.selectedFee);
+            rows.remove(selectedFeeRow);
             // clear HBoxes from column
             vboxFeeRow.getChildren().remove(selectedFeeRow);
             // need to reorder the order
