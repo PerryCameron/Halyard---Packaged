@@ -28,7 +28,7 @@ public class FeeEditControls extends HBox {
 
 //    private final ComboBox<String> dropDownType = new ComboBox<>();
     private HashMap<String,RadioButton> rbHash = new HashMap<>();
-    private String[] radioButtonTitles = {"Spinner","TextField","Drop Down","None"};
+    private String[] radioButtonTitles = {"Spinner","TextField","Drop Down","Itemized","None"};
     private final LabeledTextField fieldNameText = new LabeledTextField("Field Name");
     private final MockHeader mockHeader = new MockHeader();
     private final VBox vBoxMockItems = new VBox();
@@ -86,7 +86,7 @@ public class FeeEditControls extends HBox {
         vBoxTableButtons.getChildren().addAll(setAddButton(),setDeleteButton());
         hBoxTableHeader.getChildren().add(fieldNameText);
         vBoxRadio.getChildren()
-                .addAll(rbHash.get("Spinner"),rbHash.get("TextField"),rbHash.get("Drop Down"),rbHash.get("None"));
+                .addAll(rbHash.get("Spinner"),rbHash.get("TextField"),rbHash.get("Drop Down"),rbHash.get("Itemized"),rbHash.get("None"));
         vBoxSpinner.getChildren().addAll(orderedSpinner,maxQtySpinner);
         vBoxCheckBox.getChildren().addAll(autoPopulate,isCredit,priceIsEditable,vBoxRadio);
         vBoxTable.getChildren().addAll(hBoxTableHeader, feeTableView);
@@ -128,8 +128,8 @@ public class FeeEditControls extends HBox {
         addFeeButton.setOnAction(event -> {
             FeeDTO feeDTO = new FeeDTO(parent.selectedFeeRow.dbInvoiceDTO.getFieldName(),
                     "0.00", parent.selectedFeeRow.dbInvoiceDTO.getId(),
-                    Integer.parseInt(parent.selectedFeeRow.dbInvoiceDTO.getFiscalYear()), "Description");
-            // TODO combine fees and tableView fees
+                    Integer.parseInt(parent.selectedFeeRow.dbInvoiceDTO.getFiscalYear()), "Description " + (fees.size() + 1));
+            // TODO combine fees and tableView fees, or not
             fees.add(feeDTO);  // tableview
             parent.selectedFeeRow.fees.add(feeDTO); // invoice dto
             SqlInsert.addNewFee(feeDTO);
@@ -140,12 +140,12 @@ public class FeeEditControls extends HBox {
     public void refreshMockBox() {
             vBoxMockItems.getChildren().clear();
             if(fees.size() > 0) // make sure items has associated fee
-                vBoxMockItems.getChildren().addAll(mockHeader, new MockInvoiceItemRow(parent.selectedFeeRow.dbInvoiceDTO, fees.get(0)));
+                vBoxMockItems.getChildren().addAll(mockHeader, new MockInvoiceItemRow(this, fees.get(0)));
             else {
                 FeeDTO feeDTO = new FeeDTO(0,
                         parent.selectedFeeRow.dbInvoiceDTO.getFieldName(),
                         "0.00",0,0,"",true);
-                vBoxMockItems.getChildren().addAll(mockHeader, new MockInvoiceItemRow(parent.selectedFeeRow.dbInvoiceDTO, feeDTO));
+                vBoxMockItems.getChildren().addAll(mockHeader, new MockInvoiceItemRow(this, feeDTO));
             }
     }
 
@@ -227,6 +227,8 @@ public class FeeEditControls extends HBox {
             rbHash.get("Spinner").setSelected(true);
         else if(parent.selectedFeeRow.dbInvoiceDTO.getWidgetType().equals("combo-box"))
             rbHash.get("Drop Down").setSelected(true);
+        else if(parent.selectedFeeRow.dbInvoiceDTO.getWidgetType().equals("itemized"))
+            rbHash.get("Itemized").setSelected(true);
         else if(parent.selectedFeeRow.dbInvoiceDTO.getWidgetType().equals("none"))
             rbHash.get("None").setSelected(true);
     }
@@ -248,6 +250,11 @@ public class FeeEditControls extends HBox {
             else if(rb.getText().equals("Drop Down")) {
                 parent.selectedFeeRow.dbInvoiceDTO.setWidgetType("combo-box");
                 setMultipliedWidgets(true);
+                setAutoPopulate(false);
+            }
+            else if(rb.getText().equals("Itemized")) {
+                parent.selectedFeeRow.dbInvoiceDTO.setWidgetType("itemized");
+                setMultipliedWidgets(false);
                 setAutoPopulate(false);
             }
             else if(rb.getText().equals("None")) {

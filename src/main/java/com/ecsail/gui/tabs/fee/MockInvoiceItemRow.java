@@ -25,7 +25,7 @@ public class MockInvoiceItemRow extends HBox {
     private Text total = new Text();
     private TextField textField;
     private Spinner<Integer> spinner;
-    private final DbInvoiceDTO invoiceWidget;
+    private final DbInvoiceDTO dbInvoiceDTO;
     private ComboBox<Integer> comboBox;
     private final InvoiceItemDTO invoiceItem;
     private final FeeDTO fee;
@@ -37,21 +37,30 @@ public class MockInvoiceItemRow extends HBox {
     private final VBox vBox4 = new VBox();
     private final VBox vBox5 = new VBox();
 
+    protected final FeeEditControls parent;
+
     InvoiceDTO invoice;
 
-    public MockInvoiceItemRow(DbInvoiceDTO dbInvoiceDTO, FeeDTO feeDTO) {  // For Mocking
-        this.invoiceWidget = dbInvoiceDTO;
-        this.itemName = dbInvoiceDTO.getFieldName();
-        this.invoiceItem = feeToMockInvoiceItem(feeDTO,dbInvoiceDTO);
+    public MockInvoiceItemRow(FeeEditControls feeEditControls, FeeDTO feeDTO) {  // For Mocking
+        this.parent = feeEditControls;
+        this.dbInvoiceDTO = parent.parent.selectedFeeRow.dbInvoiceDTO;
+        this.itemName = parent.parent.selectedFeeRow.dbInvoiceDTO.getFieldName();
+        this.fee = feeDTO;
+        this.invoiceItem = feeToMockInvoiceItem(feeDTO);
         this.footer = null;
         this.invoice = new InvoiceDTO();
-        this.fee = feeDTO;
-        this.items = dbInvoiceDTO.getItems();
-        addChildren(dbInvoiceDTO);
+
+        this.items = parent.parent.selectedFeeRow.dbInvoiceDTO.getItems();
+//        vBox1.setStyle("-fx-background-color: #c5c7c1;");  // gray
+//        vBox2.setStyle("-fx-background-color: #4d6955;");  //green
+//        vBox3.setStyle("-fx-background-color: #feffab;");  // yellow
+//        vBox4.setStyle("-fx-background-color: #e83115;");  // red
+//        vBox5.setStyle("-fx-background-color: #201ac9;");  // blue
         setEdit();
+        addChildren(parent.parent.selectedFeeRow.dbInvoiceDTO);
     }
 
-    private InvoiceItemDTO feeToMockInvoiceItem(FeeDTO feeDTO, DbInvoiceDTO dbInvoiceDTO) {
+    protected InvoiceItemDTO feeToMockInvoiceItem(FeeDTO feeDTO) {
         InvoiceItemDTO invoiceItemDTO = new InvoiceItemDTO(
                 0,
                 0,
@@ -59,12 +68,11 @@ public class MockInvoiceItemRow extends HBox {
                 Integer.parseInt(dbInvoiceDTO.getFiscalYear()),
                 dbInvoiceDTO.getFieldName(),
                 dbInvoiceDTO.isCredit(),
-                feeDTO.getFieldValue(),
+                "0.00",
                 0
         );
         return invoiceItemDTO;
     }
-
 
     private void addChildren(DbInvoiceDTO invoiceWidget) {
         setSpacing(15);
@@ -91,7 +99,7 @@ public class MockInvoiceItemRow extends HBox {
         vBox2.setPrefWidth(65);
         vBox3.setPrefWidth(30);
         vBox3.getChildren().clear();
-        vBox3.getChildren().add(setX(invoiceWidget));
+        vBox3.getChildren().add(setX(dbInvoiceDTO));
         vBox4.setPrefWidth(50);
         vBox5.setPrefWidth(70);
         getChildren().addAll(vBox1,vBox2,vBox3,vBox4,vBox5);
@@ -108,6 +116,7 @@ public class MockInvoiceItemRow extends HBox {
     }
 
     private Control setControlWidget(DbInvoiceDTO i) {
+        System.out.println("calling setControlWidget()");
         switch (i.getWidgetType()) {
             case "text-field" -> {
                 textField = new TextField();
@@ -121,7 +130,7 @@ public class MockInvoiceItemRow extends HBox {
                 spinner.setPrefWidth(i.getWidth());
                 price.setText(String.valueOf(fee.getFieldValue()));
                 setSpinnerListener();
-                if (invoiceWidget.isPrice_editable())
+                if (dbInvoiceDTO.isPrice_editable())
                     setPriceChangeListener(new TextField(price.getText()));
                 return spinner;
             }
@@ -130,12 +139,18 @@ public class MockInvoiceItemRow extends HBox {
                 comboBox.setPrefWidth(i.getWidth());
                 price.setText(String.valueOf(fee.getFieldValue()));
                 // fill comboBox
-                for (int j = 0; j < invoiceWidget.getMaxQty(); j++) comboBox.getItems().add(j);
+                for (int j = 0; j < dbInvoiceDTO.getMaxQty() + 1; j++) comboBox.getItems().add(j);
                 comboBox.getSelectionModel().select(invoiceItem.getQty());
                 setComboBoxListener();
-                if (invoiceWidget.isPrice_editable())
+                if (dbInvoiceDTO.isPrice_editable())
                     setPriceChangeListener(new TextField(price.getText()));
                 return comboBox;
+            }
+            case "itemized" -> { // more complex so layout and logic in different class
+                setForTitledPane(); // don't need this for others because new set of boxes every time
+                TitledPane titledPane = new TitledPane(fee.getFieldName(),new ItemizedCategory(this));
+                titledPane.setExpanded(false);
+                return titledPane;
             }
             case "none" -> {
                 textField = new TextField("none");
@@ -146,12 +161,19 @@ public class MockInvoiceItemRow extends HBox {
         return null;
     }
 
+    private void setForTitledPane() {
+        getChildren().remove(vBox1);
+        getChildren().remove(vBox3);
+        getChildren().remove(vBox4);
+        vBox2.setPrefWidth(330);
+    }
+
     private InvoiceItemDTO setItem() {
-        return invoiceWidget.getItems().stream().filter(i -> i.getFieldName().equals(itemName)).findFirst().orElse(null);
+        return dbInvoiceDTO.getItems().stream().filter(i -> i.getFieldName().equals(itemName)).findFirst().orElse(null);
     }
 
     private void setSpinnerListener() {
-        SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, invoiceWidget.getMaxQty(), invoiceItem.getQty());
+        SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, dbInvoiceDTO.getMaxQty(), invoiceItem.getQty());
 		spinner.setValueFactory(spinnerValueFactory);
 		spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
             String calculatedTotal = String.valueOf(new BigDecimal(fee.getFieldValue()).multiply(BigDecimal.valueOf(newValue)));
@@ -233,7 +255,7 @@ public class MockInvoiceItemRow extends HBox {
         this.total = total;
     }
 
-    public DbInvoiceDTO getInvoiceWidget() {
-        return invoiceWidget;
+    public DbInvoiceDTO getDbInvoiceDTO() {
+        return dbInvoiceDTO;
     }
 }
