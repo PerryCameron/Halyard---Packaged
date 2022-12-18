@@ -25,7 +25,7 @@ import java.util.Map;
 public class Invoice extends HBox {
     private final ObservableList<PaymentDTO> payments;
     private final InvoiceDTO invoice;
-    private final ArrayList<FeeDTO> fees;
+    protected ArrayList<FeeDTO> fees;
     private final MembershipDTO membership;
     private final InvoiceFooter footer;
     protected final Map<String, InvoiceItemRow> invoiceItemMap = new LinkedHashMap<>();
@@ -78,10 +78,10 @@ public class Invoice extends HBox {
 
 		// take list of DBInvoiceDTOs, insert appropriate fee into widget, insert reference to invoice items
 		// the put an HBOX with all this attached into a hash map
-		for (DbInvoiceDTO i : theseWidgets) {
-                i.setFee(insertFeeIntoWidget(i));
-                i.setItems(items); // allows calculations to be made
-                new InvoiceItemRow(this, i, footer);
+		for (DbInvoiceDTO dbInvoiceDTO : theseWidgets) {
+                dbInvoiceDTO.setFee(insertFeeIntoWidget(dbInvoiceDTO));
+                dbInvoiceDTO.setItems(items); // allows calculations to be made
+                new InvoiceItemRow(this, dbInvoiceDTO, footer);
 		}
         //////////////// SETTING CONTENT //////////////
 
@@ -95,7 +95,6 @@ public class Invoice extends HBox {
             for (String key : invoiceItemMap.keySet()) {
                 if (invoiceItemMap.get(key).getDbInvoiceDTO().getOrder() == i) {
                     vboxMain.getChildren().add(invoiceItemMap.get(key));
-                    System.out.println(i + ") " + invoiceItemMap.get(key).itemName);
                 }
             }
         }

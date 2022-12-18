@@ -82,6 +82,30 @@ public class SqlFee {
         return feeDTOS;
     }
 
+    public static ObservableList<FeeDTO> getAllFeesByFieldNameAndYear(FeeDTO feeDTO) {  //p_id
+        ObservableList<FeeDTO> feeDTOS = FXCollections.observableArrayList();
+        String query = "SELECT * FROM fee WHERE field_name='" + feeDTO.getFieldName()
+                + "' and fee_year=" + feeDTO.getFeeYear();
+        try {
+            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+            while (rs.next()) {
+                feeDTOS.add(new FeeDTO(
+                        rs.getInt("FEE_ID"),
+                        rs.getString("FIELD_NAME"),
+                        rs.getString("FIELD_VALUE"),
+                        rs.getInt("DB_INVOICE_ID"),
+                        rs.getInt("fee_year"),
+                        rs.getString("DESCRIPTION"),
+                        rs.getBoolean("DEFAULT_FEE")
+                ));
+            }
+            BaseApplication.connect.closeResultSet(rs);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return feeDTOS;
+    }
+
     public static FeeDTO getFeeByMembershipTypeForFiscalYear(int year, int msId) {  //p_id
         FeeDTO thisFee = null;
         String query = "select f.* from fee f where f.Description=(select\n" +

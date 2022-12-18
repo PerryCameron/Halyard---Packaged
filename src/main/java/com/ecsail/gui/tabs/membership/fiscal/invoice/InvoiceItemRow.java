@@ -25,13 +25,15 @@ public class InvoiceItemRow extends HBox {
 
     protected String itemName;
     private Text price = new Text();
-    private Text rowTotal = new Text();
+    protected Text rowTotal = new Text();
     private TextField textField;
     private Spinner<Integer> spinner;
-    private final DbInvoiceDTO dbInvoiceDTO;
+
+    protected DbInvoiceDTO dbInvoiceDTO;
     private ComboBox<Integer> comboBox;
-    private final InvoiceItemDTO invoiceItemDTO;
-    private FeeDTO fee;
+    protected InvoiceItemDTO invoiceItemDTO;
+
+    protected FeeDTO fee;
     private final InvoiceFooter footer;
     private final ObservableList<InvoiceItemDTO> items;
     private final VBox vBox1 = new VBox();
@@ -50,11 +52,9 @@ public class InvoiceItemRow extends HBox {
         this.invoice = footer.getInvoice();
         this.items = dbInvoiceDTO.getItems();
         this.invoiceItemDTO = setItem();
-        System.out.println(invoiceItemDTO);
         this.fee = getFee();
-        System.out.println(fee);
         parent.invoiceItemMap.put(dbInvoiceDTO.getFieldName(),this);
-        addChildren(dbInvoiceDTO);
+        addChildren();
     }
 
     private void updateInvoiceItem(InvoiceItemDTO invoiceItem) {
@@ -62,14 +62,14 @@ public class InvoiceItemRow extends HBox {
             SqlUpdate.updateInvoiceItem(invoiceItem);
     }
 
-    private void addChildren(DbInvoiceDTO invoiceWidget) {
+    private void addChildren() {
         setSpacing(15);
         vBox1.setAlignment(Pos.CENTER_LEFT);
         Text feeText = new Text(itemName + ":");
         feeText.setId("invoice-text-light");
         vBox1.getChildren().add(feeText);
         vBox2.setAlignment(Pos.CENTER_LEFT);
-        Control control = setControlWidget(invoiceWidget);
+        Control control = setControlWidget();
         vBox2.getChildren().add(control);
         vBox3.setAlignment(Pos.CENTER_RIGHT);
         vBox4.setAlignment(Pos.CENTER_RIGHT);
@@ -92,6 +92,12 @@ public class InvoiceItemRow extends HBox {
         vBox4.setPrefWidth(50);
         vBox5.setPrefWidth(70);
         getChildren().addAll(vBox1,vBox2,vBox3,vBox4,vBox5);
+        // this row is not like the others - this needs changed here
+        if(dbInvoiceDTO.getWidgetType().equals("itemized")) {
+            System.out.println("setting for title pane");
+            setForTitledPane();
+        }
+        System.out.println("setEdit()");
     }
 
     private void setCommit() {
@@ -110,6 +116,7 @@ public class InvoiceItemRow extends HBox {
     }
 
     public void setCommitMode(boolean setCommit) {
+        System.out.println("setCommitMode()");
         getChildren().clear();
         if(setCommit)
             setCommit();
@@ -127,18 +134,18 @@ public class InvoiceItemRow extends HBox {
         return x;
     }
 
-    private Control setControlWidget(DbInvoiceDTO i) {
-        switch (i.getWidgetType()) {
+    private Control setControlWidget() {
+        switch (dbInvoiceDTO.getWidgetType()) {
             case "text-field" -> {
                 textField = new TextField();
-                textField.setPrefWidth(i.getWidth());
+                textField.setPrefWidth(dbInvoiceDTO.getWidth());
                 textField.textProperty().bindBidirectional(rowTotal.textProperty());
                 setTextFieldListener();
                 return textField;
             }
             case "spinner" -> {
                 spinner = new Spinner<>();
-                spinner.setPrefWidth(i.getWidth());
+                spinner.setPrefWidth(dbInvoiceDTO.getWidth());
                 price.setText(String.valueOf(fee.getFieldValue()));
                 setSpinnerListener();
                 if (dbInvoiceDTO.isPrice_editable())
@@ -146,8 +153,9 @@ public class InvoiceItemRow extends HBox {
                 return spinner;
             }
             case "combo-box" -> {
+                System.out.println("setcombobox");
                 comboBox = new ComboBox<>();
-                comboBox.setPrefWidth(i.getWidth());
+                comboBox.setPrefWidth(dbInvoiceDTO.getWidth());
                 price.setText(String.valueOf(fee.getFieldValue()));
                 // fill comboBox
                 for (int j = 0; j < dbInvoiceDTO.getMaxQty(); j++) comboBox.getItems().add(j);
@@ -157,6 +165,13 @@ public class InvoiceItemRow extends HBox {
                     setPriceChangeListener(new TextField(price.getText()));
                 return comboBox;
             }
+            case "itemized" -> { // more complex so layout and logic in different class
+                // setForTitledPane(); <- gets called in setEdit() in normal but here in mock
+                TitledPane titledPane = new TitledPane(fee.getFieldName(),new ItemizedCategory(this));
+                titledPane.setExpanded(false);
+                System.out.println(" 1 Number of children are " + getChildren().size());
+                return titledPane;
+            }
             case "none" -> {
                 textField = new TextField("none");
                 textField.setVisible(false);
@@ -164,6 +179,13 @@ public class InvoiceItemRow extends HBox {
             }
         }
         return null;
+    }
+
+    private void setForTitledPane() {
+        getChildren().remove(vBox1);
+        getChildren().remove(vBox3);
+        getChildren().remove(vBox4);
+        vBox2.setPrefWidth(330);
     }
 
     private FeeDTO getFee() {

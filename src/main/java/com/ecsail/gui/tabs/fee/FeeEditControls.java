@@ -254,8 +254,9 @@ public class FeeEditControls extends HBox {
             }
             else if(rb.getText().equals("Itemized")) {
                 parent.selectedFeeRow.dbInvoiceDTO.setWidgetType("itemized");
-                setMultipliedWidgets(false);
+                setMultipliedWidgets(true);
                 setAutoPopulate(false);
+                priceIsEditable.setVisible(false); // could add this feature, but not sure if it's needed.
             }
             else if(rb.getText().equals("None")) {
                 parent.selectedFeeRow.dbInvoiceDTO.setWidgetType("none");

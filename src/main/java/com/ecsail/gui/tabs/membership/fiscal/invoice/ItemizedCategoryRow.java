@@ -1,5 +1,6 @@
-package com.ecsail.gui.tabs.fee;
+package com.ecsail.gui.tabs.membership.fiscal.invoice;
 
+import com.ecsail.gui.tabs.fee.MockItemizedCategory;
 import com.ecsail.structures.FeeDTO;
 import com.ecsail.structures.InvoiceItemDTO;
 import javafx.geometry.Pos;
@@ -15,16 +16,18 @@ public class ItemizedCategoryRow extends HBox {
 
     ItemizedCategory parent;
     BigDecimal lineTotal = new BigDecimal("0.00");
+
+    private Text price;
     public ItemizedCategoryRow(ItemizedCategory itemizedCategory, FeeDTO feeDTO) {
         this.parent = itemizedCategory;
-        InvoiceItemDTO invoiceItemDTO = parent.parent.feeToMockInvoiceItem(feeDTO);
+        InvoiceItemDTO invoiceItemDTO = parent.parent.invoiceItemDTO;
         invoiceItemDTO.setFieldName(feeDTO.getDescription());
         VBox vBox1 = new VBox();
         VBox vBox2 = new VBox();
         VBox vBox3 = new VBox();
         Text label = new Text(invoiceItemDTO.getFieldName());
         label.setId("invoice-text-light");
-        Text price = new Text(invoiceItemDTO.getValue());
+        price = new Text(invoiceItemDTO.getValue());
         Spinner spinner = new Spinner<>();
         spinner.setPrefWidth(65);
         vBox1.setAlignment(Pos.CENTER_LEFT);
@@ -41,11 +44,12 @@ public class ItemizedCategoryRow extends HBox {
     }
     private void setSpinnerListener(Spinner spinner, InvoiceItemDTO invoiceItemDTO, FeeDTO feeDTO) {
         SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(
-                0, parent.parent.parent.parent.selectedFeeRow.dbInvoiceDTO.getMaxQty(), invoiceItemDTO.getQty());
+                0, parent.parent.dbInvoiceDTO.getMaxQty(), invoiceItemDTO.getQty());
         spinner.setValueFactory(spinnerValueFactory);
         spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
             lineTotal = new BigDecimal(feeDTO.getFieldValue()).multiply(BigDecimal.valueOf((Integer) newValue));
-            parent.parent.getTotal().setText(parent.calculateAllLines());
+            price.setText(String.valueOf(lineTotal));
+            parent.parent.rowTotal.setText(parent.calculateAllLines());
         });
     }
 }

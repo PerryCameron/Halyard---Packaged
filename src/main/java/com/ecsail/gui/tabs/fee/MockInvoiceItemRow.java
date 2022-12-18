@@ -148,7 +148,7 @@ public class MockInvoiceItemRow extends HBox {
             }
             case "itemized" -> { // more complex so layout and logic in different class
                 setForTitledPane(); // don't need this for others because new set of boxes every time
-                TitledPane titledPane = new TitledPane(fee.getFieldName(),new ItemizedCategory(this));
+                TitledPane titledPane = new TitledPane(fee.getFieldName(),new MockItemizedCategory(this));
                 titledPane.setExpanded(false);
                 return titledPane;
             }
@@ -168,9 +168,9 @@ public class MockInvoiceItemRow extends HBox {
         vBox2.setPrefWidth(330);
     }
 
-    private InvoiceItemDTO setItem() {
-        return dbInvoiceDTO.getItems().stream().filter(i -> i.getFieldName().equals(itemName)).findFirst().orElse(null);
-    }
+//    private InvoiceItemDTO setItem() {
+//        return dbInvoiceDTO.getItems().stream().filter(i -> i.getFieldName().equals(itemName)).findFirst().orElse(null);
+//    }
 
     private void setSpinnerListener() {
         SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, dbInvoiceDTO.getMaxQty(), invoiceItem.getQty());
