@@ -27,7 +27,8 @@ public class SqlDbInvoice {
                         rs.getBoolean("price_editable"),
                         rs.getBoolean("is_credit"),
                         rs.getInt("max_qty"),
-                        rs.getBoolean("auto_populate")
+                        rs.getBoolean("auto_populate"),
+                        rs.getString("DROP_DOWN_TYPE")
                         ));
             }
             BaseApplication.connect.closeResultSet(rs);
@@ -54,7 +55,8 @@ public class SqlDbInvoice {
                         rs.getBoolean("price_editable"),
                         rs.getBoolean("is_credit"),
                         rs.getInt("max_qty"),
-                        rs.getBoolean("auto_populate")
+                        rs.getBoolean("auto_populate"),
+                        rs.getString("DROP_DOWN_TYPE")
                 ));
             }
             BaseApplication.connect.closeResultSet(rs);
@@ -96,7 +98,8 @@ public class SqlDbInvoice {
                         rs.getBoolean("price_editable"),
                         rs.getBoolean("is_credit"),
                         rs.getInt("max_qty"),
-                        rs.getBoolean("auto_populate")
+                        rs.getBoolean("auto_populate"),
+                        rs.getString("DROP_DOWN_TYPE")
                 );
             }
             BaseApplication.connect.closeResultSet(rs);

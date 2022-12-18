@@ -233,7 +233,8 @@ public class SqlScriptMaker {
 				+ a.isPrice_editable() + ","
 				+ a.isCredit() + ","
 				+ a.getMaxQty() + ","
-				+ a.isAutoPopulate() + ");\n";
+				+ a.isAutoPopulate() + ","
+				+ getCorrectString(a.getDropDownType()) + ");\n";
 	}
 	private static String getApiString(ApiKeyDTO a) {
 		return "INSERT INTO api_key () VALUES("

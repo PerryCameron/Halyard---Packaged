@@ -482,7 +482,8 @@ public class SqlUpdate {
 				+ "price_editable=" + dbInvoiceDTO.isPrice_editable() + ","
 				+ "is_credit=" + dbInvoiceDTO.isCredit() + ","
 				+ "max_qty=" + dbInvoiceDTO.getMaxQty() + ","
-				+ "auto_populate=" + dbInvoiceDTO.isAutoPopulate()
+				+ "auto_populate=" + dbInvoiceDTO.isAutoPopulate() + ","
+				+ "DROP_DOWN_TYPE='" + dbInvoiceDTO.getDropDownType() + "'"
 				+ " WHERE ID=" + dbInvoiceDTO.getId();
 		try {
 			BaseApplication.connect.executeQuery(query);
