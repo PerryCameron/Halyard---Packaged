@@ -25,6 +25,8 @@ public class FeeEditControls extends HBox {
     private final CheckBox autoPopulate = new CheckBox("Auto Populate");
     private final CheckBox isCredit = new CheckBox("Credit");
     private final CheckBox priceIsEditable = new CheckBox("Price Editable");
+
+//    private final ComboBox<String> dropDownType = new ComboBox<>();
     private HashMap<String,RadioButton> rbHash = new HashMap<>();
     private String[] radioButtonTitles = {"Spinner","TextField","Drop Down","None"};
     private final LabeledTextField fieldNameText = new LabeledTextField("Field Name");
@@ -94,6 +96,8 @@ public class FeeEditControls extends HBox {
         getChildren().addAll(vBoxDisplay,hBoxTableGroup); // this is hbox
     }
 
+
+
     private Button setDeleteButton() {
         Button deleteButton = new Button("Delete");
         deleteButton.setPrefWidth(70);
@@ -125,7 +129,9 @@ public class FeeEditControls extends HBox {
             FeeDTO feeDTO = new FeeDTO(parent.selectedFeeRow.dbInvoiceDTO.getFieldName(),
                     "0.00", parent.selectedFeeRow.dbInvoiceDTO.getId(),
                     Integer.parseInt(parent.selectedFeeRow.dbInvoiceDTO.getFiscalYear()), "Description");
-            fees.add(feeDTO);
+            // TODO combine fees and tableView fees
+            fees.add(feeDTO);  // tableview
+            parent.selectedFeeRow.fees.add(feeDTO); // invoice dto
             SqlInsert.addNewFee(feeDTO);
         });
         return addFeeButton;
@@ -209,6 +215,7 @@ public class FeeEditControls extends HBox {
             if (parent.isOkToWriteToDataBase()) { // don't trigger order spinner if you select another radio button
                 parent.selectedFeeRow.dbInvoiceDTO.setMaxQty(newValue);
                 SqlUpdate.updateDbInvoice(parent.selectedFeeRow.dbInvoiceDTO);
+                refreshMockBox();
             }
         });
     }
@@ -231,24 +238,33 @@ public class FeeEditControls extends HBox {
             if(rb.getText().equals("TextField")) {
                 parent.selectedFeeRow.dbInvoiceDTO.setWidgetType("text-field");
                 setMultipliedWidgets(false);
+                setAutoPopulate(true);
             }
             else if(rb.getText().equals("Spinner")) {
                 parent.selectedFeeRow.dbInvoiceDTO.setWidgetType("spinner");
                 setMultipliedWidgets(true);
+                setAutoPopulate(false);
             }
             else if(rb.getText().equals("Drop Down")) {
                 parent.selectedFeeRow.dbInvoiceDTO.setWidgetType("combo-box");
                 setMultipliedWidgets(true);
+                setAutoPopulate(false);
             }
             else if(rb.getText().equals("None")) {
                 parent.selectedFeeRow.dbInvoiceDTO.setWidgetType("none");
                 setMultipliedWidgets(false);
+                setAutoPopulate(false);
             }
             refreshMockBox();
             if(okToWriteToDatabase)
             SqlUpdate.updateDbInvoice(parent.selectedFeeRow.dbInvoiceDTO);
             okToWriteToDatabase = true;
         });
+    }
+
+    private void setAutoPopulate(boolean isVisible) {
+        autoPopulate.setVisible(isVisible);
+        autoPopulate.setManaged(isVisible);
     }
 
     private void setMultipliedWidgets(boolean value) {

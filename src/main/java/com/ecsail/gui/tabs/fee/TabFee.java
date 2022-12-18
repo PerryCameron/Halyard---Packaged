@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Optional;
 
 /// This is the new experimental version
 public class TabFee extends Tab {
@@ -115,8 +116,22 @@ public class TabFee extends Tab {
 
     private Button createDeleteButton() {  // for deleting invoice items, and corresponding fees
         Button delButton = new Button("Delete");
-        delButton.setOnAction((event) -> deleteFeeRow());
+            delButton.setOnAction((event) -> checkForDelete());
         return delButton;
+    }
+
+    private void checkForDelete() {
+        Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
+        conformation.setTitle("Delete Invoice Category");
+        conformation.setHeaderText(selectedFeeRow.label.getText());
+        conformation.setContentText("Are sure you want to delete this Category?");
+        DialogPane dialogPane = conformation.getDialogPane();
+        dialogPane.getStylesheets().add("css/dark/dialogue.css");
+        dialogPane.getStyleClass().add("dialog");
+        Optional<ButtonType> result = conformation.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            deleteFeeRow();
+        }
     }
 
     private Button createCopyFeeButton() {
