@@ -94,10 +94,8 @@ public class InvoiceItemRow extends HBox {
         getChildren().addAll(vBox1,vBox2,vBox3,vBox4,vBox5);
         // this row is not like the others - this needs changed here
         if(dbInvoiceDTO.getWidgetType().equals("itemized")) {
-            System.out.println("setting for title pane");
             setForTitledPane();
         }
-        System.out.println("setEdit()");
     }
 
     private void setCommit() {
@@ -116,7 +114,6 @@ public class InvoiceItemRow extends HBox {
     }
 
     public void setCommitMode(boolean setCommit) {
-        System.out.println("setCommitMode()");
         getChildren().clear();
         if(setCommit)
             setCommit();
@@ -192,6 +189,9 @@ public class InvoiceItemRow extends HBox {
         FeeDTO duesFee;
         if(getDbInvoiceDTO().isAutoPopulate()) {
             duesFee = SqlFee.getFeeByMembershipTypeForFiscalYear(invoice.getYear(), invoice.getMsId());
+            if(duesFee == null)
+                invoiceItemDTO.setValue("0.00");
+            else
             invoiceItemDTO.setValue(duesFee.getFieldValue());
             return duesFee;
         }
@@ -289,7 +289,7 @@ public class InvoiceItemRow extends HBox {
         price.setOnMouseEntered(en -> price.setFill(Color.RED));
         price.setOnMouseExited(ex -> price.setFill(Color.BLUE));
     }
-    private void updateBalance() {
+    protected void updateBalance() {
         BigDecimal fees = new BigDecimal("0.00");
         BigDecimal credit = new BigDecimal("0.00");
         for (InvoiceItemDTO i : items) {

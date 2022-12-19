@@ -103,10 +103,7 @@ public class Launcher extends VBox {
 
     public static void createMembershipTabFromPeopleList(int msid) {
         MembershipListDTO membership = SqlMembershipList.getMembershipFromListWithoutMembershipId(msid);
-        if (!SqlMembership_Id.isRenewedByMsidAndYear(msid, HalyardPaths.getYear()))
-            Launcher.createInactiveMemberTab(membership);
-        else
-            Launcher.createActiveMembershipTab(membership);
+        Launcher.createInactiveMemberTab(membership);
     }
 
     //	// used for TabRoster and CreateMembership

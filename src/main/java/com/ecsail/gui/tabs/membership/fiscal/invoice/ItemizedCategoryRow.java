@@ -50,6 +50,7 @@ public class ItemizedCategoryRow extends HBox {
             lineTotal = new BigDecimal(feeDTO.getFieldValue()).multiply(BigDecimal.valueOf((Integer) newValue));
             price.setText(String.valueOf(lineTotal));
             parent.parent.rowTotal.setText(parent.calculateAllLines());
+            parent.parent.updateBalance();
         });
     }
 }

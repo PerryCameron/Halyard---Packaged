@@ -23,6 +23,7 @@ public class ItemizedCategory extends VBox {
             itemizedCategoryRows.add(row);
             getChildren().add(row);
         }
+        setId("box-background-light");
     }
 
     public String calculateAllLines() {

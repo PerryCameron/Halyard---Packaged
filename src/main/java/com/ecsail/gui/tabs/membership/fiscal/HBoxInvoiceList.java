@@ -177,8 +177,12 @@ public class HBoxInvoiceList extends HBox {
 	/////////////////////  CLASS METHODS /////////////////////////////
 	private void populateComboBox(ComboBox<Integer> comboBox) {
 		int selectedElement = 0;
-		for(int i = Integer.parseInt(BaseApplication.selectedYear) + 1; i > 1969; i--) {
-			if(i == Integer.parseInt(tm.getLabels().getSelectedYear().getText())) selectedElement = i;
+		// fill up combo box
+		for (int i = Integer.parseInt(BaseApplication.selectedYear) + 1; i > 1969; i--) {
+			System.out.println(tm.getLabels().getSelectedYear().getText());
+			// If we do not have a specific year
+			if (!tm.getLabels().getSelectedYear().getText().equals("No Year")) // do we have a current year?
+				if (i == Integer.parseInt(tm.getLabels().getSelectedYear().getText())) selectedElement = i;
 			comboBox.getItems().add(i);
 		}
 		comboBox.setValue(selectedElement); // sets year for combo box to record year

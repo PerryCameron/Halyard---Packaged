@@ -15,6 +15,7 @@ public class MockItemizedCategoryRow extends HBox {
 
     MockItemizedCategory parent;
     BigDecimal lineTotal = new BigDecimal("0.00");
+    private Text price;
     public MockItemizedCategoryRow(MockItemizedCategory itemizedCategory, FeeDTO feeDTO) {
         this.parent = itemizedCategory;
         InvoiceItemDTO invoiceItemDTO = parent.parent.feeToMockInvoiceItem(feeDTO);
@@ -24,7 +25,7 @@ public class MockItemizedCategoryRow extends HBox {
         VBox vBox3 = new VBox();
         Text label = new Text(invoiceItemDTO.getFieldName());
         label.setId("invoice-text-light");
-        Text price = new Text(invoiceItemDTO.getValue());
+        price = new Text(invoiceItemDTO.getValue());
         Spinner spinner = new Spinner<>();
         spinner.setPrefWidth(65);
         vBox1.setAlignment(Pos.CENTER_LEFT);
@@ -45,6 +46,7 @@ public class MockItemizedCategoryRow extends HBox {
         spinner.setValueFactory(spinnerValueFactory);
         spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
             lineTotal = new BigDecimal(feeDTO.getFieldValue()).multiply(BigDecimal.valueOf((Integer) newValue));
+            price.setText(String.valueOf(lineTotal));
             parent.parent.getTotal().setText(parent.calculateAllLines());
         });
     }
