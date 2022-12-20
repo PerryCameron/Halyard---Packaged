@@ -237,6 +237,7 @@ public class FeeEditControls extends HBox {
         tg.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) ->
         {
             RadioButton rb = (RadioButton) new_toggle;
+            parent.selectedFeeRow.dbInvoiceDTO.setItemized(false);
             if(rb.getText().equals("TextField")) {
                 parent.selectedFeeRow.dbInvoiceDTO.setWidgetType("text-field");
                 setMultipliedWidgets(false);
@@ -254,6 +255,7 @@ public class FeeEditControls extends HBox {
             }
             else if(rb.getText().equals("Itemized")) {
                 parent.selectedFeeRow.dbInvoiceDTO.setWidgetType("itemized");
+                parent.selectedFeeRow.dbInvoiceDTO.setItemized(true);
                 setMultipliedWidgets(true);
                 setAutoPopulate(false);
                 priceIsEditable.setVisible(false); // could add this feature, but not sure if it's needed.

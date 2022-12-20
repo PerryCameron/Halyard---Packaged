@@ -390,7 +390,7 @@ CREATE Table ECSC_SQL.db_invoice
     is_credit      boolean           NOT NULL,
     max_qty        INTEGER           NOT NULL,
     auto_populate  boolean default 0 not null,
-    DROP_DOWN_TYPE varchar(20)       null
+    is_itemized    boolean default 0 not null
 );
 
 

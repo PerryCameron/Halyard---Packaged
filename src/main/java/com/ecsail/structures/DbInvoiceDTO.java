@@ -17,7 +17,7 @@ public class DbInvoiceDTO {
     private boolean is_credit;
     private int maxQty;
     private boolean autoPopulate;
-    private boolean multipleFee;
+    private boolean itemized;
     /**
      * below not included in database
      */
@@ -25,7 +25,7 @@ public class DbInvoiceDTO {
     private ObservableList<InvoiceItemDTO> items;
 
 
-    public DbInvoiceDTO(int id, String fiscalYear, String fieldName, String widgetType, double width, Integer order, boolean multiplied, boolean price_editable, boolean is_credit, int maxQty, boolean autoPopulate, boolean multipleFee) {
+    public DbInvoiceDTO(int id, String fiscalYear, String fieldName, String widgetType, double width, Integer order, boolean multiplied, boolean price_editable, boolean is_credit, int maxQty, boolean autoPopulate, boolean itemized) {
         this.id = id;
         this.fiscalYear = fiscalYear;
         this.fieldName = fieldName;
@@ -37,7 +37,7 @@ public class DbInvoiceDTO {
         this.is_credit = is_credit;
         this.maxQty = maxQty;
         this.autoPopulate = autoPopulate;
-        this.multipleFee = multipleFee;
+        this.itemized = itemized;
     }
 
     public DbInvoiceDTO(String fiscalYear, Integer order) {  // for creation of new DTO
@@ -52,7 +52,7 @@ public class DbInvoiceDTO {
         this.is_credit = false;
         this.maxQty = 0;
         this.autoPopulate = false;
-        this.multipleFee = false;
+        this.itemized = false;
     }
 
     public int getId() {
@@ -163,12 +163,12 @@ public class DbInvoiceDTO {
         this.autoPopulate = autoPopulate;
     }
 
-    public boolean isMultipleFee() {
-        return multipleFee;
+    public boolean isItemized() {
+        return itemized;
     }
 
-    public void setMultipleFee(boolean multipleFee) {
-        this.multipleFee = multipleFee;
+    public void setItemized(boolean itemized) {
+        this.itemized = itemized;
     }
 
     @Override
@@ -185,7 +185,7 @@ public class DbInvoiceDTO {
                 ", is_credit=" + is_credit +
                 ", maxQty=" + maxQty +
                 ", autoPopulate=" + autoPopulate +
-                ", multipleFee=" + multipleFee +
+                ", multipleFee=" + itemized +
                 ", fee=" + fee +
                 ", items=" + items +
                 '}';

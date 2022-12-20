@@ -25,7 +25,7 @@ public class SqlInsert {
 				+ d.isCredit() + ","
 				+ d.getMaxQty() + ","
 				+ d.isAutoPopulate() + ","
-				+ d.isMultipleFee() +")";
+				+ d.isItemized() +")";
 		try {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {
