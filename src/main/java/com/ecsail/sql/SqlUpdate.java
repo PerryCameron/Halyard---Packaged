@@ -483,7 +483,7 @@ public class SqlUpdate {
 				+ "is_credit=" + dbInvoiceDTO.isCredit() + ","
 				+ "max_qty=" + dbInvoiceDTO.getMaxQty() + ","
 				+ "auto_populate=" + dbInvoiceDTO.isAutoPopulate() + ","
-				+ "DROP_DOWN_TYPE='" + dbInvoiceDTO.getDropDownType() + "'"
+				+ "is_multiple_fee=" + dbInvoiceDTO.isMultipleFee()
 				+ " WHERE ID=" + dbInvoiceDTO.getId();
 		try {
 			BaseApplication.connect.executeQuery(query);

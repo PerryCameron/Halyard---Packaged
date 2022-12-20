@@ -28,7 +28,7 @@ public class SqlDbInvoice {
                         rs.getBoolean("is_credit"),
                         rs.getInt("max_qty"),
                         rs.getBoolean("auto_populate"),
-                        rs.getString("DROP_DOWN_TYPE")
+                        rs.getBoolean("is_multiple_fee")
                         ));
             }
             BaseApplication.connect.closeResultSet(rs);
@@ -56,7 +56,7 @@ public class SqlDbInvoice {
                         rs.getBoolean("is_credit"),
                         rs.getInt("max_qty"),
                         rs.getBoolean("auto_populate"),
-                        rs.getString("DROP_DOWN_TYPE")
+                        rs.getBoolean("is_multiple_fee")
                 ));
             }
             BaseApplication.connect.closeResultSet(rs);
@@ -99,7 +99,7 @@ public class SqlDbInvoice {
                         rs.getBoolean("is_credit"),
                         rs.getInt("max_qty"),
                         rs.getBoolean("auto_populate"),
-                        rs.getString("DROP_DOWN_TYPE")
+                        rs.getBoolean("is_multiple_fee")
                 );
             }
             BaseApplication.connect.closeResultSet(rs);

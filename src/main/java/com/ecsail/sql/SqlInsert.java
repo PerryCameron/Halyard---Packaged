@@ -24,9 +24,8 @@ public class SqlInsert {
 				+ d.isPrice_editable() + ","
 				+ d.isCredit() + ","
 				+ d.getMaxQty() + ","
-				+ d.isAutoPopulate() + ",'"
-				+ d.getDropDownType() + "'"
-				+")";
+				+ d.isAutoPopulate() + ","
+				+ d.isMultipleFee() +")";
 		try {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {
