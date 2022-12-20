@@ -41,3 +41,7 @@
     -fx-fill: #820d0d;
     -fx-font-weight: bold;
 }
+
+#title-pane .content {
+    -fx-border-width: 0;
+}

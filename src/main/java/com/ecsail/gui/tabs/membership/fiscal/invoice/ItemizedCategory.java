@@ -5,6 +5,7 @@ import com.ecsail.sql.select.SqlFee;
 import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.structures.FeeDTO;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.layout.VBox;
 
 import java.math.BigDecimal;
@@ -18,6 +19,7 @@ public class ItemizedCategory extends VBox {
         this.parent = invoiceItemRow;
         this.feeDTOS = SqlFee.getAllFeesByFieldNameAndYear(parent.fee);
         this.setSpacing(5);
+        this.setPadding(new Insets(5,0,0,0));
         for(FeeDTO fee: feeDTOS) { // not correct fees, need for dbincoive only
             ItemizedCategoryRow row = new ItemizedCategoryRow(this,fee);
             itemizedCategoryRows.add(row);

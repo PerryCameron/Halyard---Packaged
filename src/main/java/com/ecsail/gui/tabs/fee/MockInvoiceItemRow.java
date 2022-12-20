@@ -149,6 +149,7 @@ public class MockInvoiceItemRow extends HBox {
             case "itemized" -> { // more complex so layout and logic in different class
                 setForTitledPane(); // don't need this for others because new set of boxes every time
                 TitledPane titledPane = new TitledPane(fee.getFieldName(),new MockItemizedCategory(this));
+                titledPane.setId("title-pane");
                 titledPane.setExpanded(false);
                 return titledPane;
             }

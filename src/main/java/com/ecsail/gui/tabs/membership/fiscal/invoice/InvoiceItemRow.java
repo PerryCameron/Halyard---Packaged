@@ -166,7 +166,7 @@ public class InvoiceItemRow extends HBox {
                 // setForTitledPane(); <- gets called in setEdit() in normal but here in mock
                 TitledPane titledPane = new TitledPane(fee.getFieldName(),new ItemizedCategory(this));
                 titledPane.setExpanded(false);
-                System.out.println(" 1 Number of children are " + getChildren().size());
+                titledPane.setId("title-pane");
                 return titledPane;
             }
             case "none" -> {

@@ -1,6 +1,7 @@
 package com.ecsail.gui.tabs.fee;
 
 import com.ecsail.structures.FeeDTO;
+import javafx.geometry.Insets;
 import javafx.scene.layout.VBox;
 
 import java.math.BigDecimal;
@@ -12,11 +13,13 @@ public class MockItemizedCategory extends VBox {
     public MockItemizedCategory(MockInvoiceItemRow mockInvoiceItemRow) {
         this.parent = mockInvoiceItemRow;
         this.setSpacing(5);
+        this.setPadding(new Insets(5,0,0,0));
         for(FeeDTO fee: parent.parent.parent.selectedFeeRow.fees) {
             MockItemizedCategoryRow row = new MockItemizedCategoryRow(this,fee);
             itemizedCategoryRows.add(row);
             getChildren().add(row);
         }
+        setId("box-background-light");
     }
 
     public String calculateAllLines() {
