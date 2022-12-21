@@ -116,7 +116,6 @@ public class MockInvoiceItemRow extends HBox {
     }
 
     private Control setControlWidget(DbInvoiceDTO i) {
-        System.out.println("calling setControlWidget()");
         switch (i.getWidgetType()) {
             case "text-field" -> {
                 textField = new TextField();

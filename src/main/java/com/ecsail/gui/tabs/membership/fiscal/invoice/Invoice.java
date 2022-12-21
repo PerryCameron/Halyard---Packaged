@@ -142,8 +142,7 @@ public class Invoice extends HBox {
             return SqlPayment.getPayments(invoice.getId());
         } else {  // if not create one
             BaseApplication.logger.info("getPayment(): Creating a new payment entry");
-            int pay_id = SqlSelect.getNextAvailablePrimaryKey("payment", "pay_id");
-            payments.add(new PaymentDTO(pay_id, invoice.getId(), "0", "CH",
+            payments.add(new PaymentDTO(0, invoice.getId(), "0", "CH",
                     HalyardPaths.date, "0", 1));
             SqlInsert.addPaymentRecord(payments.get(payments.size() - 1));
         }

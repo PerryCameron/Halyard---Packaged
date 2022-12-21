@@ -95,7 +95,8 @@ public class SqlInsert {
 	}
 
 	public static void addPaymentRecord(PaymentDTO op) {
-		String query = "INSERT INTO payment () VALUES (" + op.getPay_id() + ","
+		int pay_id = SqlSelect.getNextAvailablePrimaryKey("payment", "pay_id");
+		String query = "INSERT INTO payment () VALUES (" + pay_id + ","
 				+ op.getInvoice_id() + "," + op.getCheckNumber() + ",'" + op.getPaymentType() + "','"
 				+ op.getPaymentDate() + "','" + op.getPaymentAmount() + "','" + op.getDeposit_id() + "')";
 		try {
@@ -159,8 +160,9 @@ public class SqlInsert {
 	}
 
 	public static void addInvoiceItemRecord(InvoiceItemDTO i) {
+		int id = SqlSelect.getNextAvailablePrimaryKey("invoice_item","ID");
 		String query = "INSERT INTO invoice_item () VALUES ("
-				+ i.getId() + "," + i.getInvoiceId() + "," + i.getMsId() + "," + i.getYear()
+				+ id + "," + i.getInvoiceId() + "," + i.getMsId() + "," + i.getYear()
 				+ ",'" + i.getFieldName() + "'," + i.isCredit()
 				+ ",'" + i.getValue() + "'," + i.getQty() + ")";
 		try {

@@ -37,7 +37,6 @@ public class InvoiceItemDTO {
     }
 
 
-
     public final IntegerProperty idProperty() {
         return this.id;
     }

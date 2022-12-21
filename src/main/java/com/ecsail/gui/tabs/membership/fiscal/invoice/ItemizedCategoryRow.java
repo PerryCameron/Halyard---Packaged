@@ -1,6 +1,7 @@
 package com.ecsail.gui.tabs.membership.fiscal.invoice;
 
 import com.ecsail.gui.tabs.fee.MockItemizedCategory;
+import com.ecsail.sql.select.SqlInvoiceItem;
 import com.ecsail.structures.FeeDTO;
 import com.ecsail.structures.InvoiceItemDTO;
 import javafx.geometry.Pos;
@@ -14,20 +15,25 @@ import java.math.BigDecimal;
 
 public class ItemizedCategoryRow extends HBox {
 
-    ItemizedCategory parent;
-    BigDecimal lineTotal = new BigDecimal("0.00");
+    private ItemizedCategory parent;
+    protected BigDecimal lineTotal = new BigDecimal("0.00");
+    private InvoiceItemDTO categoryName;
+    private InvoiceItemDTO invoiceItemDTO;
 
     private Text price;
     public ItemizedCategoryRow(ItemizedCategory itemizedCategory, FeeDTO feeDTO) {
         this.parent = itemizedCategory;
-        InvoiceItemDTO invoiceItemDTO = parent.parent.invoiceItemDTO;
-        invoiceItemDTO.setFieldName(feeDTO.getDescription());
+        int msId = parent.parent.invoice.getMsId();
+        this.invoiceItemDTO = SqlInvoiceItem.getInvoiceItemByFeeDTO(feeDTO,msId);
+        categoryName = parent.parent.invoiceItemDTO;
         VBox vBox1 = new VBox();
         VBox vBox2 = new VBox();
         VBox vBox3 = new VBox();
         Text label = new Text(invoiceItemDTO.getFieldName());
         label.setId("invoice-text-light");
-        price = new Text(invoiceItemDTO.getValue());
+        price = new Text(feeDTO.getFieldValue());
+        // calculate our total from database
+        lineTotal = getLineTotal(feeDTO.getFieldValue(), invoiceItemDTO.getQty());
         Spinner spinner = new Spinner<>();
         spinner.setPrefWidth(65);
         vBox1.setAlignment(Pos.CENTER_LEFT);
@@ -36,21 +42,27 @@ public class ItemizedCategoryRow extends HBox {
         vBox1.setPrefWidth(155);
         vBox2.setPrefWidth(65);
         vBox3.setPrefWidth(110);
-        setSpinnerListener(spinner, invoiceItemDTO, feeDTO);
+        setSpinnerListener(spinner, feeDTO);
         vBox1.getChildren().add(label);
         vBox2.getChildren().add(spinner);
         vBox3.getChildren().add(price);
         getChildren().addAll(vBox1,vBox2,vBox3);
     }
-    private void setSpinnerListener(Spinner spinner, InvoiceItemDTO invoiceItemDTO, FeeDTO feeDTO) {
+    private void setSpinnerListener(Spinner spinner, FeeDTO feeDTO) {
         SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(
                 0, parent.parent.dbInvoiceDTO.getMaxQty(), invoiceItemDTO.getQty());
         spinner.setValueFactory(spinnerValueFactory);
         spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
-            lineTotal = new BigDecimal(feeDTO.getFieldValue()).multiply(BigDecimal.valueOf((Integer) newValue));
-            price.setText(String.valueOf(lineTotal));
+            lineTotal = getLineTotal(feeDTO.getFieldValue(), (Integer) newValue);
+            invoiceItemDTO.setValue(String.valueOf(lineTotal));
+            invoiceItemDTO.setQty((Integer) newValue);
             parent.parent.rowTotal.setText(parent.calculateAllLines());
+            parent.parent.checkIfNotCommittedAndUpdateSql(invoiceItemDTO);
             parent.parent.updateBalance();
         });
+    }
+
+    private BigDecimal getLineTotal(String value, Integer multiple) {
+        return new BigDecimal(value).multiply(BigDecimal.valueOf(multiple));
     }
 }

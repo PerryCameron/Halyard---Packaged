@@ -64,8 +64,7 @@ public class InvoiceFooter extends VBox {
         setSpacing(15);
 
         buttonAdd.setOnAction(e -> {
-            int pay_id = SqlSelect.getNextAvailablePrimaryKey("payment", "pay_id");
-            payments.add(new PaymentDTO(pay_id, invoice.getId(), null, "CH", date, "0", 1)); // let's add it to our GUI
+            payments.add(new PaymentDTO(0, invoice.getId(), null, "CH", date, "0", 1)); // let's add it to our GUI
             SqlInsert.addPaymentRecord(payments.get(payments.size() - 1));
         });
 

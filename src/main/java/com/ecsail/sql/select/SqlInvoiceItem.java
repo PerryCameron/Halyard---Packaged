@@ -3,12 +3,14 @@ package com.ecsail.sql.select;
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.structures.DepositDTO;
+import com.ecsail.structures.FeeDTO;
 import com.ecsail.structures.InvoiceItemDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Set;
 
 public class SqlInvoiceItem {
 
@@ -133,6 +135,31 @@ public class SqlInvoiceItem {
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {
             new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
+        }
+        return invoiceItem;
+    }
+
+    public static InvoiceItemDTO getInvoiceItemByFeeDTO(FeeDTO feeDTO, int msId) { // overload
+        InvoiceItemDTO invoiceItem = null;
+        String query = "select * from invoice_item where ms_id="+msId+" and fiscal_year="+feeDTO.getFeeYear()+" " +
+                "and field_name= '"+feeDTO.getDescription()+"'";
+        System.out.println(query);
+        try {
+            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+            while (rs.next()) { 
+                invoiceItem = new InvoiceItemDTO(
+                        rs.getInt("ID"),
+                        rs.getInt("INVOICE_ID"),
+                        rs.getInt("MS_ID"),
+                        rs.getInt("FISCAL_YEAR"),
+                        rs.getString("FIELD_NAME"),
+                        rs.getBoolean("IS_CREDIT"),
+                        rs.getString("VALUE"),
+                        rs.getInt("QTY"));
+            }
+            BaseApplication.connect.closeResultSet(rs);
+        } catch (SQLException e) {
+            new Dialogue_ErrorSQL(e, "Unable to retrieve invoice items", "See below for details");
         }
         return invoiceItem;
     }

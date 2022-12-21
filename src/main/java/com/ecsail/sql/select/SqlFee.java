@@ -3,6 +3,7 @@ package com.ecsail.sql.select;
 
 
 import com.ecsail.BaseApplication;
+import com.ecsail.structures.DbInvoiceDTO;
 import com.ecsail.structures.FeeDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,6 +11,8 @@ import javafx.collections.ObservableList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SqlFee {
 
@@ -86,6 +89,29 @@ public class SqlFee {
         ObservableList<FeeDTO> feeDTOS = FXCollections.observableArrayList();
         String query = "SELECT * FROM fee WHERE field_name='" + feeDTO.getFieldName()
                 + "' and fee_year=" + feeDTO.getFeeYear();
+        try {
+            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+            while (rs.next()) {
+                feeDTOS.add(new FeeDTO(
+                        rs.getInt("FEE_ID"),
+                        rs.getString("FIELD_NAME"),
+                        rs.getString("FIELD_VALUE"),
+                        rs.getInt("DB_INVOICE_ID"),
+                        rs.getInt("fee_year"),
+                        rs.getString("DESCRIPTION"),
+                        rs.getBoolean("DEFAULT_FEE")
+                ));
+            }
+            BaseApplication.connect.closeResultSet(rs);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return feeDTOS;
+    }
+
+    public static Set<FeeDTO> getRelatedFeesAsInvoiceItems(DbInvoiceDTO dbInvoiceDTO) {  //p_id
+        Set<FeeDTO> feeDTOS = new HashSet<>();
+        String query = "select * from fee where db_invoice_id=" + dbInvoiceDTO.getId();
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {

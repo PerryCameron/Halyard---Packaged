@@ -9,8 +9,9 @@ import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.select.SqlDbInvoice;
-import com.ecsail.sql.select.SqlSelect;
+import com.ecsail.sql.select.SqlFee;
 import com.ecsail.structures.DbInvoiceDTO;
+import com.ecsail.structures.FeeDTO;
 import com.ecsail.structures.InvoiceDTO;
 import com.ecsail.structures.InvoiceItemDTO;
 import javafx.geometry.Insets;
@@ -25,6 +26,7 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class HBoxInvoiceList extends HBox {
@@ -164,12 +166,31 @@ public class HBoxInvoiceList extends HBox {
 	}
 
 	private void createInvoiceItems(int invoiceId, Integer year, int msid) {
-		AtomicInteger id = new AtomicInteger();
+		// gets db_invoices for selected year
 		ArrayList<DbInvoiceDTO> categories = SqlDbInvoice.getDbInvoiceByYear(year);
-		id.set(SqlSelect.getNextAvailablePrimaryKey("invoice_item","ID"));
-		categories.forEach(c -> {
-			InvoiceItemDTO item = new InvoiceItemDTO(id.get(),invoiceId,msid,year,c.getFieldName(),c.isCredit(),"0.00",0);
-			id.incrementAndGet();
+		for (DbInvoiceDTO dbInvoiceDTO : categories) {
+			if (dbInvoiceDTO.isItemized()) {
+				createItemizedCategories(dbInvoiceDTO, invoiceId, msid, year);
+			} else {
+				createNonItemizedCategories(invoiceId, year, msid, dbInvoiceDTO);
+			}
+		}
+	}
+
+	private static void createNonItemizedCategories(int invoiceId, Integer year, int msid, DbInvoiceDTO dbInvoiceDTO) {
+		InvoiceItemDTO item;
+		item = new InvoiceItemDTO(0, invoiceId, msid, year, dbInvoiceDTO.getFieldName()
+				, dbInvoiceDTO.isCredit(), "0.00", 0);
+		SqlInsert.addInvoiceItemRecord(item);
+	}
+
+	// creates itemized invoice items
+	private static void createItemizedCategories(DbInvoiceDTO dbInvoiceDTO, int invoiceId, int msid, int year) {
+		Set<FeeDTO> fees = SqlFee.getRelatedFeesAsInvoiceItems(dbInvoiceDTO);
+		fees.forEach(feeDTO -> {
+			InvoiceItemDTO item = new InvoiceItemDTO(0, invoiceId, msid, year, feeDTO.getDescription()
+					, dbInvoiceDTO.isCredit(), "0.00", 0);
+			System.out.println(item);
 			SqlInsert.addInvoiceItemRecord(item);
 		});
 	}
@@ -179,7 +200,6 @@ public class HBoxInvoiceList extends HBox {
 		int selectedElement = 0;
 		// fill up combo box
 		for (int i = Integer.parseInt(BaseApplication.selectedYear) + 1; i > 1969; i--) {
-			System.out.println(tm.getLabels().getSelectedYear().getText());
 			// If we do not have a specific year
 			if (!tm.getLabels().getSelectedYear().getText().equals("No Year")) // do we have a current year?
 				if (i == Integer.parseInt(tm.getLabels().getSelectedYear().getText())) selectedElement = i;

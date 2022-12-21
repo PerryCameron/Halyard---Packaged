@@ -75,7 +75,8 @@ public class InvoiceItemRow extends HBox {
         vBox4.setAlignment(Pos.CENTER_RIGHT);
         vBox4.getChildren().add(price);
         vBox5.setAlignment(Pos.CENTER_RIGHT);
-        rowTotal.setText(invoiceItemDTO.getValue());
+        if(!dbInvoiceDTO.isItemized()) // don't set this for itemized rows
+            rowTotal.setText(invoiceItemDTO.getValue());
         invoiceItemDTO.valueProperty().bind(rowTotal.textProperty()); //  value of Text to DTO
         if(this.invoiceItemDTO.isCredit()) rowTotal.setId("invoice-text-credit");
         vBox5.getChildren().add(rowTotal);
@@ -150,7 +151,6 @@ public class InvoiceItemRow extends HBox {
                 return spinner;
             }
             case "combo-box" -> {
-                System.out.println("setcombobox");
                 comboBox = new ComboBox<>();
                 comboBox.setPrefWidth(dbInvoiceDTO.getWidth());
                 price.setText(String.valueOf(fee.getFieldValue()));
@@ -256,6 +256,11 @@ public class InvoiceItemRow extends HBox {
     }
 
     private void checkIfNotCommittedAndUpdateSql() {
+        if(invoice.isCommitted()) BaseApplication.logger.info("Record is committed: database can not be updated");
+        else updateInvoiceItem(invoiceItemDTO);
+    }
+
+    protected void checkIfNotCommittedAndUpdateSql(InvoiceItemDTO invoiceItemDTO) {
         if(invoice.isCommitted()) BaseApplication.logger.info("Record is committed: database can not be updated");
         else updateInvoiceItem(invoiceItemDTO);
     }
