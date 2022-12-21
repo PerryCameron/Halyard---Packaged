@@ -17,6 +17,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -24,7 +25,12 @@ import java.util.Map;
 
 public class Invoice extends HBox {
     protected ObservableList<PaymentDTO> payments;
+
     protected InvoiceDTO invoice;
+    protected Text totalCreditText = new Text("0.00");
+    protected Text totalPaymentText = new Text("0.00");
+    protected Text totalBalanceText = new Text("0.00");
+    protected Text totalFeesText = new Text("0.00");
 
     protected ArrayList<FeeDTO> fees;
     private final MembershipDTO membership;
@@ -143,9 +149,11 @@ public class Invoice extends HBox {
             return SqlPayment.getPayments(invoice.getId());
         } else {  // if not create one
             BaseApplication.logger.info("getPayment(): Creating a new payment entry");
-            payments.add(new PaymentDTO(0, invoice.getId(), "0", "CH",
-                    HalyardPaths.date, "0", 1));
-            SqlInsert.addPaymentRecord(payments.get(payments.size() - 1));
+            PaymentDTO paymentDTO = new PaymentDTO(0, invoice.getId(), "0", "CH",
+                    HalyardPaths.date, "0", 1);
+            // saves to database and updates object with correct pay_id
+            paymentDTO.setPay_id(SqlInsert.addPaymentRecord(paymentDTO));
+            payments.add(paymentDTO);
         }
         return payments;
     }

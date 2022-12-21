@@ -94,7 +94,7 @@ public class SqlInsert {
 		return noError;  // return true if insert performed without error
 	}
 
-	public static void addPaymentRecord(PaymentDTO op) {
+	public static int addPaymentRecord(PaymentDTO op) {
 		int pay_id = SqlSelect.getNextAvailablePrimaryKey("payment", "pay_id");
 		String query = "INSERT INTO payment () VALUES (" + pay_id + ","
 				+ op.getInvoice_id() + "," + op.getCheckNumber() + ",'" + op.getPaymentType() + "','"
@@ -105,6 +105,7 @@ public class SqlInsert {
 		catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return pay_id;
 	}
 
 	public static void addAwardRecord(AwardDTO a) {

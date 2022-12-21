@@ -26,10 +26,6 @@ import static com.ecsail.HalyardPaths.date;
 public class InvoiceFooter extends VBox {
 
     private final TableView<PaymentDTO> paymentTableView;
-    private final Text totalFeesText = new Text("0.00");
-    private final Text totalCreditText = new Text("0.00");
-    private final Text totalPaymentText = new Text("0.00");
-    private final Text totalBalanceText = new Text("0.00");
     private final HBox hboxTop = new HBox();
     private final HBox hboxBottom = new HBox();
     private final VBox vboxButtons = new VBox();
@@ -38,16 +34,16 @@ public class InvoiceFooter extends VBox {
     private final CheckBox renewCheckBox = new CheckBox("Renew");
     private final Button buttonCommit;
     private final Button buttonAddNote = new Button("Add Note");
-    private final Invoice parent;
+
+    protected final Invoice parent;
 
     public InvoiceFooter(Invoice hboxInvoice) {
         this.parent = hboxInvoice;
-        totalFeesText.setText(parent.invoice.getTotal());
-        totalCreditText.setText(parent.invoice.getCredit());
-        totalCreditText.setId("invoice-text-credit");
-        totalBalanceText.setText(parent.invoice.getBalance());
-        totalPaymentText.setText(parent.invoice.getPaid());
-
+        parent.totalFeesText.setText(parent.invoice.getTotal());
+        parent.totalCreditText.setText(parent.invoice.getCredit());
+        parent.totalCreditText.setId("invoice-text-credit");
+        parent.totalBalanceText.setText(parent.invoice.getBalance());
+        parent.totalPaymentText.setText(parent.invoice.getPaid());
         this.paymentTableView = new PaymentTableView(this);
         this.buttonCommit = parent.getButtonCommit();
         Button buttonAdd = new Button("Add");
@@ -57,8 +53,11 @@ public class InvoiceFooter extends VBox {
         setSpacing(15);
 
         buttonAdd.setOnAction(e -> {
-            parent.payments.add(new PaymentDTO(0, parent.invoice.getId(), null, "CH", date, "0", 1)); // let's add it to our GUI
-            SqlInsert.addPaymentRecord(parent.payments.get(parent.payments.size() - 1));
+            PaymentDTO paymentDTO = new PaymentDTO(0, parent.invoice.getId(), null, "CH", date, "0", 1);
+            // adds to database and updates pay_id
+            paymentDTO.setPay_id(SqlInsert.addPaymentRecord(paymentDTO));
+            System.out.println("Created " + paymentDTO);
+            parent.payments.add(paymentDTO); // let's add it to our GUI
         });
 
 		buttonDelete.setOnAction(e -> {
@@ -67,7 +66,7 @@ public class InvoiceFooter extends VBox {
 				SqlDelete.deletePayment(parent.payments.get(selectedIndex));
 			paymentTableView.getItems().remove(selectedIndex); // remove it from our GUI
 			BigDecimal totalPaidAmount = new BigDecimal(SqlPayment.getTotalAmount(parent.invoice.getId()));
-			totalPaymentText.setText(String.valueOf(totalPaidAmount.setScale(2)));
+            parent.totalPaymentText.setText(String.valueOf(totalPaidAmount.setScale(2)));
             parent.invoice.setPaid(String.valueOf(totalPaidAmount.setScale(2)));
 			updateTotals();
 		});
@@ -108,8 +107,8 @@ public class InvoiceFooter extends VBox {
         vboxCommitButton.setAlignment(Pos.BASELINE_LEFT);
 
         vboxTotalLabels.getChildren().addAll(totalFeesLabelText,totalCreditLabelText,totalPaymentLabelText,totalBalanceLabelText);
-        vboxTotalAmounts.getChildren().addAll(totalFeesText,totalCreditText,totalPaymentText,totalBalanceText);
-
+        vboxTotalAmounts.getChildren().addAll(
+                parent.totalFeesText,parent.totalCreditText,parent.totalPaymentText,parent.totalBalanceText);
         vboxCommitButton.getChildren().addAll(renewCheckBox, buttonCommit);
         vboxTableView.getChildren().add(paymentTableView);
         vboxButtons.getChildren().addAll(buttonAdd, buttonDelete);
@@ -169,10 +168,10 @@ public class InvoiceFooter extends VBox {
         String creditString = String.valueOf(credit);
         String paymentString = String.valueOf(payment);
         String balanceString = String.valueOf(balance);
-        totalFeesText.setText(feesString);
-        totalCreditText.setText(creditString);
-        totalBalanceText.setText(balanceString);
-        totalPaymentText.setText(paymentString);
+        parent.totalFeesText.setText(feesString);
+        parent.totalCreditText.setText(creditString);
+        parent.totalBalanceText.setText(balanceString);
+        parent.totalPaymentText.setText(paymentString);
         parent.invoice.setTotal(feesString);
         parent.invoice.setCredit(creditString);
         parent.invoice.setBalance(balanceString);
@@ -183,20 +182,12 @@ public class InvoiceFooter extends VBox {
     public ObservableList<PaymentDTO> getPayments() {
         return parent.payments;
     }
-
     public InvoiceDTO getInvoice() {
         return parent.invoice;
     }
-
-
-    public Text getTotalPaymentText() {
-        return totalPaymentText;
-    }
-
     public CheckBox getRenewCheckBox() {
         return renewCheckBox;
     }
-
     public Invoice getBoxInvoice() {
         return parent;
     }

@@ -40,7 +40,7 @@ public class PaymentTableView extends TableView<PaymentDTO> {
                     BigDecimal totalPaidAmount = new BigDecimal(SqlPayment.getTotalAmount(parent.getInvoice().getId())).setScale(2);
                     System.out.println("All payments added= " + totalPaidAmount);
                     String totalAmountPaid = String.valueOf(totalPaidAmount.setScale(2));
-                    parent.getTotalPaymentText().setText(totalAmountPaid);
+                    parent.parent.totalPaymentText.setText(totalAmountPaid);
                     parent.getInvoice().setPaid(totalAmountPaid);
                     parent.updateTotals();
                 }
@@ -104,7 +104,7 @@ public class PaymentTableView extends TableView<PaymentDTO> {
         //////////////// ATTRIBUTES ///////////////////
         HBox.setHgrow(this, Priority.ALWAYS);
         setEditable(!parent.getInvoice().isCommitted());
-        setItems(parent.getPayments());
+        setItems(parent.parent.payments);
         setPrefHeight(115);
         setFixedCellSize(30);
         setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);

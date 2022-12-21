@@ -107,7 +107,7 @@ public class HBoxInvoiceList extends HBox {
 
         ////////////////  LISTENERS ///////////////////
 		addFiscalRecord.setOnAction((event) -> {
-			// create appropriate money object for this membership
+			// create invoice for a specified year for this membership
 			var newInvoice = new InvoiceDTO(tm.getMembership().getMsid(), comboBox.getValue());
 			// if a record already exists for this year then this is a supplemental record
 			if (SqlExists.invoiceExists(String.valueOf(comboBox.getValue()), tm.getMembership())) {
