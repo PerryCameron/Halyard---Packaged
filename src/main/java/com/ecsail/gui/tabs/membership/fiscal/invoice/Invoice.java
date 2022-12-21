@@ -23,8 +23,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Invoice extends HBox {
-    private final ObservableList<PaymentDTO> payments;
-    private final InvoiceDTO invoice;
+    protected ObservableList<PaymentDTO> payments;
+    protected InvoiceDTO invoice;
+
     protected ArrayList<FeeDTO> fees;
     private final MembershipDTO membership;
     private final InvoiceFooter footer;

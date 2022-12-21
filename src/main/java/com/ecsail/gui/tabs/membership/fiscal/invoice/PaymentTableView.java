@@ -21,8 +21,9 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 public class PaymentTableView extends TableView<PaymentDTO> {
-
-    public PaymentTableView(InvoiceFooter footer) {
+    InvoiceFooter parent;
+    public PaymentTableView(InvoiceFooter invoiceFooter) {
+        this.parent = invoiceFooter;
         TableColumn<PaymentDTO, String> col1 = createColumn("Amount", PaymentDTO::PaymentAmountProperty);
         col1.setPrefWidth(60);
         col1.setStyle("-fx-alignment: CENTER-RIGHT;");
@@ -31,14 +32,17 @@ public class PaymentTableView extends TableView<PaymentDTO> {
                     t.getTableView().getItems().get(
                             t.getTablePosition().getRow()).setPaymentAmount(String.valueOf(new BigDecimal(t.getNewValue()).setScale(2)));
                     var pay_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getPay_id();
+                    System.out.println("pay_id= " + pay_id);
                     BigDecimal amount = new BigDecimal(t.getNewValue());
                     SqlUpdate.updatePayment(pay_id, "amount", String.valueOf(amount.setScale(2)));
+                    System.out.println("Updating payment= " + String.valueOf(amount.setScale(2)));
                     // This adds all the amounts together
-                    BigDecimal totalPaidAmount = new BigDecimal(SqlPayment.getTotalAmount(footer.getInvoice().getId())).setScale(2);
+                    BigDecimal totalPaidAmount = new BigDecimal(SqlPayment.getTotalAmount(parent.getInvoice().getId())).setScale(2);
+                    System.out.println("All payments added= " + totalPaidAmount);
                     String totalAmountPaid = String.valueOf(totalPaidAmount.setScale(2));
-                    footer.getTotalPaymentText().setText(totalAmountPaid);
-                    footer.getInvoice().setPaid(totalAmountPaid);
-                    footer.updateTotals();
+                    parent.getTotalPaymentText().setText(totalAmountPaid);
+                    parent.getInvoice().setPaid(totalAmountPaid);
+                    parent.updateTotals();
                 }
         );
 
@@ -76,7 +80,6 @@ public class PaymentTableView extends TableView<PaymentDTO> {
                             t.getTablePosition().getRow()).setCheckNumber(t.getNewValue());
                     var pay_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getPay_id();
                     SqlUpdate.updatePayment(pay_id, "CHECK_NUMBER", t.getNewValue());
-                    //	SqlUpdate.updatePhone("phone", phone_id, t.getNewValue());
                 }
         );
 
@@ -100,9 +103,8 @@ public class PaymentTableView extends TableView<PaymentDTO> {
 
         //////////////// ATTRIBUTES ///////////////////
         HBox.setHgrow(this, Priority.ALWAYS);
-        setEditable(!footer.getInvoice().isCommitted());
-
-        setItems(footer.getPayments());
+        setEditable(!parent.getInvoice().isCommitted());
+        setItems(parent.getPayments());
         setPrefHeight(115);
         setFixedCellSize(30);
         setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);

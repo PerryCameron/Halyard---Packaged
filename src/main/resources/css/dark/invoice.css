@@ -45,3 +45,12 @@
 #title-pane .content {
     -fx-border-width: 0;
 }
+
+.titled-pane > .title
+{
+    -fx-background-color: #a5a2a2, #928b8b, #807e7e;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 3 3 0 0, 2 2 0 0, 1 1 0 0;
+    -fx-padding: 0.3333em 0.75em 0.3333em 0.75em; /* 4 9 4 9 */
+    /*-fx-padding: 0.166667em 0.833333em 0.25em 0.833333em; !* 2 10 3 10 *!*/
+}

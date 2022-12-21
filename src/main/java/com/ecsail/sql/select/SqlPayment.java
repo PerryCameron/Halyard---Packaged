@@ -87,7 +87,6 @@ public class SqlPayment {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             rs.next();
             number = rs.getString("SUM(amount)");
-            System.out.println("Number retrieved is " + number);
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {
             new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");

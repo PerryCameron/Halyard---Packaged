@@ -4,7 +4,6 @@ import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlPayment;
-import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.structures.InvoiceDTO;
 import com.ecsail.structures.PaymentDTO;
 import javafx.collections.ObservableList;
@@ -21,42 +20,36 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import static com.ecsail.HalyardPaths.date;
 
 public class InvoiceFooter extends VBox {
 
     private final TableView<PaymentDTO> paymentTableView;
-    private final InvoiceDTO invoice;
-    private Text totalFeesText = new Text("0.00");
-    private Text totalCreditText = new Text("0.00");
-    private Text totalPaymentText = new Text("0.00");
-    private Text totalBalanceText = new Text("0.00");
+    private final Text totalFeesText = new Text("0.00");
+    private final Text totalCreditText = new Text("0.00");
+    private final Text totalPaymentText = new Text("0.00");
+    private final Text totalBalanceText = new Text("0.00");
     private final HBox hboxTop = new HBox();
     private final HBox hboxBottom = new HBox();
-    private final ObservableList<PaymentDTO> payments;
     private final VBox vboxButtons = new VBox();
     private final VBox vboxTableView = new VBox();
     private final VBox vboxCommitButton = new VBox();
-    private final VBox vboxTotalLabels = new VBox();
-    private final VBox vboxTotalAmounts = new VBox();
     private final CheckBox renewCheckBox = new CheckBox("Renew");
     private final Button buttonCommit;
     private final Button buttonAddNote = new Button("Add Note");
-    private final Invoice hBoxInvoice;
+    private final Invoice parent;
 
-    public InvoiceFooter(Invoice hBoxInvoice) {
-        this.hBoxInvoice = hBoxInvoice;
-        this.invoice = hBoxInvoice.getInvoice();
-        totalFeesText.setText(invoice.getTotal());
-        totalCreditText.setText(invoice.getCredit());
+    public InvoiceFooter(Invoice hboxInvoice) {
+        this.parent = hboxInvoice;
+        totalFeesText.setText(parent.invoice.getTotal());
+        totalCreditText.setText(parent.invoice.getCredit());
         totalCreditText.setId("invoice-text-credit");
-        totalBalanceText.setText(invoice.getBalance());
-        totalPaymentText.setText(invoice.getPaid());
-        this.payments = hBoxInvoice.getPayments();
+        totalBalanceText.setText(parent.invoice.getBalance());
+        totalPaymentText.setText(parent.invoice.getPaid());
+
         this.paymentTableView = new PaymentTableView(this);
-        this.buttonCommit = hBoxInvoice.getButtonCommit();
+        this.buttonCommit = parent.getButtonCommit();
         Button buttonAdd = new Button("Add");
         Button buttonDelete = new Button("Delete");
 
@@ -64,22 +57,22 @@ public class InvoiceFooter extends VBox {
         setSpacing(15);
 
         buttonAdd.setOnAction(e -> {
-            payments.add(new PaymentDTO(0, invoice.getId(), null, "CH", date, "0", 1)); // let's add it to our GUI
-            SqlInsert.addPaymentRecord(payments.get(payments.size() - 1));
+            parent.payments.add(new PaymentDTO(0, parent.invoice.getId(), null, "CH", date, "0", 1)); // let's add it to our GUI
+            SqlInsert.addPaymentRecord(parent.payments.get(parent.payments.size() - 1));
         });
 
 		buttonDelete.setOnAction(e -> {
 			int selectedIndex = paymentTableView.getSelectionModel().getSelectedIndex();
 			if (selectedIndex >= 0) // is something selected?
-				SqlDelete.deletePayment(payments.get(selectedIndex));
+				SqlDelete.deletePayment(parent.payments.get(selectedIndex));
 			paymentTableView.getItems().remove(selectedIndex); // remove it from our GUI
-			BigDecimal totalPaidAmount = new BigDecimal(SqlPayment.getTotalAmount(invoice.getId()));
+			BigDecimal totalPaidAmount = new BigDecimal(SqlPayment.getTotalAmount(parent.invoice.getId()));
 			totalPaymentText.setText(String.valueOf(totalPaidAmount.setScale(2)));
-			invoice.setPaid(String.valueOf(totalPaidAmount.setScale(2)));
+            parent.invoice.setPaid(String.valueOf(totalPaidAmount.setScale(2)));
 			updateTotals();
 		});
 
-        buttonAddNote.setOnAction(e -> hBoxInvoice.getNote().addMemoAndReturnId("Invoice Note: ",date,invoice.getId(),"I"));
+        buttonAddNote.setOnAction(e -> parent.getNote().addMemoAndReturnId("Invoice Note: ",date,parent.invoice.getId(),"I"));
 
         buttonAdd.setPrefWidth(60);
         buttonDelete.setPrefWidth(60);
@@ -97,7 +90,9 @@ public class InvoiceFooter extends VBox {
 
         hboxTop.setSpacing(10);
         hboxBottom.setSpacing(25);
+        VBox vboxTotalAmounts = new VBox();
         vboxTotalAmounts.setSpacing(5);
+        VBox vboxTotalLabels = new VBox();
         vboxTotalLabels.setSpacing(5);
         vboxCommitButton.setSpacing(10);
         vboxButtons.setSpacing(5);
@@ -119,7 +114,7 @@ public class InvoiceFooter extends VBox {
         vboxTableView.getChildren().add(paymentTableView);
         vboxButtons.getChildren().addAll(buttonAdd, buttonDelete);
 
-        hboxBottom.getChildren().addAll(vboxTotalLabels,vboxTotalAmounts,vboxCommitButton);
+        hboxBottom.getChildren().addAll(vboxTotalLabels, vboxTotalAmounts,vboxCommitButton);
     }
 
     public void setCommitMode(boolean setCommit) {
@@ -132,6 +127,7 @@ public class InvoiceFooter extends VBox {
     private void setEdit() {
         hboxTop.getChildren().clear();
         hboxTop.getChildren().addAll(vboxTableView,vboxButtons);
+        paymentTableView.setEditable(true);
         buttonCommit.setText("Commit");
         this.requestFocus(); // removes focus from button
         vboxCommitButton.getChildren().clear();
@@ -146,8 +142,8 @@ public class InvoiceFooter extends VBox {
     buttonCommit.setText("Edit");
     this.requestFocus(); // removes focus from button
     vboxCommitDetails.getChildren().addAll(
-            new Text("Payment Date: " + payments.get(0).getPaymentDate()),
-            new Text("Deposit Number: " + invoice.getBatch()));
+            new Text("Payment Date: " + parent.payments.get(0).getPaymentDate()),
+            new Text("Deposit Number: " + parent.invoice.getBatch()));
     vboxCommitButton.getChildren().clear();
     vboxCommitButton.getChildren().addAll(buttonAddNote, buttonCommit);
     hboxTop.getChildren().clear();
@@ -156,14 +152,14 @@ public class InvoiceFooter extends VBox {
     }
 
     public void updateTotals(BigDecimal fees, BigDecimal credit) {
-        BigDecimal payment = new BigDecimal(invoice.getPaid());
+        BigDecimal payment = new BigDecimal(parent.invoice.getPaid());
         updateItemsAndSave(fees, credit, payment);
     }
 
     public void updateTotals() {
-        BigDecimal payment = new BigDecimal(invoice.getPaid());
-        BigDecimal fees = new BigDecimal(invoice.getTotal());
-        BigDecimal credit = new BigDecimal(invoice.getCredit());
+        BigDecimal payment = new BigDecimal(parent.invoice.getPaid());
+        BigDecimal fees = new BigDecimal(parent.invoice.getTotal());
+        BigDecimal credit = new BigDecimal(parent.invoice.getCredit());
         updateItemsAndSave(fees, credit, payment);
     }
 
@@ -177,19 +173,19 @@ public class InvoiceFooter extends VBox {
         totalCreditText.setText(creditString);
         totalBalanceText.setText(balanceString);
         totalPaymentText.setText(paymentString);
-        invoice.setTotal(feesString);
-        invoice.setCredit(creditString);
-        invoice.setBalance(balanceString);
-        invoice.setPaid(paymentString);
-        SqlUpdate.updateInvoice(invoice);
+        parent.invoice.setTotal(feesString);
+        parent.invoice.setCredit(creditString);
+        parent.invoice.setBalance(balanceString);
+        parent.invoice.setPaid(paymentString);
+        SqlUpdate.updateInvoice(parent.invoice);
     }
 
     public ObservableList<PaymentDTO> getPayments() {
-        return payments;
+        return parent.payments;
     }
 
     public InvoiceDTO getInvoice() {
-        return invoice;
+        return parent.invoice;
     }
 
 
@@ -202,6 +198,6 @@ public class InvoiceFooter extends VBox {
     }
 
     public Invoice getBoxInvoice() {
-        return hBoxInvoice;
+        return parent;
     }
 }
