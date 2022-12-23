@@ -298,10 +298,14 @@ public class InvoiceItemRow extends HBox {
         BigDecimal fees = new BigDecimal("0.00");
         BigDecimal credit = new BigDecimal("0.00");
         for (InvoiceItemDTO i : items) {
-            if (i.isCredit())
+            if (i.isCredit()) {
+//                System.out.println("Credit " + i.getValue() + " for " + i.getFieldName());
                 credit = credit.add(new BigDecimal(i.getValue()));
-            else
+            }
+            else {
+//                System.out.println("Adding " + i.getValue() + " for " + i.getFieldName());
                 fees = fees.add(new BigDecimal(i.getValue()));
+            }
         }
         footer.updateTotals(fees,credit);
     }

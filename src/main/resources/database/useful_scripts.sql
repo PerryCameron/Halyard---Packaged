@@ -79,3 +79,12 @@ select i.VALUE from invoice_item i
          where i.FISCAL_YEAR=2016 and i2.FISCAL_YEAR=2016.
            and FIELD_NAME='Initiation'
            and VALUE < 1000 and VALUE > 0 and i2.COMMITTED=true
+
+
+## put in msid and creates other Beach Spot Board invoice item for 1985
+SET @id_value := (SELECT ID + 1 FROM invoice_item ORDER BY ID DESC LIMIT 1);
+SET @msid := 391;
+INSERT INTO invoice_item ()
+VALUES(@id_value,
+       (select ID from invoice where FISCAL_YEAR='1985' and MS_ID=@msid),
+       @msid,1985,'Beach Spot Board',false,0.00,0);

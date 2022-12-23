@@ -79,7 +79,7 @@ public class Invoice extends HBox {
             invoiceItemMap.values().forEach(e -> e.setCommitMode(invoice.isCommitted()));
             footer.setCommitMode(invoice.isCommitted());
             // need to set membership_id as active
-            updateDatabase(invoice);
+            updateInvoice(invoice);
             SqlUpdate.updateMembershipId(membership.getMsid(),invoice.getYear(),footer.getRenewCheckBox().isSelected());
         });
 
@@ -115,8 +115,8 @@ public class Invoice extends HBox {
         getChildren().addAll(vboxGrey);
         updateAllowed = true; // may write to database
         if (getOfficerCredit()) { // has an officer
-            invoiceItemMap.get("Position Credit").getRowTotal().textProperty()
-                    .bind(invoiceItemMap.get("Dues").getRowTotal().textProperty());
+            invoiceItemMap.get("Position Credit").getRowTotal().setText(invoiceItemMap.get("Dues").getRowTotal().getText());
+            updateInvoiceItem(invoiceItemMap.get("Position Credit").invoiceItemDTO);
         }
     }
 
@@ -126,7 +126,11 @@ public class Invoice extends HBox {
         return hasOfficer && !invoice.isSupplemental();
     }
 
-    public void updateDatabase(InvoiceDTO invoice) {
+    public void updateInvoiceItem(InvoiceItemDTO invoiceItemDTO) {
+        if(updateAllowed)
+            SqlUpdate.updateInvoiceItem(invoiceItemDTO);
+    }
+    public void updateInvoice(InvoiceDTO invoice) {
         if(updateAllowed)
             SqlUpdate.updateInvoice(invoice);
     }

@@ -56,7 +56,6 @@ public class InvoiceFooter extends VBox {
             PaymentDTO paymentDTO = new PaymentDTO(0, parent.invoice.getId(), null, "CH", date, "0", 1);
             // adds to database and updates pay_id
             paymentDTO.setPay_id(SqlInsert.addPaymentRecord(paymentDTO));
-            System.out.println("Created " + paymentDTO);
             parent.payments.add(paymentDTO); // let's add it to our GUI
         });
 
@@ -112,7 +111,6 @@ public class InvoiceFooter extends VBox {
         vboxCommitButton.getChildren().addAll(renewCheckBox, buttonCommit);
         vboxTableView.getChildren().add(paymentTableView);
         vboxButtons.getChildren().addAll(buttonAdd, buttonDelete);
-
         hboxBottom.getChildren().addAll(vboxTotalLabels, vboxTotalAmounts,vboxCommitButton);
     }
 
