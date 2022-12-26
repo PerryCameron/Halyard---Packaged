@@ -45,19 +45,19 @@
 
 /*box-grey*/
 #box-frame-light {
-    -fx-background-color: #6c7179 /* #dfdada*/
+    -fx-background-color: #6c7179; /* #dfdada*/
 }
 
 #box-background-light {
-    -fx-background-color: #6c7179 /* #dfdada*/
+    -fx-background-color: #6c7179; /* #dfdada*/
 }
 /*black box*/
 #box-frame-dark {
-    -fx-background-color: #383f45
+    -fx-background-color: #383f45;
 }
 
 #box-background-dark {
-    -fx-background-color: #383f45
+    -fx-background-color: #383f45;
 }
 
 #sub-box-background-light {

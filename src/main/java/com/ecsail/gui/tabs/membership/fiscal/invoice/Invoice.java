@@ -115,8 +115,11 @@ public class Invoice extends HBox {
         getChildren().addAll(vboxGrey);
         updateAllowed = true; // may write to database
         if (getOfficerCredit()) { // has an officer
-            invoiceItemMap.get("Position Credit").getRowTotal().setText(invoiceItemMap.get("Dues").getRowTotal().getText());
-            updateInvoiceItem(invoiceItemMap.get("Position Credit").invoiceItemDTO);
+            //if position credit exists
+            if(SqlExists.invoiceItemExists(invoice.getYear(),invoice.getMsId())) {
+                invoiceItemMap.get("Position Credit").getRowTotal().setText(invoiceItemMap.get("Dues").getRowTotal().getText());
+                updateInvoiceItem(invoiceItemMap.get("Position Credit").invoiceItemDTO);
+            }
         }
     }
 

@@ -38,7 +38,6 @@ public class FeeEditControls extends HBox {
 
     public FeeEditControls(TabFee parent) {
         this.parent = parent;
-        setPadding(new Insets(15,5,5,7));
         VBox vBoxSpinner = new VBox();
         VBox vBoxCheckBox = new VBox();
         HBox hBoxTableGroup = new HBox();
@@ -48,13 +47,19 @@ public class FeeEditControls extends HBox {
         VBox vBoxRadio = new VBox();
         VBox vBoxDisplay = new VBox();
         HBox hBoxDisplay = new HBox();
+        // create radio buttons
         Arrays.stream(radioButtonTitles).forEach(title -> {
             rbHash.put(title, new RadioButton(title));
             rbHash.get(title).setToggleGroup(tg);
         });
         vBoxCheckBox.setPadding(new Insets(0,0,0,30));
-        vBoxTableButtons.setPadding(new Insets(46,0,0,0));
-        vBoxDisplay.setPadding(new Insets(0,20,0,0));
+        vBoxDisplay.setPadding(new Insets(0,5,0,0));
+        vBoxTableButtons.setPadding(new Insets(46,5,0,5));
+        vBoxTable.setPadding(new Insets(0,0,0,5));
+        this.setPadding(new Insets(15,5,5,5));
+        this.setAlignment(Pos.CENTER);
+        HBox.setHgrow(vBoxDisplay, Priority.ALWAYS);
+
         TitledPane titledPane = new TitledPane("Display Area", vBoxMockItems);
 
         vBoxSpinner.setSpacing(10);
@@ -62,16 +67,14 @@ public class FeeEditControls extends HBox {
         vBoxTable.setSpacing(10);
         hBoxTableHeader.setSpacing(10);
         vBoxRadio.setSpacing(5);
-        hBoxTableGroup.setSpacing(5);
         vBoxTableButtons.setSpacing(5);
         vBoxDisplay.setSpacing(10);
 
         vBoxSpinner.setPrefWidth(160);
         vBoxCheckBox.setPrefWidth(200);
         vBoxRadio.setPrefWidth(150);
-
-        vBoxTableButtons.setPrefWidth(70);
         hBoxDisplay.setPrefHeight(100);
+        HBox.setHgrow(vBoxTableButtons, Priority.ALWAYS);
         HBox.setHgrow(vBoxTable, Priority.ALWAYS);
 
         vBoxTable.setAlignment(Pos.CENTER_RIGHT);
@@ -85,6 +88,8 @@ public class FeeEditControls extends HBox {
         setFieldNameTextListener();
         vBoxTableButtons.getChildren().addAll(setAddButton(),setDeleteButton());
         hBoxTableHeader.getChildren().add(fieldNameText);
+        hBoxTableGroup.setId("box-background-light");  //green
+
         vBoxRadio.getChildren()
                 .addAll(rbHash.get("Spinner"),rbHash.get("TextField"),rbHash.get("Drop Down"),rbHash.get("Itemized"),rbHash.get("None"));
         vBoxSpinner.getChildren().addAll(orderedSpinner,maxQtySpinner);
@@ -93,7 +98,7 @@ public class FeeEditControls extends HBox {
         hBoxTableGroup.getChildren().addAll(vBoxTable,vBoxTableButtons);
         hBoxDisplay.getChildren().addAll(vBoxSpinner,vBoxCheckBox,vBoxRadio);
         vBoxDisplay.getChildren().addAll(hBoxDisplay,titledPane); // add displayed item to bottom
-        getChildren().addAll(vBoxDisplay,hBoxTableGroup); // this is hbox
+        this.getChildren().addAll(vBoxDisplay,hBoxTableGroup); // this is hbox
     }
 
 

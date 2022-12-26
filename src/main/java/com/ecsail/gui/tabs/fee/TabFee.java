@@ -25,8 +25,8 @@ public class TabFee extends Tab {
     private ArrayList<FeeDTO> feeDTOS;
     private final ArrayList<FeeRow> rows = new ArrayList<>();
     private final ToggleGroup radioGroup;
-    private final VBox vboxFeeRow;
-    private final HBox hboxControls;
+    private final VBox vboxCategories;
+    private final HBox hboxYearNewDeleteButtons;
     private final ComboBox<Integer> comboBox;
     protected FeesLineChartEx duesLineChart;
     protected FeeEditControls feeEditControls;
@@ -39,8 +39,8 @@ public class TabFee extends Tab {
         this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
         this.radioGroup = new ToggleGroup();
         this.comboBox = addComboBox();
-        this.vboxFeeRow = createControlsVBox();
-        this.hboxControls = new HBox();
+        this.vboxCategories = createControlsVBox();
+        this.hboxYearNewDeleteButtons = new HBox();
         this.duesLineChart = new FeesLineChartEx();
         feeEditControls = new FeeEditControls(this);
         createFeeRows();
@@ -51,22 +51,22 @@ public class TabFee extends Tab {
         feeEditControls.setMaxQtySpinnerListener();
 
         // this is the vbox for organizing all the widgets
-        VBox vbox4 = new VBox();
+        VBox vboxCategoryList = new VBox();
         HBox hbox2 = new HBox();
         VBox vbox1 = new VBox();
-        ScrollPane itemsScrollPane = new ScrollPane();
+        ScrollPane CategoriesScrollPane = new ScrollPane();
 
         ////////////////////// ADD PROPERTIES TO OBJECTS //////////////
-        hboxControls.setSpacing(10);
+        hboxYearNewDeleteButtons.setSpacing(10);
         vbox1.setId("box-blue");
         feeEditControls.setPrefHeight(400);
 
         vbox1.setPadding(new Insets(10, 10, 10, 10));
-        vbox4.setPadding(new Insets(10, 10, 10, 10));
-        vbox4.setPrefHeight(688);
-        vbox4.setSpacing(15);
-        vbox4.setPrefWidth(250); //225
-        HBox.setHgrow(vboxFeeRow,Priority.ALWAYS);
+        vboxCategoryList.setPadding(new Insets(10, 10, 10, 10));
+        vboxCategoryList.setPrefHeight(688);
+        vboxCategoryList.setSpacing(15);
+        vboxCategoryList.setPrefWidth(250); //225
+        HBox.setHgrow(vboxCategories,Priority.ALWAYS);
         //////////////// LISTENERS ///////////////////
 
         comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> setNewYear(newValue));
@@ -78,9 +78,9 @@ public class TabFee extends Tab {
         addControlBox();
         HBox.setHgrow(hbox2, Priority.ALWAYS);
         HBox.setHgrow(duesLineChart, Priority.ALWAYS);
-        itemsScrollPane.setContent(vboxFeeRow);
-        vbox4.getChildren().addAll(hboxControls, itemsScrollPane);
-        hbox2.getChildren().addAll(vbox4, duesLineChart);
+        CategoriesScrollPane.setContent(vboxCategories);
+        vboxCategoryList.getChildren().addAll(hboxYearNewDeleteButtons, CategoriesScrollPane);
+        hbox2.getChildren().addAll(vboxCategoryList, duesLineChart);
         vbox1.getChildren().addAll(hbox2, feeEditControlsTitlePane);
         setContent(vbox1);
     }
@@ -88,18 +88,18 @@ public class TabFee extends Tab {
     // vboxOne first Box
 
     private void addControlBox() {
-        hboxControls.getChildren().clear();
+        hboxYearNewDeleteButtons.getChildren().clear();
         if (feeDTOS.size() > 0)
-            hboxControls.getChildren().addAll(comboBox, createAddButton(), createDeleteButton());
+            hboxYearNewDeleteButtons.getChildren().addAll(comboBox, createAddButton(), createDeleteButton());
             // if we donn't have entries set buttons add, copy fees
         else
-            hboxControls.getChildren().addAll(comboBox, createAddButton(), createCopyFeeButton());
+            hboxYearNewDeleteButtons.getChildren().addAll(comboBox, createAddButton(), createCopyFeeButton());
     }
 
     private Button createAddButton() {
         Button addButton = new Button("New");
         addButton.setOnAction(event -> {
-            vboxFeeRow.getChildren().add(addNewRow());
+            vboxCategories.getChildren().add(addNewRow());
             refreshFeeRows();
         });
         return addButton;
@@ -134,7 +134,7 @@ public class TabFee extends Tab {
         }
     }
 
-    private Button createCopyFeeButton() {
+    private Button createCopyFeeButton() {  // TODO reintroduce functionality moving forward
         Button copyFeesBtn = new Button("Copy Fees");
 //        copyFeesBtn.setOnAction((event) -> copyPreviousYearsFees());
         return copyFeesBtn;
@@ -202,7 +202,7 @@ public class TabFee extends Tab {
             // remove feeRow from list
             rows.remove(selectedFeeRow);
             // clear HBoxes from column
-            vboxFeeRow.getChildren().remove(selectedFeeRow);
+            vboxCategories.getChildren().remove(selectedFeeRow);
             // need to reorder the order
             setNewOrderForFeeRows(order);
             // select fist item in row
@@ -255,11 +255,11 @@ public class TabFee extends Tab {
     }
 
     public void addFeeRows() {
-        vboxFeeRow.getChildren().clear();
+        vboxCategories.getChildren().clear();
         rows.sort(Comparator.comparing(FeeRow::getOrder).reversed());
         int size = rows.size();
         for(FeeRow row: rows) {
-            vboxFeeRow.getChildren().add(row);
+            vboxCategories.getChildren().add(row);
             if(row.getOrder() == size) { // picks top entry
                 row.getRadioButton().setSelected(true);
                 if(row.selectedFee != null)
@@ -270,9 +270,9 @@ public class TabFee extends Tab {
     }
 
     public void refreshFeeRows() {
-        vboxFeeRow.getChildren().clear();
+        vboxCategories.getChildren().clear();
         rows.sort(Comparator.comparing(FeeRow::getOrder).reversed());
-        rows.forEach(row -> vboxFeeRow.getChildren().add(row));
+        rows.forEach(row -> vboxCategories.getChildren().add(row));
     }
 
     public ToggleGroup getRadioGroup() {

@@ -127,7 +127,6 @@ public class VBoxPersonMove extends VBox {
                 person.setOldMsid(oldMsid);
                 // TODO make sure it is an integer and that this membership exists
                 person.setMs_id(Integer.parseInt(msidTextField.getText()));
-                System.out.println("Moving " + person.getFname() + " " + person.getLname() + " to " + person.getMs_id());
                 SqlUpdate.updatePerson(person);
                 // TODO error check to make sure we are in membership view
                 removeThisTab(personTabPane);

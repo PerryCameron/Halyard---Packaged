@@ -326,7 +326,6 @@ public class HBoxHistory extends HBox {
         for (MembershipIdDTO i : tm.getMembershipId()) {
             if (i.getFiscal_Year().equals("0") && i.getMembership_id().equals("0")) tupleExists = true;
         }
-        System.out.println("Blank tuple exists=" + tupleExists);
         return tupleExists;
     }
 

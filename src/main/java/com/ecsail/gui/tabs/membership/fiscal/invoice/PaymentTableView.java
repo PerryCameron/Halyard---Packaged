@@ -35,10 +35,8 @@ public class PaymentTableView extends TableView<PaymentDTO> {
                     System.out.println("pay_id= " + pay_id);
                     BigDecimal amount = new BigDecimal(t.getNewValue());
                     SqlUpdate.updatePayment(pay_id, "amount", String.valueOf(amount.setScale(2)));
-                    System.out.println("Updating payment= " + String.valueOf(amount.setScale(2)));
                     // This adds all the amounts together
                     BigDecimal totalPaidAmount = new BigDecimal(SqlPayment.getTotalAmount(parent.getInvoice().getId())).setScale(2);
-                    System.out.println("All payments added= " + totalPaidAmount);
                     String totalAmountPaid = String.valueOf(totalPaidAmount.setScale(2));
                     parent.parent.totalPaymentText.setText(totalAmountPaid);
                     parent.getInvoice().setPaid(totalAmountPaid);

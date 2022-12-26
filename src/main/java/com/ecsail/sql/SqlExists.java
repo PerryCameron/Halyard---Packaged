@@ -345,4 +345,22 @@ public class SqlExists {
 		return result;
 	}
 
+	public static Boolean invoiceItemExists(int year, int msId) {
+		boolean result = false;
+		String query = "select exists(select * from invoice_item where FISCAL_YEAR="+year+" " +
+				"and MS_ID="+msId+" and field_name='Position Credit') AS ITEM_EXISTS";
+		try {
+			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+			while (rs.next()) {
+				result = rs.getBoolean(
+						"ITEM_EXISTS");
+			}
+			BaseApplication.connect.closeResultSet(rs);
+		}
+		catch (SQLException e) {
+			new Dialogue_ErrorSQL(e,"Unable to check if EXISTS","See below for details");
+		}
+		return result;
+	}
+
 }
