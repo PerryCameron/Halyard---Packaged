@@ -133,6 +133,16 @@ public class Launcher extends VBox {
         createOrOpenTab(membership, "Membership");
     }
 
+    public static void launchTabStub() {
+        tabPane.getTabs().add(new TabStub("TabStub"));
+        tabPane.getSelectionModel().select(getTabIndex("TabStub"));
+    }
+
+    public static void launchNewYearWizard() {
+        tabPane.getTabs().add(new TabNewYearGenerator("New Year Wizard"));
+        tabPane.getSelectionModel().select(getTabIndex("New Year Wizard"));
+    }
+
     public static void launchTabFromSlips(int ms_id) {
         MembershipListDTO membership = SqlMembershipList.getMembershipList(ms_id, HalyardPaths.getYear());
         createOrOpenTab(membership, "Membership");

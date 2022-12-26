@@ -29,7 +29,7 @@ public class FeeEditControls extends HBox {
 //    private final ComboBox<String> dropDownType = new ComboBox<>();
     private HashMap<String,RadioButton> rbHash = new HashMap<>();
     private String[] radioButtonTitles = {"Spinner","TextField","Drop Down","Itemized","None"};
-    private final LabeledTextField fieldNameText = new LabeledTextField("Field Name");
+    private final LabeledTextField fieldNameText = new LabeledTextField("Category");
     private final MockHeader mockHeader = new MockHeader();
     private final VBox vBoxMockItems = new VBox();
     private ToggleGroup tg = new ToggleGroup();

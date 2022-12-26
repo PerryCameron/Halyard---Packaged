@@ -33,8 +33,6 @@ public class StandardMenus implements Plugin {
     public void standardMenus() {
 
         Menu file = new Menu("File");
-//        MenuItem newFile = Configure("New", x -> output.log("File -> New"), KeyCode.N);
-//        MenuItem open = Configure("Open...", x -> openFileDialog(), KeyCode.O);
         MenuItem createScript = Configure("Close Connection", x -> closeConnection(BaseApplication.stage), KeyCode.J);
         MenuItem closeConnection = Configure("Back Up Database", (event) -> SqlScriptMaker.createSql(), KeyCode.B);
 
@@ -46,16 +44,6 @@ public class StandardMenus implements Plugin {
         } else {
             menuBar.setUseSystemMenuBar(true);
         }
-
-//        Menu edit = new Menu("Edit");
-//        MenuItem undo = Configure("Undo", x -> output.log("Undo"), KeyCode.Z);
-//        MenuItem redo = Configure("Redo", x -> output.log("Redo"), KeyCode.R);
-//        SeparatorMenuItem editSeparator = new SeparatorMenuItem();
-//        MenuItem cut = Configure("Cut", x -> output.log("Cut"), KeyCode.X);
-//        MenuItem copy = Configure("Copy", x -> output.log("Copy"), KeyCode.C);
-//        MenuItem paste = Configure("Paste", x -> output.log("Paste"), KeyCode.V);
-
-//        edit.getItems().addAll(undo, redo, editSeparator, cut, copy, paste);
 
         Menu reports = new Menu("Reports");
 
@@ -85,7 +73,9 @@ public class StandardMenus implements Plugin {
         MenuItem notes = Configure("Notes", (event) -> Launcher.openNotesTab(), null);
         MenuItem jotform = Configure("Jotform", (event) -> Launcher.openJotFormTab(), null);
         MenuItem dataBase = Configure("DataBase", (event) -> Launcher.openTabDataBase(), null);
-        subMenuTabs.getItems().addAll(rosters,bod,people,boats,slips,deposits,fees,notes,jotform,dataBase);
+        MenuItem newYear = Configure("New Year Wizard", (event) -> Launcher.launchNewYearWizard(),null);
+        MenuItem tabStub = Configure("TabStub", (event) -> Launcher.launchTabStub(),null);
+        subMenuTabs.getItems().addAll(rosters,bod,people,boats,slips,deposits,fees,notes,jotform,dataBase,newYear,tabStub);
         membership.getItems().addAll(subMenuMembershipCreate, subMenuTabs);
         menuBar.getMenus().addAll(file, membership, reports);
     }
