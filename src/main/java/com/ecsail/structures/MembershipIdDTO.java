@@ -1,5 +1,6 @@
 package com.ecsail.structures;
 
+import com.ecsail.sql.select.SqlSelect;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -26,6 +27,19 @@ public class MembershipIdDTO {
 		this.selected = new SimpleBooleanProperty(selected);
 		this.isLateRenew = new SimpleBooleanProperty(isLateRenew);
 	}
+
+	public MembershipIdDTO(String fiscal_Year, Integer ms_id, String membership_id, String mem_type) {
+		this.mid = new SimpleIntegerProperty(SqlSelect.getNextAvailablePrimaryKey("membership_id","MID"));
+		this.fiscal_Year = new SimpleStringProperty(fiscal_Year);
+		this.ms_id = new SimpleIntegerProperty(ms_id);
+		this.membership_id = new SimpleStringProperty(membership_id);
+		this.isRenew = new SimpleBooleanProperty(false);
+		this.mem_type = new SimpleStringProperty(mem_type);
+		this.selected = new SimpleBooleanProperty(false);
+		this.isLateRenew = new SimpleBooleanProperty(false);
+	}
+
+
 
 	public final IntegerProperty midProperty() {
 		return this.mid;
