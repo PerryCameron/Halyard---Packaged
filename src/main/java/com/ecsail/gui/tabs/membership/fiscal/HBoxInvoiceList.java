@@ -137,7 +137,7 @@ public class HBoxInvoiceList extends HBox {
 			var result = conformation.showAndWait();
 			if (result.isPresent() && result.get() == ButtonType.OK){
 				BaseApplication.logger.info("deleting fiscal record " + selectedIndex);
-				SqlDelete.deletePaymentByMoneyID(tm.getInvoices().get(selectedIndex).getId());
+				SqlDelete.deletePaymentByInvoiceID(tm.getInvoices().get(selectedIndex).getId());
 				// TODO get rid of this when I get rid of work credit table
 				SqlDelete.deleteInvoiceItemByInvoiceID(tm.getInvoices().get(selectedIndex).getId());
 				SqlDelete.deleteInvoiceByID(tm.getInvoices().get(selectedIndex).getId());

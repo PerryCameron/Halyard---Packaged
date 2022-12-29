@@ -102,23 +102,25 @@ public class HBoxProperties extends HBox {
         getChildren().add(hboxGrey);
     }
 
-    private void deleteMembership(int ms_id) {
-        if (!SqlExists.paymentsExistForMembership(ms_id)) {
-            SqlDelete.deleteBoatOwner(ms_id);
-            SqlDelete.deleteMemos(ms_id);
-            SqlDelete.deleteWorkCredits(ms_id);
-            SqlDelete.deleteMonies(ms_id);
-            SqlDelete.deleteWaitList(ms_id);
-            SqlDelete.deleteMembershipId(ms_id); // removes all entries
-            ObservableList<PersonDTO> people = SqlPerson.getPeople(ms_id);
+    private void deleteMembership(int msId) {
+        if (!SqlExists.paymentsExistForMembership(msId)) {
+            SqlDelete.deleteBoatOwner(msId);
+            SqlDelete.deleteMemos(msId);
+            SqlDelete.deleteWorkCredits(msId);
+            // delete payment
+            // delete invoice_item
+            SqlDelete.deletePaymentAndInvoiceByMsId(msId);
+            SqlDelete.deleteWaitList(msId);
+            SqlDelete.deleteMembershipId(msId); // removes all entries
+            ObservableList<PersonDTO> people = SqlPerson.getPeople(msId);
             for (PersonDTO p : people) {
                 SqlDelete.deletePhones(p.getP_id());
                 SqlDelete.deleteEmail(p.getP_id());
                 SqlDelete.deleteOfficer(p.getP_id());
                 SqlDelete.deletePerson(p.getP_id());
             }
-            SqlDelete.deleteMembership(ms_id);
-            Launcher.removeMembershipRow(ms_id);
+            SqlDelete.deleteMembership(msId);
+            Launcher.removeMembershipRow(msId);
             Launcher.closeActiveTab();
             System.out.println("Deleting Membership.");
         } else {

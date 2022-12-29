@@ -2,7 +2,9 @@ package com.ecsail.sql;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
+import com.ecsail.sql.select.SqlInvoice;
 import com.ecsail.structures.*;
+import javafx.collections.ObservableList;
 
 
 import java.sql.SQLException;
@@ -163,15 +165,6 @@ public class SqlDelete {
 	}
 
 
-	public static void deleteMonies(int ms_id) {
-		String query = "DELETE FROM money WHERE ms_id=" + ms_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-		}
-	}
-
 	public static void deleteInvoiceByID(int id) {
 		String query = "DELETE FROM invoice WHERE id=" + id;
 		try {
@@ -179,6 +172,15 @@ public class SqlDelete {
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
 		}
+	}
+
+	public static void deletePaymentAndInvoiceByMsId(int msid) {
+		ObservableList<InvoiceDTO> invoices = SqlInvoice.getInvoicesByMsid(msid);
+		invoices.forEach(invoiceDTO -> {
+			deletePaymentByInvoiceID(invoiceDTO.getId());
+			deleteInvoiceItemByInvoiceID(invoiceDTO.getId());
+			deleteInvoiceByID(invoiceDTO.getId());
+		});
 	}
 
 	public static void deleteInvoiceItemByInvoiceID(int id) {
@@ -190,7 +192,7 @@ public class SqlDelete {
 		}
 	}
 
-	public static void deletePaymentByMoneyID(int invoice_id) {
+	public static void deletePaymentByInvoiceID(int invoice_id) {
 		String query = "DELETE FROM payment WHERE invoice_id=" + invoice_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
