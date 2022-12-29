@@ -174,7 +174,7 @@ public class SqlDelete {
 		}
 	}
 
-	public static void deletePaymentAndInvoiceByMsId(int msid) {
+	public static void deleteAllPaymentsAndInvoicesByMsId(int msid) {
 		ObservableList<InvoiceDTO> invoices = SqlInvoice.getInvoicesByMsid(msid);
 		invoices.forEach(invoiceDTO -> {
 			deletePaymentByInvoiceID(invoiceDTO.getId());

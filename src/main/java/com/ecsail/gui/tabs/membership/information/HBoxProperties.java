@@ -1,5 +1,6 @@
 package com.ecsail.gui.tabs.membership.information;
 
+import com.ecsail.BaseApplication;
 import com.ecsail.LabelPrinter;
 import com.ecsail.Launcher;
 import com.ecsail.gui.tabs.membership.TabMembership;
@@ -95,41 +96,29 @@ public class HBoxProperties extends HBox {
 
         ///////////// SET CONTENT ////////////////////
         hbox3.getChildren().addAll(new Label("Print Membership Card Labels"), printLabelsButton);
-        hbox5.getChildren().addAll(new Label("Delete Membership"), removeMembershipButton);
-
+        hbox5.getChildren().addAll(new Label("Delete Membership"), removeMembershipButton);git
         leftVBox.getChildren().addAll(hbox2, hbox3, hbox5);
         hboxGrey.getChildren().addAll(leftVBox, rightVBox);
         getChildren().add(hboxGrey);
     }
 
     private void deleteMembership(int msId) {
-        if (!SqlExists.paymentsExistForMembership(msId)) {
-            SqlDelete.deleteBoatOwner(msId);
-            SqlDelete.deleteMemos(msId);
-            SqlDelete.deleteWorkCredits(msId);
-            // delete payment
-            // delete invoice_item
-            SqlDelete.deletePaymentAndInvoiceByMsId(msId);
-            SqlDelete.deleteWaitList(msId);
-            SqlDelete.deleteMembershipId(msId); // removes all entries
-            ObservableList<PersonDTO> people = SqlPerson.getPeople(msId);
-            for (PersonDTO p : people) {
-                SqlDelete.deletePhones(p.getP_id());
-                SqlDelete.deleteEmail(p.getP_id());
-                SqlDelete.deleteOfficer(p.getP_id());
-                SqlDelete.deletePerson(p.getP_id());
-            }
-            SqlDelete.deleteMembership(msId);
-            Launcher.removeMembershipRow(msId);
-            Launcher.closeActiveTab();
-            System.out.println("Deleting Membership.");
-        } else {
-            // do not delete the membership
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("There is a problem");
-            alert.setHeaderText("This membership contains payment entries");
-            alert.setContentText("Before deleting this membership you need to manually remove the payment entries.");
-            alert.showAndWait();
+        SqlDelete.deleteBoatOwner(msId);
+        SqlDelete.deleteMemos(msId);
+        SqlDelete.deleteWorkCredits(msId);
+        SqlDelete.deleteAllPaymentsAndInvoicesByMsId(msId);
+        SqlDelete.deleteWaitList(msId);
+        SqlDelete.deleteMembershipId(msId); // removes all entries
+        ObservableList<PersonDTO> people = SqlPerson.getPeople(msId);
+        for (PersonDTO p : people) {
+            SqlDelete.deletePhones(p.getP_id());
+            SqlDelete.deleteEmail(p.getP_id());
+            SqlDelete.deleteOfficer(p.getP_id());
+            SqlDelete.deletePerson(p.getP_id());
         }
+        SqlDelete.deleteMembership(msId);
+        Launcher.removeMembershipRow(msId);
+        Launcher.closeActiveTab();
+        BaseApplication.logger.info("Deleted membership msid: " + msId);
     }
 }
