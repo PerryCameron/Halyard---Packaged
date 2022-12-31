@@ -303,6 +303,7 @@ public class ConnectDatabase {
         		// create ssh tunnel
         		if(currentLogon.isSshForward()) {
         			BaseApplication.logger.info("SSH tunnel enabled");
+					BaseApplication.logger.info("Attempting to connect to " + host);
         			this.sshConnection = new PortForwardingL(host,loopback,3306,3306,sUser,sPass);
 //					setServerAliveInterval();
         			BaseApplication.logger.info("Server Alive interval: " + sshConnection.getSession().getServerAliveInterval());

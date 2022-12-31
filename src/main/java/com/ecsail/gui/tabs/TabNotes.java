@@ -97,7 +97,6 @@ public class TabNotes extends Tab {
 					{
 						btn.setOnAction((ActionEvent event) -> {
 							Memo2DTO data = getTableView().getItems().get(getIndex());
-							System.out.println("selectedData: " + data);
 						});
 					}
 
@@ -125,32 +124,23 @@ public class TabNotes extends Tab {
 		Collections.sort(memos, Comparator.comparing(Memo2DTO::getMemo_date).reversed());
 
 
-		oCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            	o = newValue;
-				memos.clear();
-				memos.addAll(SqlMemos.getAllMemosForTabNotes(selectedYear, setOptions()));
-            }
-        });
+		oCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+			o = newValue;
+			memos.clear();
+			memos.addAll(SqlMemos.getAllMemosForTabNotes(selectedYear, setOptions()));
+		});
 		
-		nCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            	n = newValue;
-				memos.clear();
-				memos.addAll(SqlMemos.getAllMemosForTabNotes(selectedYear, setOptions()));
-            }
-        });
+		nCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+			n = newValue;
+			memos.clear();
+			memos.addAll(SqlMemos.getAllMemosForTabNotes(selectedYear, setOptions()));
+		});
 		
-		pCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            	p = newValue;
-				memos.clear();
-				memos.addAll(SqlMemos.getAllMemosForTabNotes(selectedYear, setOptions()));
-            }
-        });
+		pCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+			p = newValue;
+			memos.clear();
+			memos.addAll(SqlMemos.getAllMemosForTabNotes(selectedYear, setOptions()));
+		});
 		
 		notesTableView.getColumns().addAll(Arrays.asList(Col1, Col2, Col3, Col4, colBtn));
 		controlsHbox.getChildren().addAll(yearSpinner,nCheckBox,oCheckBox,pCheckBox);

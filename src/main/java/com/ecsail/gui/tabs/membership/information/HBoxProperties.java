@@ -96,7 +96,7 @@ public class HBoxProperties extends HBox {
 
         ///////////// SET CONTENT ////////////////////
         hbox3.getChildren().addAll(new Label("Print Membership Card Labels"), printLabelsButton);
-        hbox5.getChildren().addAll(new Label("Delete Membership"), removeMembershipButton);git
+        hbox5.getChildren().addAll(new Label("Delete Membership"), removeMembershipButton);
         leftVBox.getChildren().addAll(hbox2, hbox3, hbox5);
         hboxGrey.getChildren().addAll(leftVBox, rightVBox);
         getChildren().add(hboxGrey);

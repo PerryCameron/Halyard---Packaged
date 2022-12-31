@@ -81,7 +81,9 @@ public class MemoDTO {
 	
 
 	public final void setMemo(final String memo) {
-		this.memoProperty().set(memo);
+		System.out.println("making single quote replacement");
+		String fixed = memo.replace("'","''");
+		this.memoProperty().set(fixed);
 	}
 	
 

@@ -27,11 +27,11 @@ public class PortForwardingL {
             if (hks != null) {
                 BaseApplication.logger.info("Host keys exist");
                 // This will print out the keys
-//				for (int i = 0; i < hks.length; i++) {
-//					HostKey hk = hks[i];
-//					System.out.println(hk.getHost() + " " + hk.getType() + " " + hk.getFingerPrint(jsch));
-//				}
-//				System.out.println("");
+				for (int i = 0; i < hks.length; i++) {
+					HostKey hk = hks[i];
+					System.out.println(hk.getHost() + " " + hk.getType() + " " + hk.getFingerPrint(jsch));
+				}
+				System.out.println("");
             }
 
             session = jsch.getSession(user, host, 22);
