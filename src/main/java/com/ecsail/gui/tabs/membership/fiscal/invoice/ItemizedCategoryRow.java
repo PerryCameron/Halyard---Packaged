@@ -49,6 +49,7 @@ public class ItemizedCategoryRow extends HBox {
         getChildren().addAll(vBox1,vBox2,vBox3);
     }
     private void setSpinnerListener(Spinner spinner, FeeDTO feeDTO) {
+        System.out.println("setting itemized spinner listener for " + spinner);
         SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(
                 0, parent.parent.dbInvoiceDTO.getMaxQty(), invoiceItemDTO.getQty());
         spinner.setValueFactory(spinnerValueFactory);

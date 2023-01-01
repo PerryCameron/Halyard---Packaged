@@ -531,7 +531,9 @@ public class ConnectDatabase {
 	}
 
 	public void executeQuery(String query) throws SQLException {
-		BaseApplication.logger.info(query);
+		if(!query.startsWith("UPDATE db_table_changes")) // lets remove noise
+		System.out.println(query);
+//		BaseApplication.logger.info(query);
 		Statement stmt = ConnectDatabase.sqlConnection.createStatement();
 		if (currentLogon.isSshForward()) {
 			if (!sshConnection.getSession().isConnected()) {
@@ -543,7 +545,6 @@ public class ConnectDatabase {
 		stmt.close();
 		DataBase.recordChange(query);
 	}
-
 
 	public void closeResultSet(ResultSet rs) throws SQLException {
 		if (rs.getStatement() != null) {

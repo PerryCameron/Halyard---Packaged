@@ -57,10 +57,7 @@ public class InvoiceItemRow extends HBox {
         addChildren();
     }
 
-    private void updateInvoiceItem(InvoiceItemDTO invoiceItem) {
-        if(footer.getBoxInvoice().isUpdateAllowed())
-            SqlUpdate.updateInvoiceItem(invoiceItem);
-    }
+
 
     private void addChildren() {
         setSpacing(15);
@@ -219,14 +216,21 @@ public class InvoiceItemRow extends HBox {
     }
 
     private void setSpinnerListener() {
+        System.out.println("setting spinner listener for " + spinner);
         SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, dbInvoiceDTO.getMaxQty(), invoiceItemDTO.getQty());
 		spinner.setValueFactory(spinnerValueFactory);
 		spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println("just pinged spinner" + spinner + " oldValue=" + oldValue + " newValue=" + newValue);
             String calculatedTotal = String.valueOf(new BigDecimal(fee.getFieldValue()).multiply(BigDecimal.valueOf(newValue)));
 			rowTotal.setText(calculatedTotal);
             invoiceItemDTO.setQty(newValue);
+            new Thread(() -> {
+                BaseApplication.logger.info("Updating SQL");
             checkIfNotCommittedAndUpdateSql();
-			updateBalance();
+            }).start();
+            updateBalance();
+            //
+
 		});
     }
 
@@ -265,6 +269,11 @@ public class InvoiceItemRow extends HBox {
         else updateInvoiceItem(invoiceItemDTO);
     }
 
+    private void updateInvoiceItem(InvoiceItemDTO invoiceItem) {
+        if(footer.getBoxInvoice().isUpdateAllowed())
+            SqlUpdate.updateInvoiceItem(invoiceItem);
+    }
+
     private void setPriceChangeListener(TextField textField) {
         textField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             //focus out
@@ -299,11 +308,9 @@ public class InvoiceItemRow extends HBox {
         BigDecimal credit = new BigDecimal("0.00");
         for (InvoiceItemDTO i : items) {
             if (i.isCredit()) {
-//                System.out.println("Credit " + i.getValue() + " for " + i.getFieldName());
                 credit = credit.add(new BigDecimal(i.getValue()));
             }
             else {
-//                System.out.println("Adding " + i.getValue() + " for " + i.getFieldName());
                 fees = fees.add(new BigDecimal(i.getValue()));
             }
         }

@@ -190,7 +190,7 @@ public class HBoxInvoiceList extends HBox {
 		fees.forEach(feeDTO -> {
 			InvoiceItemDTO item = new InvoiceItemDTO(0, invoiceId, msid, year, feeDTO.getDescription()
 					, dbInvoiceDTO.isCredit(), "0.00", 0);
-			System.out.println(item);
+//			System.out.println(item);
 			SqlInsert.addInvoiceItemRecord(item);
 		});
 	}

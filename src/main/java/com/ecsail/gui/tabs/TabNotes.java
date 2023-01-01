@@ -169,7 +169,7 @@ public class TabNotes extends Tab {
 			oneb4=true;
 			result += "'O'";
 		}
-		System.out.println(result);
+//		System.out.println(result);
 		return result;
 	}
 

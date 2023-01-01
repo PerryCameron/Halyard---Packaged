@@ -136,8 +136,11 @@ public class VboxDepositControls extends VBox {
         });
 
         // 0 to batch, display batch
-        batchSpinner.setEditable(true);
-        batchSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,numberOfDeposits,depositDTO.getBatch()));
+//        batchSpinner.setEditable(true);
+        // getting stack overflow for some reason
+        System.out.println("numberOfDeposits are " + numberOfDeposits + " depositDTO.getBatch() " + depositDTO.getBatch());
+        batchSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,numberOfDeposits + 1,depositDTO.getBatch()));
+
         batchSpinner.setPrefWidth(60);
         batchSpinner.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
@@ -316,6 +319,8 @@ public class VboxDepositControls extends VBox {
         LocalDate date;
         var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         // if no deposit selected put in today's date
+        if(depositDTO.getDepositDate() == null)  // if it is a new year and there are no deposits yet
+            depositDTO.setDepositDate(String.valueOf(LocalDate.now()));
         date = LocalDate.parse(depositDTO.getDepositDate(), formatter);
         depositDatePicker.setValue(date);
     }
