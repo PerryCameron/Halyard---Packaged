@@ -53,7 +53,8 @@ public class VboxDepositControls extends VBox {
         this.selectedYear = Integer.parseInt(depositDTO.getFiscalYear());
         this.invoiceItemTypes = SqlDbInvoice.getInvoiceCategoriesByYear(selectedYear);
         this.numberOfRecordsText.setText(String.valueOf(tabDeposits.getInvoices().size()));
-        refreshDepositCount();
+        // counts number of depoists for year
+        this.numberOfDeposits = initialDepositCount();
         var vboxGrey = new VBox(); // this is the vbox for organizing all the widgets
         var vboxBlue = new VBox();
         var vboxPink = new VBox(); // this creates a pink border around the table
@@ -136,10 +137,9 @@ public class VboxDepositControls extends VBox {
         });
 
         // 0 to batch, display batch
-//        batchSpinner.setEditable(true);
+        batchSpinner.setEditable(true);
         // getting stack overflow for some reason
-        System.out.println("numberOfDeposits are " + numberOfDeposits + " depositDTO.getBatch() " + depositDTO.getBatch());
-        batchSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,numberOfDeposits + 1,depositDTO.getBatch()));
+        batchSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,numberOfDeposits,depositDTO.getBatch()));
 
         batchSpinner.setPrefWidth(60);
         batchSpinner.focusedProperty().addListener((observable, oldValue, newValue) -> {
@@ -292,7 +292,6 @@ public class VboxDepositControls extends VBox {
     private void refreshWidgets() {
         switch (comboBox.getValue()) {
             case "Show All" -> {
-                System.out.println("Showing All");
                 hboxDepositRecords.setVisible(true);
                 newDepositButton.setVisible(true);
                 newDepositButton.setManaged(true);
@@ -300,7 +299,6 @@ public class VboxDepositControls extends VBox {
                 insertInvoicesButton.setManaged(false);
             }
             case "Show Current" -> { // Show Last always comes back to Show Current after the switch
-                System.out.println("Showing Current");
                 hboxDepositRecords.setVisible(false);
                 newDepositButton.setVisible(false);
                 newDepositButton.setManaged(false);
@@ -319,8 +317,8 @@ public class VboxDepositControls extends VBox {
         LocalDate date;
         var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         // if no deposit selected put in today's date
-        if(depositDTO.getDepositDate() == null)  // if it is a new year and there are no deposits yet
-            depositDTO.setDepositDate(String.valueOf(LocalDate.now()));
+//        if(depositDTO.getDepositDate() == null)  // if it is a new year and there are no deposits yet
+//            depositDTO.setDepositDate(String.valueOf(LocalDate.now()));
         date = LocalDate.parse(depositDTO.getDepositDate(), formatter);
         depositDatePicker.setValue(date);
     }
@@ -371,11 +369,9 @@ public class VboxDepositControls extends VBox {
             }
             depositDTO.setBatch(depositDTO.getBatch());
             SqlDeposit.getDeposit(depositDTO);
-            System.out.println("Current Deposit is " + depositDTO);
     }
 
     private void cleanDeposit() {
-
         depositDTO.setDeposit_id(SqlSelect.getNextAvailablePrimaryKey("deposit", "DEPOSIT_ID"));
         depositDTO.setBatch(numberOfDeposits);
         depositDTO.setFiscalYear(String.valueOf(selectedYear));
@@ -394,6 +390,20 @@ public class VboxDepositControls extends VBox {
     private void refreshDepositCount() {
         numberOfDeposits = SqlCount.getNumberOfDepositsForYear(selectedYear);
         numberOfDepositsText.setText(String.valueOf(numberOfDeposits));
+    }
+
+    private int initialDepositCount() {
+        int depositCount = SqlCount.getNumberOfDepositsForYear(selectedYear);
+        // perhaps a new year or new database and no deposits yet, we shall create the first
+        if (depositCount == 0) {
+            depositCount = 1;
+            cleanDeposit();  // sets all the correct information in depositDTO to make first deposit for year
+            depositDTO.setBatch(1); // first deposit for the selected year
+            System.out.println(depositDTO);
+            SqlInsert.addDeposit(depositDTO);
+        }
+        numberOfDepositsText.setText(String.valueOf(depositCount));
+        return depositCount;
     }
 
     private boolean itemHasAValue(HboxInvoiceSumItem item) {

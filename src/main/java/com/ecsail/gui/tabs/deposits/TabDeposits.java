@@ -21,7 +21,9 @@ public class TabDeposits extends Tab {
 		super(text);
 		this.selectedYear = BaseApplication.selectedYear;
 		this.invoices = getInvoiceItems(selectedYear);
+		// controls on the right hand side of the screen
 		this.vboxControls = new VboxDepositControls(this);
+		// tableview on left hand side of the screen
 		this.tableView = new InvoicesTableView(this);
 
 		var vboxGreen = new VBox(); // this is the vbox for organizing all the widgets
