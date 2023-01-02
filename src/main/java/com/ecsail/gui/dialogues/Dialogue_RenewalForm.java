@@ -35,7 +35,6 @@ public class Dialogue_RenewalForm extends Stage {
 		TextField memberidTextField = new TextField();
 		Scene scene = new Scene(vboxBlue, 600, 300);
 		final var yearSpinner = new Spinner<Integer>();
-		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/logo_24.png")));
 		Image pdf = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pdf.png")));
 		ImageView pdfImage = new ImageView(pdf);
 		
@@ -67,6 +66,8 @@ public class Dialogue_RenewalForm extends Stage {
 		vboxPink.setId("box-pink");
 		// vboxGrey.setId("slip-box");
 		hboxGrey.setPrefHeight(688);
+		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));
+		this.getIcons().add(mainIcon);
 		scene.getStylesheets().add("css/dark/custom_dialogue.css");
 		setTitle("Print to PDF");
 		////////////  Check to see if batch exists first////////////

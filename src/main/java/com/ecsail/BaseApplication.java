@@ -58,7 +58,7 @@ public class BaseApplication extends Application implements Log {
 
     public static void main(String[] args) {
         setUpForFirstTime();
-//        startFileLogger();
+        startFileLogger();
         logger.info("Starting application...");
         BaseApplication.selectedYear = HalyardPaths.getYear();
         launch(args);
@@ -107,7 +107,8 @@ public class BaseApplication extends Application implements Log {
 
         // closing program with x button
         stage.setOnHiding(event -> Platform.runLater(BaseApplication::closeDatabaseConnection));
-
+        Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));
+        stage.getIcons().add(mainIcon);
         stage.setTitle("Halyard");
         stage.setScene(scene);
 

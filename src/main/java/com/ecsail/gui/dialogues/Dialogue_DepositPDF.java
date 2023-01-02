@@ -106,6 +106,8 @@ public class Dialogue_DepositPDF extends Stage {
         hboxGrey.getChildren().addAll(vboxColumn1, vboxColumn2);
         vboxBlue.getChildren().add(vboxPink);
         vboxPink.getChildren().add(hboxGrey);
+        Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));
+        this.getIcons().add(mainIcon);
         setScene(scene);
         show();
     }

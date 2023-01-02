@@ -375,7 +375,8 @@ public class ConnectDatabase {
         cancelButton1.setOnAction((event) -> System.exit(0));
 
         /////////////// SET CONTENT /////////////////////
-//		logonStage.getIcons().add(mainIcon);
+		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));
+		logonStage.getIcons().add(mainIcon);
 		
         vboxUserLabel.getChildren().add(new Label("Username:"));
         vboxPassLabel.getChildren().add(new Label("Password:"));

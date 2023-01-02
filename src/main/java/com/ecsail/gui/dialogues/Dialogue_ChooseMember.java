@@ -17,6 +17,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 public class Dialogue_ChooseMember extends Stage {
 	//private ObservableList<Object_MembershipList> boatOwners;
 	private MembershipListDTO newOwner;
@@ -111,8 +113,8 @@ public class Dialogue_ChooseMember extends Stage {
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
 		vboxGrey.getChildren().addAll(containerHBox,buttonHBox);
-//		this.getIcons().add(mainIcon);
-		this.setScene(scene);
+		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));
+		this.getIcons().add(mainIcon);		this.setScene(scene);
 		this.show();
 	}
 }

@@ -42,6 +42,8 @@ public class Dialogue_DatabaseBackup extends Stage {
 		vboxGrey.getChildren().addAll(scrollPane,addButtonBox());
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
+		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));
+		this.getIcons().add(mainIcon);
 		setScene(scene);
 		show();
 	}

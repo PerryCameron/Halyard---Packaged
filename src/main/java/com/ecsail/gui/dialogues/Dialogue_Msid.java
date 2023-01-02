@@ -34,7 +34,7 @@ public class Dialogue_Msid extends Stage {
 		VBox.setVgrow(vboxGrey, Priority.ALWAYS);
 		VBox.setVgrow(vboxPink, Priority.ALWAYS);
 		HBox.setHgrow(vboxPink, Priority.ALWAYS);
-		scene.getStylesheets().add("stylesheet.css");
+		scene.getStylesheets().add("css/dark/custom_dialogue.css");
 
 		setTitle("By MSID");
 		msidTextField.setPrefWidth(70);
@@ -49,7 +49,8 @@ public class Dialogue_Msid extends Stage {
 		vboxGrey.getChildren().addAll(hboxControls);
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
-
+		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));
+		this.getIcons().add(mainIcon);
 		setScene(scene);
 		show();
 	}

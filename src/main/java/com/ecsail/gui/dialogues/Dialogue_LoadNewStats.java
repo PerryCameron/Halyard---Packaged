@@ -58,7 +58,8 @@ public class Dialogue_LoadNewStats extends Stage {
 		scene.getStylesheets().add("css/dark/custom_dialogue.css");
 
 		setTitle("Updating Statistics");
-
+		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));
+		this.getIcons().add(mainIcon);
 		vboxGrey.getChildren().addAll(pb);
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
@@ -69,8 +70,6 @@ public class Dialogue_LoadNewStats extends Stage {
 
 	public void updateStats() {
 		SqlDelete.deleteStatistics();
-		System.out.println("Deleted old statistics");
-		System.out.println("Calculating new statistics...");
 		int numberOfYears = stopYear - startYear + 1;
 		var task = new Task<String>(){
 	        @Override

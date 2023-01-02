@@ -42,7 +42,8 @@ public class Dialogue_DirectoryCreation extends Stage {
 		createDirectory.setOnAction((event) -> new PDF_Directory(BaseApplication.selectedYear,textArea));
 		
 		//////////////// ADD CONTENT ///////////////////
-
+		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));
+		this.getIcons().add(mainIcon);
 		setScene(scene);
 		show();
 		//new PDF_Directory("2021")

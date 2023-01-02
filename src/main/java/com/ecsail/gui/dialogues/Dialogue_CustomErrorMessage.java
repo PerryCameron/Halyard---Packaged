@@ -43,14 +43,15 @@ public class Dialogue_CustomErrorMessage extends Stage {
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
 		setTitle(title);
-		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/logo_24.png")));
 
 		//////////////// LISTENERS ////////////////
 
 		closeButton.setOnAction((event) -> this.close());
 		
 		//////////////// ADD CONTENT ///////////////////
-		getIcons().add(mainIcon);
+
+		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));
+		this.getIcons().add(mainIcon);
 		setScene(scene);
 		show();
 	}
