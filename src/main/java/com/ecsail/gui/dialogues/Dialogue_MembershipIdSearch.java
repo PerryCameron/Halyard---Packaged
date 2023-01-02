@@ -45,7 +45,6 @@ public class Dialogue_MembershipIdSearch extends Stage {
 		scene.getStylesheets().add("stylesheet.css");
 
 		setTitle("By Membership ID");
-		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon_24.png")));
 		msidTextField.setPrefWidth(70);
 		hboxControls.setSpacing(7);
 		hboxControls.setPadding(new Insets(20,0,0,10));
@@ -62,7 +61,6 @@ public class Dialogue_MembershipIdSearch extends Stage {
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
 
-		getIcons().add(mainIcon);
 		setScene(scene);
 		show();
 	}

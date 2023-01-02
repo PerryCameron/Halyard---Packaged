@@ -36,13 +36,13 @@ public class Dialogue_DirectoryCreation extends Stage {
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
 		setTitle("Create Directory");
-		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon_24.png")));
+
 		
 		//////////////// LISTENERS ////////////////
 		createDirectory.setOnAction((event) -> new PDF_Directory(BaseApplication.selectedYear,textArea));
 		
 		//////////////// ADD CONTENT ///////////////////
-		getIcons().add(mainIcon);
+
 		setScene(scene);
 		show();
 		//new PDF_Directory("2021")

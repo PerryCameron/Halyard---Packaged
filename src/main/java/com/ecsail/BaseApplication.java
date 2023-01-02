@@ -103,13 +103,12 @@ public class BaseApplication extends Application implements Log {
         borderPane.setBottom(statusLabel);
         borderPane.setCenter(tabPane);
 
-        Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon_24.png")));
         Scene scene = new Scene(borderPane, 1028, 830);
 
         // closing program with x button
         stage.setOnHiding(event -> Platform.runLater(BaseApplication::closeDatabaseConnection));
 
-        stage.setTitle("ECSC Membership Database");
+        stage.setTitle("Halyard");
         stage.setScene(scene);
 
         for (Plugin plugin : plugins) {
@@ -123,7 +122,6 @@ public class BaseApplication extends Application implements Log {
         }
 
         statusLabel.setText("(Not Connected) Ready.");
-        stage.getIcons().add(mainIcon);
         stage.show();
         //put window to front to avoid it to being hidden behind another.
         stage.setAlwaysOnTop(true);

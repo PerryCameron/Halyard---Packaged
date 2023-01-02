@@ -41,7 +41,6 @@ public class Dialogue_DepositPDF extends Stage {
 
         Scene scene = new Scene(vboxBlue, 600, 300);
         final Spinner<Integer> batchSpinner = new Spinner<>();
-        Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon_24.png")));
         Image pdf = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pdf.png")));
         ImageView pdfImage = new ImageView(pdf);
 
@@ -107,7 +106,6 @@ public class Dialogue_DepositPDF extends Stage {
         hboxGrey.getChildren().addAll(vboxColumn1, vboxColumn2);
         vboxBlue.getChildren().add(vboxPink);
         vboxPink.getChildren().add(hboxGrey);
-        getIcons().add(mainIcon);
         setScene(scene);
         show();
     }

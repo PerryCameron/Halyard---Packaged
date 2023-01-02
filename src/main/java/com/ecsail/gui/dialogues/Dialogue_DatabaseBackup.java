@@ -34,8 +34,7 @@ public class Dialogue_DatabaseBackup extends Stage {
 		vboxGrey.setPrefHeight(688);
 		scene.getStylesheets().add("css/dark/custom_dialogue.css");
 		setTitle("Database BackUp");
-		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon_24.png")));
-		
+
 		//////////////// ADD CONTENT ///////////////////
 
 		VBox.setVgrow(scrollPane, Priority.ALWAYS);
@@ -43,7 +42,6 @@ public class Dialogue_DatabaseBackup extends Stage {
 		vboxGrey.getChildren().addAll(scrollPane,addButtonBox());
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
-		getIcons().add(mainIcon);
 		setScene(scene);
 		show();
 	}

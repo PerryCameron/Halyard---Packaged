@@ -40,7 +40,6 @@ public class Dialogue_EnvelopePDF extends Stage {
 		TextField memberidTextField = new TextField();
 		
 		Scene scene = new Scene(vboxBlue, 600, 300);
-		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon_24.png")));
 		Image pdf = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pdf.png")));
 		ImageView pdfImage = new ImageView(pdf);
 		
@@ -99,7 +98,6 @@ public class Dialogue_EnvelopePDF extends Stage {
 		hboxGrey.getChildren().addAll(vboxColumn1,vboxColumn2);
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(hboxGrey);
-		getIcons().add(mainIcon);
 		setScene(scene);
 		show();
 	}

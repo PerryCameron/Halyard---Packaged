@@ -58,12 +58,10 @@ public class Dialogue_LoadNewStats extends Stage {
 		scene.getStylesheets().add("css/dark/custom_dialogue.css");
 
 		setTitle("Updating Statistics");
-		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon_24.png")));
 
 		vboxGrey.getChildren().addAll(pb);
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
-		getIcons().add(mainIcon);
 		setScene(scene);
 		show();
 		updateStats();

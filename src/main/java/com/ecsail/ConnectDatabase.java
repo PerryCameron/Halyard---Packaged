@@ -81,8 +81,8 @@ public class ConnectDatabase {
 		int height = 200;
 		logonStage = new Stage();
 		logonStage.setTitle("Login");
-		Image ecscLogo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/ecscloginlogo.png")));
-		ImageView logo = new ImageView(ecscLogo);
+		Image loginLogo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/ships_wheel.png")));
+		ImageView logo = new ImageView(loginLogo);
 		VBox vboxBlue = new VBox();
 		VBox vboxLeft = new VBox(); // this creates a pink border around the table
 		Pane loginPane = new Pane();
@@ -184,7 +184,7 @@ public class ConnectDatabase {
 		passWord.setPromptText("Password");
 
 		//Pane secondaryLayout = new Pane();
-		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/ECSClogo4.png")));
+//		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/ECSClogo4.png")));
 
 		portText.setText("3306");
 		vboxUserLabel.setPrefWidth(90);
@@ -310,7 +310,7 @@ public class ConnectDatabase {
         		} else
         			BaseApplication.logger.info("SSH connection is not being used");
         		// create mysql login
-				primaryStage.setTitle("ECSC Membership Database");
+				primaryStage.setTitle("Halyard");
         		if(createConnection(user, pass, loopback, port)) {
         		BaseApplication.activeMemberships = SqlMembershipList.getRoster(BaseApplication.selectedYear, true);
 				// gets a list of all the board positions to use throughout the application
@@ -375,7 +375,7 @@ public class ConnectDatabase {
         cancelButton1.setOnAction((event) -> System.exit(0));
 
         /////////////// SET CONTENT /////////////////////
-		logonStage.getIcons().add(mainIcon);
+//		logonStage.getIcons().add(mainIcon);
 		
         vboxUserLabel.getChildren().add(new Label("Username:"));
         vboxPassLabel.getChildren().add(new Label("Password:"));
@@ -515,7 +515,7 @@ public class ConnectDatabase {
 
 	private void closeConnection() {
 		BaseApplication.closeDatabaseConnection();
-		primaryStage.setTitle("ECSC Membership Database (not connected)");
+		primaryStage.setTitle("Halyard (not connected)");
 	}
 
 	public ResultSet executeSelectQuery(String query) throws SQLException {
