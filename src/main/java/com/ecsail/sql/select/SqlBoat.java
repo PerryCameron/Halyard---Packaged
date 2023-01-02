@@ -70,7 +70,7 @@ public class SqlBoat {
                 + "b.boat_id=bo.boat_id LEFT JOIN membership_id id "
                 + "ON bo.ms_id=id.ms_id LEFT JOIN membership m ON "
                 + "id.ms_id=m.ms_id LEFT JOIN person p ON m.p_id=p.p_id "
-                + "WHERE id.renew=true and id.fiscal_year='"+ BaseApplication.selectedYear +"'";
+                + "WHERE id.fiscal_year='"+ BaseApplication.selectedYear +"'";
         try {
             
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
