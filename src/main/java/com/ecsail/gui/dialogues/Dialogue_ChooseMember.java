@@ -76,7 +76,7 @@ public class Dialogue_ChooseMember extends Stage {
 		scene.getStylesheets().add("css/dark/custom_dialogue.css");
 
 		this.setTitle("Choose Member");
-		Image mainIcon = new Image(getClass().getResourceAsStream("/logo_24.png"));
+//		Image mainIcon = new Image(getClass().getResourceAsStream("/logo_24.png"));
 		
 		//////////////// LISTENERS   ///////////////////
 		
@@ -111,7 +111,7 @@ public class Dialogue_ChooseMember extends Stage {
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
 		vboxGrey.getChildren().addAll(containerHBox,buttonHBox);
-		this.getIcons().add(mainIcon);
+//		this.getIcons().add(mainIcon);
 		this.setScene(scene);
 		this.show();
 	}

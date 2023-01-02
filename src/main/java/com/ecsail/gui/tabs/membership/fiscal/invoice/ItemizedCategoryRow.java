@@ -58,8 +58,12 @@ public class ItemizedCategoryRow extends HBox {
             invoiceItemDTO.setValue(String.valueOf(lineTotal));
             invoiceItemDTO.setQty((Integer) newValue);
             parent.parent.rowTotal.setText(parent.calculateAllLines());
-            parent.parent.checkIfNotCommittedAndUpdateSql(invoiceItemDTO);
             parent.parent.updateBalance();
+        });
+
+        spinner.focusedProperty().addListener((observable, oldValue, focused) -> {
+            if(!focused)
+                parent.parent.checkIfNotCommittedAndUpdateSql(invoiceItemDTO);
         });
     }
 

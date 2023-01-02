@@ -174,7 +174,6 @@ public class InvoiceFooter extends VBox {
         parent.invoice.setCredit(creditString);
         parent.invoice.setBalance(balanceString);
         parent.invoice.setPaid(paymentString);
-        SqlUpdate.updateInvoice(parent.invoice);
     }
 
     public ObservableList<PaymentDTO> getPayments() {

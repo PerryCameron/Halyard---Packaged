@@ -216,22 +216,34 @@ public class InvoiceItemRow extends HBox {
     }
 
     private void setSpinnerListener() {
-        System.out.println("setting spinner listener for " + spinner);
         SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, dbInvoiceDTO.getMaxQty(), invoiceItemDTO.getQty());
 		spinner.setValueFactory(spinnerValueFactory);
 		spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
-            System.out.println("just pinged spinner" + spinner + " oldValue=" + oldValue + " newValue=" + newValue);
             String calculatedTotal = String.valueOf(new BigDecimal(fee.getFieldValue()).multiply(BigDecimal.valueOf(newValue)));
 			rowTotal.setText(calculatedTotal);
             invoiceItemDTO.setQty(newValue);
-            new Thread(() -> {
-                BaseApplication.logger.info("Updating SQL");
-            checkIfNotCommittedAndUpdateSql();
-            }).start();
             updateBalance();
-            //
-
 		});
+
+        // no need to write to database everytime we click a spinner, lets write when done.
+        spinner.focusedProperty().addListener((observable, oldValue, focused) -> {
+            if(!focused)
+            checkIfNotCommittedAndUpdateSql();
+        });
+    }
+
+    protected void updateBalance() {
+        BigDecimal fees = new BigDecimal("0.00");
+        BigDecimal credit = new BigDecimal("0.00");
+        for (InvoiceItemDTO i : items) {
+            if (i.isCredit()) {
+                credit = credit.add(new BigDecimal(i.getValue()));
+            }
+            else {
+                fees = fees.add(new BigDecimal(i.getValue()));
+            }
+        }
+        footer.updateTotals(fees,credit);
     }
 
     private void setComboBoxListener() {
@@ -269,9 +281,9 @@ public class InvoiceItemRow extends HBox {
         else updateInvoiceItem(invoiceItemDTO);
     }
 
-    private void updateInvoiceItem(InvoiceItemDTO invoiceItem) {
+    private void updateInvoiceItem(InvoiceItemDTO invoiceItemDTO) {
         if(footer.getBoxInvoice().isUpdateAllowed())
-            SqlUpdate.updateInvoiceItem(invoiceItem);
+            SqlUpdate.updateInvoiceItem(invoiceItemDTO);
     }
 
     private void setPriceChangeListener(TextField textField) {
@@ -303,19 +315,7 @@ public class InvoiceItemRow extends HBox {
         price.setOnMouseEntered(en -> price.setFill(Color.RED));
         price.setOnMouseExited(ex -> price.setFill(Color.BLUE));
     }
-    protected void updateBalance() {
-        BigDecimal fees = new BigDecimal("0.00");
-        BigDecimal credit = new BigDecimal("0.00");
-        for (InvoiceItemDTO i : items) {
-            if (i.isCredit()) {
-                credit = credit.add(new BigDecimal(i.getValue()));
-            }
-            else {
-                fees = fees.add(new BigDecimal(i.getValue()));
-            }
-        }
-        footer.updateTotals(fees,credit);
-    }
+
 
     public Text getPrice() {
         return price;
