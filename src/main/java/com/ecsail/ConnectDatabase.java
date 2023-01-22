@@ -293,6 +293,7 @@ public class ConnectDatabase {
 		});
 		
         loginButton.setOnAction((event) -> {
+			System.out.println("Hit login button");
         		String user = userName.getText();
         		String pass = passWord.getText();
         		String host = hostName.getValue();
@@ -304,7 +305,10 @@ public class ConnectDatabase {
         		if(currentLogon.isSshForward()) {
         			BaseApplication.logger.info("SSH tunnel enabled");
 					BaseApplication.logger.info("Attempting to connect to " + host);
-        			this.sshConnection = new PortForwardingL(host,loopback,3306,3306,sUser,sPass);
+//        			this.sshConnection = new PortForwardingL(host,loopback,3306,3306,sUser,sPass);
+					System.out.println("Time to port forward");
+					this.sshConnection = new PortForwardingL(host,loopback,3306,3306,sUser);
+
 //					setServerAliveInterval();
         			BaseApplication.logger.info("Server Alive interval: " + sshConnection.getSession().getServerAliveInterval());
         		} else

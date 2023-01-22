@@ -13,10 +13,48 @@ public class PortForwardingL {
     static String passwd;
     private Session session;
     private JSch jsch = new JSch();
+
+    private static boolean usePublicKey = true;
 //	private Sftp ftp;
 
+    public PortForwardingL(String host, String rhost, int lport, int rport, String user) {
+        System.out.println("Connecting with public key..");
+        try {
+            jsch.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
+            jsch.addIdentity(System.getProperty("user.home") + "/.ssh/id_rsa");
+            HostKeyRepository hkr = jsch.getHostKeyRepository();
+            HostKey[] hks = hkr.getHostKey();
+            if (hks != null) {
+                BaseApplication.logger.info("Host keys exist");
+                // This will print out the keys
+                for (int i = 0; i < hks.length; i++) {
+                    HostKey hk = hks[i];
+                    System.out.println(hk.getHost() + " " + hk.getType() + " " + hk.getFingerPrint(jsch));
+                }
+                System.out.println("");
+            }
+
+            session = jsch.getSession(user, host, 22);
+            UserInfo ui = new MyUserInfo();
+            session.setUserInfo(ui);
+            session.connect();
+
+            int assingedPort = 0;
+            // this prevents exception from filling log if mysql is running locally for testing
+            try {
+                assingedPort = session.setPortForwardingL(lport, rhost, rport);
+            } catch (JSchException e) {
+                BaseApplication.logger.error(e.getMessage() + " Check to see if database is running locally");
+            }
+            BaseApplication.logger.info("localhost:" + assingedPort + " -> " + rhost + ":" + rport);
+//			this.ftp = new Sftp(jsch, session);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public PortForwardingL(String host, String rhost, int lport, int rport, String user, String password) { // int
         // lport;
+        usePublicKey = false;
         PortForwardingL.passwd = password;
 
         try {
@@ -56,6 +94,8 @@ public class PortForwardingL {
     public static class MyUserInfo implements UserInfo {
 
         public String getPassword() {
+            if(usePublicKey) return null;
+            // if not using a public key we are using a password
             return passwd;
         }
 
@@ -72,11 +112,11 @@ public class PortForwardingL {
         }
 
         public boolean promptPassphrase(String message) {
-            return true;
+            return false;
         }
 
         public boolean promptPassword(String message) {
-            return true;
+            return false;
         }
 
         public void showMessage(String message) {
