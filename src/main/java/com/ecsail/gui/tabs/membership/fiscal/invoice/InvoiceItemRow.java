@@ -10,7 +10,6 @@ import com.ecsail.structures.FeeDTO;
 import com.ecsail.structures.InvoiceDTO;
 import com.ecsail.structures.InvoiceItemDTO;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -35,7 +34,6 @@ public class InvoiceItemRow extends HBox {
 
     protected FeeDTO fee;
     private final InvoiceFooter footer;
-    private final ObservableList<InvoiceItemDTO> items;
     private final VBox vBox1 = new VBox();
     private final VBox vBox2 = new VBox();
     private final VBox vBox3 = new VBox();
@@ -50,14 +48,11 @@ public class InvoiceItemRow extends HBox {
         this.itemName = dbInvoiceDTO.getFieldName();
         this.footer = footer;
         this.invoice = footer.getInvoice();
-        this.items = dbInvoiceDTO.getItems();
         this.invoiceItemDTO = setItem();
         this.fee = getFee();
         parent.invoiceItemMap.put(dbInvoiceDTO.getFieldName(),this);
         addChildren();
     }
-
-
 
     private void addChildren() {
         setSpacing(15);
@@ -74,7 +69,11 @@ public class InvoiceItemRow extends HBox {
         vBox5.setAlignment(Pos.CENTER_RIGHT);
         if(!dbInvoiceDTO.isItemized()) // don't set this for itemized rows
             rowTotal.setText(invoiceItemDTO.getValue());
-        invoiceItemDTO.valueProperty().bind(rowTotal.textProperty()); //  value of Text to DTO
+        // OMFG This was a hard bug to find, by binding the itemized rows it caused the category rows
+        // to put the value inside them. This caused a doubling of fees in total calculation
+        // lesson learned, be very careful using bindings. line below fixes problem
+        if(!dbInvoiceDTO.getWidgetType().equals("itemized"))
+            invoiceItemDTO.valueProperty().bind(rowTotal.textProperty()); //  value of Text to DTO
         if(this.invoiceItemDTO.isCredit()) rowTotal.setId("invoice-text-credit");
         vBox5.getChildren().add(rowTotal);
     }
@@ -210,7 +209,7 @@ public class InvoiceItemRow extends HBox {
      */
     private InvoiceItemDTO addNewInvoiceItem() { //
         InvoiceItemDTO newInvoiceItem = new InvoiceItemDTO(invoice.getId(),invoice.getMsId(),invoice.getYear(),itemName);
-        items.add(newInvoiceItem);
+        parent.items.add(newInvoiceItem);
         SqlInsert.addInvoiceItemRecord(newInvoiceItem);
         return newInvoiceItem;
     }
@@ -235,7 +234,7 @@ public class InvoiceItemRow extends HBox {
     protected void updateBalance() {
         BigDecimal fees = new BigDecimal("0.00");
         BigDecimal credit = new BigDecimal("0.00");
-        for (InvoiceItemDTO i : items) {
+        for (InvoiceItemDTO i : parent.items) {
             if (i.isCredit()) {
                 credit = credit.add(new BigDecimal(i.getValue()));
             }
@@ -336,4 +335,5 @@ public class InvoiceItemRow extends HBox {
     public DbInvoiceDTO getDbInvoiceDTO() {
         return dbInvoiceDTO;
     }
+
 }

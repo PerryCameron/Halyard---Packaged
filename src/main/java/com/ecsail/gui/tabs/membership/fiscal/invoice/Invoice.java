@@ -40,12 +40,14 @@ public class Invoice extends HBox {
     private final Note note;
     private boolean updateAllowed; // prevents any writing to database on load
 
+    protected ObservableList<InvoiceItemDTO> items;
+
     public Invoice(HBoxInvoiceList il, int index) {
         this.invoice = il.getTabMembership().getInvoices().get(index);
         this.membership = il.getTabMembership().getMembership();
         this.note = il.getTabMembership().getNote();
-        ArrayList<DbInvoiceDTO> theseWidgets = SqlDbInvoice.getDbInvoiceByYear(invoice.getYear());
-        ObservableList<InvoiceItemDTO> items = SqlInvoiceItem.getInvoiceItemsByInvoiceId(invoice.getId());
+        ArrayList<DbInvoiceDTO> dbInvoiceDTOs = SqlDbInvoice.getDbInvoiceByYear(invoice.getYear());
+        this.items = SqlInvoiceItem.getInvoiceItemsByInvoiceId(invoice.getId());
         this.fees = SqlFee.getFeesFromYear(invoice.getYear());
         this.payments = getPayment();
         this.footer = new InvoiceFooter(this);
@@ -85,7 +87,7 @@ public class Invoice extends HBox {
 
 		// take list of DBInvoiceDTOs, insert appropriate fee into widget, insert reference to invoice items
 		// the put an HBOX with all this attached into a hash map
-		for (DbInvoiceDTO dbInvoiceDTO : theseWidgets) {
+		for (DbInvoiceDTO dbInvoiceDTO : dbInvoiceDTOs) {
                 dbInvoiceDTO.setFee(insertFeeIntoWidget(dbInvoiceDTO));
                 dbInvoiceDTO.setItems(items); // allows calculations to be made
                 new InvoiceItemRow(this, dbInvoiceDTO, footer);

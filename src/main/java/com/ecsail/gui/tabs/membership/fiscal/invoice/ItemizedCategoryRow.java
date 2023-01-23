@@ -23,8 +23,7 @@ public class ItemizedCategoryRow extends HBox {
     private Text price;
     public ItemizedCategoryRow(ItemizedCategory itemizedCategory, FeeDTO feeDTO) {
         this.parent = itemizedCategory;
-        int msId = parent.parent.invoice.getMsId();
-        this.invoiceItemDTO = SqlInvoiceItem.getInvoiceItemByFeeDTO(feeDTO,msId);
+        this.invoiceItemDTO = getInvoiceItem(feeDTO);
         categoryName = parent.parent.invoiceItemDTO;
         VBox vBox1 = new VBox();
         VBox vBox2 = new VBox();
@@ -48,15 +47,27 @@ public class ItemizedCategoryRow extends HBox {
         vBox3.getChildren().add(price);
         getChildren().addAll(vBox1,vBox2,vBox3);
     }
+
+    private InvoiceItemDTO getInvoiceItem(FeeDTO feeDTO) {
+        for(InvoiceItemDTO invoiceItemDTO1: parent.parent.parent.items) {
+            if(feeDTO.getDescription().equals(invoiceItemDTO1.getFieldName())) return invoiceItemDTO1;
+        }
+        return null;
+    }
+
     private void setSpinnerListener(Spinner spinner, FeeDTO feeDTO) {
-        System.out.println("setting itemized spinner listener for " + spinner);
         SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(
                 0, parent.parent.dbInvoiceDTO.getMaxQty(), invoiceItemDTO.getQty());
         spinner.setValueFactory(spinnerValueFactory);
         spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
+            // calculates total for the line Qty * fee
             lineTotal = getLineTotal(feeDTO.getFieldValue(), (Integer) newValue);
+            // saves line total as the value
             invoiceItemDTO.setValue(String.valueOf(lineTotal));
+            System.out.println("Item1 " + invoiceItemDTO.getFieldName() + " Is set to " + invoiceItemDTO.getValue());
+            // saves value of spinner as QTY
             invoiceItemDTO.setQty((Integer) newValue);
+            // calculates lineTotal for all sub items and gives total
             parent.parent.rowTotal.setText(parent.calculateAllLines());
             parent.parent.updateBalance();
         });

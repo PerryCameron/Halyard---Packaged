@@ -171,23 +171,4 @@ public class DbInvoiceDTO {
         this.itemized = itemized;
     }
 
-    @Override
-    public String toString() {
-        return "DbInvoiceDTO{" +
-                "id=" + id +
-                ", fiscalYear='" + fiscalYear + '\'' +
-                ", fieldName='" + fieldName + '\'' +
-                ", widgetType='" + widgetType + '\'' +
-                ", width=" + width +
-                ", order=" + order +
-                ", multiplied=" + multiplied +
-                ", price_editable=" + price_editable +
-                ", is_credit=" + is_credit +
-                ", maxQty=" + maxQty +
-                ", autoPopulate=" + autoPopulate +
-                ", multipleFee=" + itemized +
-                ", fee=" + fee +
-                ", items=" + items +
-                '}';
-    }
 }

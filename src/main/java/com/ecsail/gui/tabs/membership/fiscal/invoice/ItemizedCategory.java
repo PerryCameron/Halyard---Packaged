@@ -23,11 +23,10 @@ public class ItemizedCategory extends VBox {
         this.feeDTOS = SqlFee.getAllFeesByFieldNameAndYear(parent.fee);
         this.setSpacing(5);
         this.setPadding(new Insets(5,0,0,0));
-        for(FeeDTO fee: feeDTOS) { // not correct fees, need for dbincoive only
+        for(FeeDTO fee: feeDTOS) { // not correct fees, need for db_invoice only
             ItemizedCategoryRow row = new ItemizedCategoryRow(this,fee);
             itemizedCategoryRows.add(row);
             getChildren().add(row);
-
         }
         parent.rowTotal.setText(calculateAllLines());
         parent.updateBalance();
@@ -38,7 +37,6 @@ public class ItemizedCategory extends VBox {
         BigDecimal finalTotal = new BigDecimal("0.00");
         for(ItemizedCategoryRow row: itemizedCategoryRows) {
             finalTotal = finalTotal.add(row.lineTotal);
-            System.out.println(row.lineTotal);
         }
         return String.valueOf(finalTotal);
     }

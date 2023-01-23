@@ -293,7 +293,6 @@ public class ConnectDatabase {
 		});
 		
         loginButton.setOnAction((event) -> {
-			System.out.println("Hit login button");
         		String user = userName.getText();
         		String pass = passWord.getText();
         		String host = hostName.getValue();
