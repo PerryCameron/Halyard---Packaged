@@ -5,7 +5,6 @@ import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.select.SqlPayment;
 import com.ecsail.structures.InvoiceDTO;
 import com.ecsail.structures.PaymentDTO;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -52,10 +51,10 @@ public class InvoiceFooter extends VBox {
         setPadding(new Insets(15, 0, 15, 0));
         setSpacing(15);
         ///// TODO TEMP //////
-        renewCheckBox.selectedProperty().addListener(
-                (ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) -> {
-                parent.items.forEach(invoiceItemDTO -> System.out.println(invoiceItemDTO.getFieldName() + " " + invoiceItemDTO.getValue()));
-                });
+//        renewCheckBox.selectedProperty().addListener(
+//                (ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) -> {
+//                parent.items.forEach(invoiceItemDTO -> System.out.println(invoiceItemDTO.getFieldName() + " " + invoiceItemDTO.getValue()));
+//                });
         ///// TODO TEMP /////
 
         buttonAdd.setOnAction(e -> {

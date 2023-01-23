@@ -89,7 +89,7 @@ public class HBoxProperties extends HBox {
 							p.getFname() + " " + p.getLname()
 							, String.valueOf(tm.getMembership().getMembershipId())
 							, tm.getMembership().getMemType()
-							, "03/01/2023"};
+							, "03/01/" + getYear()};
 					// TODO fix the date above
 					LabelPrinter.printMembershipLabel(lines);
 				})));
@@ -100,6 +100,11 @@ public class HBoxProperties extends HBox {
         leftVBox.getChildren().addAll(hbox2, hbox3, hbox5);
         hboxGrey.getChildren().addAll(leftVBox, rightVBox);
         getChildren().add(hboxGrey);
+    }
+
+    private String getYear() {
+        int current = Integer.parseInt(BaseApplication.selectedYear);
+        return String.valueOf(current + 1);
     }
 
     private void deleteMembership(int msId) {
