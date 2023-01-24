@@ -1,6 +1,6 @@
 package com.ecsail;
 
-import javafx.concurrent.Task;
+import com.ecsail.structures.LabelDTO;
 
 import javax.print.PrintService;
 import java.awt.*;
@@ -9,17 +9,17 @@ import java.awt.print.*;
 import java.util.Arrays;
 
 public class LabelPrinter {
-    static String[] labelLines;
+    static LabelDTO label;
 
-    public static void printMembershipLabel(String[] lines) {
-        labelLines = lines;
+    public static void printMembershipLabel(LabelDTO incomingLabel) {
+        label = incomingLabel;
 
         PrintService[] ps = PrinterJob.lookupPrintServices();
         if (ps.length == 0) {
             throw new IllegalStateException("No Printer found");
 
         } else {
-            BaseApplication.logger.info("Print Services found: " + Arrays.asList(labelLines));
+            BaseApplication.logger.info("Print Services found!");
         }
 
         PrintService myService = Arrays.stream(ps)
@@ -32,6 +32,7 @@ public class LabelPrinter {
             Thread t = new Thread(() -> printLabel(myService));
             t.start();
         }
+
     }
 
 
@@ -87,12 +88,12 @@ public class LabelPrinter {
                 g2d.translate((int) pageFormat.getImageableX(),
                         (int) pageFormat.getImageableY());
                 g2d.draw(new Rectangle2D.Double(2, 22, width - 20, height - 23));
-                FontMetrics fm = g2d.getFontMetrics();
+//                FontMetrics fm = g2d.getFontMetrics();
 //                g2d.drawString("Testing", 0, fm.getAscent());
-                g2d.drawString("Indianapolis, Indiana", 5, 35);
-                g2d.drawString(labelLines[0] + " #" + labelLines[1], 5, 51);
-                g2d.drawString("Type "+labelLines[2]+", Expires: " + labelLines[3], 5, 67);
-                g2d.drawString("Member: U.S. Sailing ILYA &YCA", 5, 83);
+                g2d.drawString(label.getCity(), 5, 35);
+                g2d.drawString(label.getNameAndMemId(), 5, 51);
+                g2d.drawString(label.getExpires(), 5, 67);
+                g2d.drawString(label.getMember(), 5, 83);
                 result = PAGE_EXISTS;
             }
             return result;

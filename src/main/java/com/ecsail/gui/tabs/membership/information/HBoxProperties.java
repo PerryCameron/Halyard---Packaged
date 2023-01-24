@@ -7,6 +7,7 @@ import com.ecsail.gui.tabs.membership.TabMembership;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.select.SqlPerson;
+import com.ecsail.structures.LabelDTO;
 import com.ecsail.structures.PersonDTO;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -16,6 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 
@@ -37,7 +39,8 @@ public class HBoxProperties extends HBox {
         HBox hbox4 = new HBox();  // holds membership type
         HBox hbox5 = new HBox();  // holds delete membership
         Button removeMembershipButton = new Button("Delete");
-        Button printLabelsButton = new Button("Print");
+        Button printLabelsButton1 = new Button("Print Primary");
+        Button printLabelsButton2 = new Button("Print Secondary");
 
 
 //		HalyardAlert alert = new HalyardAlert(AlertType.INFORMATION);
@@ -82,25 +85,54 @@ public class HBoxProperties extends HBox {
             }
         });
 
-        printLabelsButton.setOnAction((actionEvent -> tm.getPeople().stream()
-				.filter(personDTO -> personDTO.getMemberType() < 3)
-				.forEach(p -> {
-					String[] lines = {
-							p.getFname() + " " + p.getLname()
-							, String.valueOf(tm.getMembership().getMembershipId())
-							, tm.getMembership().getMemType()
-							, "03/01/" + getYear()};
-					// TODO fix the date above
-					LabelPrinter.printMembershipLabel(lines);
-				})));
+        printLabelsButton1.setOnAction((actionEvent -> {
+            ArrayList< LabelDTO> labels = new ArrayList<>();
+            LabelDTO label = null;
+            for(PersonDTO person: tm.getPeople()) {
+                if(person.getMemberType() == 1) {
+                    label = new LabelDTO();
+                    label.setCity("Indianapolis, Indiana");
+                    label.setNameAndMemId(person.getFullName() + " #" + String.valueOf(tm.getMembership().getMembershipId()));
+                    label.setExpires("Type "+tm.getMembership().getMemType()+", Expires: " + "03/01/" + getYear());
+                    label.setMember("Member: U.S. Sailing ILYA &YCA");
+                    labels.add(label);
+                    LabelPrinter.printMembershipLabel(label);
+                }
+
+            }
+        }));
+
+        printLabelsButton2.setOnAction((actionEvent -> {
+            ArrayList< LabelDTO> labels = new ArrayList<>();
+            LabelDTO label = null;
+            for(PersonDTO person: tm.getPeople()) {
+                if(person.getMemberType() == 2) {
+                    label = new LabelDTO();
+                    label.setCity("Indianapolis, Indiana");
+                    label.setNameAndMemId(person.getFullName() + " #" + String.valueOf(tm.getMembership().getMembershipId()));
+                    label.setExpires("Type "+tm.getMembership().getMemType()+", Expires: " + "03/01/" + getYear());
+                    label.setMember("Member: U.S. Sailing ILYA &YCA");
+                    labels.add(label);
+                    LabelPrinter.printMembershipLabel(label);
+                }
+
+            }
+        }));
 
         ///////////// SET CONTENT ////////////////////
-        hbox3.getChildren().addAll(new Label("Print Membership Card Labels"), printLabelsButton);
+        hbox3.getChildren().addAll(new Label("Print Membership Card Labels"), printLabelsButton1, printLabelsButton2);
         hbox5.getChildren().addAll(new Label("Delete Membership"), removeMembershipButton);
         leftVBox.getChildren().addAll(hbox2, hbox3, hbox5);
         hboxGrey.getChildren().addAll(leftVBox, rightVBox);
         getChildren().add(hboxGrey);
     }
+
+    private void printDaLines(String[] lines) {
+        for(String line: lines) {
+            System.out.println(line);
+        }
+    }
+
 
     private String getYear() {
         int current = Integer.parseInt(BaseApplication.selectedYear);
