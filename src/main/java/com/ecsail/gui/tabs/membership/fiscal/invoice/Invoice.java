@@ -89,7 +89,6 @@ public class Invoice extends HBox {
 		// the put an HBOX with all this attached into a hash map
 		for (DbInvoiceDTO dbInvoiceDTO : dbInvoiceDTOs) {
                 dbInvoiceDTO.setFee(insertFeeIntoWidget(dbInvoiceDTO));
-//                dbInvoiceDTO.setItems(items); // allows calculations to be made
                 new InvoiceItemRow(this, dbInvoiceDTO, footer);
 		}
         //////////////// SETTING CONTENT //////////////
@@ -104,6 +103,7 @@ public class Invoice extends HBox {
             for (String key : invoiceItemMap.keySet()) {
                 if (invoiceItemMap.get(key).getDbInvoiceDTO().getOrder() == i) {
                     vboxMain.getChildren().add(invoiceItemMap.get(key));
+                    System.out.println("item " + i + " " + invoiceItemMap.get(key).itemName);
                 }
             }
         }

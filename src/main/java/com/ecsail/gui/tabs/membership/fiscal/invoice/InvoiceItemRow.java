@@ -72,8 +72,9 @@ public class InvoiceItemRow extends HBox {
         // OMFG This was a hard bug to find, by binding the itemized rows it caused the category rows
         // to put the value inside them. This caused a doubling of fees in total calculation
         // lesson learned, be very careful using bindings. line below fixes problem
-        if(!dbInvoiceDTO.getWidgetType().equals("itemized"))
-            invoiceItemDTO.valueProperty().bind(rowTotal.textProperty()); //  value of Text to DTO
+        System.out.println(this.itemName + " has a dbInvoiceDTO of " + dbInvoiceDTO.getWidgetType());
+//        if(!dbInvoiceDTO.getWidgetType().equals("itemized"))
+        invoiceItemDTO.valueProperty().bind(rowTotal.textProperty()); //  value of Text to DTO
         if(this.invoiceItemDTO.isCredit()) rowTotal.setId("invoice-text-credit");
         vBox5.getChildren().add(rowTotal);
     }
@@ -234,12 +235,19 @@ public class InvoiceItemRow extends HBox {
     protected void updateBalance() {
         BigDecimal fees = new BigDecimal("0.00");
         BigDecimal credit = new BigDecimal("0.00");
-        for (InvoiceItemDTO i : parent.items) {
-            if (i.isCredit()) {
-                credit = credit.add(new BigDecimal(i.getValue()));
+        /**
+         * Using the invoice map insures that you add all the category rows and not the sub categories.
+         * I had a bug which was adding
+         * all the rows using this for loop -> for (InvoiceItemDTO i : parent.items) {
+         * There is a binding in invoice that relates closely to how this works.
+         */
+        for (String key : parent.invoiceItemMap.keySet()) {  // This only adds the invoiceItem that are categories
+            // check if is a category (has a matching dbInvoiceDTO)
+            if (parent.invoiceItemMap.get(key).invoiceItemDTO.isCredit()) {
+                credit = credit.add(new BigDecimal(parent.invoiceItemMap.get(key).invoiceItemDTO.getValue()));
             }
             else {
-                fees = fees.add(new BigDecimal(i.getValue()));
+                fees = fees.add(new BigDecimal(parent.invoiceItemMap.get(key).invoiceItemDTO.getValue()));
             }
         }
         footer.updateTotals(fees,credit);

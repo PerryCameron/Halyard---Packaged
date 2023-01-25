@@ -5,6 +5,10 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 
+/**
+ * This class is for designing the polymorphic look of an invoice item row
+ */
+
 public class DbInvoiceDTO {
     private int id;
     private String fiscalYear;
@@ -147,13 +151,6 @@ public class DbInvoiceDTO {
     public void setFee(FeeDTO fee) {
         this.fee = fee;
     }
-
-//    public ObservableList<InvoiceItemDTO> getItems() {
-//        return items;
-//    }
-//    public void setItems(ObservableList<InvoiceItemDTO> items) {
-//        this.items = items;
-//    }
 
     public boolean isAutoPopulate() {
         return autoPopulate;
