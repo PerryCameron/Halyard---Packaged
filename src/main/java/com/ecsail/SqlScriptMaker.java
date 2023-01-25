@@ -358,7 +358,7 @@ public class SqlScriptMaker {
 				"INSERT INTO email () VALUES ("
 				+ eml.getEmail_id() + ","
 				+ eml.getPid() + ","
-				+ eml.isIsPrimaryUse() + ",\""
+				+ eml.isPrimaryUse() + ",\""
 				+ eml.getEmail() + "\","
 				+ eml.isIsListed()
 				+ ");\n";

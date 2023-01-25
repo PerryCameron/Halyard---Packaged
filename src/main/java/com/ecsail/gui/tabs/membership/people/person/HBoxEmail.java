@@ -11,7 +11,9 @@ import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.structures.EmailDTO;
 import com.ecsail.structures.PersonDTO;
 import javafx.beans.Observable;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,6 +21,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -88,27 +91,14 @@ public class HBoxEmail extends HBox {
         });
 
         // example for this column found at https://o7planning.org/en/11079/javafx-tableview-tutorial
+        ToggleGroup tg = new ToggleGroup();
         TableColumn<EmailDTO, Boolean> Col2 = new TableColumn<>("Primary");
-        Col2.setCellValueFactory(param -> {
-            EmailDTO email = param.getValue();
-            SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(email.isIsPrimaryUse());
-            // Note: singleCol.setOnEditCommit(): Not work for
-            // CheckBoxTableCell.
+        Col2.setStyle( "-fx-alignment: CENTER;");
+        Col2.setCellValueFactory(new PropertyValueFactory<>("isPrimaryUse"));
+        ObjectProperty<EmailDTO> previousEmailDTO = new SimpleObjectProperty<>();
+        previousEmailDTO.set(getOriginalEmailDTO());
+        Col2.setCellFactory(c -> new RadioButtonCell(previousEmailDTO));
 
-            // When "Primary Use?" column change.
-            booleanProp.addListener((observable, oldValue, newValue) -> {
-                email.setIsPrimaryUse(newValue);
-                SqlUpdate.updateEmail("primary_use", email.getEmail_id(), newValue);
-            });
-            return booleanProp;
-        });
-
-        //
-        Col2.setCellFactory(p1 -> {
-            CheckBoxTableCell<EmailDTO, Boolean> cell = new CheckBoxTableCell<>();
-            cell.setAlignment(Pos.CENTER);
-            return cell;
-        });
 
         // example for this column found at https://o7planning.org/en/11079/javafx-tableview-tutorial
         TableColumn<EmailDTO, Boolean> Col3 = new TableColumn<>("Listed");
@@ -188,6 +178,10 @@ public class HBoxEmail extends HBox {
 
     } // CONSTRUCTOR END
 
+    private EmailDTO getOriginalEmailDTO() {
+        return email.stream().filter(emailDTO -> emailDTO.isPrimaryUse()==true).findFirst().orElse(null);
+    }
+
     ///////////////// CLASS METHODS /////////////////
 
     private <T> TableColumn<T, String> createColumn(Function<T, StringProperty> property) {
@@ -197,4 +191,29 @@ public class HBoxEmail extends HBox {
         return col;
     }
 
-} 
+//    public static class RadioButtonTableCell<S> extends TableCell<S, Boolean> {
+//
+//        private RadioButton radioButton ;
+//
+//        public RadioButtonTableCell() {
+//            radioButton = new RadioButton();
+//            radioButton.setDisable(true);
+//        }
+//
+//        @Override
+//        protected void updateItem(Boolean item, boolean empty) {
+//            super.updateItem(item, empty);
+//
+//            if (empty) {
+//                setGraphic(null);
+//            } else {
+//                radioButton.setSelected(item);
+//                setGraphic(radioButton);
+//            }
+//
+//        }
+//    }
+
+}
+
+

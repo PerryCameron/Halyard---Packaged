@@ -269,7 +269,7 @@ public class Xls_roster {
 		ObservableList<EmailDTO> email = SqlEmail.getEmail(p_id);
 		if (email != null) {
 			for (EmailDTO e: email) {
-				if(e.isIsPrimaryUse()) {
+				if(e.isPrimaryUse()) {
 					emailString = e.getEmail();
 					break;
 				} else {

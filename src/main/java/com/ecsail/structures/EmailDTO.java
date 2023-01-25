@@ -62,13 +62,13 @@ public class EmailDTO {
 	
 
 
-	public final boolean isIsPrimaryUse() {
+	public final boolean isPrimaryUse() {
 		return this.isPrimaryUseProperty().get();
 	}
 	
 
 
-	public final void setIsPrimaryUse(final boolean isPrimaryUse) {
+	public final void setPrimaryUse(final boolean isPrimaryUse) {
 		this.isPrimaryUseProperty().set(isPrimaryUse);
 	}
 	
