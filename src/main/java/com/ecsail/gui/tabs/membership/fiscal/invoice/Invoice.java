@@ -89,7 +89,7 @@ public class Invoice extends HBox {
 		// the put an HBOX with all this attached into a hash map
 		for (DbInvoiceDTO dbInvoiceDTO : dbInvoiceDTOs) {
                 dbInvoiceDTO.setFee(insertFeeIntoWidget(dbInvoiceDTO));
-                dbInvoiceDTO.setItems(items); // allows calculations to be made
+//                dbInvoiceDTO.setItems(items); // allows calculations to be made
                 new InvoiceItemRow(this, dbInvoiceDTO, footer);
 		}
         //////////////// SETTING CONTENT //////////////

@@ -29,8 +29,6 @@ public class MockInvoiceItemRow extends HBox {
     private ComboBox<Integer> comboBox;
     private final InvoiceItemDTO invoiceItem;
     private final FeeDTO fee;
-    private final InvoiceFooter footer;
-    private final ObservableList<InvoiceItemDTO> items;
     private final VBox vBox1 = new VBox();
     private final VBox vBox2 = new VBox();
     private final VBox vBox3 = new VBox();
@@ -47,10 +45,8 @@ public class MockInvoiceItemRow extends HBox {
         this.itemName = parent.parent.selectedFeeRow.dbInvoiceDTO.getFieldName();
         this.fee = feeDTO;
         this.invoiceItem = feeToMockInvoiceItem(feeDTO);
-        this.footer = null;
         this.invoice = new InvoiceDTO();
 
-        this.items = parent.parent.selectedFeeRow.dbInvoiceDTO.getItems();
 //        vBox1.setStyle("-fx-background-color: #c5c7c1;");  // gray
 //        vBox2.setStyle("-fx-background-color: #4d6955;");  //green
 //        vBox3.setStyle("-fx-background-color: #feffab;");  // yellow
@@ -237,7 +233,6 @@ public class MockInvoiceItemRow extends HBox {
         price.setOnMouseEntered(en -> price.setFill(Color.RED));
         price.setOnMouseExited(ex -> price.setFill(Color.BLUE));
     }
-
 
     public Text getPrice() {
         return price;

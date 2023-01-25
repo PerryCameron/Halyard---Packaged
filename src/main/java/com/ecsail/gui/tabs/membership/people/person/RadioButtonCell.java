@@ -21,13 +21,11 @@ public class RadioButtonCell extends TableCell<EmailDTO, Boolean> {
         if (!empty && item != null) {
 
             RadioButton radioButton = new RadioButton();
-//            radioButton.setId("table-radio-button");
             radioButton.setSelected(item);
             setGraphic(radioButton);
 
             radioButton.selectedProperty().addListener(
                     (o, old, selected) -> {
-
                         if (selected) {
                             EmailDTO emailDTO = getTableRow().getItem();
                             if (emailDTOObjectProperty.get() != null) {

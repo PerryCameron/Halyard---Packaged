@@ -197,7 +197,7 @@ public class InvoiceItemRow extends HBox {
 
     private InvoiceItemDTO setItem() {
         // we will match this db_invoice to invoiceItem, if nothing found then create an invoice item
-        InvoiceItemDTO currentInvoiceItem = dbInvoiceDTO.getItems().stream()
+        InvoiceItemDTO currentInvoiceItem = parent.items.stream()
                 .filter(i -> i.getFieldName().equals(itemName)).findFirst().orElse(null);
         if(currentInvoiceItem == null) return addNewInvoiceItem();
         return currentInvoiceItem;

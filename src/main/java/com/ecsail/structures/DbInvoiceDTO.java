@@ -22,7 +22,7 @@ public class DbInvoiceDTO {
      * below not included in database
      */
     private FeeDTO fee;
-    private ObservableList<InvoiceItemDTO> items;
+//    private ObservableList<InvoiceItemDTO> items;
 
 
     public DbInvoiceDTO(int id, String fiscalYear, String fieldName, String widgetType, double width, Integer order, boolean multiplied, boolean price_editable, boolean is_credit, int maxQty, boolean autoPopulate, boolean itemized) {
@@ -148,12 +148,12 @@ public class DbInvoiceDTO {
         this.fee = fee;
     }
 
-    public ObservableList<InvoiceItemDTO> getItems() {
-        return items;
-    }
-    public void setItems(ObservableList<InvoiceItemDTO> items) {
-        this.items = items;
-    }
+//    public ObservableList<InvoiceItemDTO> getItems() {
+//        return items;
+//    }
+//    public void setItems(ObservableList<InvoiceItemDTO> items) {
+//        this.items = items;
+//    }
 
     public boolean isAutoPopulate() {
         return autoPopulate;

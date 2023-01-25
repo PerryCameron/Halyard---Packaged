@@ -9,6 +9,8 @@ import com.ecsail.sql.select.SqlFee;
 import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.structures.DbInvoiceDTO;
 import com.ecsail.structures.FeeDTO;
+import com.ecsail.structures.InvoiceItemDTO;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -19,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Optional;
 
-/// This is the new experimental version
 public class TabFee extends Tab {
     private String selectedYear;
     private ArrayList<FeeDTO> feeDTOS;
