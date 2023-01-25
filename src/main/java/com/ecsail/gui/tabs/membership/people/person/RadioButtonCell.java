@@ -21,6 +21,7 @@ public class RadioButtonCell extends TableCell<EmailDTO, Boolean> {
         if (!empty && item != null) {
 
             RadioButton radioButton = new RadioButton();
+//            radioButton.setId("table-radio-button");
             radioButton.setSelected(item);
             setGraphic(radioButton);
 
