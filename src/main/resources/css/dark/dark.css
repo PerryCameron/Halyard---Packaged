@@ -29,6 +29,12 @@
     -fx-color: #1658e7;
 }
 
+.check-box .box {
+    -fx-background-color: white;
+    -fx-border-color:grey;
+    -fx-border-radius:3px;
+}
+
 .check-box:selected .mark {
     -fx-background-color: #1658e7;
 }
