@@ -68,12 +68,11 @@ public class SqlDeposit {
 
     public static DepositTotal getTotals(DepositDTO d, boolean getAll) {
         DepositTotal depositTotal = null;
-        String query;
-        String query1 = "select sum(TOTAL) AS TOTAL, sum(CREDIT) AS CREDIT,sum(PAID) AS PAID from invoice where " +
-                "FISCAL_YEAR="+d.getFiscalYear()+" and COMMITTED=true";
-        String query2 = " and BATCH="+d.getBatch();
-        if(getAll) query = query1;
-        else query = query1 + query2;
+        String query = "select sum(TOTAL) AS TOTAL, sum(CREDIT) AS CREDIT,sum(PAID) AS PAID from invoice where " +
+                "FISCAL_YEAR="+d.getFiscalYear()+" and COMMITTED=true and BATCH="+d.getBatch();
+        if(getAll)
+            query = "select sum(TOTAL) AS TOTAL, sum(CREDIT) AS CREDIT,sum(PAID) AS PAID from invoice where " +
+                    "FISCAL_YEAR="+d.getFiscalYear()+" and COMMITTED=true";
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
