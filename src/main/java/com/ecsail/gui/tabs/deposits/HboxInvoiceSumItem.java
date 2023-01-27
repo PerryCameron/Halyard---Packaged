@@ -34,7 +34,6 @@ public class HboxInvoiceSumItem extends HBox {
             valueText.setId("invoice-text-credit");
         else
         valueText.setId("invoice-text-black");
-
         vboxItemType.getChildren().add(typeText);
         vboxQty.getChildren().add(qtyText);
         vboxValue.getChildren().add(valueText);

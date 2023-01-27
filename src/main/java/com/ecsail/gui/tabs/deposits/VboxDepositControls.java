@@ -425,8 +425,12 @@ public class VboxDepositControls extends VBox {
 
     // adds the footer with totals
     private void addFooter() {
+        DepositTotal depositTotal;
         vBoxSumItemsInner.getChildren().add(new HboxInvoiceSectionHead("Totals"));
-        DepositTotal depositTotal = SqlDeposit.getTotals(depositDTO);
+        // total batch only
+        if(getCorrectBatch() > 0) depositTotal = SqlDeposit.getTotals(depositDTO, false);
+        // total all invoice summary
+        else depositTotal = SqlDeposit.getTotals(depositDTO, true);
         for(int i = 0; i < depositTotal.getValues().length; i++) {
             vBoxSumItemsInner.getChildren().add(
                     new HboxInvoiceFooter(depositTotal.getLabels()[i],depositTotal.getValues()[i]));

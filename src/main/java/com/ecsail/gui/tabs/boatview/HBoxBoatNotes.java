@@ -24,8 +24,7 @@ public class HBoxBoatNotes extends HBox {
 	private ObservableList<BoatMemoDTO> memos;
 	
 	public HBoxBoatNotes(BoatDTO b) {
-		
-		
+
 		//////////// OBJECTS ///////////////
 		var hboxGrey = new HBox();  // this is the vbox for organizing all the widgets
 		var vboxPink = new VBox(); // this creates a pink border around the table

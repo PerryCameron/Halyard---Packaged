@@ -111,11 +111,11 @@ public class SqlInvoiceItem {
     }
 
     public static InvoiceItemDTO getInvoiceItemSumByYearAndType(int year, String type, int batch) { // overload
-        InvoiceItemDTO invoiceItem = null;
+        InvoiceItemDTO invoiceItem = null; // gets total
         String query = "select sum(ii.value) AS VALUE,sum(ii.QTY) AS QTY,IF(SUM(ii.IS_CREDIT) > 0,true,false) AS IS_CREDIT" +
                 " from invoice_item  ii left join invoice i on ii.INVOICE_ID = i.ID where i.FISCAL_YEAR="+year+" " +
                 " and ii.FISCAL_YEAR="+year+" and FIELD_NAME='"+type+"' and COMMITTED=true";
-        if(batch > 0)
+        if(batch > 0) // gets for single batch
             query = "select sum(ii.value) AS VALUE,sum(ii.QTY) AS QTY, IF(SUM(ii.IS_CREDIT) > 0,true,false)" +
                     " AS IS_CREDIT from invoice_item ii left join invoice i on ii.INVOICE_ID = i.ID where" +
                     " i.FISCAL_YEAR="+year+" and ii.FISCAL_YEAR="+year+" and FIELD_NAME='"+type+"' and BATCH="+batch;

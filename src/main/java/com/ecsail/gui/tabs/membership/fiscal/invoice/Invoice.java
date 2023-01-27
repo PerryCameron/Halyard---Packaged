@@ -118,7 +118,7 @@ public class Invoice extends HBox {
         updateAllowed = true; // may write to database
 
         if (getOfficerCredit()) { // has an officer
-            //if position credit exists
+            //if position doesn't already exist then add it
             if(!SqlExists.invoiceItemPositionCreditExistsWithValue(invoice.getYear(),invoice.getMsId())) {
                 invoiceItemMap.get("Position Credit").getRowTotal().setText(invoiceItemMap.get("Dues").getRowTotal().getText());
                 // TODO this needs to be tested ( added so that deposit reports witll show qty)
@@ -126,7 +126,7 @@ public class Invoice extends HBox {
                 updateInvoiceItem(invoiceItemMap.get("Position Credit").invoiceItemDTO);
             }
         } else { // has no officer
-            // has no officer but was once set as officer // TODO need to test
+            // has no officer but was once set as officer, will remove position credit // TODO need to test
             if(SqlExists.invoiceItemPositionCreditExistsWithValue(invoice.getYear(),invoice.getMsId())) {
                 invoiceItemMap.get("Position Credit").invoiceItemDTO.setQty(0);
                 invoiceItemMap.get("Position Credit").invoiceItemDTO.setValue("0.00");
