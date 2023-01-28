@@ -195,7 +195,7 @@ create table ECSC_SQL.invoice_item
     IS_CREDIT   boolean        NOT NULL,
     VALUE       DECIMAL(10, 2) NULL,
     QTY         INTEGER        NULL,
-    foreign key (INVOICE_ID) references INVOICE (ID),
+    foreign key (INVOICE_ID) references invoice(ID),
     foreign key (MS_ID) references membership (MS_ID)
 );
 
@@ -391,6 +391,15 @@ CREATE Table ECSC_SQL.db_invoice
     max_qty        INTEGER           NOT NULL,
     auto_populate  boolean default 0 not null,
     is_itemized    boolean default 0 not null
+);
+
+create table ECSC_SQL.db_boat
+(
+    ID           INTEGER     NOT NULL auto_increment primary key,
+    name         varchar(30) NOT NULL,
+    control_type varchar(30) NOT NULL,
+    data_type    varchar(30) NOT NULL,
+    field_name   varchar(30) NOT NULL
 );
 
 

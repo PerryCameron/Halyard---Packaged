@@ -45,8 +45,8 @@ public class SqlUpdate {
 		}
 	}
 
-	public static void updateBoat(int boat_id, Boolean hasTrailer) {
-		String query = "UPDATE boat SET has_trailer=" + hasTrailer + " WHERE boat_id=" + boat_id;
+	public static void updateBoat(int boat_id, String fieldName, Boolean hasTrailer) {
+		String query = "UPDATE boat SET "+fieldName+"=" + hasTrailer + " WHERE boat_id=" + boat_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {

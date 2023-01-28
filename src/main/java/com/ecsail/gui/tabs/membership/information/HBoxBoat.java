@@ -184,7 +184,7 @@ public class HBoxBoat extends HBox {
             // When "has trailer?" column change.
             booleanProp.addListener((observable, oldValue, newValue) -> {
                 boat.setHasTrailer(newValue);
-                SqlUpdate.updateBoat(boat.getBoat_id(), newValue);
+                SqlUpdate.updateBoat(boat.getBoat_id(), "HAS_TRAILER", newValue);
             });
             return booleanProp;
         });

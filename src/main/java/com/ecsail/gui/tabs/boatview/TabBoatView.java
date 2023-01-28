@@ -3,15 +3,13 @@ package com.ecsail.gui.tabs.boatview;
 
 import com.ecsail.HalyardPaths;
 import com.ecsail.ImageViewPane;
-import com.ecsail.enums.KeelType;
-import com.ecsail.gui.tabs.boatview.HBoxBoatNotes;
 import com.ecsail.gui.dialogues.Dialogue_ChooseMember;
 import com.ecsail.sql.SqlDelete;
-import com.ecsail.sql.SqlUpdate;
+import com.ecsail.sql.select.SqlDbBoat;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.structures.BoatDTO;
+import com.ecsail.structures.DbBoatDTO;
 import com.ecsail.structures.MembershipListDTO;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -33,22 +31,26 @@ public class TabBoatView extends Tab {
     private int pictureNumber = 0;
     //	private Sftp ftp;
     private final ArrayList<String> localImageFiles;
+    private final ObservableList<DbBoatDTO> dbBoatDTOS;
     /// need to add history to boat_owner table
-
-    public TabBoatView(String text, BoatDTO b) {
+    protected BoatDTO boatDTO;
+    public TabBoatView(String text, BoatDTO boat) {
         super(text);
-        this.boatOwners = SqlMembershipList.getBoatOwnerRoster(b.getBoat_id());
+        this.boatDTO = boat;
+        this.boatOwners = SqlMembershipList.getBoatOwnerRoster(boatDTO.getBoat_id());
+        this.dbBoatDTOS = SqlDbBoat.getDbBoat();
 //		this.ftp = Halyard.getConnect().getForwardedConnection().getFtp();
 //		checkRemoteFiles();
         // make sure directory exists, and create it if it does not
-        HalyardPaths.checkPath(HalyardPaths.BOATDIR + "/" + b.getBoat_id() + "/");
-        File imagePath = new File(HalyardPaths.BOATDIR + "/" + b.getBoat_id() + "/");
+        HalyardPaths.checkPath(HalyardPaths.BOATDIR + "/" + boatDTO.getBoat_id() + "/");
+        File imagePath = new File(HalyardPaths.BOATDIR + "/" + boatDTO.getBoat_id() + "/");
         this.localImageFiles = HalyardPaths.listFilesForFolder(imagePath);
         Image image = null;
         if (localImageFiles.size() > 0)
-            image = getImage(HalyardPaths.BOATDIR + "/" + b.getBoat_id() + "/" + localImageFiles.get(pictureNumber));
+            image = getImage(HalyardPaths.BOATDIR + "/" + boatDTO.getBoat_id() + "/" + localImageFiles.get(pictureNumber));
 //		checkIfLocalandRemoteDirectoriesMatch();
 
+        dbBoatDTOS.forEach(System.out::println);
         TableView<MembershipListDTO> boatOwnerTableView = new TableView<>();
         var vboxGrey = new VBox(); // this is the hbox for holding all content
         var vboxBlue = new VBox(); // creates blue boarder around content
@@ -61,67 +63,13 @@ public class TabBoatView extends Tab {
         var vboxInformationBackgroundColor = new VBox();
         var vboxTableBackgroundColor = new VBox();
 
-        var hbox1 = new HBox(); // Boat Name
-        var hbox2 = new HBox(); // Manufacturer
-        var hbox3 = new HBox(); // Year
-        var hbox4 = new HBox(); // Model
-        var hbox5 = new HBox(); // Registration
-        var hbox6 = new HBox(); // Sail Number
-        var hbox7 = new HBox(); // PHRF
-        var hbox8 = new HBox(); // Length
-        var hbox9 = new HBox(); // Weight
-        var hbox10 = new HBox(); // Has Triler
-        var hbox11 = new HBox(); // Keel Type
-        var hbox12 = new HBox(); // Draft
-        var hbox13 = new HBox(); // Beam
-        var hbox14 = new HBox(); // lwl
+        for(DbBoatDTO dbBoatDTO: dbBoatDTOS) {
+            vboxInformationBackgroundColor.getChildren().add(new Row(this, dbBoatDTO));
+        }
 
         var hboxTable = new HBox();
 
-        var vboxBnameLabel = new VBox();
-        var vboxManufacturerLabel = new VBox();
-        var vboxYearLabel = new VBox();
-        var vboxModelLabel = new VBox();
-        var vboxRegistrationLabel = new VBox();
-        var vboxSailNumbeLabel = new VBox();
-        var vboxphrfLabel = new VBox();
-        var vboxlengthLabel = new VBox();
-        var vboxweightLabel = new VBox();
-        var vboxtrailerLabel = new VBox();
-        var vboxkeelLabel = new VBox();
-        var vboxDraftLabel = new VBox();
-        var vboxBeamLabel = new VBox();
-        var vboxLwlLabel = new VBox();
 
-        var vboxBnameBox = new VBox();
-        var vboxManufacturerBox = new VBox();
-        var vboxYearBox = new VBox();
-        var vboxModelBox = new VBox();
-        var vboxRegistrationBox = new VBox();
-        var vboxSailNumbeBox = new VBox();
-        var vboxphrfBox = new VBox();
-        var vboxlengthBox = new VBox();
-        var vboxweightBox = new VBox();
-        var vboxtrailerBox = new VBox();
-        var vboxkeelBox = new VBox();
-        var vboxDraftBox = new VBox();
-        var vboxBeamBox = new VBox();
-        var vboxLwlBox = new VBox();
-
-        var bnameTextField = new TextField();
-        var manufacturerTextField = new TextField();
-        var yearTextField = new TextField();
-        var modelTextField = new TextField();
-        var registrationTextField = new TextField();
-        var sailNumberTextField = new TextField();
-        var phrfTextField = new TextField();
-        var lengthTextField = new TextField();
-        var weightTextField = new TextField();
-        var trailerCheckBox = new CheckBox("Has Trailer");
-        var keelComboBox = new ComboBox<KeelType>();
-        var draftTextField = new TextField();
-        var beamTextField = new TextField();
-        var lwlTextField = new TextField();
         var ownerTitlePane = new TitledPane();
         var boatInfoTitlePane = new TitledPane();
         var vboxPicture = new VBox();
@@ -184,84 +132,16 @@ public class TabBoatView extends Tab {
         hboxPictureControls.setAlignment(Pos.CENTER);
         // sets size of table
         // ownerTitlePane.setPrefHeight(130);
-        bnameTextField.setPrefSize(150, 10);
-        manufacturerTextField.setPrefSize(150, 10);
-        yearTextField.setPrefSize(150, 10);
-        modelTextField.setPrefSize(150, 10);
-        registrationTextField.setPrefSize(150, 10);
-        sailNumberTextField.setPrefSize(150, 10);
-        phrfTextField.setPrefSize(150, 10);
-        lengthTextField.setPrefSize(150, 10);
-        weightTextField.setPrefSize(150, 10);
-        keelComboBox.setPrefSize(150, 10);
-        draftTextField.setPrefSize(150, 10);
-        beamTextField.setPrefSize(150, 10);
-        lwlTextField.setPrefSize(150, 10);
 
-        bnameTextField.setText(b.getBoat_name());
-        manufacturerTextField.setText(b.getManufacturer());
-        yearTextField.setText(b.getManufacture_year());
-        modelTextField.setText(b.getModel());
-        registrationTextField.setText(b.getRegistration_num());
-        sailNumberTextField.setText(b.getSail_number());
-        phrfTextField.setText(b.getPhrf());
-        lengthTextField.setText(b.getLength());
-        weightTextField.setText(b.getWeight());
-        trailerCheckBox.setSelected(b.isHasTrailer());
-        keelComboBox.getItems().setAll(KeelType.values());
-        keelComboBox.setValue(KeelType.getByCode(b.getKeel()));
-        draftTextField.setText(b.getDraft());
-        beamTextField.setText(b.getBeam());
-        lwlTextField.setText(b.getLwl());
+
+
         ownerTitlePane.setText("Owner(s)");
         boatInfoTitlePane.setText("Boat Information");
         // need to continue with labels
-        vboxBnameLabel.setPrefWidth(90);
-        vboxManufacturerLabel.setPrefWidth(90);
-        vboxYearLabel.setPrefWidth(90);
-        vboxModelLabel.setPrefWidth(90);
-        vboxRegistrationLabel.setPrefWidth(90);
-        vboxSailNumbeLabel.setPrefWidth(90);
-        vboxphrfLabel.setPrefWidth(90);
-        vboxlengthLabel.setPrefWidth(90);
-        vboxweightLabel.setPrefWidth(90);
-        vboxtrailerLabel.setPrefWidth(90);
-        vboxkeelLabel.setPrefWidth(90);
-        vboxDraftLabel.setPrefWidth(90);
-        vboxBeamLabel.setPrefWidth(90);
-        vboxLwlLabel.setPrefWidth(90);
 
-        vboxBnameLabel.setAlignment(Pos.CENTER_LEFT);
-        vboxManufacturerLabel.setAlignment(Pos.CENTER_LEFT);
-        vboxYearLabel.setAlignment(Pos.CENTER_LEFT);
-        vboxModelLabel.setAlignment(Pos.CENTER_LEFT);
-        vboxRegistrationLabel.setAlignment(Pos.CENTER_LEFT);
-        vboxSailNumbeLabel.setAlignment(Pos.CENTER_LEFT);
-        vboxphrfLabel.setAlignment(Pos.CENTER_LEFT);
-        vboxlengthLabel.setAlignment(Pos.CENTER_LEFT);
-        vboxweightLabel.setAlignment(Pos.CENTER_LEFT);
-        vboxtrailerLabel.setAlignment(Pos.CENTER_LEFT);
-        vboxkeelLabel.setAlignment(Pos.CENTER_LEFT);
-        vboxDraftLabel.setAlignment(Pos.CENTER_LEFT);
-        vboxBeamLabel.setAlignment(Pos.CENTER_LEFT);
-        vboxLwlLabel.setAlignment(Pos.CENTER_LEFT);
 
         // vboxFieldsContainer.setStyle("-fx-background-color: #201ac9;"); // blue
 
-        hbox1.setPadding(new Insets(10, 5, 5, 15));
-        hbox2.setPadding(new Insets(0, 5, 5, 15));
-        hbox3.setPadding(new Insets(0, 5, 5, 15));
-        hbox4.setPadding(new Insets(0, 5, 5, 15));
-        hbox5.setPadding(new Insets(0, 5, 5, 15));
-        hbox6.setPadding(new Insets(0, 5, 5, 15));
-        hbox7.setPadding(new Insets(0, 5, 5, 15));
-        hbox8.setPadding(new Insets(0, 5, 5, 15));
-        hbox9.setPadding(new Insets(0, 5, 5, 15));
-        hbox10.setPadding(new Insets(0, 5, 5, 15));
-        hbox11.setPadding(new Insets(0, 5, 5, 15));
-        hbox12.setPadding(new Insets(0, 5, 5, 15));
-        hbox13.setPadding(new Insets(0, 5, 5, 15));
-        hbox14.setPadding(new Insets(0, 5, 5, 15));
         vboxButtons.setPadding(new Insets(0, 0, 0, 5));
         vboxBlue.setPadding(new Insets(10, 10, 10, 10));
         vboxPink.setPadding(new Insets(3, 3, 3, 3)); // spacing to make pink from around table
@@ -338,7 +218,7 @@ public class TabBoatView extends Tab {
             pictureNumber++;
             if (pictureNumber == localImageFiles.size())
                 pictureNumber = 0;
-            Image newImage = getImage(HalyardPaths.BOATDIR + "/" + b.getBoat_id() + "/" + localImageFiles.get(pictureNumber));
+            Image newImage = getImage(HalyardPaths.BOATDIR + "/" + boatDTO.getBoat_id() + "/" + localImageFiles.get(pictureNumber));
             imageView.setImage(newImage);
         });
 
@@ -346,7 +226,7 @@ public class TabBoatView extends Tab {
             pictureNumber--;
             if (pictureNumber < 0)
                 pictureNumber = localImageFiles.size() - 1;
-            Image newImage = getImage(HalyardPaths.BOATDIR + "/" + b.getBoat_id() + "/" + localImageFiles.get(pictureNumber));
+            Image newImage = getImage(HalyardPaths.BOATDIR + "/" + boatDTO.getBoat_id() + "/" + localImageFiles.get(pictureNumber));
             imageView.setImage(newImage);
         });
 
@@ -358,131 +238,16 @@ public class TabBoatView extends Tab {
             // // if added with no errors
             // phone.add(new Object_Phone(phone_id, person.getP_id(), true, "new phone",
             // "")); // lets add it to our GUI
-            new Dialogue_ChooseMember(boatOwners, b.getBoat_id());
+            new Dialogue_ChooseMember(boatOwners, boatDTO.getBoat_id());
             // boatOwners.add(new Object_MembershipList());
         });
 
         boatOwnerDelete.setOnAction((event) -> {
             int selectedIndex = boatOwnerTableView.getSelectionModel().getSelectedIndex();
             if (selectedIndex >= 0)
-                if (SqlDelete.deleteBoatOwner(b.getBoat_id(), boatOwners.get(selectedIndex).getMsid())) // if it is																						// our database
+                if (SqlDelete.deleteBoatOwner(boatDTO.getBoat_id(), boatOwners.get(selectedIndex).getMsid())) // if it is																						// our database
                     boatOwnerTableView.getItems().remove(selectedIndex); // remove it from our GUI
         });
-
-        bnameTextField.focusedProperty()
-                .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    // focus out
-                    if (oldValue) { // we have focused and unfocused
-                        // SqlUpdate.updateAddress(memAddressTextField.getText(),membership);
-                        SqlUpdate.updateBoat("BOAT_NAME", b.getBoat_id(), bnameTextField.getText());
-                    }
-                });
-
-        manufacturerTextField.focusedProperty()
-                .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    // focus out
-                    if (oldValue) { // we have focused and unfocused
-                        // SqlUpdate.updateAddress(memAddressTextField.getText(),membership);
-                        SqlUpdate.updateBoat("MANUFACTURER", b.getBoat_id(), manufacturerTextField.getText());
-                    }
-                });
-
-        yearTextField.focusedProperty()
-                .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    // focus out
-                    if (oldValue) { // we have focused and unfocused
-                        // SqlUpdate.updateAddress(memAddressTextField.getText(),membership);
-                        SqlUpdate.updateBoat("MANUFACTURE_YEAR", b.getBoat_id(), yearTextField.getText());
-                    }
-                });
-
-        modelTextField.focusedProperty()
-                .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    // focus out
-                    if (oldValue) { // we have focused and unfocused
-                        // SqlUpdate.updateAddress(memAddressTextField.getText(),membership);
-                        SqlUpdate.updateBoat("MODEL", b.getBoat_id(), modelTextField.getText());
-                    }
-                });
-
-        registrationTextField.focusedProperty()
-                .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    // focus out
-                    if (oldValue) { // we have focused and unfocused
-                        // SqlUpdate.updateAddress(memAddressTextField.getText(),membership);
-                        SqlUpdate.updateBoat("REGISTRATION_NUM", b.getBoat_id(), registrationTextField.getText());
-                    }
-                });
-
-        sailNumberTextField.focusedProperty()
-                .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    // focus out
-                    if (oldValue) { // we have focused and unfocused
-                        // SqlUpdate.updateAddress(memAddressTextField.getText(),membership);
-                        SqlUpdate.updateBoat("SAIL_NUMBER", b.getBoat_id(), sailNumberTextField.getText());
-                    }
-                });
-
-        phrfTextField.focusedProperty()
-                .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    // focus out
-                    if (oldValue) { // we have focused and unfocused
-                        // SqlUpdate.updateAddress(memAddressTextField.getText(),membership);
-                        SqlUpdate.updateBoat("PHRF", b.getBoat_id(), phrfTextField.getText());
-                    }
-                });
-
-        lengthTextField.focusedProperty()
-                .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    // focus out
-                    if (oldValue) { // we have focused and unfocused
-                        // SqlUpdate.updateAddress(memAddressTextField.getText(),membership);
-                        SqlUpdate.updateBoat("LENGTH", b.getBoat_id(), lengthTextField.getText());
-                    }
-                });
-
-        weightTextField.focusedProperty()
-                .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    // focus out
-                    if (oldValue) { // we have focused and unfocused
-                        // SqlUpdate.updateAddress(memAddressTextField.getText(),membership);
-                        SqlUpdate.updateBoat("WEIGHT", b.getBoat_id(), weightTextField.getText());
-                    }
-                });
-
-        trailerCheckBox.selectedProperty().addListener((obs, wasPreviouslySelected, isNowSelected) -> SqlUpdate.updateBoat(b.getBoat_id(), isNowSelected));
-
-        keelComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-            SqlUpdate.updateBoat(b.getBoat_id(), newValue.getCode());
-            // System.out.println("changed combo to " + newValue.getCode());
-        });
-
-        draftTextField.focusedProperty()
-                .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    // focus out
-                    if (oldValue) { // we have focused and unfocused
-                        // SqlUpdate.updateAddress(memAddressTextField.getText(),membership);
-                        SqlUpdate.updateBoat("DRAFT", b.getBoat_id(), draftTextField.getText());
-                    }
-                });
-
-        beamTextField.focusedProperty()
-                .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    // focus out
-                    if (oldValue) { // we have focused and unfocused
-                        // SqlUpdate.updateAddress(memAddressTextField.getText(),membership);
-                        SqlUpdate.updateBoat("BEAM", b.getBoat_id(), beamTextField.getText());
-                    }
-                });
-
-        lwlTextField.focusedProperty()
-                .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    // focus out
-                    if (oldValue) { // we have focused and unfocused
-                        // SqlUpdate.updateAddress(memAddressTextField.getText(),membership);
-                        SqlUpdate.updateBoat("LWL", b.getBoat_id(), lwlTextField.getText());
-                    }
-                });
 
         /////////////// SET CONTENT //////////////////
 
@@ -493,52 +258,7 @@ public class TabBoatView extends Tab {
         hboxTable.getChildren().addAll(vboxTableFrame, vboxButtons);
         vboxTableBackgroundColor.getChildren().add(hboxTable);
         ownerTitlePane.setContent(vboxTableBackgroundColor);
-        vboxBnameLabel.getChildren().add(new Label("Boat Name"));
-        vboxManufacturerLabel.getChildren().add(new Label("Manufacturer"));
-        vboxYearLabel.getChildren().add(new Label("Year"));
-        vboxModelLabel.getChildren().add(new Label("Model"));
-        vboxRegistrationLabel.getChildren().add(new Label("Registration"));
-        vboxSailNumbeLabel.getChildren().add(new Label("Sail Number"));
-        vboxphrfLabel.getChildren().add(new Label("PHRF"));
-        vboxlengthLabel.getChildren().add(new Label("Length"));
-        vboxweightLabel.getChildren().add(new Label("Weight"));
-        vboxtrailerLabel.getChildren().add(new Label("Has Trailer"));
-        vboxkeelLabel.getChildren().add(new Label("Keel Type"));
-        vboxDraftLabel.getChildren().add(new Label("Draft"));
-        vboxBeamLabel.getChildren().add(new Label("Beam"));
-        vboxLwlLabel.getChildren().add(new Label("LWL"));
 
-        vboxBnameBox.getChildren().add(bnameTextField);
-        vboxManufacturerBox.getChildren().add(manufacturerTextField);
-        vboxYearBox.getChildren().add(yearTextField);
-        vboxModelBox.getChildren().add(modelTextField);
-        vboxRegistrationBox.getChildren().add(registrationTextField);
-        vboxSailNumbeBox.getChildren().add(sailNumberTextField);
-        vboxphrfBox.getChildren().add(phrfTextField);
-        vboxlengthBox.getChildren().add(lengthTextField);
-        vboxweightBox.getChildren().add(weightTextField);
-        vboxtrailerBox.getChildren().add(trailerCheckBox);
-        vboxkeelBox.getChildren().add(keelComboBox);
-        vboxDraftBox.getChildren().add(draftTextField);
-        vboxBeamBox.getChildren().add(beamTextField);
-        vboxLwlBox.getChildren().add(lwlTextField);
-
-        hbox1.getChildren().addAll(vboxBnameLabel, vboxBnameBox); // first name
-        hbox2.getChildren().addAll(vboxManufacturerLabel, vboxManufacturerBox);
-        hbox3.getChildren().addAll(vboxYearLabel, vboxYearBox);
-        hbox4.getChildren().addAll(vboxModelLabel, vboxModelBox);
-        hbox5.getChildren().addAll(vboxRegistrationLabel, vboxRegistrationBox);
-        hbox6.getChildren().addAll(vboxSailNumbeLabel, vboxSailNumbeBox);
-        hbox7.getChildren().addAll(vboxphrfLabel, vboxphrfBox);
-        hbox8.getChildren().addAll(vboxlengthLabel, vboxlengthBox);
-        hbox9.getChildren().addAll(vboxweightLabel, vboxweightBox);
-        hbox10.getChildren().addAll(vboxtrailerLabel, vboxtrailerBox);
-        hbox11.getChildren().addAll(vboxkeelLabel, vboxkeelBox);
-        hbox12.getChildren().addAll(vboxDraftLabel, vboxDraftBox);
-        hbox13.getChildren().addAll(vboxBeamLabel, vboxBeamBox);
-        hbox14.getChildren().addAll(vboxLwlLabel, vboxLwlBox);
-        vboxInformationBackgroundColor.getChildren().addAll(hbox1, hbox2, hbox3, hbox4, hbox5, hbox6, hbox7, hbox8,
-                hbox9, hbox10, hbox11, hbox12, hbox13, hbox14);
         boatInfoTitlePane.setContent(vboxInformationBackgroundColor);
         vboxLeftContainer.getChildren().addAll(boatInfoTitlePane, ownerTitlePane);
 
@@ -550,7 +270,7 @@ public class TabBoatView extends Tab {
         vboxRightContainer.getChildren().addAll(hboxPictureControls, vboxPicture);
 
         hboxContainer.getChildren().addAll(vboxLeftContainer, vboxRightContainer);
-        vboxGrey.getChildren().addAll(hboxContainer, new HBoxBoatNotes(b));
+        vboxGrey.getChildren().addAll(hboxContainer, new HBoxBoatNotes(boatDTO));
         vboxBlue.getChildren().add(vboxPink);
         vboxPink.getChildren().add(vboxGrey);
         setContent(vboxBlue);

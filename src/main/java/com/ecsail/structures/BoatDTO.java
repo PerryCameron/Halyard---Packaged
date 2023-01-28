@@ -65,7 +65,6 @@ public class BoatDTO {
 	public final IntegerProperty boat_idProperty() {
 		return this.boat_id;
 	}
-	
 
 	public final int getBoat_id() {
 		return this.boat_idProperty().get();
