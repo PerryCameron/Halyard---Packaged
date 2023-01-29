@@ -54,8 +54,7 @@ public class Row extends HBox {
         if(dbBoatDTO.getControlType().equals("Text")) {
             Text text = new Text(setStringValue(dbBoatDTO.getFieldName()));
             return text;
-        }
-        else if(dbBoatDTO.getControlType().equals("TextField")) {
+        } else if(dbBoatDTO.getControlType().equals("TextField")) {
             TextField textField = new TextField(setStringValue(dbBoatDTO.getFieldName()));
             textField.setPrefSize(150, 10);
             setTextFieldListener(textField, dbBoatDTO);
