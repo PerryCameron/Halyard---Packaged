@@ -50,7 +50,6 @@ public class HBoxBoat extends HBox {
         var boatDelete = new Button("Delete");
         var boatView = new Button("view");
 
-
         /////////////////  ATTRIBUTES  /////////////////////
 
         buttonVBox.setSpacing(5);

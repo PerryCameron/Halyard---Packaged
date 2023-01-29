@@ -1,5 +1,6 @@
 package com.ecsail.gui.tabs.boatview;
 
+import com.ecsail.enums.KeelType;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.structures.DbBoatDTO;
 import javafx.beans.value.ObservableValue;
@@ -7,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -42,11 +44,11 @@ public class Row extends HBox {
                 SqlUpdate.updateBoat(parent.boatDTO.getBoat_id(), dbBoatDTO.getFieldName(), isNowSelected));
     }
 
-//        keelComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-//            SqlUpdate.updateBoat(b.getBoat_id(), newValue.getCode());
-//            // System.out.println("changed combo to " + newValue.getCode());
-//        });
-//
+    private void setComboBoxListener(ComboBox<KeelType> comboBox) {
+        comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            SqlUpdate.updateBoat(parent.boatDTO.getBoat_id(), newValue.getCode());
+        });
+    }
 
     private Node getDataBoxContent(DbBoatDTO dbBoatDTO) {
         if(dbBoatDTO.getControlType().equals("Text")) {
@@ -60,11 +62,17 @@ public class Row extends HBox {
             return textField;
         } else if (dbBoatDTO.getControlType().equals("CheckBox")) {
             CheckBox checkBox = new CheckBox();
+            checkBox.setPrefHeight(10);
             checkBox.setSelected(setBooleanValue(dbBoatDTO.getFieldName()));
             setCheckBoxListener(checkBox, dbBoatDTO);
             return checkBox;
         } else if (dbBoatDTO.getControlType().equals("ComboBox")) {
-            return new Text("ComboBox");
+            ComboBox<KeelType> comboBox = new ComboBox<KeelType>();
+            comboBox.getItems().setAll(KeelType.values());
+            comboBox.setValue(KeelType.getByCode(parent.boatDTO.getKeel()));
+            comboBox.setPrefSize(150,10);
+            setComboBoxListener(comboBox);
+            return comboBox;
         }
         return new Text("undefined");
     }

@@ -68,8 +68,6 @@ public class TabBoatView extends Tab {
         }
 
         var hboxTable = new HBox();
-
-
         var ownerTitlePane = new TitledPane();
         var boatInfoTitlePane = new TitledPane();
         var vboxPicture = new VBox();
