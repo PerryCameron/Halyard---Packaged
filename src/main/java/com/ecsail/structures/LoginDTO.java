@@ -2,7 +2,7 @@ package com.ecsail.structures;
 
 import java.io.Serializable;
 
-public class Object_Login implements Serializable {
+public class LoginDTO implements Serializable {
 
 	/**
 	 * 
@@ -14,16 +14,19 @@ public class Object_Login implements Serializable {
 	private String passwd;
 	private String sshUser;
 	private String sshPass;
+
+	private String knownHostsFile;
 	private boolean isDefault;
 	private boolean sshForward;
-	
-	public Object_Login(String port, String host, String user, String passwd, String sshUser, String sshPass, boolean isDefault, boolean sshForward) {
+
+	public LoginDTO(String port, String host, String user, String passwd, String sshUser, String sshPass, String knownHostsFile, boolean isDefault, boolean sshForward) {
 		this.port = port;
 		this.host = host;
 		this.user = user;
 		this.passwd = passwd;
 		this.sshUser = sshUser;
 		this.sshPass = sshPass;
+		this.knownHostsFile = knownHostsFile;
 		this.isDefault = isDefault;
 		this.sshForward = sshForward;
 	}
@@ -96,10 +99,12 @@ public class Object_Login implements Serializable {
 		return serialVersionUID;
 	}
 
-	@Override
-	public String toString() {
-		return "Object_Login [port=" + port + ", host=" + host + ", user=" + user + ", passwd=" + passwd + ", sshUser="
-				+ sshUser + ", sshPass=" + sshPass + ", isDefault=" + isDefault + ", sshForward=" + sshForward + "]";
+	public String getKnownHostsFile() {
+		return knownHostsFile;
+	}
+
+	public void setKnownHostsFile(String knownHostsFile) {
+		this.knownHostsFile = knownHostsFile;
 	}
 
 }

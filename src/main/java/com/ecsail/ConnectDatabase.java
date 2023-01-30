@@ -5,7 +5,7 @@ import com.ecsail.gui.tabs.welcome.HBoxWelcome;
 import com.ecsail.gui.tabs.TabLogin;
 import com.ecsail.gui.tabs.welcome.TabWelcome;
 import com.ecsail.sql.select.SqlMembershipList;
-import com.ecsail.structures.Object_Login;
+import com.ecsail.structures.LoginDTO;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,7 +30,7 @@ public class ConnectDatabase {
 	public static Connection sqlConnection;
 	public PortForwardingL sshConnection;
 	private double titleBarHeight;
-	private Object_Login currentLogon;
+	private LoginDTO currentLogon;
 	private String port;
 	private ObservableList<String> choices = FXCollections.observableArrayList();
 	private String exception = "";
@@ -57,7 +57,8 @@ public class ConnectDatabase {
 			FileIO.openLoginObjects();
 		else
 			// we are starting application for the first time
-			FileIO.logins.add(new Object_Login("", "", "", "", "", "", false, false));
+			FileIO.logins.add(new LoginDTO("", "", "", "", "",
+					"", System.getProperty("user.home") + "/.ssh/known_hosts",false, false));
 		// our default login will be the first in the array
 		this.currentLogon = FileIO.logins.get(0);
 		this.port = currentLogon.getPort();
@@ -340,7 +341,7 @@ public class ConnectDatabase {
 		
 		// saves new login object
         saveButton1.setOnAction((event) -> {
-            	FileIO.logins.add(new Object_Login(portText.getText(), hostNameField.getText(), userName.getText(), passWord.getText(), sshUser.getText(),sshPass.getText(), defaultCheck.isSelected(), useSshTunnel.isSelected()));
+            	FileIO.logins.add(new LoginDTO(portText.getText(), hostNameField.getText(), userName.getText(), passWord.getText(), sshUser.getText(),sshPass.getText(), System.getProperty("user.home") + "/.ssh/known_hosts" ,defaultCheck.isSelected(), useSshTunnel.isSelected()));
             	FileIO.saveLoginObjects();
             	choices.add(hostNameField.getText());  // add new host name into combo box
             	hostName.setValue(hostNameField.getText());  // set combo box default to new host name
@@ -470,7 +471,7 @@ public class ConnectDatabase {
 	}
 	
 	private void loadHostsInComboBox() {
-		for (Object_Login l : FileIO.logins) {
+		for (LoginDTO l : FileIO.logins) {
 			this.choices.add(l.getHost());
 		}
 	}

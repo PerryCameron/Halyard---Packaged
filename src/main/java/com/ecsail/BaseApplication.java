@@ -164,6 +164,9 @@ public class BaseApplication extends Application implements Log {
         connect = new ConnectDatabase(stage);
     }
 
+    public static PortForwardingL getSSHConnection() {
+        return connect.getSshConnection();
+    }
     public static void setUpForFirstTime() {
         HalyardPaths.checkPath(System.getProperty("user.home") + "/.ecsc/scripts");
         HalyardPaths.checkPath(System.getProperty("user.home") + "/.ecsc/logs");

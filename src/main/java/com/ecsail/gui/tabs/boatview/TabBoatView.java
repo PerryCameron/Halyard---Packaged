@@ -29,16 +29,30 @@ import java.util.Arrays;
 public class TabBoatView extends Tab {
     private final ObservableList<MembershipListDTO> boatOwners;
     private int pictureNumber = 0;
-    //	private Sftp ftp;
+
+//    private Sftp ftp;
     private final ArrayList<String> localImageFiles;
     private final ObservableList<DbBoatDTO> dbBoatDTOS;
     /// need to add history to boat_owner table
     protected BoatDTO boatDTO;
+
+//    Session session;
+//    ChannelSftp channel;
+//    {
+//        try {
+//            channel = session.openChannel("sftp");
+//        } catch (JSchException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+//    channel
+//    ChannelSftp c=(ChannelSftp)channel;
     public TabBoatView(String text, BoatDTO boat) {
         super(text);
         this.boatDTO = boat;
         this.boatOwners = SqlMembershipList.getBoatOwnerRoster(boatDTO.getBoat_id());
         this.dbBoatDTOS = SqlDbBoat.getDbBoat();
+//        this.session = BaseApplication.getSSHConnection().getSession()
 //		this.ftp = Halyard.getConnect().getForwardedConnection().getFtp();
 //		checkRemoteFiles();
         // make sure directory exists, and create it if it does not
