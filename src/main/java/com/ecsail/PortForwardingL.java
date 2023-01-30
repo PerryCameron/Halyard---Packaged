@@ -1,10 +1,10 @@
 package com.ecsail;
 
+import com.ecsail.structures.LoginDTO;
 import com.jcraft.jsch.*;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.net.BindException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -18,11 +18,12 @@ public class PortForwardingL {
 
 //	private Sftp ftp;
 
-    public PortForwardingL(String host, String rhost, int lport, int rport, String user) {
+//    public PortForwardingL(String host, String rhost, int lport, int rport, String user, String knownHosts, String key) {
+    public PortForwardingL(LoginDTO login) {
         System.out.println("Connecting with public key..");
         try {
-            jsch.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
-            jsch.addIdentity(System.getProperty("user.home") + "/.ssh/id_rsa");
+            jsch.setKnownHosts(login.getKnownHostsFile());
+            jsch.addIdentity(login.getPublicKeyFile());
             HostKeyRepository hkr = jsch.getHostKeyRepository();
             HostKey[] hks = hkr.getHostKey();
             if (hks != null) {
@@ -35,7 +36,7 @@ public class PortForwardingL {
                 System.out.println("");
             }
 
-            session = jsch.getSession(user, host, 22);
+            session = jsch.getSession(login.getSshUser(), login.getHost(), login.getSshPort());
             UserInfo ui = new MyUserInfo();
             session.setUserInfo(ui);
             session.connect();
@@ -43,49 +44,11 @@ public class PortForwardingL {
             int assingedPort = 0;
             // this prevents exception from filling log if mysql is running locally for testing
             try {
-                assingedPort = session.setPortForwardingL(lport, rhost, rport);
+                assingedPort = session.setPortForwardingL(login.getLocalSqlPort(), "127.0.0.1", login.getRemoteSqlPort());
             } catch (JSchException e) {
                 BaseApplication.logger.error(e.getMessage() + " Check to see if database is running locally");
             }
-            BaseApplication.logger.info("localhost:" + assingedPort + " -> " + rhost + ":" + rport);
-//			this.ftp = new Sftp(jsch, session);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    public PortForwardingL(String host, String rhost, int lport, int rport, String user, String password) { // int
-        // lport;
-        usePublicKey = false;
-        PortForwardingL.passwd = password;
-
-        try {
-
-            jsch.setKnownHosts(System.getProperty("user.home") + "/.ssh/known_hosts");
-            HostKeyRepository hkr = jsch.getHostKeyRepository();
-            HostKey[] hks = hkr.getHostKey();
-            if (hks != null) {
-                BaseApplication.logger.info("Host keys exist");
-                // This will print out the keys
-				for (int i = 0; i < hks.length; i++) {
-					HostKey hk = hks[i];
-					System.out.println(hk.getHost() + " " + hk.getType() + " " + hk.getFingerPrint(jsch));
-				}
-				System.out.println("");
-            }
-
-            session = jsch.getSession(user, host, 22);
-            UserInfo ui = new MyUserInfo();
-            session.setUserInfo(ui);
-            session.connect();
-
-            int assingedPort = 0;
-			// this prevents exception from filling log if mysql is running locally for testing
-            try {
-                assingedPort = session.setPortForwardingL(lport, rhost, rport);
-            } catch (JSchException e) {
-                BaseApplication.logger.error(e.getMessage() + " Check to see if database is running locally");
-            }
-            BaseApplication.logger.info("localhost:" + assingedPort + " -> " + rhost + ":" + rport);
+            BaseApplication.logger.info("localhost:" + assingedPort + " -> " + "127.0.0.1" + ":" + login.getRemoteSqlPort());
 //			this.ftp = new Sftp(jsch, session);
         } catch (Exception e) {
             e.printStackTrace();

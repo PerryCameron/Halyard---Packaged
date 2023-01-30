@@ -11,7 +11,7 @@ import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.*;
 import com.ecsail.structures.DepositDTO;
 import com.ecsail.structures.DepositPDFDTO;
-import com.ecsail.structures.DepositTotal;
+import com.ecsail.structures.DepositTotalDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -425,7 +425,7 @@ public class VboxDepositControls extends VBox {
 
     // adds the footer with totals
     private void addFooter() {
-        DepositTotal depositTotal;
+        DepositTotalDTO depositTotal;
         vBoxSumItemsInner.getChildren().add(new HboxInvoiceSectionHead("Totals"));
         // total batch only
         if(getCorrectBatch() > 0) depositTotal = SqlDeposit.getTotals(depositDTO, false);

@@ -274,7 +274,7 @@ public class PDF_DepositReport {
 				addSummaryRow(mainTable, item);
 		}
 		RemoveBorder(mainTable);
-		DepositTotal depositTotal = SqlDeposit.getTotals(depositDTO, false); // gets count of totals
+		DepositTotalDTO depositTotal = SqlDeposit.getTotals(depositDTO, false); // gets count of totals
 		for(int i = 0; i < 3; i++) {
 			addTotalsFooter(mainTable, depositTotal.getFullLabels()[i],depositTotal.getValues()[i],i == 2);
 		}

@@ -31,14 +31,15 @@ public class ConnectDatabase {
 	public PortForwardingL sshConnection;
 	private double titleBarHeight;
 	private LoginDTO currentLogon;
-	private String port;
+	private int localSqlPort;
+	private int rport;
 	private ObservableList<String> choices = FXCollections.observableArrayList();
 	private String exception = "";
 	// used in class methods
 	CheckBox defaultCheck;
 	CheckBox useSshTunnel;
 	ComboBox<String> hostName;
-	TextField portText;
+	TextField localSqlPortText;
 	TextField hostNameField;
 	TextField sshUser;
 	TextField sshPass;
@@ -57,11 +58,13 @@ public class ConnectDatabase {
 			FileIO.openLoginObjects();
 		else
 			// we are starting application for the first time
-			FileIO.logins.add(new LoginDTO("", "", "", "", "",
-					"", System.getProperty("user.home") + "/.ssh/known_hosts",false, false));
+			FileIO.logins.add(new LoginDTO(3306,3306, 22, "", "", "", "",
+					"", System.getProperty("user.home") + "/.ssh/known_hosts",
+					System.getProperty("user.home") + "/.ssh/id_rsa", false, false));
 		// our default login will be the first in the array
 		this.currentLogon = FileIO.logins.get(0);
-		this.port = currentLogon.getPort();
+		this.localSqlPort = currentLogon.getLocalSqlPort()
+		;
 		loadHostsInComboBox();
 		// makes it look nice, tab not for anything useful
 			BaseApplication.tabPane.getTabs().add(new TabLogin("Log in"));
@@ -123,7 +126,7 @@ public class ConnectDatabase {
 		this.hostName = new ComboBox<>(choices);
 		this.defaultCheck = new CheckBox("Default Login");
 		this.useSshTunnel = new CheckBox("Use ssh tunnel");
-		this.portText = new TextField();
+		this.localSqlPortText = new TextField();
 		this.hostNameField = new TextField();
 		this.sshUser = new TextField();
 		this.sshPass = new PasswordField();
@@ -187,7 +190,7 @@ public class ConnectDatabase {
 		//Pane secondaryLayout = new Pane();
 //		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/ECSClogo4.png")));
 
-		portText.setText("3306");
+		localSqlPortText.setText("3306");
 		vboxUserLabel.setPrefWidth(90);
 		vboxPassLabel.setPrefWidth(90);
 		vboxHostLabel.setPrefWidth(90);
@@ -195,7 +198,7 @@ public class ConnectDatabase {
 		vboxSshUserLabel.setPrefWidth(90);
 		vboxSshPassLabel.setPrefWidth(90);
 		vboxPortLabel.setPrefWidth(90);
-		portText.setPrefWidth(60);
+		localSqlPortText.setPrefWidth(60);
 		
 		userName.setPrefWidth(200);
 		passWord.setPrefWidth(200);
@@ -305,17 +308,14 @@ public class ConnectDatabase {
         		if(currentLogon.isSshForward()) {
         			BaseApplication.logger.info("SSH tunnel enabled");
 					BaseApplication.logger.info("Attempting to connect to " + host);
-//        			this.sshConnection = new PortForwardingL(host,loopback,3306,3306,sUser,sPass);
 					System.out.println("Time to port forward");
-					this.sshConnection = new PortForwardingL(host,loopback,3306,3306,sUser);
-
-//					setServerAliveInterval();
-        			BaseApplication.logger.info("Server Alive interval: " + sshConnection.getSession().getServerAliveInterval());
+					this.sshConnection = new PortForwardingL(currentLogon);
+					BaseApplication.logger.info("Server Alive interval: " + sshConnection.getSession().getServerAliveInterval());
         		} else
         			BaseApplication.logger.info("SSH connection is not being used");
         		// create mysql login
 				primaryStage.setTitle("Halyard");
-        		if(createConnection(user, pass, loopback, port)) {
+        		if(createConnection(user, pass, loopback, localSqlPort)) {
         		BaseApplication.activeMemberships = SqlMembershipList.getRoster(BaseApplication.selectedYear, true);
 				// gets a list of all the board positions to use throughout the application
 				BaseApplication.boardPositions = Officer.getPositionList();
@@ -341,7 +341,12 @@ public class ConnectDatabase {
 		
 		// saves new login object
         saveButton1.setOnAction((event) -> {
-            	FileIO.logins.add(new LoginDTO(portText.getText(), hostNameField.getText(), userName.getText(), passWord.getText(), sshUser.getText(),sshPass.getText(), System.getProperty("user.home") + "/.ssh/known_hosts" ,defaultCheck.isSelected(), useSshTunnel.isSelected()));
+            	FileIO.logins.add(new LoginDTO(Integer.parseInt(localSqlPortText.getText()),
+						3306,22, hostNameField.getText(), userName.getText(),
+						passWord.getText(), sshUser.getText(),sshPass.getText(),
+						System.getProperty("user.home") + "/.ssh/known_hosts" ,
+						System.getProperty("user.home") + "/.ssh/id_rsa",
+						defaultCheck.isSelected(), useSshTunnel.isSelected()));
             	FileIO.saveLoginObjects();
             	choices.add(hostNameField.getText());  // add new host name into combo box
             	hostName.setValue(hostNameField.getText());  // set combo box default to new host name
@@ -360,12 +365,11 @@ public class ConnectDatabase {
             		FileIO.logins.get(element).setHost(hostNameField.getText());
             		FileIO.logins.get(element).setUser(userName.getText());
             		FileIO.logins.get(element).setPasswd(passWord.getText());
-            		FileIO.logins.get(element).setPort(portText.getText());
+            		FileIO.logins.get(element).setLocalSqlPort(Integer.parseInt(localSqlPortText.getText()));
             		FileIO.logins.get(element).setSshUser(sshUser.getText());
             		FileIO.logins.get(element).setSshPass(sshPass.getText());
             		FileIO.logins.get(element).setDefault(defaultCheck.isSelected());
             		FileIO.logins.get(element).setSshForward(useSshTunnel.isSelected());
-
             		FileIO.saveLoginObjects();
             		updateHostInComboBox(oldHost, hostNameField.getText());
             		hostName.setValue(hostNameField.getText());
@@ -389,7 +393,7 @@ public class ConnectDatabase {
         vboxSshUserLabel.getChildren().add(new Label("ssh user:"));
         vboxSshPassLabel.getChildren().add(new Label("ssh pass:"));
 		vboxPortLabel.getChildren().add(new Label("Port:"));
-		vboxPortText.getChildren().addAll(portText, defaultCheck);
+		vboxPortText.getChildren().addAll(localSqlPortText, defaultCheck);
         vboxUserText.getChildren().add(userName);
         vboxPassText.getChildren().add(passWord);
         vboxHostText.getChildren().add(hostName);
@@ -476,7 +480,7 @@ public class ConnectDatabase {
 		}
 	}
 
-	protected Boolean createConnection(String user, String password, String ip, String port) {
+	protected Boolean createConnection(String user, String password, String ip, int port) {
 		boolean successful = false;
 		String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
 		String DB_URL = "jdbc:mysql://" + ip + ":" + port + "/ECSC_SQL?autoReconnect=true&useSSL=false&serverTimezone=UTC";

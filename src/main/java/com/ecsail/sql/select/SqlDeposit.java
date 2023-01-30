@@ -3,7 +3,7 @@ package com.ecsail.sql.select;
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.structures.DepositDTO;
-import com.ecsail.structures.DepositTotal;
+import com.ecsail.structures.DepositTotalDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -66,8 +66,8 @@ public class SqlDeposit {
         return thisDeposits;
     }
 
-    public static DepositTotal getTotals(DepositDTO d, boolean getAll) {
-        DepositTotal depositTotal = null;
+    public static DepositTotalDTO getTotals(DepositDTO d, boolean getAll) {
+        DepositTotalDTO depositTotal = null;
         String query = "select sum(TOTAL) AS TOTAL, sum(CREDIT) AS CREDIT,sum(PAID) AS PAID from invoice where " +
                 "FISCAL_YEAR="+d.getFiscalYear()+" and COMMITTED=true and BATCH="+d.getBatch();
         if(getAll)
@@ -76,7 +76,7 @@ public class SqlDeposit {
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
-                depositTotal = new DepositTotal(
+                depositTotal = new DepositTotalDTO(
                         rs.getString("TOTAL"),
                         rs.getString("CREDIT"),
                         rs.getString("PAID")

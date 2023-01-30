@@ -8,35 +8,59 @@ public class LoginDTO implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 7434038316336853182L;
-	private String port;
+
+	private int localSqlPort;
+	private int remoteSqlPort;
+	private int sshPort;
 	private String host;
 	private String user;
 	private String passwd;
 	private String sshUser;
 	private String sshPass;
-
 	private String knownHostsFile;
+	private String publicKeyFile;
 	private boolean isDefault;
 	private boolean sshForward;
 
-	public LoginDTO(String port, String host, String user, String passwd, String sshUser, String sshPass, String knownHostsFile, boolean isDefault, boolean sshForward) {
-		this.port = port;
+	public LoginDTO(int localSqlPort, int remoteSqlPort, int sshPort, String host, String user, String passwd,
+					String sshUser, String sshPass, String knownHostsFile, String publicKeyFile, boolean isDefault,
+					boolean sshForward) {
+		this.localSqlPort = localSqlPort;
+		this.remoteSqlPort = remoteSqlPort;
+		this.sshPort = sshPort;
 		this.host = host;
 		this.user = user;
 		this.passwd = passwd;
 		this.sshUser = sshUser;
 		this.sshPass = sshPass;
 		this.knownHostsFile = knownHostsFile;
+		this.publicKeyFile = publicKeyFile;
 		this.isDefault = isDefault;
 		this.sshForward = sshForward;
 	}
 
-	public String getPort() {
-		return port;
+	public int getLocalSqlPort() {
+		return localSqlPort;
 	}
 
-	public void setPort(String port) {
-		this.port = port;
+	public void setLocalSqlPort(int localSqlPort) {
+		this.localSqlPort = localSqlPort;
+	}
+
+	public int getRemoteSqlPort() {
+		return remoteSqlPort;
+	}
+
+	public void setRemoteSqlPort(int remoteSqlPort) {
+		this.remoteSqlPort = remoteSqlPort;
+	}
+
+	public int getSshPort() {
+		return sshPort;
+	}
+
+	public void setSshPort(int sshPort) {
+		this.sshPort = sshPort;
 	}
 
 	public String getHost() {
@@ -79,12 +103,28 @@ public class LoginDTO implements Serializable {
 		this.sshPass = sshPass;
 	}
 
+	public String getKnownHostsFile() {
+		return knownHostsFile;
+	}
+
+	public void setKnownHostsFile(String knownHostsFile) {
+		this.knownHostsFile = knownHostsFile;
+	}
+
+	public String getPublicKeyFile() {
+		return publicKeyFile;
+	}
+
+	public void setPublicKeyFile(String publicKeyFile) {
+		this.publicKeyFile = publicKeyFile;
+	}
+
 	public boolean isDefault() {
 		return isDefault;
 	}
 
-	public void setDefault(boolean isDefault) {
-		this.isDefault = isDefault;
+	public void setDefault(boolean aDefault) {
+		isDefault = aDefault;
 	}
 
 	public boolean isSshForward() {
@@ -94,17 +134,4 @@ public class LoginDTO implements Serializable {
 	public void setSshForward(boolean sshForward) {
 		this.sshForward = sshForward;
 	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	public String getKnownHostsFile() {
-		return knownHostsFile;
-	}
-
-	public void setKnownHostsFile(String knownHostsFile) {
-		this.knownHostsFile = knownHostsFile;
-	}
-
 }
