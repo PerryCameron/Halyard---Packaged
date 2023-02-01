@@ -1,5 +1,8 @@
-package com.ecsail;
+package com.ecsail.connection;
 
+import com.ecsail.BaseApplication;
+import com.ecsail.DataBase;
+import com.ecsail.FileIO;
 import com.ecsail.enums.Officer;
 import com.ecsail.gui.tabs.welcome.HBoxWelcome;
 import com.ecsail.gui.tabs.TabLogin;
@@ -36,15 +39,17 @@ public class ConnectDatabase {
 	private ObservableList<String> choices = FXCollections.observableArrayList();
 	private String exception = "";
 	// used in class methods
-	CheckBox defaultCheck;
-	CheckBox useSshTunnel;
-	ComboBox<String> hostName;
-	TextField localSqlPortText;
-	TextField hostNameField;
-	TextField sshUser;
-	TextField sshPass;
-	TextField userName;
-	TextField passWord;
+	private CheckBox defaultCheck;
+	private CheckBox useSshTunnel;
+	private ComboBox<String> hostName;
+	private TextField localSqlPortText;
+	private TextField hostNameField;
+	private TextField sshUser;
+	private TextField knownHost;
+
+	private TextField publicKey;
+	private TextField userName;
+	private TextField passWord;
 	public static final String BLUE = "\033[0;34m";    // BLUE
 
 	public static Stage logonStage;
@@ -129,7 +134,7 @@ public class ConnectDatabase {
 		this.localSqlPortText = new TextField();
 		this.hostNameField = new TextField();
 		this.sshUser = new TextField();
-		this.sshPass = new PasswordField();
+		this.knownHost = new TextField();
 		this.userName = new TextField();
 		this.passWord = new PasswordField();
 		Button loginButton = new Button("Login");
@@ -205,7 +210,7 @@ public class ConnectDatabase {
 		hostName.setPrefWidth(200);
 		hostNameField.setPrefWidth(200);
 		sshUser.setPrefWidth(200);
-		sshPass.setPrefWidth(200);
+		knownHost.setPrefWidth(200);
 		vboxPortText.setPrefWidth(200);
 		vboxBlue.setPrefWidth(width);
 
@@ -301,8 +306,6 @@ public class ConnectDatabase {
         		String pass = passWord.getText();
         		String host = hostName.getValue();
         		BaseApplication.logger.info("Host is " + host);
-        		String sUser = sshUser.getText();
-        		String sPass = sshPass.getText();
         		String loopback = "127.0.0.1";
         		// create ssh tunnel
         		if(currentLogon.isSshForward()) {
@@ -343,7 +346,7 @@ public class ConnectDatabase {
         saveButton1.setOnAction((event) -> {
             	FileIO.logins.add(new LoginDTO(Integer.parseInt(localSqlPortText.getText()),
 						3306,22, hostNameField.getText(), userName.getText(),
-						passWord.getText(), sshUser.getText(),sshPass.getText(),
+						passWord.getText(), sshUser.getText(),knownHost.getText(),
 						System.getProperty("user.home") + "/.ssh/known_hosts" ,
 						System.getProperty("user.home") + "/.ssh/id_rsa",
 						defaultCheck.isSelected(), useSshTunnel.isSelected()));
@@ -367,7 +370,7 @@ public class ConnectDatabase {
             		FileIO.logins.get(element).setPasswd(passWord.getText());
             		FileIO.logins.get(element).setLocalSqlPort(Integer.parseInt(localSqlPortText.getText()));
             		FileIO.logins.get(element).setSshUser(sshUser.getText());
-            		FileIO.logins.get(element).setSshPass(sshPass.getText());
+            		FileIO.logins.get(element).setSshPass(knownHost.getText());
             		FileIO.logins.get(element).setDefault(defaultCheck.isSelected());
             		FileIO.logins.get(element).setSshForward(useSshTunnel.isSelected());
             		FileIO.saveLoginObjects();
@@ -391,15 +394,15 @@ public class ConnectDatabase {
         vboxHostLabel.getChildren().add(new Label("Hostname:"));
         vboxHostLabel2.getChildren().add(new Label("Hostname:"));
         vboxSshUserLabel.getChildren().add(new Label("ssh user:"));
-        vboxSshPassLabel.getChildren().add(new Label("ssh pass:"));
-		vboxPortLabel.getChildren().add(new Label("Port:"));
+        vboxSshPassLabel.getChildren().add(new Label("known_hosts:"));
+		vboxPortLabel.getChildren().add(new Label("SQL Port:"));
 		vboxPortText.getChildren().addAll(localSqlPortText, defaultCheck);
         vboxUserText.getChildren().add(userName);
         vboxPassText.getChildren().add(passWord);
         vboxHostText.getChildren().add(hostName);
         vboxHostText2.getChildren().add(hostNameField);
         vboxSshUserText.getChildren().add(sshUser);
-		vboxSshPassText.getChildren().add(sshPass);
+		vboxSshPassText.getChildren().add(knownHost);
 		addBox.getChildren().addAll(newConnectText, editConnectText);
         buttonBox1.getChildren().addAll(loginButton,cancelButton1);
         buttonBox2.getChildren().addAll(saveButton2,deleteButton,cancelButton3);
@@ -434,7 +437,7 @@ public class ConnectDatabase {
 		hostName.setValue(currentLogon.getHost());
 		hostNameField.setText(currentLogon.getHost());
 		sshUser.setText(currentLogon.getSshUser());
-		sshPass.setText(currentLogon.getSshPass());
+		knownHost.setText(currentLogon.getKnownHostsFile());
 		useSshTunnel.setSelected(currentLogon.isSshForward());
 		defaultCheck.setSelected(currentLogon.isDefault());
 	}
@@ -445,7 +448,7 @@ public class ConnectDatabase {
 		//hostName.setValue("");
 		hostNameField.setText("");
 		sshUser.setText("");
-		sshPass.setText("");
+		knownHost.setText("");
 		useSshTunnel.setSelected(true);
 		defaultCheck.setSelected(false); // this needs to check other logons first
 	}
@@ -560,5 +563,9 @@ public class ConnectDatabase {
 			rs.getStatement().close();
 		}
 		rs.close();
+	}
+
+	public LoginDTO getCurrentLogon() {
+		return currentLogon;
 	}
 }

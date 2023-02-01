@@ -1,6 +1,5 @@
 package com.ecsail.plugin;
 
-import com.ecsail.ConnectDatabase;
 import com.ecsail.Log;
 import com.ecsail.Plugin;
 import javafx.scene.Scene;
