@@ -32,6 +32,7 @@ public class ConnectDatabase {
 
 	public static Connection sqlConnection;
 	public PortForwardingL sshConnection;
+	public Sftp scp;
 	private double titleBarHeight;
 	private LoginDTO currentLogon;
 	private int localSqlPort;
@@ -68,8 +69,7 @@ public class ConnectDatabase {
 					System.getProperty("user.home") + "/.ssh/id_rsa", false, false));
 		// our default login will be the first in the array
 		this.currentLogon = FileIO.logins.get(0);
-		this.localSqlPort = currentLogon.getLocalSqlPort()
-		;
+		this.localSqlPort = currentLogon.getLocalSqlPort();
 		loadHostsInComboBox();
 		// makes it look nice, tab not for anything useful
 			BaseApplication.tabPane.getTabs().add(new TabLogin("Log in"));
@@ -322,6 +322,7 @@ public class ConnectDatabase {
         		BaseApplication.activeMemberships = SqlMembershipList.getRoster(BaseApplication.selectedYear, true);
 				// gets a list of all the board positions to use throughout the application
 				BaseApplication.boardPositions = Officer.getPositionList();
+				this.scp = new Sftp();
         		logonStage.close();
         		} else {
 					BaseApplication.logger.error(exception);
@@ -565,7 +566,7 @@ public class ConnectDatabase {
 		rs.close();
 	}
 
-	public LoginDTO getCurrentLogon() {
-		return currentLogon;
+	public Sftp getScp() {
+		return scp;
 	}
 }

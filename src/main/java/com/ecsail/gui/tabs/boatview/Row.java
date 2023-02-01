@@ -84,6 +84,7 @@ public class Row extends HBox {
 
     private String setStringValue(String fieldName) {
         if(fieldName.equals("BOAT_ID")) return String.valueOf(parent.boatDTO.getBoat_id());
+        else if(fieldName.equals("BOAT_NAME")) return parent.boatDTO.getBoat_name();
         else if(fieldName.equals("MANUFACTURER")) return parent.boatDTO.getManufacturer();
         else if(fieldName.equals("MANUFACTURE_YEAR")) return parent.boatDTO.getManufacture_year();
         else if(fieldName.equals("REGISTRATION_NUM")) return parent.boatDTO.getRegistration_num();

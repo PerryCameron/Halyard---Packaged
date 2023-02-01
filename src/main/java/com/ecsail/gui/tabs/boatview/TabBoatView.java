@@ -1,8 +1,10 @@
 package com.ecsail.gui.tabs.boatview;
 
 
+import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.ImageViewPane;
+import com.ecsail.connection.Sftp;
 import com.ecsail.gui.dialogues.Dialogue_ChooseMember;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.select.SqlDbBoat;
@@ -17,6 +19,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -29,30 +32,21 @@ import java.util.Arrays;
 public class TabBoatView extends Tab {
     private final ObservableList<MembershipListDTO> boatOwners;
     private int pictureNumber = 0;
-
-//    private Sftp ftp;
+    private Sftp scp;
     private final ArrayList<String> localImageFiles;
     private final ObservableList<DbBoatDTO> dbBoatDTOS;
-    /// need to add history to boat_owner table
+
+    private String images = "/home/ecsc/ecsc_files/boat_images";
+    // TODO need to add history to boat_owner table
     protected BoatDTO boatDTO;
 
-//    Session session;
-//    ChannelSftp channel;
-//    {
-//        try {
-//            channel = session.openChannel("sftp");
-//        } catch (JSchException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//    channel
-//    ChannelSftp c=(ChannelSftp)channel;
     public TabBoatView(String text, BoatDTO boat) {
         super(text);
         this.boatDTO = boat;
         this.boatOwners = SqlMembershipList.getBoatOwnerRoster(boatDTO.getBoat_id());
         this.dbBoatDTOS = SqlDbBoat.getDbBoat();
-//        this.session = BaseApplication.getSSHConnection().getSession()
+        this.scp = BaseApplication.connect.getScp();
+//      this.session = BaseApplication.getSSHConnection().getSession()
 //		this.ftp = Halyard.getConnect().getForwardedConnection().getFtp();
 //		checkRemoteFiles();
         // make sure directory exists, and create it if it does not
@@ -64,7 +58,7 @@ public class TabBoatView extends Tab {
             image = getImage(HalyardPaths.BOATDIR + "/" + boatDTO.getBoat_id() + "/" + localImageFiles.get(pictureNumber));
 //		checkIfLocalandRemoteDirectoriesMatch();
 
-        dbBoatDTOS.forEach(System.out::println);
+//        dbBoatDTOS.forEach(System.out::println);
         TableView<MembershipListDTO> boatOwnerTableView = new TableView<>();
         var vboxGrey = new VBox(); // this is the hbox for holding all content
         var vboxBlue = new VBox(); // creates blue boarder around content
@@ -145,12 +139,9 @@ public class TabBoatView extends Tab {
         // sets size of table
         // ownerTitlePane.setPrefHeight(130);
 
-
-
         ownerTitlePane.setText("Owner(s)");
         boatInfoTitlePane.setText("Boat Information");
         // need to continue with labels
-
 
         // vboxFieldsContainer.setStyle("-fx-background-color: #201ac9;"); // blue
 
@@ -190,27 +181,25 @@ public class TabBoatView extends Tab {
             event.consume();
         });
 
-//		imageView.setOnDragDropped(new EventHandler<DragEvent>() {
-//            @Override
-//            public void handle(DragEvent event) {
-//                Dragboard db = event.getDragboard();
-//                boolean success = false;
-//                if (db.hasFiles()) {
-//                    //File fileName = db.getFiles().get(0);
+		imageView.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+            if (db.hasFiles()) {
+                System.out.println(db.getFiles().get(0));
+                //File fileName = db.getFiles().get(0);
 //                    String filename = getNewName(db.getFiles().get(0));
 //                    File newImage = new File(imagePath, filename);
 //                    copyFile(db.getFiles().get(0), newImage);
 //                    ftp.sendFile(imagePath + "/" + filename, "/home/pcameron/Documents/ECSC/Boats/" + b.getBoat_id() + "/" + filename);
 //        			localImageFiles.add(newImage.getName().toString());
 //                    success = true;
-//                }
-//                /* let the source know whether the string was successfully
-//                 * transferred and used */
-//                event.setDropCompleted(success);
-//
-//                event.consume();
-//            }
-//        });
+            }
+            /* let the source know whether the string was successfully
+             * transferred and used */
+            event.setDropCompleted(success);
+
+            event.consume();
+        });
 
         buttonDelete.setOnAction((event) -> {
 

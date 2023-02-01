@@ -23,7 +23,7 @@ public class SqlDbBoat {
                         rs.getString("control_type"),
                         rs.getString("data_type"),
                         rs.getString("field_name"),
-                        rs.getInt("order")));
+                        rs.getInt("list_order")));
             }
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {

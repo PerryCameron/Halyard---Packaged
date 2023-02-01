@@ -399,7 +399,19 @@ create table ECSC_SQL.db_boat
     name         varchar(30) NOT NULL,
     control_type varchar(30) NOT NULL,
     data_type    varchar(30) NOT NULL,
-    field_name   varchar(30) NOT NULL
+    field_name   varchar(30) NOT NULL,
+    order        INTEGER NOT NULL
+);
+
+create table ECSC_SQL.boat_photos
+(
+    ID            INTEGER      NOT NULL auto_increment primary key,
+    BOAT_ID       INTEGER      NOT NULL,
+    upload_date   DATETIME NULL,
+    filename      varchar(200) NOT NULL,
+    path          varchar(200) NOT NULL,
+    default_image boolean default 0,
+    foreign key (BOAT_ID) references boat (BOAT_ID)
 );
 
 
