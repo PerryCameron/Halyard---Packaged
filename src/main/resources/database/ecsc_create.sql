@@ -400,7 +400,7 @@ create table ECSC_SQL.db_boat
     control_type varchar(30) NOT NULL,
     data_type    varchar(30) NOT NULL,
     field_name   varchar(30) NOT NULL,
-    order        INTEGER NOT NULL
+    list_order        INTEGER NOT NULL
 );
 
 create table ECSC_SQL.boat_photos

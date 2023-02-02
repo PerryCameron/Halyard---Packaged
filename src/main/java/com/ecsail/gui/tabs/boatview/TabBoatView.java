@@ -2,14 +2,18 @@ package com.ecsail.gui.tabs.boatview;
 
 
 import com.ecsail.BaseApplication;
+import com.ecsail.FileIO;
 import com.ecsail.HalyardPaths;
 import com.ecsail.ImageViewPane;
 import com.ecsail.connection.Sftp;
 import com.ecsail.gui.dialogues.Dialogue_ChooseMember;
 import com.ecsail.sql.SqlDelete;
+import com.ecsail.sql.SqlInsert;
+import com.ecsail.sql.select.SqlBoatPhotos;
 import com.ecsail.sql.select.SqlDbBoat;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.structures.BoatDTO;
+import com.ecsail.structures.BoatPhotosDTO;
 import com.ecsail.structures.DbBoatDTO;
 import com.ecsail.structures.MembershipListDTO;
 import javafx.collections.ObservableList;
@@ -28,17 +32,24 @@ import javafx.scene.layout.VBox;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class TabBoatView extends Tab {
     private final ObservableList<MembershipListDTO> boatOwners;
     private int pictureNumber = 0;
     private Sftp scp;
-    private final ArrayList<String> localImageFiles;
+//    private final ArrayList<String> localImageFiles;
     private final ObservableList<DbBoatDTO> dbBoatDTOS;
-
-    private String images = "/home/ecsc/ecsc_files/boat_images";
     // TODO need to add history to boat_owner table
     protected BoatDTO boatDTO;
+
+    protected ArrayList<BoatPhotosDTO> images;
+
+    protected BoatPhotosDTO selectedImage;
+
+    String remotePath = "/home/ecsc/ecsc_files/boat_images/";
+
+    String localPath = System.getProperty("user.home") + "/.ecsc/boat_images/";
 
     public TabBoatView(String text, BoatDTO boat) {
         super(text);
@@ -46,19 +57,23 @@ public class TabBoatView extends Tab {
         this.boatOwners = SqlMembershipList.getBoatOwnerRoster(boatDTO.getBoat_id());
         this.dbBoatDTOS = SqlDbBoat.getDbBoat();
         this.scp = BaseApplication.connect.getScp();
-//      this.session = BaseApplication.getSSHConnection().getSession()
-//		this.ftp = Halyard.getConnect().getForwardedConnection().getFtp();
-//		checkRemoteFiles();
-        // make sure directory exists, and create it if it does not
-        HalyardPaths.checkPath(HalyardPaths.BOATDIR + "/" + boatDTO.getBoat_id() + "/");
-        File imagePath = new File(HalyardPaths.BOATDIR + "/" + boatDTO.getBoat_id() + "/");
-        this.localImageFiles = HalyardPaths.listFilesForFolder(imagePath);
-        Image image = null;
-        if (localImageFiles.size() > 0)
-            image = getImage(HalyardPaths.BOATDIR + "/" + boatDTO.getBoat_id() + "/" + localImageFiles.get(pictureNumber));
-//		checkIfLocalandRemoteDirectoriesMatch();
+        this.images = SqlBoatPhotos.getImagesByBoatId(boatDTO.getBoat_id());
 
-//        dbBoatDTOS.forEach(System.out::println);
+        // make sure directory exists, and create it if it does not
+        this.selectedImage = getDefaultBoatPhotoDTO();
+        String localFile = localPath + selectedImage.getFilename();
+        String remoteFile = selectedImage.getPath() + selectedImage.getFilename();
+        Image image = null;
+
+        if(selectedImage.getFilename().equals("no_image.png")) {
+            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/no_image.png")));
+        } else if(HalyardPaths.fileExists(localFile)) {
+            image = new Image("file:" + localFile);
+        } else {
+            scp.getFile(remoteFile,localFile);
+            image = new Image("file:" + localFile);
+        }
+
         TableView<MembershipListDTO> boatOwnerTableView = new TableView<>();
         var vboxGrey = new VBox(); // this is the hbox for holding all content
         var vboxBlue = new VBox(); // creates blue boarder around content
@@ -166,7 +181,7 @@ public class TabBoatView extends Tab {
         col3.setMaxWidth(1f * Integer.MAX_VALUE * 40); // Type
 
         /////////////// LISTENERS ////////////////////
-
+        // must have this to work
         imageView.setOnDragOver(event -> {
             /* data is dragged over the target */
             /* accept it only if it is not dragged from the same node
@@ -177,7 +192,6 @@ public class TabBoatView extends Tab {
                 //event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
             }
-
             event.consume();
         });
 
@@ -185,19 +199,21 @@ public class TabBoatView extends Tab {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasFiles()) {
-                System.out.println(db.getFiles().get(0));
-                //File fileName = db.getFiles().get(0);
-//                    String filename = getNewName(db.getFiles().get(0));
-//                    File newImage = new File(imagePath, filename);
-//                    copyFile(db.getFiles().get(0), newImage);
-//                    ftp.sendFile(imagePath + "/" + filename, "/home/pcameron/Documents/ECSC/Boats/" + b.getBoat_id() + "/" + filename);
-//        			localImageFiles.add(newImage.getName().toString());
-//                    success = true;
+                // db.getFiles().get(0) <- filename
+                int fileNumber = images.size() + 1;
+                String srcPath = db.getFiles().get(0).getAbsolutePath();
+                // TODO check for file type and append to filename below
+                String fileName = boatDTO.getBoat_id() + "_" + fileNumber + ".jpeg";
+                BoatPhotosDTO boatPhotosDTO = new BoatPhotosDTO(0,
+                        boatDTO.getBoat_id(),"",fileName,remotePath,isFirstPic());
+                scp.sendFile(srcPath,boatPhotosDTO.getFullPath());
+                SqlInsert.addBoatImage(boatPhotosDTO);
+                images.add(boatPhotosDTO);
+                FileIO.copyFile(new File(srcPath),new File(localPath + fileName));
+                Image newImage = new Image("file:" + localPath + fileName);
+                imageView.setImage(newImage);
             }
-            /* let the source know whether the string was successfully
-             * transferred and used */
             event.setDropCompleted(success);
-
             event.consume();
         });
 
@@ -205,7 +221,7 @@ public class TabBoatView extends Tab {
 
         });
 
-        buttonAddPicture.setOnAction((event) -> {
+//        buttonAddPicture.setOnAction((event) -> {
 //			LoadFileChooser fc = new LoadFileChooser(System.getProperty("user.home"));
 //			System.out.println(fc.getFile().toString());
 //			String filename = getNewName(fc.getFile());
@@ -213,22 +229,22 @@ public class TabBoatView extends Tab {
 //			copyFile(fc.getFile(), newImage);
 //			ftp.sendFile(imagePath + "/" + filename, "/home/pcameron/Documents/ECSC/Boats/" + b.getBoat_id() + "/" + filename);
 //			localImageFiles.add(newImage.getName().toString());
-        });
+//        });
 
-        buttonForward.setOnAction((event) -> {
-            pictureNumber++;
-            if (pictureNumber == localImageFiles.size())
-                pictureNumber = 0;
-            Image newImage = getImage(HalyardPaths.BOATDIR + "/" + boatDTO.getBoat_id() + "/" + localImageFiles.get(pictureNumber));
-            imageView.setImage(newImage);
-        });
+//        buttonForward.setOnAction((event) -> {
+//            pictureNumber++;
+//            if (pictureNumber == localImageFiles.size())
+//                pictureNumber = 0;
+//            Image newImage = getImage(HalyardPaths.BOATDIR + "/" + boatDTO.getBoat_id() + "/" + localImageFiles.get(pictureNumber));
+//            imageView.setImage(newImage);
+//        });
 
         buttonReverse.setOnAction((event) -> {
-            pictureNumber--;
-            if (pictureNumber < 0)
-                pictureNumber = localImageFiles.size() - 1;
-            Image newImage = getImage(HalyardPaths.BOATDIR + "/" + boatDTO.getBoat_id() + "/" + localImageFiles.get(pictureNumber));
-            imageView.setImage(newImage);
+//            pictureNumber--;
+//            if (pictureNumber < 0)
+//                pictureNumber = localImageFiles.size() - 1;
+//            Image newImage = getImage(HalyardPaths.BOATDIR + "/" + boatDTO.getBoat_id() + "/" + localImageFiles.get(pictureNumber));
+//            imageView.setImage(newImage);
         });
 
         boatOwnerAdd.setOnAction((event) -> {
@@ -277,49 +293,23 @@ public class TabBoatView extends Tab {
         setContent(vboxBlue);
     }
 
-//	private void checkIfLocalandRemoteDirectoriesMatch() {
-//		ArrayList<String> remoteMissingImages = new ArrayList<String>();
-//		ArrayList<String> localMissingImages = new ArrayList<String>();
-//		for(String l: localImageFiles) {
-//			boolean missing = true;
-//			for(String r: remoteImageFiles) {
-//				if(l.equals(r)) missing = false;
-//			}
-//			if(missing) remoteMissingImages.add(l);
-//		}
-//		for(String r: remoteImageFiles) {
-//			boolean missing = true;
-//			for(String l: localImageFiles) {
-//				if(r.equals(l)) missing = false;
-//			}
-//			if(missing) localMissingImages.add(r);
-//		}
-//		System.out.println("Remote missing images:");
-//		for(String rmm: remoteMissingImages) {
-//			ftp.sendFile(HalyardPaths.BOATDIR + "/" + b.getBoat_id() + "/" + rmm, "/home/pcameron/Documents/ECSC/Boats/" + b.getBoat_id() + "/" + rmm);
-//		}
-//		System.out.println("Local missing images:");
-//		for(String lmm: localMissingImages) {
-//			ftp.getFile("/home/pcameron/Documents/ECSC/Boats/" + b.getBoat_id() + "/" + lmm, HalyardPaths.BOATDIR + "/" + b.getBoat_id() + "/" + lmm);
-//			localImageFiles.add(lmm);
-//		}
-//	}
+    private boolean isFirstPic() {
+        return images.size() == 0;
+    }
 
-//	private void checkRemoteFiles() {
-//		boolean hasDirectory = false;
-//		ArrayList<String> remoteImageDirectories = ftp.ls("/home/pcameron/Documents/ECSC/Boats"); // prints files from directory
-//		for(String fn: remoteImageDirectories) {
-//			System.out.println(fn);
-//			if(fn.equals(b.getBoat_id() + "")) {
-//				hasDirectory = true;
-//			}
-//		}
-//		if(!hasDirectory) {  // if the directory doesn't exist create it
-//			ftp.mkdir("/home/pcameron/Documents/ECSC/Boats/" + b.getBoat_id());
-//		} else {  // else put file names in that directory into a string array
-//			remoteImageFiles = ftp.ls("/home/pcameron/Documents/ECSC/Boats/" + b.getBoat_id());
-//		}
-//	}
+    private BoatPhotosDTO getDefaultBoatPhotoDTO() {
+        BoatPhotosDTO boatPhotosDTO1 = images.stream()
+                .filter(boatPhotosDTO -> boatPhotosDTO.isDefault())
+                .findFirst()
+                .orElse(new BoatPhotosDTO(
+                        0,
+                        0,
+                        "",
+                        "no_image.png",
+                        "/home/ecsc/ecsc_files/boat_images/",
+                        true));
+        return boatPhotosDTO1;
+    }
 
     public Image getImage(String file) {
         FileInputStream input = null;
@@ -334,30 +324,4 @@ public class TabBoatView extends Tab {
         return new Image(input);
     }
 
-    private void copyFile(File srcFile, File destFile) {
-        InputStream is = null;
-        OutputStream os = null;
-        try {
-            is = new FileInputStream(srcFile);
-            os = new FileOutputStream(destFile);
-            byte[] buffer = new byte[8192];
-            int length;
-            while ((length = is.read(buffer)) > 0) {
-                os.write(buffer, 0, length);
-            }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } finally {
-            try {
-                assert is != null;
-                is.close();
-                assert os != null;
-                os.close();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-    }
 }

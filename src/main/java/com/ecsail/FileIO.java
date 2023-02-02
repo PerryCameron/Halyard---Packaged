@@ -1,10 +1,6 @@
 package com.ecsail;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,6 +81,34 @@ public static List<LoginDTO> logins = new ArrayList<>();
 			iterate++;
 		}
 		return count;
+	}
+
+	public static void copyFile(File srcFile, File destFile) {
+		InputStream is = null;
+		OutputStream os = null;
+		try {
+			is = new FileInputStream(srcFile);
+			os = new FileOutputStream(destFile);
+			byte[] buffer = new byte[8192];
+			int length;
+			while ((length = is.read(buffer)) > 0) {
+				os.write(buffer, 0, length);
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				is.close();
+				os.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

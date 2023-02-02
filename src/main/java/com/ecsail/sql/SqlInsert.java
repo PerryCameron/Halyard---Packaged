@@ -119,6 +119,24 @@ public class SqlInsert {
 		}
 	}
 
+	public static void addBoatImage(BoatPhotosDTO bp) {
+		int id = SqlSelect.getNextAvailablePrimaryKey("boat_photos","id");
+		String query = "INSERT INTO boat_photos () VALUES ("
+				+ id + ","
+				+ bp.getBoat_id()
+				+ ",'" + DataBase.getTimeStamp()
+				+ "','" + bp.getFilename()
+				+ "','" + bp.getPath()
+				+ "'," + bp.isDefault()
+				+ ")";
+		try {
+			BaseApplication.connect.executeQuery(query);
+		}
+		catch (SQLException e) {
+			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
+		}
+	}
+
 	public static boolean addBoatRecord(BoatDTO b, int msid) {
 		boolean noError = false;
 		String query = "INSERT INTO boat () VALUES (" + b.getBoat_id() + ",null,null,null,null,null,null,true,null,null,null,null,null,null,null,false)";
