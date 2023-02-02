@@ -221,15 +221,15 @@ public class TabBoatView extends Tab {
 
         });
 
-//        buttonAddPicture.setOnAction((event) -> {
-//			LoadFileChooser fc = new LoadFileChooser(System.getProperty("user.home"));
-//			System.out.println(fc.getFile().toString());
+        buttonAddPicture.setOnAction((event) -> {
+			LoadFileChooser fc = new LoadFileChooser(System.getProperty("user.home"));
+			System.out.println(fc.getFile().toString());
 //			String filename = getNewName(fc.getFile());
 //			File newImage = new File(imagePath, filename);
 //			copyFile(fc.getFile(), newImage);
 //			ftp.sendFile(imagePath + "/" + filename, "/home/pcameron/Documents/ECSC/Boats/" + b.getBoat_id() + "/" + filename);
 //			localImageFiles.add(newImage.getName().toString());
-//        });
+        });
 
 //        buttonForward.setOnAction((event) -> {
 //            pictureNumber++;
@@ -301,27 +301,7 @@ public class TabBoatView extends Tab {
         BoatPhotosDTO boatPhotosDTO1 = images.stream()
                 .filter(boatPhotosDTO -> boatPhotosDTO.isDefault())
                 .findFirst()
-                .orElse(new BoatPhotosDTO(
-                        0,
-                        0,
-                        "",
-                        "no_image.png",
-                        "/home/ecsc/ecsc_files/boat_images/",
-                        true));
+                .orElse(new BoatPhotosDTO(0, 0, "", "no_image.png", remotePath, true));
         return boatPhotosDTO1;
     }
-
-    public Image getImage(String file) {
-        FileInputStream input = null;
-        try {
-            // System.out.println("pictureNumber=" + pictureNumber);
-            input = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        assert input != null;
-        return new Image(input);
-    }
-
 }
