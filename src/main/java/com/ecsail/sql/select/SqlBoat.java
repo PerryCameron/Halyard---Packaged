@@ -183,7 +183,6 @@ public class SqlBoat {
     }
 
     public static BoatDTO getBoatByBoatId(int boat_id) { // overload but must be separate
-        System.out.println("Boat id is: " + boat_id);
         BoatDTO thisBoat = null;
         String query = "SELECT * FROM boat b LEFT JOIN boat_owner bo USING (boat_id) WHERE boat_id=" + boat_id;
         try {
@@ -213,7 +212,6 @@ public class SqlBoat {
 //            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
             e.printStackTrace();
         }
-        System.out.println("Pulling from database:" + thisBoat);
         return thisBoat;
     }
 }

@@ -140,7 +140,6 @@ public class TabBoats extends Tab {
 					{
 						btn.setOnAction((ActionEvent event) -> {
 							BoatListDTO BoatListDTO = getTableView().getItems().get(getIndex());
-							System.out.println("selectedBoatListDTO: " + BoatListDTO);
 							BoatDTO selectedBoat = SqlBoat.getBoatByBoatId(BoatListDTO.getBoat_id());
 							Launcher.openBoatViewTab(selectedBoat);
 						});
@@ -163,13 +162,13 @@ public class TabBoats extends Tab {
 		
 		/// sets width of columns by percentage
 		Col1.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );  // Membership ID
-		boatId.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );  // Membership ID
+		boatId.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );  // boat ID
 		Col2.setMaxWidth( 1f * Integer.MAX_VALUE * 13 );  // Last Name
 		Col3.setMaxWidth( 1f * Integer.MAX_VALUE * 10 );  // First Name
 		Col4.setMaxWidth( 1f * Integer.MAX_VALUE * 15 );  // Model
 		Col5.setMaxWidth( 1f * Integer.MAX_VALUE * 10 );  // Registration
-		Col6.setMaxWidth( 1f * Integer.MAX_VALUE * 10 );  // Year
-		Col7.setMaxWidth( 1f * Integer.MAX_VALUE * 13 );  // Boat Name
+		Col6.setMaxWidth( 1f * Integer.MAX_VALUE * 7 );  // Year
+		Col7.setMaxWidth( 1f * Integer.MAX_VALUE * 16 );  // Boat Name
 		Col8.setMaxWidth( 1f * Integer.MAX_VALUE * 7 );   // Images
 		Col9.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );   // aux
 		Col10.setMaxWidth( 1f * Integer.MAX_VALUE * 7);	  // view button

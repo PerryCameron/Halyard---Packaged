@@ -9,9 +9,12 @@ import com.ecsail.gui.tabs.roster.TabSlipOptions;
 import com.ecsail.gui.tabs.roster.TabStandard;
 import com.ecsail.rosterContextMenu;
 import com.ecsail.sql.select.SqlMembershipList;
+import com.ecsail.structures.BoatListDTO;
 import com.ecsail.structures.MembershipListDTO;
 import com.ecsail.structures.RosterRadioButtonsDTO;
 import com.ecsail.structures.RosterSelectDTO;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -139,26 +142,29 @@ public class TabRoster extends Tab {
 		Col1.setCellValueFactory(new PropertyValueFactory<>("membershipId"));
 		Col2.setCellValueFactory(new PropertyValueFactory<>("joinDate"));
 		Col3.setCellValueFactory(new PropertyValueFactory<>("memType"));
+		Col3.setStyle("-fx-alignment: top-center");
 		Col4.setCellValueFactory(new PropertyValueFactory<>("slip"));
+		Col4.setStyle("-fx-alignment: top-center");
+		// erasing code below will change nothing
+		Col4.setCellValueFactory(param -> {  // don't need this now but will use for subleases
+			MembershipListDTO m = param.getValue();
+			String valueDisplayed = "";
+			if(m.getSlip() != null) {
+				valueDisplayed = m.getSlip();
+			}
+			return new SimpleObjectProperty<>(valueDisplayed);
+		});
+
 		Col5.setCellValueFactory(new PropertyValueFactory<>("fname"));
 		Col6.setCellValueFactory(new PropertyValueFactory<>("lname"));
 		Col7.setCellValueFactory(new PropertyValueFactory<>("address"));
 		Col8.setCellValueFactory(new PropertyValueFactory<>("city"));
 		Col9.setCellValueFactory(new PropertyValueFactory<>("state"));
+		Col9.setStyle("-fx-alignment: top-center");
 		Col10.setCellValueFactory(new PropertyValueFactory<>("zip"));
 		Col11.setCellValueFactory(new PropertyValueFactory<>("msid"));
 
-//		Col4.setCellFactory(col -> {
-//			TableCell<MembershipListDTO, String> cell = new TableCell<>();
-//			cell.itemProperty().addListener((obs, old, newVal) -> {
-//				if (newVal != null) {
-//					System.out.println(newVal);
-//					Node centreBox = createSlipText(newVal);
-//					cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(centreBox));
-//				}
-//			});
-//			return cell;
-//		});
+
 		
 		/// sets width of columns by percentage
 		Col1.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );   // Mem 5%
