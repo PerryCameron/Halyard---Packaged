@@ -89,7 +89,7 @@ public class TabRoster extends Tab {
 		TableColumn<MembershipListDTO, Integer> Col1 = new TableColumn<>("ID");
 		TableColumn<MembershipListDTO, String> Col2 = new TableColumn<>("Join Date");
 		TableColumn<MembershipListDTO, String> Col3 = new TableColumn<>("Type");
-		TableColumn<MembershipListDTO, String> Col4 = new TableColumn<>("Slip");
+		TableColumn<MembershipListDTO, Text> Col4 = new TableColumn<>("Slip");
 		TableColumn<MembershipListDTO, String> Col5 = new TableColumn<>("First Name");
 		TableColumn<MembershipListDTO, String> Col6 = new TableColumn<>("Last Name");
 		TableColumn<MembershipListDTO, String> Col7 = new TableColumn<>("Address");
@@ -148,11 +148,14 @@ public class TabRoster extends Tab {
 		// erasing code below will change nothing
 		Col4.setCellValueFactory(param -> {  // don't need this now but will use for subleases
 			MembershipListDTO m = param.getValue();
+
 			String valueDisplayed = "";
 			if(m.getSlip() != null) {
 				valueDisplayed = m.getSlip();
 			}
-			return new SimpleObjectProperty<>(valueDisplayed);
+			Text text = new Text(valueDisplayed);
+			text.setFill(Color.BLUE);
+			return new SimpleObjectProperty<>(text);
 		});
 
 		Col5.setCellValueFactory(new PropertyValueFactory<>("fname"));
