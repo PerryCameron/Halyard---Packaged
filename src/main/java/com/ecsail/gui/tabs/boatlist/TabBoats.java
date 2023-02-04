@@ -1,4 +1,4 @@
-package com.ecsail.gui.tabs;
+package com.ecsail.gui.tabs.boatlist;
 
 
 import com.ecsail.Launcher;
@@ -7,6 +7,7 @@ import com.ecsail.sql.select.SqlBoat;
 import com.ecsail.structures.BoatDTO;
 import com.ecsail.structures.BoatListDTO;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -48,7 +49,8 @@ public class TabBoats extends Tab {
 		VBox.setVgrow(boatListTableView, Priority.ALWAYS);
 		HBox.setHgrow(boatListTableView, Priority.ALWAYS);
 		
-		var Col1 = new TableColumn<BoatListDTO, Integer>("MEM");
+		var Col1 = new TableColumn<BoatListDTO, String>("ID");
+		var boatId = new TableColumn<BoatListDTO, String>("Boat");
 		var Col2 = new TableColumn<BoatListDTO, String>("Last Name");
 		var Col3 = new TableColumn<BoatListDTO, String>("First Name");
 		var Col4 = new TableColumn<BoatListDTO, String>("Model");
@@ -61,7 +63,29 @@ public class TabBoats extends Tab {
 
 
 		
-		Col1.setCellValueFactory(new PropertyValueFactory<>("membership_id"));
+		Col1.setCellValueFactory(new PropertyValueFactory<BoatListDTO, String>("membership_id"));
+		Col1.setStyle("-fx-alignment: CENTER");
+
+		Col1.setCellValueFactory(param -> {
+			BoatListDTO boat = param.getValue();
+			String valueDisplayed = "";
+			if(boat.getMembership_id() != 0) {
+				valueDisplayed = String.valueOf(boat.getMembership_id());
+			}
+			return new SimpleObjectProperty<>(valueDisplayed);
+		});
+
+		boatId.setCellValueFactory(new PropertyValueFactory<>("boat_id"));
+		boatId.setStyle("-fx-alignment: CENTER");
+		boatId.setCellValueFactory(param -> {
+			BoatListDTO boat = param.getValue();
+			String valueDisplayed = "";
+			if(boat.getBoat_id() != 0) {
+				valueDisplayed = String.valueOf(boat.getBoat_id());
+			}
+			return new SimpleObjectProperty<>(valueDisplayed);
+		});
+
 		Col2.setCellValueFactory(new PropertyValueFactory<>("lName"));
 		Col3.setCellValueFactory(new PropertyValueFactory<>("fName"));
 		Col4.setCellValueFactory(new PropertyValueFactory<>("model"));
@@ -73,9 +97,7 @@ public class TabBoats extends Tab {
 		Col8.setCellFactory(param -> {
 			TableCell cell = new TableCell() {
 				public void updateItem(Object item, boolean empty) {
-					if((int) item==0){
-						setText(item.toString());
-					} else {
+					if(item!=null){
 						setText(item.toString());
 					}
 				}
@@ -119,8 +141,7 @@ public class TabBoats extends Tab {
 						btn.setOnAction((ActionEvent event) -> {
 							BoatListDTO BoatListDTO = getTableView().getItems().get(getIndex());
 							System.out.println("selectedBoatListDTO: " + BoatListDTO);
-							//					BoatListDTO clickedRow = row.getItem();
-							BoatDTO selectedBoat = SqlBoat.getBoatbyBoatId(getTableView().getItems().get(getIndex()).getBoat_id());
+							BoatDTO selectedBoat = SqlBoat.getBoatByBoatId(BoatListDTO.getBoat_id());
 							Launcher.openBoatViewTab(selectedBoat);
 						});
 					}
@@ -141,7 +162,8 @@ public class TabBoats extends Tab {
 		Col10.setCellFactory(cellFactory);
 		
 		/// sets width of columns by percentage
-		Col1.setMaxWidth( 1f * Integer.MAX_VALUE * 10 );  // Membership ID
+		Col1.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );  // Membership ID
+		boatId.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );  // Membership ID
 		Col2.setMaxWidth( 1f * Integer.MAX_VALUE * 13 );  // Last Name
 		Col3.setMaxWidth( 1f * Integer.MAX_VALUE * 10 );  // First Name
 		Col4.setMaxWidth( 1f * Integer.MAX_VALUE * 15 );  // Model
@@ -169,7 +191,7 @@ public class TabBoats extends Tab {
 		////////////////// SET CONTENT ////////////////////////
 		
 		boatListTableView.getColumns()
-		.addAll(Arrays.asList(Col1, Col2, Col3, Col4, Col5, Col6, Col7, Col8, Col9, Col10)); // , Col8, Col9, Col10, Col11
+		.addAll(Arrays.asList(Col1, boatId, Col2, Col3, Col4, Col5, Col6, Col7, Col8, Col9, Col10)); // , Col8, Col9, Col10, Col11
 		
 		vboxGrey.getChildren().add(boatListTableView);
 		vboxBlue.getChildren().add(vboxPink);

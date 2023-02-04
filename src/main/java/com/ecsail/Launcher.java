@@ -1,5 +1,6 @@
 package com.ecsail;
 
+import com.ecsail.gui.tabs.boatlist.TabBoats;
 import com.ecsail.gui.tabs.boatview.TabBoatView;
 import com.ecsail.gui.tabs.fee.TabFee;
 import com.ecsail.gui.tabs.people.TabPeople;
@@ -80,6 +81,7 @@ public class Launcher extends VBox {
     }
 
     public static void openBoatViewTab(BoatDTO b) {
+        System.out.println(b);
         if (!tabOpen("Boat"))
             tabPane.getTabs().add(new TabBoatView("Boat " + b.getBoat_id(), b));
         tabPane.getSelectionModel().select(getTabIndex("Boat " + b.getBoat_id()));

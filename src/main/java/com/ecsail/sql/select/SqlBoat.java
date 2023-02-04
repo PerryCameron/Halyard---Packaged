@@ -182,11 +182,10 @@ public class SqlBoat {
         return thisBoat;
     }
 
-    public static BoatDTO getBoatbyBoatId(int boat_id) { // overload but must be separate
+    public static BoatDTO getBoatByBoatId(int boat_id) { // overload but must be separate
+        System.out.println("Boat id is: " + boat_id);
         BoatDTO thisBoat = null;
-        String query = "SELECT b.boat_id, bo.ms_id, b.manufacturer"
-                + ", b.manufacture_year, b.registration_num, b.model, b.boat_name, b.sail_number"
-                + ", b.has_trailer, b.length, b.weight, b.keel, b.phrf, b.draft, b.beam, b.lwl, b.aux FROM boat b INNER JOIN boat_owner bo USING (boat_id) WHERE boat_id=" + boat_id;
+        String query = "SELECT * FROM boat b LEFT JOIN boat_owner bo USING (boat_id) WHERE boat_id=" + boat_id;
         try {
         ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
@@ -214,6 +213,7 @@ public class SqlBoat {
 //            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
             e.printStackTrace();
         }
+        System.out.println("Pulling from database:" + thisBoat);
         return thisBoat;
     }
 }
