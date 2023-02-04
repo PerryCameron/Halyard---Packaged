@@ -88,7 +88,7 @@ public class TabRoster extends Tab {
 
 		TableColumn<MembershipListDTO, Integer> Col1 = new TableColumn<>("ID");
 		TableColumn<MembershipListDTO, String> Col2 = new TableColumn<>("Join Date");
-		TableColumn<MembershipListDTO, String> Col3 = new TableColumn<>("Type");
+		TableColumn<MembershipListDTO, Text> Col3 = new TableColumn<>("Type");
 		TableColumn<MembershipListDTO, Text> Col4 = new TableColumn<>("Slip");
 		TableColumn<MembershipListDTO, String> Col5 = new TableColumn<>("First Name");
 		TableColumn<MembershipListDTO, String> Col6 = new TableColumn<>("Last Name");
@@ -143,6 +143,20 @@ public class TabRoster extends Tab {
 		Col2.setCellValueFactory(new PropertyValueFactory<>("joinDate"));
 		Col3.setCellValueFactory(new PropertyValueFactory<>("memType"));
 		Col3.setStyle("-fx-alignment: top-center");
+		Col3.setCellValueFactory(param -> {  // don't need this now but will use for subleases
+			MembershipListDTO m = param.getValue();
+			Text text = new Text();
+			String valueDisplayed = "";
+			if(m.getMemType() != null) {
+				valueDisplayed = m.getMemType();
+			}
+			if(valueDisplayed.equals("SO")) text.setFill(Color.GREEN);
+			else if(valueDisplayed.equals("FM")) text.setFill(Color.BLUE);
+			else if(valueDisplayed.equals("RM")) text.setFill(Color.RED);
+//			else if(valueDisplayed.equals("LA")) text.setFill(Color.KHAKI);
+			text.setText(valueDisplayed);
+			return new SimpleObjectProperty<>(text);
+		});
 		Col4.setCellValueFactory(new PropertyValueFactory<>("slip"));
 		Col4.setStyle("-fx-alignment: top-center");
 		// erasing code below will change nothing
@@ -154,7 +168,7 @@ public class TabRoster extends Tab {
 				valueDisplayed = m.getSlip();
 			}
 			Text text = new Text(valueDisplayed);
-			text.setFill(Color.BLUE);
+			text.setFill(Color.CHOCOLATE);
 			return new SimpleObjectProperty<>(text);
 		});
 
