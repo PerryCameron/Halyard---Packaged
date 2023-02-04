@@ -381,6 +381,7 @@ public class SqlMembershipList {
                 + "id.mem_type,p.l_name,p.f_name,m.address,m.city,m.state,m.zip FROM "
                 + "membership m LEFT JOIN person p ON m.p_id=p.p_id LEFT JOIN membership_id "
                 + "id ON m.ms_id=id.ms_id WHERE id.fiscal_year='"+ HalyardPaths.getYear()+"' AND membership_id='" + membership_id + "'";
+        System.out.println(query);
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {

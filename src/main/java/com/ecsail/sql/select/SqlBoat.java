@@ -65,12 +65,16 @@ public class SqlBoat {
 
     public static ObservableList<BoatListDTO> getBoatsWithOwners() {
         ObservableList<BoatListDTO> thisBoat = FXCollections.observableArrayList();
-        String query = "SELECT id.membership_id,id.ms_id, p.l_name, p.f_name, "
-                + "b.* FROM boat b LEFT JOIN boat_owner bo ON "
-                + "b.boat_id=bo.boat_id LEFT JOIN membership_id id "
-                + "ON bo.ms_id=id.ms_id LEFT JOIN membership m ON "
-                + "id.ms_id=m.ms_id LEFT JOIN person p ON m.p_id=p.p_id "
-                + "WHERE id.fiscal_year='"+ BaseApplication.selectedYear +"'";
+        String query =
+                """
+                SELECT id.membership_id,id.ms_id, p.l_name, p.f_name,b.*,nb.boat_count
+                FROM boat b
+                LEFT JOIN boat_owner bo on b.BOAT_ID = bo.BOAT_ID
+                LEFT JOIN membership m on bo.MS_ID = m.MS_ID
+                LEFT JOIN (SELECT * FROM membership_id where FISCAL_YEAR=(select year(now()))) id on bo.MS_ID=id.MS_ID
+                LEFT JOIN person p on m.P_ID = p.P_ID
+                LEFT JOIN (select BOAT_ID,count(BOAT_ID) AS boat_count from boat_photos group by BOAT_ID having count(BOAT_ID) > 0) nb on b.BOAT_ID=nb.BOAT_ID;
+                """;
         try {
             
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
@@ -95,7 +99,8 @@ public class SqlBoat {
                         rs.getBoolean("aux"),
                         rs.getInt("membership_id"),
                         rs.getString("l_name"),
-                        rs.getString("f_name")));
+                        rs.getString("f_name"),
+                        rs.getInt("boat_count")));
             }
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {

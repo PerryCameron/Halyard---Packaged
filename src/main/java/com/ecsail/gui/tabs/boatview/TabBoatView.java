@@ -36,20 +36,17 @@ import java.util.Objects;
 
 public class TabBoatView extends Tab {
     private final ObservableList<MembershipListDTO> boatOwners;
-    private int pictureNumber = 0;
     private Sftp scp;
-//    private final ArrayList<String> localImageFiles;
     private final ObservableList<DbBoatDTO> dbBoatDTOS;
     // TODO need to add history to boat_owner table
     protected BoatDTO boatDTO;
-
     protected ArrayList<BoatPhotosDTO> images;
-
     protected BoatPhotosDTO selectedImage;
-
     String remotePath = "/home/ecsc/ecsc_files/boat_images/";
-
     String localPath = System.getProperty("user.home") + "/.ecsc/boat_images/";
+    String[] extensionsAllowed = {"jpg","jpeg","png","bmp","gif"};
+    // this is the group number for ecsc
+    int groupId = 1006;
 
     public TabBoatView(String text, BoatDTO boat) {
         super(text);
@@ -156,10 +153,6 @@ public class TabBoatView extends Tab {
 
         ownerTitlePane.setText("Owner(s)");
         boatInfoTitlePane.setText("Boat Information");
-        // need to continue with labels
-
-        // vboxFieldsContainer.setStyle("-fx-background-color: #201ac9;"); // blue
-
         vboxButtons.setPadding(new Insets(0, 0, 0, 5));
         vboxBlue.setPadding(new Insets(10, 10, 10, 10));
         vboxPink.setPadding(new Insets(3, 3, 3, 3)); // spacing to make pink from around table
@@ -199,19 +192,8 @@ public class TabBoatView extends Tab {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasFiles()) {
-                // db.getFiles().get(0) <- filename
-                int fileNumber = images.size() + 1;
                 String srcPath = db.getFiles().get(0).getAbsolutePath();
-                // TODO check for file type and append to filename below
-                String fileName = boatDTO.getBoat_id() + "_" + fileNumber + ".jpeg";
-                BoatPhotosDTO boatPhotosDTO = new BoatPhotosDTO(0,
-                        boatDTO.getBoat_id(),"",fileName,remotePath,isFirstPic());
-                scp.sendFile(srcPath,boatPhotosDTO.getFullPath());
-                SqlInsert.addBoatImage(boatPhotosDTO);
-                images.add(boatPhotosDTO);
-                FileIO.copyFile(new File(srcPath),new File(localPath + fileName));
-                Image newImage = new Image("file:" + localPath + fileName);
-                imageView.setImage(newImage);
+                storeNewImage(imageView, srcPath);
             }
             event.setDropCompleted(success);
             event.consume();
@@ -224,27 +206,15 @@ public class TabBoatView extends Tab {
         buttonAddPicture.setOnAction((event) -> {
 			LoadFileChooser fc = new LoadFileChooser(System.getProperty("user.home"));
 			System.out.println(fc.getFile().toString());
-//			String filename = getNewName(fc.getFile());
-//			File newImage = new File(imagePath, filename);
-//			copyFile(fc.getFile(), newImage);
-//			ftp.sendFile(imagePath + "/" + filename, "/home/pcameron/Documents/ECSC/Boats/" + b.getBoat_id() + "/" + filename);
-//			localImageFiles.add(newImage.getName().toString());
+
         });
 
-//        buttonForward.setOnAction((event) -> {
-//            pictureNumber++;
-//            if (pictureNumber == localImageFiles.size())
-//                pictureNumber = 0;
-//            Image newImage = getImage(HalyardPaths.BOATDIR + "/" + boatDTO.getBoat_id() + "/" + localImageFiles.get(pictureNumber));
-//            imageView.setImage(newImage);
-//        });
+        buttonForward.setOnAction((event) -> {
+
+        });
 
         buttonReverse.setOnAction((event) -> {
-//            pictureNumber--;
-//            if (pictureNumber < 0)
-//                pictureNumber = localImageFiles.size() - 1;
-//            Image newImage = getImage(HalyardPaths.BOATDIR + "/" + boatDTO.getBoat_id() + "/" + localImageFiles.get(pictureNumber));
-//            imageView.setImage(newImage);
+
         });
 
         boatOwnerAdd.setOnAction((event) -> {
@@ -291,6 +261,32 @@ public class TabBoatView extends Tab {
         vboxBlue.getChildren().add(vboxPink);
         vboxPink.getChildren().add(vboxGrey);
         setContent(vboxBlue);
+    }
+
+    private void storeNewImage(ImageView imageView, String srcPath) {
+        if(isImageType(srcPath)) {
+            int fileNumber = images.size() + 1;
+            String fileName = boatDTO.getBoat_id() + "_" + fileNumber + "." + FileIO.getFileExtension(srcPath);
+            BoatPhotosDTO boatPhotosDTO = new BoatPhotosDTO(0,
+                    boatDTO.getBoat_id(),"",fileName,remotePath,isFirstPic());
+            scp.sendFile(srcPath,boatPhotosDTO.getFullPath());
+            scp.changeGroup(boatPhotosDTO.getFullPath(),groupId);
+            SqlInsert.addBoatImage(boatPhotosDTO);
+            images.add(boatPhotosDTO);
+            FileIO.copyFile(new File(srcPath),new File(localPath + fileName));
+            Image newImage = new Image("file:" + localPath + fileName);
+            imageView.setImage(newImage);
+        } else {
+            // TODO not an image type do nothing?
+        }
+    }
+
+    private boolean isImageType(String srcPath) {
+        String extension = FileIO.getFileExtension(srcPath);
+        for (String ex : extensionsAllowed) {
+            if (ex.equals(extension)) return true;
+        }
+        return false;
     }
 
     private boolean isFirstPic() {

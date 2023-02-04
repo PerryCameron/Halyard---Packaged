@@ -55,19 +55,38 @@ public class TabBoats extends Tab {
 		var Col5 = new TableColumn<BoatListDTO, String>("Registration");
 		var Col6 = new TableColumn<BoatListDTO, String>("Year");
 		var Col7 = new TableColumn<BoatListDTO, String>("Name");
-		var Col8 = new TableColumn<BoatListDTO, Boolean>("Aux");
-		var Col9 = new TableColumn<BoatListDTO, Void>("Select");
+		var Col8 = new TableColumn<BoatListDTO, Integer>("Images");
+		var Col9 = new TableColumn<BoatListDTO, Boolean>("Aux");
+		var Col10 = new TableColumn<BoatListDTO, Void>("Select");
+
+
 		
 		Col1.setCellValueFactory(new PropertyValueFactory<>("membership_id"));
-		Col2.setCellValueFactory(new PropertyValueFactory<>("lname"));
-		Col3.setCellValueFactory(new PropertyValueFactory<>("fname"));
+		Col2.setCellValueFactory(new PropertyValueFactory<>("lName"));
+		Col3.setCellValueFactory(new PropertyValueFactory<>("fName"));
 		Col4.setCellValueFactory(new PropertyValueFactory<>("model"));
 		Col5.setCellValueFactory(new PropertyValueFactory<>("registration_num"));
 		Col6.setCellValueFactory(new PropertyValueFactory<>("manufacture_year"));
 		Col7.setCellValueFactory(new PropertyValueFactory<>("boat_name"));
-		Col8.setCellValueFactory(new PropertyValueFactory<>("aux"));
+		Col8.setCellValueFactory(new PropertyValueFactory<>("numberOfImages"));
 
-		Col8.setCellValueFactory(param -> {
+		Col8.setCellFactory(param -> {
+			TableCell cell = new TableCell() {
+				public void updateItem(Object item, boolean empty) {
+					if((int) item==0){
+						setText(item.toString());
+					} else {
+						setText(item.toString());
+					}
+				}
+			};
+			cell.setAlignment(Pos.CENTER);
+			return cell;
+		});
+
+		Col9.setCellValueFactory(new PropertyValueFactory<>("aux"));
+
+		Col9.setCellValueFactory(param -> {
 			BoatListDTO boat = param.getValue();
 			SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(boat.isAux());
 			// Note: singleCol.setOnEditCommit(): Not work for
@@ -83,7 +102,7 @@ public class TabBoats extends Tab {
 		});
 
 		//
-		Col8.setCellFactory(p -> {
+		Col9.setCellFactory(p -> {
 			CheckBoxTableCell<BoatListDTO, Boolean> cell = new CheckBoxTableCell<>();
 			cell.setAlignment(Pos.CENTER);
 			return cell;
@@ -119,18 +138,19 @@ public class TabBoats extends Tab {
 			}
 		};
 		
-		Col9.setCellFactory(cellFactory);
+		Col10.setCellFactory(cellFactory);
 		
 		/// sets width of columns by percentage
 		Col1.setMaxWidth( 1f * Integer.MAX_VALUE * 10 );  // Membership ID
-		Col2.setMaxWidth( 1f * Integer.MAX_VALUE * 15 );  // Last Name
-		Col3.setMaxWidth( 1f * Integer.MAX_VALUE * 15 );  // First Name
+		Col2.setMaxWidth( 1f * Integer.MAX_VALUE * 13 );  // Last Name
+		Col3.setMaxWidth( 1f * Integer.MAX_VALUE * 10 );  // First Name
 		Col4.setMaxWidth( 1f * Integer.MAX_VALUE * 15 );  // Model
 		Col5.setMaxWidth( 1f * Integer.MAX_VALUE * 10 );  // Registration
 		Col6.setMaxWidth( 1f * Integer.MAX_VALUE * 10 );  // Year
 		Col7.setMaxWidth( 1f * Integer.MAX_VALUE * 13 );  // Boat Name
-		Col8.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );   // aux
-		Col9.setMaxWidth( 1f * Integer.MAX_VALUE * 7);	  // view button
+		Col8.setMaxWidth( 1f * Integer.MAX_VALUE * 7 );   // Images
+		Col9.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );   // aux
+		Col10.setMaxWidth( 1f * Integer.MAX_VALUE * 7);	  // view button
 		
 		/////////////////// LISTENERS  /////////////////////////
 
@@ -149,7 +169,7 @@ public class TabBoats extends Tab {
 		////////////////// SET CONTENT ////////////////////////
 		
 		boatListTableView.getColumns()
-		.addAll(Arrays.asList(Col1, Col2, Col3, Col4, Col5, Col6, Col7, Col8, Col9)); // , Col8, Col9, Col10, Col11
+		.addAll(Arrays.asList(Col1, Col2, Col3, Col4, Col5, Col6, Col7, Col8, Col9, Col10)); // , Col8, Col9, Col10, Col11
 		
 		vboxGrey.getChildren().add(boatListTableView);
 		vboxBlue.getChildren().add(vboxPink);

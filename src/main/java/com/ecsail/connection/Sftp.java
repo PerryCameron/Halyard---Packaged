@@ -50,6 +50,14 @@ public class Sftp {
         }
     }
 
+    public void changeGroup(String path, int group) {
+        try {
+            c.chgrp(group, path);
+        } catch (SftpException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void getFile(String getFrom, String getTo) {
         try {
             SftpProgressMonitor monitor=new AppProgressMonitor();
