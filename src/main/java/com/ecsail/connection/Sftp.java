@@ -77,4 +77,28 @@ public class Sftp {
             e.printStackTrace();
         }
     }
+
+    public void deleteFile(String path) {
+        try {
+            c.rm(path);
+        } catch (SftpException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void makeDirectory(String path) {
+        try {
+            c.mkdir(path);
+        } catch (SftpException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteDirectory(String path) {
+        try {
+            c.rmdir(path);
+        } catch (SftpException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

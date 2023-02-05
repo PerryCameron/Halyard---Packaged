@@ -20,6 +20,15 @@ public class SqlDelete {
 //			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
 		}
 	}
+
+	public static void deleteBoatPhoto(BoatPhotosDTO bp) {
+		String query = "DELETE FROM boat_photos WHERE ID=" + bp.getId();
+		try {
+			BaseApplication.connect.executeQuery(query);
+		} catch (SQLException e) {
+			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
+		}
+	}
 	
 	public static void deletePerson(PersonDTO p) {
 		String query = "DELETE FROM person WHERE p_id=" + p.getP_id();

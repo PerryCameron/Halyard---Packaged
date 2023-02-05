@@ -87,6 +87,15 @@ public static List<LoginDTO> logins = new ArrayList<>();
 		return count;
 	}
 
+	public static void deleteFile(String path) {
+		File fileToDelete = new File(path);
+		if (fileToDelete.delete()) {
+			BaseApplication.logger.info("Deleted the file: " + fileToDelete.getName());
+		} else {
+			BaseApplication.logger.info("Failed to delete the file: " + fileToDelete.getName());
+		}
+	}
+
 	public static void copyFile(File srcFile, File destFile) {
 		InputStream is = null;
 		OutputStream os = null;

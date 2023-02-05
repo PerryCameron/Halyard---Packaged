@@ -193,7 +193,26 @@ public class TabBoatView extends Tab {
         });
 
         buttonDelete.setOnAction((event) -> {
-
+            // find if current image is default
+            boolean imageIsDefault = selectedImage.isDefault();
+            // get id of selected image
+            int id = selectedImage.getId();
+            // delete remote
+            scp.deleteFile(remotePath + selectedImage.getFilename());
+            // delete local
+            FileIO.deleteFile(localPath + selectedImage.getFilename());
+            // remove database entry
+            SqlDelete.deleteBoatPhoto(selectedImage);
+            // move to next image
+            moveToNextImage(true); // this will also update selectedImage
+            // if old image was default set the new one as default
+            if(imageIsDefault) {
+                selectedImage.setDefault(true);
+                SqlUpdate.updateBoatImages(selectedImage);
+            }
+            BoatPhotosDTO boatPhotosDTO = getBoatPhotoDTOById(id);
+            // remove old BoatPhotosDTO arraylist
+            images.remove(boatPhotosDTO);
         });
 
         buttonAddPicture.setOnAction((event) -> {
@@ -335,5 +354,12 @@ public class TabBoatView extends Tab {
                 .findFirst()
                 .orElse(new BoatPhotosDTO(0, 0, "", "no_image.png", 0, true));
         return boatPhotosDTO1;
+    }
+
+    private BoatPhotosDTO getBoatPhotoDTOById(int id) {
+        BoatPhotosDTO boatPhotosDTO = images.stream()
+                .filter(boatPhotosDTO1 -> boatPhotosDTO1.getId() == id)
+                .findFirst().orElse(null);
+        return boatPhotosDTO;
     }
 }
