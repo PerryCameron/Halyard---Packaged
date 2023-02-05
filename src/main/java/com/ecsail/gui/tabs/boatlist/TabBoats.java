@@ -66,25 +66,17 @@ public class TabBoats extends Tab {
 		Col1.setCellValueFactory(new PropertyValueFactory<BoatListDTO, String>("membership_id"));
 		Col1.setStyle("-fx-alignment: CENTER");
 
-		Col1.setCellValueFactory(param -> {
-			BoatListDTO boat = param.getValue();
-			String valueDisplayed = "";
-			if(boat.getMembership_id() != 0) {
-				valueDisplayed = String.valueOf(boat.getMembership_id());
-			}
-			return new SimpleObjectProperty<>(valueDisplayed);
-		});
+//		Col1.setCellValueFactory(param -> {
+//			BoatListDTO boat = param.getValue();
+//			String valueDisplayed = "";
+//			if(boat.getMembership_id() != 0) {
+//				valueDisplayed = String.valueOf(boat.getMembership_id());
+//			}
+//			return new SimpleObjectProperty<>(valueDisplayed);
+//		});
 
 		boatId.setCellValueFactory(new PropertyValueFactory<>("boat_id"));
 		boatId.setStyle("-fx-alignment: CENTER");
-		boatId.setCellValueFactory(param -> {
-			BoatListDTO boat = param.getValue();
-			String valueDisplayed = "";
-			if(boat.getBoat_id() != 0) {
-				valueDisplayed = String.valueOf(boat.getBoat_id());
-			}
-			return new SimpleObjectProperty<>(valueDisplayed);
-		});
 
 		Col2.setCellValueFactory(new PropertyValueFactory<>("lName"));
 		Col3.setCellValueFactory(new PropertyValueFactory<>("fName"));
