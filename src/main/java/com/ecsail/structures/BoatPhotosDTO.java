@@ -5,21 +5,18 @@ public class BoatPhotosDTO {
     int boat_id;
     String upload_date;
     String filename;
-    String path;
+    int fileNumber;
     boolean isDefault;
 
-    public BoatPhotosDTO(int id, int boat_id, String upload_date, String filename, String path, boolean isDefault) {
+    public BoatPhotosDTO(int id, int boat_id, String upload_date, String filename, int fileNumber, boolean isDefault) {
         this.id = id;
         this.boat_id = boat_id;
         this.upload_date = upload_date;
         this.filename = filename;
-        this.path = path;
+        this.fileNumber = fileNumber;
         this.isDefault = isDefault;
     }
 
-    public String getFullPath() {
-        return path + filename;
-    }
     public int getId() {
         return id;
     }
@@ -52,12 +49,12 @@ public class BoatPhotosDTO {
         this.filename = filename;
     }
 
-    public String getPath() {
-        return path;
+    public int getFileNumber() {
+        return fileNumber;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setFileNumber(int fileNumber) {
+        this.fileNumber = fileNumber;
     }
 
     public boolean isDefault() {

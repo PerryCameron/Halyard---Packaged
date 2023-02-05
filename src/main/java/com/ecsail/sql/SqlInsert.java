@@ -126,8 +126,8 @@ public class SqlInsert {
 				+ bp.getBoat_id()
 				+ ",'" + DataBase.getTimeStamp()
 				+ "','" + bp.getFilename()
-				+ "','" + bp.getPath()
-				+ "'," + bp.isDefault()
+				+ "'," + bp.getFileNumber()
+				+ "," + bp.isDefault()
 				+ ")";
 		try {
 			BaseApplication.connect.executeQuery(query);

@@ -19,7 +19,7 @@ public class SqlBoatPhotos {
                         rs.getInt("BOAT_ID"),
                         rs.getString("upload_date"),
                         rs.getString("filename"),
-                        rs.getString("path"),
+                        rs.getInt("file_number"),
                         rs.getBoolean("default_image")));
             }
             BaseApplication.connect.closeResultSet(rs);

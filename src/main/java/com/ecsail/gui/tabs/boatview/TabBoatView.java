@@ -32,6 +32,7 @@ import javafx.scene.layout.VBox;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Objects;
 
 public class TabBoatView extends Tab {
@@ -59,7 +60,7 @@ public class TabBoatView extends Tab {
         // make sure directory exists, and create it if it does not
         this.selectedImage = getDefaultBoatPhotoDTO();
         String localFile = localPath + selectedImage.getFilename();
-        String remoteFile = selectedImage.getPath() + selectedImage.getFilename();
+        String remoteFile = remotePath + selectedImage.getFilename();
         Image image = null;
 
         if(selectedImage.getFilename().equals("no_image.png")) {
@@ -218,13 +219,6 @@ public class TabBoatView extends Tab {
         });
 
         boatOwnerAdd.setOnAction((event) -> {
-            // int phone_id = SqlSelect.getCount("phone", "phone_id"); // get last phone_id
-            // number
-            // phone_id++; // increase to first available number
-            // if (SqlInsert.addRecord(phone_id, person.getP_id(), true, "new phone", ""))
-            // // if added with no errors
-            // phone.add(new Object_Phone(phone_id, person.getP_id(), true, "new phone",
-            // "")); // lets add it to our GUI
             new Dialogue_ChooseMember(boatOwners, boatDTO.getBoat_id());
             // boatOwners.add(new Object_MembershipList());
         });
@@ -265,12 +259,12 @@ public class TabBoatView extends Tab {
 
     private void storeNewImage(ImageView imageView, String srcPath) {
         if(isImageType(srcPath)) {
-            int fileNumber = images.size() + 1;
+            int fileNumber = getNextFileNumberAvailable();
             String fileName = boatDTO.getBoat_id() + "_" + fileNumber + "." + FileIO.getFileExtension(srcPath);
             BoatPhotosDTO boatPhotosDTO = new BoatPhotosDTO(0,
-                    boatDTO.getBoat_id(),"",fileName,remotePath,isFirstPic());
-            scp.sendFile(srcPath,boatPhotosDTO.getFullPath());
-            scp.changeGroup(boatPhotosDTO.getFullPath(),groupId);
+                    boatDTO.getBoat_id(),"",fileName,fileNumber,isFirstPic());
+            scp.sendFile(srcPath,remotePath + boatPhotosDTO.getFilename());
+            scp.changeGroup(remotePath + boatPhotosDTO.getFilename(),groupId);
             SqlInsert.addBoatImage(boatPhotosDTO);
             images.add(boatPhotosDTO);
             FileIO.copyFile(new File(srcPath),new File(localPath + fileName));
@@ -279,6 +273,12 @@ public class TabBoatView extends Tab {
         } else {
             // TODO not an image type do nothing?
         }
+    }
+
+    private int getNextFileNumberAvailable() {
+        if(images.size() == 0) return 1;
+        else images.sort(Comparator.comparingInt(BoatPhotosDTO::getFileNumber));
+        return images.get(images.size() - 1).getFileNumber() + 1;
     }
 
     private boolean isImageType(String srcPath) {
@@ -297,7 +297,7 @@ public class TabBoatView extends Tab {
         BoatPhotosDTO boatPhotosDTO1 = images.stream()
                 .filter(boatPhotosDTO -> boatPhotosDTO.isDefault())
                 .findFirst()
-                .orElse(new BoatPhotosDTO(0, 0, "", "no_image.png", remotePath, true));
+                .orElse(new BoatPhotosDTO(0, 0, "", "no_image.png", 0, true));
         return boatPhotosDTO1;
     }
 }
