@@ -9,6 +9,7 @@ import com.ecsail.connection.Sftp;
 import com.ecsail.gui.dialogues.Dialogue_ChooseMember;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
+import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlBoatPhotos;
 import com.ecsail.sql.select.SqlDbBoat;
 import com.ecsail.sql.select.SqlMembershipList;
@@ -58,21 +59,9 @@ public class TabBoatView extends Tab {
         this.scp = BaseApplication.connect.getScp();
         this.images = SqlBoatPhotos.getImagesByBoatId(boatDTO.getBoat_id());
         this.imageView = new ImageView();
-
         // make sure directory exists, and create it if it does not
         this.selectedImage = getDefaultBoatPhotoDTO();
-        String localFile = localPath + selectedImage.getFilename();
-        String remoteFile = remotePath + selectedImage.getFilename();
-        Image image = null;
-
-        if(selectedImage.getFilename().equals("no_image.png")) {
-            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/no_image.png")));
-        } else if(HalyardPaths.fileExists(localFile)) {
-            image = new Image("file:" + localFile);
-        } else {
-            scp.getFile(remoteFile,localFile);
-            image = new Image("file:" + localFile);
-        }
+        setDefaultImage();
 
         TableView<MembershipListDTO> boatOwnerTableView = new TableView<>();
         var vboxGrey = new VBox(); // this is the hbox for holding all content
@@ -101,6 +90,7 @@ public class TabBoatView extends Tab {
         var buttonReverse = new Button("<");
         var buttonAddPicture = new Button("Add");
         var buttonDelete = new Button("Delete");
+        var buttonDefault = new Button("Set As Default");
 
         var col1 = new TableColumn<MembershipListDTO, Integer>("MEM");
         var col2 = new TableColumn<MembershipListDTO, String>("Last Name");
@@ -212,6 +202,14 @@ public class TabBoatView extends Tab {
 
         });
 
+        buttonDefault.setOnAction((event) -> {
+            for(BoatPhotosDTO photo: images) {
+                if(photo.getId() == selectedImage.getId()) photo.setDefault(true);
+                else photo.setDefault(false);
+                SqlUpdate.updateBoatImages(photo);
+            }
+        });
+
         buttonForward.setOnAction((event) -> {
             moveToNextImage(true);
         });
@@ -246,10 +244,10 @@ public class TabBoatView extends Tab {
         vboxLeftContainer.getChildren().addAll(boatInfoTitlePane, ownerTitlePane);
 
         /////////////////////// RIGHT CONTAINER /////////////////////
-        imageView.setImage(image);
+
         // imageView sent to viewPane through constructor of ImageViewPane
         vboxPicture.getChildren().add(viewPane);
-        hboxPictureControls.getChildren().addAll(buttonReverse, buttonForward, buttonAddPicture);
+        hboxPictureControls.getChildren().addAll(buttonReverse, buttonForward, buttonDefault, buttonAddPicture, buttonDelete);
         vboxRightContainer.getChildren().addAll(hboxPictureControls, vboxPicture);
 
         hboxContainer.getChildren().addAll(vboxLeftContainer, vboxRightContainer);
@@ -257,6 +255,21 @@ public class TabBoatView extends Tab {
         vboxBlue.getChildren().add(vboxPink);
         vboxPink.getChildren().add(vboxGrey);
         setContent(vboxBlue);
+    }
+
+    private void setDefaultImage() {
+        Image image = null;
+        String localFile = localPath + selectedImage.getFilename();
+        String remoteFile = remotePath + selectedImage.getFilename();
+        if(selectedImage.getFilename().equals("no_image.png")) {
+            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/no_image.png")));
+        } else if(HalyardPaths.fileExists(localFile)) {
+            image = new Image("file:" + localFile);
+        } else {
+            scp.getFile(remoteFile,localFile);
+            image = new Image("file:" + localFile);
+        }
+        imageView.setImage(image);
     }
 
     private void moveToNextImage(boolean moveForward) {
