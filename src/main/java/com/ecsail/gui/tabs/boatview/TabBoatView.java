@@ -48,6 +48,7 @@ public class TabBoatView extends Tab {
     String[] extensionsAllowed = {"jpg","jpeg","png","bmp","gif"};
     // this is the group number for ecsc
     int groupId = 1006;
+    private ImageView imageView;
 
     public TabBoatView(String text, BoatDTO boat) {
         super(text);
@@ -56,6 +57,7 @@ public class TabBoatView extends Tab {
         this.dbBoatDTOS = SqlDbBoat.getDbBoat();
         this.scp = BaseApplication.connect.getScp();
         this.images = SqlBoatPhotos.getImagesByBoatId(boatDTO.getBoat_id());
+        this.imageView = new ImageView();
 
         // make sure directory exists, and create it if it does not
         this.selectedImage = getDefaultBoatPhotoDTO();
@@ -93,7 +95,7 @@ public class TabBoatView extends Tab {
         var boatInfoTitlePane = new TitledPane();
         var vboxPicture = new VBox();
         var hboxPictureControls = new HBox();
-        var imageView = new ImageView();
+
         var viewPane = new ImageViewPane(imageView);
         var buttonForward = new Button(">");
         var buttonReverse = new Button("<");
@@ -211,11 +213,11 @@ public class TabBoatView extends Tab {
         });
 
         buttonForward.setOnAction((event) -> {
-
+            moveToNextImage(true);
         });
 
         buttonReverse.setOnAction((event) -> {
-
+            moveToNextImage(false);
         });
 
         boatOwnerAdd.setOnAction((event) -> {
@@ -255,6 +257,27 @@ public class TabBoatView extends Tab {
         vboxBlue.getChildren().add(vboxPink);
         vboxPink.getChildren().add(vboxGrey);
         setContent(vboxBlue);
+    }
+
+    private void moveToNextImage(boolean moveForward) {
+        // put them in ascending order, in case a new image has recently been added
+        images.sort(Comparator.comparingInt(BoatPhotosDTO::getFileNumber));
+        // find index of current image
+        int index = images.indexOf(selectedImage);
+        if (moveForward) {
+            if (index < images.size() - 1) index++;
+            else index = 0;
+        } else { // we are moving backwards
+            if(index == 0) index = images.size() - 1;
+            else index--;
+        }
+        selectedImage = images.get(index);
+        String localFile = localPath + selectedImage.getFilename();
+        String remoteFile = remotePath + selectedImage.getFilename();
+        // if we don't have file on local computer then retrieve it
+        if (!HalyardPaths.fileExists(localFile)) scp.getFile(remoteFile, localFile);
+        Image image = new Image("file:" + localFile);
+        imageView.setImage(image);
     }
 
     private void storeNewImage(ImageView imageView, String srcPath) {

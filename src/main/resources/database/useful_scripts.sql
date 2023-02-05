@@ -1,20 +1,6 @@
 # sum of all ages
-SELECT
-    SUM(IF(age BETWEEN 0 and 9,1,0)) as '0 - 9',
-    SUM(IF(age BETWEEN 10 and 19,1,0)) as '10 - 19',
-    SUM(IF(age BETWEEN 20 and 29,1,0)) as '20 - 29',
-    SUM(IF(age BETWEEN 30 and 39,1,0)) as '30 - 39',
-    SUM(IF(age BETWEEN 40 and 49,1,0)) as '40 - 49',
-    SUM(IF(age BETWEEN 50 and 59,1,0)) as '50 - 59',
-    SUM(IF(age BETWEEN 60 and 69,1,0)) as '60 - 69',
-    SUM(IF(age BETWEEN 70 and 79,1,0)) as '70 - 79',
-    SUM(IF(age >=80, 1, 0)) as 'Over 80',
-    SUM(IF(age IS NULL, 1, 0)) as 'Not Reported'
-FROM
-    (select DATE_FORMAT(FROM_DAYS(DATEDIFF(now(),(p.BIRTHDAY))), '%Y') AS age
-     from person p
-              left join membership_id id on p.MS_ID=id.MS_ID
-     WHERE id.FISCAL_YEAR=2022 and id.RENEW=1 and p.IS_ACTIVE=1) AS derived;
+
+
 
 #sum of children
 SELECT
