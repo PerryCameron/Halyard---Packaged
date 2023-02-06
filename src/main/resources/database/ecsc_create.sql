@@ -13,7 +13,7 @@ create table ECSC_SQL.boat
     SAIL_NUMBER      varchar(20),
     HAS_TRAILER      boolean,
     LENGTH           varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-    WEIGHT           varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+    WEIGHT           varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
     KEEL             varchar(4),
     PHRF             INTEGER,
     DRAFT varchar(15) NULL,

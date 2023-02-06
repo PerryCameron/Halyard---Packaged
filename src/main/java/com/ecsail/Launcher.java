@@ -18,6 +18,7 @@ import com.ecsail.pdf.PDF_BoatReport;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.sql.select.SqlMembership_Id;
 import com.ecsail.structures.BoatDTO;
+import com.ecsail.structures.BoatListDTO;
 import com.ecsail.structures.MembershipListDTO;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -81,7 +82,13 @@ public class Launcher extends VBox {
     }
 
     public static void openBoatViewTab(BoatDTO b) {
-        System.out.println(b);
+        if (!tabOpen("Boat"))
+            tabPane.getTabs().add(new TabBoatView("Boat " + b.getBoat_id(), b));
+        tabPane.getSelectionModel().select(getTabIndex("Boat " + b.getBoat_id()));
+    }
+
+    public static void openBoatViewTab(BoatListDTO b) {
+        System.out.println("From launcher " + b);
         if (!tabOpen("Boat"))
             tabPane.getTabs().add(new TabBoatView("Boat " + b.getBoat_id(), b));
         tabPane.getSelectionModel().select(getTabIndex("Boat " + b.getBoat_id()));

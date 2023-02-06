@@ -6,6 +6,7 @@ import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlBoat;
 import com.ecsail.structures.BoatDTO;
 import com.ecsail.structures.BoatListDTO;
+import com.ecsail.structures.MembershipListDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -18,6 +19,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 import java.util.Arrays;
@@ -57,14 +60,12 @@ public class TabBoats extends Tab {
 		var Col5 = new TableColumn<BoatListDTO, String>("Registration");
 		var Col6 = new TableColumn<BoatListDTO, String>("Year");
 		var Col7 = new TableColumn<BoatListDTO, String>("Name");
-		var Col8 = new TableColumn<BoatListDTO, Integer>("Images");
+		var Col8 = new TableColumn<BoatListDTO, Text>("Images");
 		var Col9 = new TableColumn<BoatListDTO, Boolean>("Aux");
 		var Col10 = new TableColumn<BoatListDTO, Void>("Select");
 
-
-		
 		Col1.setCellValueFactory(new PropertyValueFactory<BoatListDTO, String>("membership_id"));
-		Col1.setStyle("-fx-alignment: CENTER");
+		Col1.setStyle("-fx-alignment: top-center");
 
 //		Col1.setCellValueFactory(param -> {
 //			BoatListDTO boat = param.getValue();
@@ -76,7 +77,7 @@ public class TabBoats extends Tab {
 //		});
 
 		boatId.setCellValueFactory(new PropertyValueFactory<>("boat_id"));
-		boatId.setStyle("-fx-alignment: CENTER");
+		boatId.setStyle("-fx-alignment: top-center");
 
 		Col2.setCellValueFactory(new PropertyValueFactory<>("lName"));
 		Col3.setCellValueFactory(new PropertyValueFactory<>("fName"));
@@ -85,18 +86,27 @@ public class TabBoats extends Tab {
 		Col6.setCellValueFactory(new PropertyValueFactory<>("manufacture_year"));
 		Col7.setCellValueFactory(new PropertyValueFactory<>("boat_name"));
 		Col8.setCellValueFactory(new PropertyValueFactory<>("numberOfImages"));
-
-		Col8.setCellFactory(param -> {
-			TableCell cell = new TableCell() {
-				public void updateItem(Object item, boolean empty) {
-					if(item!=null){
-						setText(item.toString());
-					}
-				}
-			};
-			cell.setAlignment(Pos.CENTER);
-			return cell;
+		Col8.setStyle("-fx-alignment: top-center");
+		Col8.setCellValueFactory(param -> {  // don't need this now but will use for subleases
+			BoatListDTO bl = param.getValue();
+			String valueDisplayed = String.valueOf(bl.getNumberOfImages());
+			Text valueText = new Text(valueDisplayed);
+			if(bl.getNumberOfImages() != 0) {
+				valueText.setFill(Color.BLUE);
+			}
+			return new SimpleObjectProperty<>(valueText);
 		});
+//		Col8.setCellFactory(param -> {
+//			TableCell cell = new TableCell() {
+//				public void updateItem(Object item, boolean empty) {
+//					if(item!=null){
+//						setText(item.toString());
+//					}
+//				}
+//			};
+//			cell.setAlignment(Pos.TOP_CENTER);
+//			return cell;
+//		});
 
 		Col9.setCellValueFactory(new PropertyValueFactory<>("aux"));
 
@@ -131,9 +141,12 @@ public class TabBoats extends Tab {
 
 					{
 						btn.setOnAction((ActionEvent event) -> {
-							BoatListDTO BoatListDTO = getTableView().getItems().get(getIndex());
-							BoatDTO selectedBoat = SqlBoat.getBoatByBoatId(BoatListDTO.getBoat_id());
-							Launcher.openBoatViewTab(selectedBoat);
+							BoatListDTO boatListDTO = getTableView().getItems().get(getIndex());
+//							BoatDTO selectedBoat = SqlBoat.getBoatByBoatId(BoatListDTO.getBoat_id());
+							System.out.println("From TabBoat " + boatListDTO);
+							System.out.println("not to new object " + getTableView().getItems().get(getIndex()));
+							System.out.println("retrieving boat object " + getBoatObject(boatListDTO.getBoat_id()));
+							Launcher.openBoatViewTab(boatListDTO);
 						});
 					}
 
@@ -188,6 +201,10 @@ public class TabBoats extends Tab {
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
 		setContent(vboxBlue);
+	}
+
+	private BoatListDTO getBoatObject(int id) {
+		return boats.stream().filter(boatListDTO -> boatListDTO.getBoat_id() == id).findFirst().orElse(null);
 	}
 	
 }

@@ -300,13 +300,4 @@ public class BoatDTO {
 		this.lwlProperty().set(lwl);
 	}
 
-	@Override
-	public String toString() {
-		return "Object_Boat [boat_id=" + boat_id + ", ms_id=" + ms_id + ", manufacturer=" + manufacturer
-				+ ", manufacture_year=" + manufacture_year + ", registration_num=" + registration_num + ", model="
-				+ model + ", boat_name=" + boat_name + ", sail_number=" + sail_number + ", hasTrailer=" + hasTrailer
-				+ ", length=" + length + ", weight=" + weight + ", keel=" + keel + ", phrf=" + phrf + ", draft=" + draft
-				+ ", beam=" + beam + ", lwl=" + lwl + "]";
-	}
-
 }

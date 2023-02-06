@@ -13,10 +13,7 @@ import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlBoatPhotos;
 import com.ecsail.sql.select.SqlDbBoat;
 import com.ecsail.sql.select.SqlMembershipList;
-import com.ecsail.structures.BoatDTO;
-import com.ecsail.structures.BoatPhotosDTO;
-import com.ecsail.structures.DbBoatDTO;
-import com.ecsail.structures.MembershipListDTO;
+import com.ecsail.structures.*;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -37,11 +34,13 @@ import java.util.Comparator;
 import java.util.Objects;
 
 public class TabBoatView extends Tab {
-    private final ObservableList<MembershipListDTO> boatOwners;
+    private ObservableList<MembershipListDTO> boatOwners;
     private Sftp scp;
-    private final ObservableList<DbBoatDTO> dbBoatDTOS;
+    private ObservableList<DbBoatDTO> dbBoatDTOS;
     // TODO need to add history to boat_owner table
     protected BoatDTO boatDTO;
+
+    private BoatListDTO boatListDTO;
     protected ArrayList<BoatPhotosDTO> images;
     protected BoatPhotosDTO selectedImage;
     String remotePath = "/home/ecsc/ecsc_files/boat_images/";
@@ -54,6 +53,18 @@ public class TabBoatView extends Tab {
     public TabBoatView(String text, BoatDTO boat) {
         super(text);
         this.boatDTO = boat;
+        createBoatView();
+    }
+
+    public TabBoatView(String text, BoatListDTO boatList) {
+        super(text);
+        System.out.println("from boatview " + boatList);
+        this.boatListDTO = boatList;
+        this.boatDTO = boatList;
+        createBoatView();
+    }
+
+    private void createBoatView() {
         this.boatOwners = SqlMembershipList.getBoatOwnerRoster(boatDTO.getBoat_id());
         this.dbBoatDTOS = SqlDbBoat.getDbBoat();
         this.scp = BaseApplication.connect.getScp();
@@ -186,7 +197,7 @@ public class TabBoatView extends Tab {
             boolean success = false;
             if (db.hasFiles()) {
                 String srcPath = db.getFiles().get(0).getAbsolutePath();
-                storeNewImage(imageView, srcPath);
+                saveImage(srcPath);
             }
             event.setDropCompleted(success);
             event.consume();
@@ -312,28 +323,51 @@ public class TabBoatView extends Tab {
         imageView.setImage(image);
     }
 
-    private void storeNewImage(ImageView imageView, String srcPath) {
+    private void saveImage(String srcPath) {
         if(isImageType(srcPath)) {
+            // get number for photo
             int fileNumber = getNextFileNumberAvailable();
+            // create filename
             String fileName = boatDTO.getBoat_id() + "_" + fileNumber + "." + FileIO.getFileExtension(srcPath);
+            // create new POJO
             BoatPhotosDTO boatPhotosDTO = new BoatPhotosDTO(0,
                     boatDTO.getBoat_id(),"",fileName,fileNumber,isFirstPic());
+            // send file to remote server and change its group
             scp.sendFile(srcPath,remotePath + boatPhotosDTO.getFilename());
             scp.changeGroup(remotePath + boatPhotosDTO.getFilename(),groupId);
+            // update SQL
             SqlInsert.addBoatImage(boatPhotosDTO);
-            images.add(boatPhotosDTO);
+            // move a copy to local HD
             FileIO.copyFile(new File(srcPath),new File(localPath + fileName));
+            // resets everything to work correctly in GUI
+            selectedImage = resetImages();
+            // Show our new image
             Image newImage = new Image("file:" + localPath + fileName);
             imageView.setImage(newImage);
+            // to update tableview in TabBoats
+            refreshBoatList();
         } else {
             // TODO not an image type do nothing?
         }
+    }
+
+    private BoatPhotosDTO resetImages() {
+        images.clear();
+        images.addAll(SqlBoatPhotos.getImagesByBoatId(boatDTO.getBoat_id()));
+        // sort them so one created is last
+        images.sort(Comparator.comparingInt(BoatPhotosDTO::getId));
+        // get the last
+        return images.get(images.size() -1);
     }
 
     private int getNextFileNumberAvailable() {
         if(images.size() == 0) return 1;
         else images.sort(Comparator.comparingInt(BoatPhotosDTO::getFileNumber));
         return images.get(images.size() - 1).getFileNumber() + 1;
+    }
+
+    private void refreshBoatList() {  // this should update boat view when images are added probably should add all columns
+        boatListDTO.setNumberOfImages(images.size());
     }
 
     private boolean isImageType(String srcPath) {
