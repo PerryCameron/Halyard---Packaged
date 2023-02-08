@@ -89,6 +89,7 @@ public class Row extends HBox {
         else if(fieldName.equals("MANUFACTURE_YEAR")) return parent.boatDTO.getManufacture_year();
         else if(fieldName.equals("REGISTRATION_NUM")) return parent.boatDTO.getRegistration_num();
         else if(fieldName.equals("MODEL")) return parent.boatDTO.getModel();
+        else if(fieldName.equals("PHRF")) return parent.boatDTO.getPhrf();
         else if(fieldName.equals("BOAT_NAME")) return parent.boatDTO.getBoat_name();
         else if(fieldName.equals("SAIL_NUMBER")) return parent.boatDTO.getSail_number();
         else if(fieldName.equals("LENGTH")) return parent.boatDTO.getLength();

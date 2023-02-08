@@ -354,7 +354,7 @@ public class TabBoatView extends Tab {
     private BoatPhotosDTO resetImages() {
         images.clear();
         images.addAll(SqlBoatPhotos.getImagesByBoatId(boatDTO.getBoat_id()));
-        // sort them so one created is last
+        // sort them so one just created is last
         images.sort(Comparator.comparingInt(BoatPhotosDTO::getId));
         // get the last
         return images.get(images.size() -1);

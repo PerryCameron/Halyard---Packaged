@@ -322,7 +322,7 @@ CREATE TABLE ECSC_SQL.form_request
 (
     FORM_ID  int       NOT NULL auto_increment primary key unique,
     REQ_DATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRI_MEM  varchar(20),
+    PRI_MEM  varchar(120),
     MSID     int       NOT NULL,
     SUCCESS  boolean
 );
