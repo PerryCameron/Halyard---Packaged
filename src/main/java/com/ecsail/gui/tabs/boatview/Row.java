@@ -16,9 +16,10 @@ import javafx.scene.text.Text;
 
 public class Row extends HBox {
     TabBoatView parent;
-
+    DbBoatDTO dbBoatDTO;
     public Row(TabBoatView tabBoatView, DbBoatDTO dbBoatDTO) {
         this.parent = tabBoatView;
+        this.dbBoatDTO = dbBoatDTO;
         VBox labelBox = new VBox();
         VBox dataBox = new VBox();
         labelBox.setPrefWidth(90);
@@ -29,24 +30,29 @@ public class Row extends HBox {
         getChildren().addAll(labelBox, dataBox);
     }
 
-    private void setTextFieldListener(TextField textField, DbBoatDTO dbBoatDTO) {
+    private void setTextFieldListener(TextField textField) {
         textField.focusedProperty()
                 .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                     // focus out
                     if (oldValue) { // we have focused and unfocused
                         SqlUpdate.updateBoat(dbBoatDTO.getFieldName(), parent.boatDTO.getBoat_id(), textField.getText());
+                        if(parent.fromList)
+                        setPojo(dbBoatDTO.getFieldName(), textField.getText());
                     }
                 });
     }
 
-    private void setCheckBoxListener(CheckBox checkBox, DbBoatDTO dbBoatDTO) {
+    private void setCheckBoxListener(CheckBox checkBox) {
         checkBox.selectedProperty().addListener((obs, wasPreviouslySelected, isNowSelected) ->
                 SqlUpdate.updateBoat(parent.boatDTO.getBoat_id(), dbBoatDTO.getFieldName(), isNowSelected));
+//                setPojo(dbBoatDTO.getFieldName(), isNowSelected);
     }
 
     private void setComboBoxListener(ComboBox<KeelType> comboBox) {
         comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             SqlUpdate.updateBoat(parent.boatDTO.getBoat_id(), newValue.getCode());
+            if(parent.fromList)
+            setPojo(dbBoatDTO.getFieldName(), newValue.getCode());
         });
     }
 
@@ -57,13 +63,13 @@ public class Row extends HBox {
         } else if(dbBoatDTO.getControlType().equals("TextField")) {
             TextField textField = new TextField(setStringValue(dbBoatDTO.getFieldName()));
             textField.setPrefSize(150, 10);
-            setTextFieldListener(textField, dbBoatDTO);
+            setTextFieldListener(textField);
             return textField;
         } else if (dbBoatDTO.getControlType().equals("CheckBox")) {
             CheckBox checkBox = new CheckBox();
             checkBox.setPrefHeight(10);
             checkBox.setSelected(setBooleanValue(dbBoatDTO.getFieldName()));
-            setCheckBoxListener(checkBox, dbBoatDTO);
+            setCheckBoxListener(checkBox);
             return checkBox;
         } else if (dbBoatDTO.getControlType().equals("ComboBox")) {
             ComboBox<KeelType> comboBox = new ComboBox<KeelType>();
@@ -101,4 +107,26 @@ public class Row extends HBox {
         else
             return "";
     }
+
+    private String setPojo(String fieldName, String value) {
+        if (parent.fromList) {
+            if (fieldName.equals("BOAT_ID")) parent.boatListDTO.setBoat_id(Integer.parseInt(value));
+            else if (fieldName.equals("BOAT_NAME")) parent.boatListDTO.setBoat_name(value);
+            else if (fieldName.equals("MANUFACTURER")) parent.boatListDTO.setManufacturer(value);
+            else if (fieldName.equals("MANUFACTURE_YEAR")) parent.boatListDTO.setManufacture_year(value);
+            else if (fieldName.equals("REGISTRATION_NUM")) parent.boatListDTO.setRegistration_num(value);
+            else if (fieldName.equals("MODEL")) parent.boatListDTO.setModel(value);
+            else if (fieldName.equals("PHRF")) parent.boatListDTO.setPhrf(value);
+            else if (fieldName.equals("BOAT_NAME")) parent.boatListDTO.setBoat_name(value);
+            else if (fieldName.equals("SAIL_NUMBER")) parent.boatListDTO.setSail_number(value);
+            else if (fieldName.equals("LENGTH")) parent.boatListDTO.setLength(value);
+            else if (fieldName.equals("WEIGHT")) parent.boatListDTO.setWeight(value);
+            else if (fieldName.equals("KEEL")) parent.boatListDTO.setKeel(value);
+            else if (fieldName.equals("DRAFT")) parent.boatListDTO.setDraft(value);
+            else if (fieldName.equals("BEAM")) parent.boatListDTO.setBeam(value);
+            else if (fieldName.equals("LWL")) parent.boatListDTO.setLwl(value);
+        }
+        return "";
+    }
+
 }

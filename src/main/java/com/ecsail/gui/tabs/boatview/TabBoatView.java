@@ -39,8 +39,7 @@ public class TabBoatView extends Tab {
     private ObservableList<DbBoatDTO> dbBoatDTOS;
     // TODO need to add history to boat_owner table
     protected BoatDTO boatDTO;
-
-    private BoatListDTO boatListDTO;
+    protected BoatListDTO boatListDTO;
     protected ArrayList<BoatPhotosDTO> images;
     protected BoatPhotosDTO selectedImage;
     String remotePath = "/home/ecsc/ecsc_files/boat_images/";
@@ -50,9 +49,12 @@ public class TabBoatView extends Tab {
     int groupId = 1006;
     private ImageView imageView;
 
+    protected boolean fromList;
+
     public TabBoatView(String text, BoatDTO boat) {
         super(text);
         this.boatDTO = boat;
+        this.fromList = false;
         createBoatView();
     }
 
@@ -61,6 +63,7 @@ public class TabBoatView extends Tab {
         System.out.println("from boatview " + boatList);
         this.boatListDTO = boatList;
         this.boatDTO = boatList;
+        this.fromList = true;
         createBoatView();
     }
 
