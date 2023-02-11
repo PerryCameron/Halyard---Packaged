@@ -26,17 +26,19 @@ import javafx.util.Callback;
 import java.util.Arrays;
 
 public class TabBoats extends Tab {
-	ObservableList<BoatListDTO> boats;
+	protected ObservableList<BoatListDTO> boats;
+
+	protected BoatListDTO selectedBoat;
 	
 	public TabBoats(String text) {
 		super(text);
-		this.boats = SqlBoat.getBoatsWithOwners();
+		this.boats = SqlBoat.getActiveSailboats();
 		VBox vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
 		VBox vboxBlue = new VBox();
 		VBox vboxPink = new VBox(); // this creates a pink border around the table
+		HBox hboxSplitScreen = new HBox();
 		TableView<BoatListDTO> boatListTableView = new TableView<>();
 
-		
 		boatListTableView.setItems(boats);
 		boatListTableView.setFixedCellSize(30);
 		boatListTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY );
@@ -51,6 +53,7 @@ public class TabBoats extends Tab {
 		VBox.setVgrow(vboxPink, Priority.ALWAYS);
 		VBox.setVgrow(boatListTableView, Priority.ALWAYS);
 		HBox.setHgrow(boatListTableView, Priority.ALWAYS);
+		VBox.setVgrow(hboxSplitScreen, Priority.ALWAYS);
 		
 		var Col1 = new TableColumn<BoatListDTO, String>("ID");
 		var boatId = new TableColumn<BoatListDTO, String>("Boat");
@@ -58,11 +61,10 @@ public class TabBoats extends Tab {
 		var Col3 = new TableColumn<BoatListDTO, String>("First Name");
 		var Col4 = new TableColumn<BoatListDTO, String>("Model");
 		var Col5 = new TableColumn<BoatListDTO, String>("Registration");
-		var Col6 = new TableColumn<BoatListDTO, String>("Year");
 		var Col7 = new TableColumn<BoatListDTO, String>("Name");
 		var Col8 = new TableColumn<BoatListDTO, Text>("Images");
 		var Col9 = new TableColumn<BoatListDTO, Boolean>("Aux");
-		var Col10 = new TableColumn<BoatListDTO, Void>("Select");
+//		var Col10 = new TableColumn<BoatListDTO, Void>("Select");
 
 		Col1.setCellValueFactory(new PropertyValueFactory<BoatListDTO, String>("membership_id"));
 		Col1.setStyle("-fx-alignment: top-center");
@@ -83,7 +85,6 @@ public class TabBoats extends Tab {
 		Col3.setCellValueFactory(new PropertyValueFactory<>("fName"));
 		Col4.setCellValueFactory(new PropertyValueFactory<>("model"));
 		Col5.setCellValueFactory(new PropertyValueFactory<>("registration_num"));
-		Col6.setCellValueFactory(new PropertyValueFactory<>("manufacture_year"));
 		Col7.setCellValueFactory(new PropertyValueFactory<>("boat_name"));
 		Col8.setCellValueFactory(new PropertyValueFactory<>("numberOfImages"));
 		Col8.setStyle("-fx-alignment: top-center");
@@ -132,72 +133,71 @@ public class TabBoats extends Tab {
 			return cell;
 		});
 
-		Callback<TableColumn<BoatListDTO, Void>, TableCell<BoatListDTO, Void>> cellFactory = new Callback<>() {
-			@Override
-			public TableCell<BoatListDTO, Void> call(final TableColumn<BoatListDTO, Void> param) {
-				return new TableCell<>() {
-
-					private final Button btn = new Button("View");
-
-					{
-						btn.setOnAction((ActionEvent event) -> {
-							BoatListDTO boatListDTO = getTableView().getItems().get(getIndex());
-//							BoatDTO selectedBoat = SqlBoat.getBoatByBoatId(BoatListDTO.getBoat_id());
-							System.out.println("From TabBoat " + boatListDTO);
-							System.out.println("not to new object " + getTableView().getItems().get(getIndex()));
-							System.out.println("retrieving boat object " + getBoatObject(boatListDTO.getBoat_id()));
-							Launcher.openBoatViewTab(boatListDTO);
-						});
-					}
-
-					@Override
-					public void updateItem(Void item, boolean empty) {
-						super.updateItem(item, empty);
-						if (empty) {
-							setGraphic(null);
-						} else {
-							setGraphic(btn);
-						}
-					}
-				};
-			}
-		};
-		
-		Col10.setCellFactory(cellFactory);
+//		Callback<TableColumn<BoatListDTO, Void>, TableCell<BoatListDTO, Void>> cellFactory = new Callback<>() {
+//			@Override
+//			public TableCell<BoatListDTO, Void> call(final TableColumn<BoatListDTO, Void> param) {
+//				return new TableCell<>() {
+//
+//					private final Button btn = new Button("View");
+//
+//					{
+//						btn.setOnAction((ActionEvent event) -> {
+//							BoatListDTO boatListDTO = getTableView().getItems().get(getIndex());
+////							BoatDTO selectedBoat = SqlBoat.getBoatByBoatId(BoatListDTO.getBoat_id());
+//
+//							Launcher.openBoatViewTab(boatListDTO);
+//						});
+//					}
+//
+//					@Override
+//					public void updateItem(Void item, boolean empty) {
+//						super.updateItem(item, empty);
+//						if (empty) {
+//							setGraphic(null);
+//						} else {
+//							setGraphic(btn);
+//						}
+//					}
+//				};
+//			}
+//		};
+//
+//		Col10.setCellFactory(cellFactory);
 		
 		/// sets width of columns by percentage
 		Col1.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );  // Membership ID
 		boatId.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );  // boat ID
-		Col2.setMaxWidth( 1f * Integer.MAX_VALUE * 13 );  // Last Name
-		Col3.setMaxWidth( 1f * Integer.MAX_VALUE * 10 );  // First Name
+		Col2.setMaxWidth( 1f * Integer.MAX_VALUE * 16 );  // Last Name
+		Col3.setMaxWidth( 1f * Integer.MAX_VALUE * 16 );  // First Name
 		Col4.setMaxWidth( 1f * Integer.MAX_VALUE * 15 );  // Model
-		Col5.setMaxWidth( 1f * Integer.MAX_VALUE * 10 );  // Registration
-		Col6.setMaxWidth( 1f * Integer.MAX_VALUE * 7 );  // Year
+		Col5.setMaxWidth( 1f * Integer.MAX_VALUE * 15 );  // Registration
 		Col7.setMaxWidth( 1f * Integer.MAX_VALUE * 16 );  // Boat Name
 		Col8.setMaxWidth( 1f * Integer.MAX_VALUE * 7 );   // Images
 		Col9.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );   // aux
-		Col10.setMaxWidth( 1f * Integer.MAX_VALUE * 7);	  // view button
+//		Col10.setMaxWidth( 1f * Integer.MAX_VALUE * 11);	  // view button
 		
 		/////////////////// LISTENERS  /////////////////////////
 
-//		boatListTableView.setRowFactory(tv -> {
-//			TableRow<BoatListDTO> row = new TableRow<>();
-//			row.setOnMouseClicked(event -> {
+		boatListTableView.setRowFactory(tv -> {
+			TableRow<BoatListDTO> row = new TableRow<>();
+			row.setOnMouseClicked(event -> {
+
+				selectedBoat = row.getItem();
 //				if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
 //					// int rowIndex = row.getIndex();
 //					BoatListDTO clickedRow = row.getItem();
 //					BoatDTO selectedBoat = SqlBoat.getBoatbyBoatId(clickedRow.getBoat_id());
 //					Launcher.openBoatViewTab(selectedBoat);
 //				}
-//			});
-//			return row;
-//		});
+			});
+			return row;
+		});
 		////////////////// SET CONTENT ////////////////////////
-		
+
 		boatListTableView.getColumns()
-		.addAll(Arrays.asList(Col1, boatId, Col2, Col3, Col4, Col5, Col6, Col7, Col8, Col9, Col10)); // , Col8, Col9, Col10, Col11
-		
-		vboxGrey.getChildren().add(boatListTableView);
+		.addAll(Arrays.asList(Col1, boatId, Col2, Col3, Col4, Col5, Col7, Col8, Col9));
+		hboxSplitScreen.getChildren().addAll(boatListTableView, new ControlBox(this));
+		vboxGrey.getChildren().add(hboxSplitScreen);
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
 		setContent(vboxBlue);

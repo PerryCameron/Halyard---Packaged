@@ -32,12 +32,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
-
+// TODO need to add history to boat_owner table
 public class TabBoatView extends Tab {
     private ObservableList<MembershipListDTO> boatOwners;
     private Sftp scp;
     private ObservableList<DbBoatDTO> dbBoatDTOS;
-    // TODO need to add history to boat_owner table
     protected BoatDTO boatDTO;
     protected BoatListDTO boatListDTO;
     protected ArrayList<BoatPhotosDTO> images;
