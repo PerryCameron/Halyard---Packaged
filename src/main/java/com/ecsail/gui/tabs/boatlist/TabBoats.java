@@ -1,11 +1,10 @@
 package com.ecsail.gui.tabs.boatlist;
 
-
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.sql.select.SqlBoat;
 import com.ecsail.structures.BoatListDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,17 +19,15 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-
 import java.util.Arrays;
 
 public class TabBoats extends Tab {
-	protected ObservableList<BoatListDTO> boats;
+	protected ObservableList<BoatListDTO> boats = FXCollections.observableArrayList();
 
 	protected BoatListDTO selectedBoat;
 	
 	public TabBoats(String text) {
 		super(text);
-//		this.boats = SqlBoat.getActiveSailboats();
 		VBox vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
 		VBox vboxBlue = new VBox();
 		VBox vboxPink = new VBox(); // this creates a pink border around the table
@@ -165,12 +162,12 @@ public class TabBoats extends Tab {
 		/// sets width of columns by percentage
 		Col1.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );  // Membership ID
 		boatId.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );  // boat ID
-		Col2.setMaxWidth( 1f * Integer.MAX_VALUE * 16 );  // Last Name
-		Col3.setMaxWidth( 1f * Integer.MAX_VALUE * 16 );  // First Name
+		Col2.setMaxWidth( 1f * Integer.MAX_VALUE * 15 );  // Last Name
+		Col3.setMaxWidth( 1f * Integer.MAX_VALUE * 15 );  // First Name
 		Col4.setMaxWidth( 1f * Integer.MAX_VALUE * 15 );  // Model
 		Col5.setMaxWidth( 1f * Integer.MAX_VALUE * 15 );  // Registration
 		Col7.setMaxWidth( 1f * Integer.MAX_VALUE * 16 );  // Boat Name
-		Col8.setMaxWidth( 1f * Integer.MAX_VALUE * 7 );   // Images
+		Col8.setMaxWidth( 1f * Integer.MAX_VALUE * 9 );   // Images
 		Col9.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );   // aux
 //		Col10.setMaxWidth( 1f * Integer.MAX_VALUE * 11);	  // view button
 		
@@ -179,7 +176,6 @@ public class TabBoats extends Tab {
 		boatListTableView.setRowFactory(tv -> {
 			TableRow<BoatListDTO> row = new TableRow<>();
 			row.setOnMouseClicked(event -> {
-
 				selectedBoat = row.getItem();
 //				if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
 //					// int rowIndex = row.getIndex();

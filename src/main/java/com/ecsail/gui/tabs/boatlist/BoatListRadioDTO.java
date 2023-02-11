@@ -1,11 +1,15 @@
 package com.ecsail.gui.tabs.boatlist;
 
+import javafx.scene.control.RadioButton;
+
 public class BoatListRadioDTO {
 
     int id;
     String label;
     String query;
     int order;
+
+    RadioButton radioButton;
 
     public BoatListRadioDTO(int id, String label, String query, int order) {
         this.id = id;
@@ -44,5 +48,13 @@ public class BoatListRadioDTO {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    public RadioButton getRadioButton() {
+        return radioButton;
+    }
+
+    public void setRadioButton(RadioButton radioButton) {
+        this.radioButton = radioButton;
     }
 }
