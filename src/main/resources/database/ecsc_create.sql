@@ -414,4 +414,12 @@ create table ECSC_SQL.boat_photos
     foreign key (BOAT_ID) references boat (BOAT_ID)
 );
 
+create table ECSC_SQL.boat_selection
+(
+    ID            INTEGER      NOT NULL auto_increment primary key,
+    LABEL         varchar(40)  NOT NULL,
+    SQL_QUERY     varchar(2000),
+    LIST_ORDER    INTEGER      NOT NULL
+)
+
 

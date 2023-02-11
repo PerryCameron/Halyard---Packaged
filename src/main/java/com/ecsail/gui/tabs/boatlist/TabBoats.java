@@ -1,19 +1,18 @@
 package com.ecsail.gui.tabs.boatlist;
 
 
-import com.ecsail.Launcher;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlBoat;
-import com.ecsail.structures.BoatDTO;
 import com.ecsail.structures.BoatListDTO;
-import com.ecsail.structures.MembershipListDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
@@ -21,7 +20,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.util.Callback;
 
 import java.util.Arrays;
 
@@ -32,7 +30,7 @@ public class TabBoats extends Tab {
 	
 	public TabBoats(String text) {
 		super(text);
-		this.boats = SqlBoat.getActiveSailboats();
+//		this.boats = SqlBoat.getActiveSailboats();
 		VBox vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
 		VBox vboxBlue = new VBox();
 		VBox vboxPink = new VBox(); // this creates a pink border around the table

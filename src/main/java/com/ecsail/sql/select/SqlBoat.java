@@ -63,36 +63,10 @@ public class SqlBoat {
         return thisBoat;
     }
     // gets all boats and kayak for all time
-    public static ObservableList<BoatListDTO> getBoatsWithOwners() {
-        ObservableList<BoatListDTO> thisBoat = FXCollections.observableArrayList();
-        String query =
-                """
-                SELECT id.membership_id,id.ms_id, p.l_name, p.f_name,b.*,nb.boat_count
-                FROM boat b
-                LEFT JOIN boat_owner bo on b.BOAT_ID = bo.BOAT_ID
-                LEFT JOIN membership m on bo.MS_ID = m.MS_ID
-                LEFT JOIN (SELECT * FROM membership_id where FISCAL_YEAR=(select year(now()))) id on bo.MS_ID=id.MS_ID
-                LEFT JOIN person p on m.P_ID = p.P_ID
-                LEFT JOIN (select BOAT_ID,count(BOAT_ID) AS boat_count from boat_photos group by BOAT_ID having count(BOAT_ID) > 0) nb on b.BOAT_ID=nb.BOAT_ID;
-                """;
-        return getBoatListDTOS(thisBoat, query);
-    }
 
-    public static ObservableList<BoatListDTO> getActiveSailboats() {
-        ObservableList<BoatListDTO> thisBoat = FXCollections.observableArrayList();
-        String query =
-                """
-                SELECT id.membership_id,id.ms_id, p.l_name, p.f_name,b.*,nb.boat_count
-                FROM (SELECT * FROM membership_id WHERE FISCAL_YEAR=year(now()) and RENEW=true) id
-                LEFT JOIN (SELECT * FROM person WHERE MEMBER_TYPE=1) p on id.MS_ID=p.MS_ID
-                INNER JOIN boat_owner bo on id.MS_ID=bo.MS_ID
-                INNER JOIN (SELECT * FROM boat WHERE AUX=false) b on bo.BOAT_ID=b.BOAT_ID
-                LEFT JOIN (SELECT BOAT_ID,count(BOAT_ID) AS boat_count FROM boat_photos group by BOAT_ID having count(BOAT_ID) > 0) nb on b.BOAT_ID=nb.BOAT_ID;                             
-                """;
-        return getBoatListDTOS(thisBoat, query);
-    }
 
-    private static ObservableList<BoatListDTO> getBoatListDTOS(ObservableList<BoatListDTO> thisBoat, String query) {
+    public static ObservableList<BoatListDTO> getBoatList(String query) {
+        ObservableList<BoatListDTO> thisBoat = FXCollections.observableArrayList();
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
@@ -125,6 +99,8 @@ public class SqlBoat {
         }
         return thisBoat;
     }
+
+
 
     public static List<BoatDTO> getOnlySailboats(int ms_id) { // overload but must be separate
         List<BoatDTO> thisBoat = new ArrayList<>();
