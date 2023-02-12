@@ -198,6 +198,7 @@ public class TabBoatView extends Tab {
             boolean success = false;
             if (db.hasFiles()) {
                 String srcPath = db.getFiles().get(0).getAbsolutePath();
+                System.out.println("Saving image");
                 saveImage(srcPath);
             }
             event.setDropCompleted(success);
@@ -326,6 +327,7 @@ public class TabBoatView extends Tab {
 
     private void saveImage(String srcPath) {
         if(isImageType(srcPath)) {
+            System.out.println(srcPath);
             // get number for photo
             int fileNumber = getNextFileNumberAvailable();
             // create filename
@@ -374,7 +376,7 @@ public class TabBoatView extends Tab {
     private boolean isImageType(String srcPath) {
         String extension = FileIO.getFileExtension(srcPath);
         for (String ex : extensionsAllowed) {
-            if (ex.equals(extension)) return true;
+            if (ex.equals(extension.toLowerCase())) return true;
         }
         return false;
     }

@@ -7,6 +7,8 @@ import com.ecsail.sql.select.SqlBoatListRadio;
 import com.ecsail.sql.select.SqlDbBoat;
 import com.ecsail.structures.BoatListDTO;
 import com.ecsail.structures.DbBoatDTO;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -24,15 +26,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
-
-//		infoBox8.setStyle("-fx-background-color: #c5c7c1;");  // gray
-//                infoBox1.setStyle("-fx-background-color: #4d6955;");  //green
-//                infoBox2.setStyle("-fx-background-color: #feffab;");  // yellow
-//                infoBox3.setStyle("-fx-background-color: #e83115;");  // red
-//                infoBox4.setStyle("-fx-background-color: #201ac9;");  // blue
-//                infoBox5.setStyle("-fx-background-color: #e83115;");  // purple
-//                infoBox6.setStyle("-fx-background-color: #15e8e4;");  // light blue
-//                infoBox7.setStyle("-fx-background-color: #e89715;");  // orange
 
 public class ControlBox extends VBox {
     TabBoats parent;
@@ -74,12 +67,10 @@ public class ControlBox extends VBox {
         HBox hBox = new HBox();
         hBox.setPadding(new Insets(15,0,0,0));
         Button viewBoat = new Button("View Boat");
-//        Button temp = new Button("temp");
         hBox.getChildren().add(viewBoat);
         viewBoat.setOnAction(event -> {
             Launcher.openBoatViewTab(parent.selectedBoat);
         });
-//        temp.setOnAction(event -> refreshCurrentBoatDetails());
         return hBox;
     }
 
@@ -101,10 +92,8 @@ public class ControlBox extends VBox {
                 VBox vBox2 = new VBox();
                 vBox1.setPrefWidth(130);
                 field.setAccessible(true);
-                String value = getObjectValue(field);
-                String label = getLabel(columnName.value());
-                Text valueText = new Text(value);
-                Text labelText = new Text(label);
+                Text valueText = new Text(getObjectValue(field));
+                Text labelText = new Text(getLabel(columnName.value()));
                 labelText.setId("invoice-text-light");
                 vBox1.getChildren().add(labelText);
                 vBox2.getChildren().add(valueText);
@@ -156,11 +145,24 @@ public class ControlBox extends VBox {
             parent.boats.forEach(boatListDTO -> {
                 Field[] fields = boatListDTO.getClass().getSuperclass().getDeclaredFields();
                 Arrays.stream(fields).forEach(field -> {
-                    System.out.print(field.getName() + " ");
+                    field.setAccessible(true);
+                    getBoatDTOObjectValue(field, boatListDTO);
+//                    System.out.println(field.getName() + " " + getBoatDTOObjectValue(field, boatListDTO));
                 });
                 System.out.println();
             });
         }
+    }
+
+    private String getBoatDTOObjectValue(Field field, BoatListDTO boatListDTO) {
+        SimpleObjectProperty value;
+        try {
+            value = new SimpleObjectProperty(field.get(boatListDTO));
+            System.out.println("value is" + value.getValue());
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }  // seems like a cheap hack but can't seem to get value out of a ObjectProperty .get() no work
+        return removeLastCharOptional(value.toString().substring(23).trim());
     }
 
     private HBox setUpRecordCountBox() {

@@ -146,7 +146,7 @@ public static List<LoginDTO> logins = new ArrayList<>();
 			extension = fileName.substring(indexOfLastExtension + 1);
 		}
 
-		return extension;
+		return extension.toLowerCase();
 	}
 
 }
