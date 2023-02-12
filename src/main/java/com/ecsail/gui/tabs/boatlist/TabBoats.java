@@ -2,6 +2,7 @@ package com.ecsail.gui.tabs.boatlist;
 
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.structures.BoatListDTO;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -60,19 +61,9 @@ public class TabBoats extends Tab {
 		var Col7 = new TableColumn<BoatListDTO, String>("Name");
 		var Col8 = new TableColumn<BoatListDTO, Text>("Images");
 		var Col9 = new TableColumn<BoatListDTO, Boolean>("Aux");
-//		var Col10 = new TableColumn<BoatListDTO, Void>("Select");
 
 		Col1.setCellValueFactory(new PropertyValueFactory<BoatListDTO, String>("membership_id"));
 		Col1.setStyle("-fx-alignment: top-center");
-
-//		Col1.setCellValueFactory(param -> {
-//			BoatListDTO boat = param.getValue();
-//			String valueDisplayed = "";
-//			if(boat.getMembership_id() != 0) {
-//				valueDisplayed = String.valueOf(boat.getMembership_id());
-//			}
-//			return new SimpleObjectProperty<>(valueDisplayed);
-//		});
 
 		boatId.setCellValueFactory(new PropertyValueFactory<>("boat_id"));
 		boatId.setStyle("-fx-alignment: top-center");
@@ -93,17 +84,6 @@ public class TabBoats extends Tab {
 			}
 			return new SimpleObjectProperty<>(valueText);
 		});
-//		Col8.setCellFactory(param -> {
-//			TableCell cell = new TableCell() {
-//				public void updateItem(Object item, boolean empty) {
-//					if(item!=null){
-//						setText(item.toString());
-//					}
-//				}
-//			};
-//			cell.setAlignment(Pos.TOP_CENTER);
-//			return cell;
-//		});
 
 		Col9.setCellValueFactory(new PropertyValueFactory<>("aux"));
 
@@ -128,37 +108,6 @@ public class TabBoats extends Tab {
 			cell.setAlignment(Pos.CENTER);
 			return cell;
 		});
-
-//		Callback<TableColumn<BoatListDTO, Void>, TableCell<BoatListDTO, Void>> cellFactory = new Callback<>() {
-//			@Override
-//			public TableCell<BoatListDTO, Void> call(final TableColumn<BoatListDTO, Void> param) {
-//				return new TableCell<>() {
-//
-//					private final Button btn = new Button("View");
-//
-//					{
-//						btn.setOnAction((ActionEvent event) -> {
-//							BoatListDTO boatListDTO = getTableView().getItems().get(getIndex());
-////							BoatDTO selectedBoat = SqlBoat.getBoatByBoatId(BoatListDTO.getBoat_id());
-//
-//							Launcher.openBoatViewTab(boatListDTO);
-//						});
-//					}
-//
-//					@Override
-//					public void updateItem(Void item, boolean empty) {
-//						super.updateItem(item, empty);
-//						if (empty) {
-//							setGraphic(null);
-//						} else {
-//							setGraphic(btn);
-//						}
-//					}
-//				};
-//			}
-//		};
-//
-//		Col10.setCellFactory(cellFactory);
 		
 		/// sets width of columns by percentage
 		Col1.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );  // Membership ID
@@ -197,6 +146,22 @@ public class TabBoats extends Tab {
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
 		setContent(vboxBlue);
+		selectFirstRow(boatListTableView);
+	}
+
+	private void selectFirstRow(TableView<BoatListDTO> boatListTableView) {
+		Platform.runLater(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				boatListTableView.requestFocus();
+				boatListTableView.getSelectionModel().select(0);
+				boatListTableView.getFocusModel().focus(0);
+				selectedBoat = boatListTableView.getSelectionModel().getSelectedItem();
+				controlBox.refreshCurrentBoatDetails();
+			}
+		});
 	}
 
 	private BoatListDTO getBoatObject(int id) {
