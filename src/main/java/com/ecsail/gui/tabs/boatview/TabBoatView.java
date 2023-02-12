@@ -59,7 +59,6 @@ public class TabBoatView extends Tab {
 
     public TabBoatView(String text, BoatListDTO boatList) {
         super(text);
-        System.out.println("from boatview " + boatList);
         this.boatListDTO = boatList;
         this.boatDTO = boatList;
         this.fromList = true;

@@ -1,12 +1,13 @@
 package com.ecsail.structures;
 
+import com.ecsail.annotation.ColumnName;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class BoatListDTO extends BoatDTO {
-	
+	@ColumnName(value = "MEMBERSHIP_ID")
 	private IntegerProperty membership_id;
 	private StringProperty lName;
 	private StringProperty fName;

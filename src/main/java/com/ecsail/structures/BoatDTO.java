@@ -1,26 +1,42 @@
 package com.ecsail.structures;
 
+import com.ecsail.annotation.ColumnName;
 import javafx.beans.property.*;
 
 public class BoatDTO {
-	
-	private IntegerProperty boat_id;
-	private IntegerProperty ms_id;
-	private StringProperty manufacturer;
-	private StringProperty manufacture_year;
-	private StringProperty registration_num;
-	private StringProperty model;
-	private StringProperty boat_name;
-	private StringProperty sail_number;
-	private BooleanProperty hasTrailer;
-	private StringProperty length;
-	private StringProperty weight;
-	private StringProperty keel;
-	private StringProperty phrf;
-	private StringProperty draft;
-	private StringProperty beam;
-	private StringProperty lwl;
-	private BooleanProperty aux;
+	@ColumnName(value = "BOAT_ID")
+	protected IntegerProperty boat_id;
+	protected IntegerProperty ms_id;
+	@ColumnName(value = "MANUFACTURER")
+	protected StringProperty manufacturer;
+	@ColumnName(value = "MANUFACTURE_YEAR")
+	protected StringProperty manufacture_year;
+	@ColumnName(value = "REGISTRATION_NUM")
+	protected StringProperty registration_num;
+	@ColumnName(value = "MODEL")
+	protected StringProperty model;
+	@ColumnName(value = "BOAT_NAME")
+	protected StringProperty boat_name;
+	@ColumnName(value = "SAIL_NUMBER")
+	protected StringProperty sail_number;
+	@ColumnName(value = "HAS_TRAILER")
+	protected BooleanProperty hasTrailer;
+	@ColumnName(value = "LENGTH")
+	protected StringProperty length;
+	@ColumnName(value = "WEIGHT")
+	protected StringProperty weight;
+	@ColumnName(value = "KEEL")
+	protected StringProperty keel;
+	@ColumnName(value = "PHRF")
+	protected StringProperty phrf;
+	@ColumnName(value = "DRAFT")
+	protected StringProperty draft;
+	@ColumnName(value = "BEAM")
+	protected StringProperty beam;
+	@ColumnName(value = "LWL")
+	protected StringProperty lwl;
+	@ColumnName(value = "AUX")
+	protected BooleanProperty aux;
 	
 	public BoatDTO(Integer boat_id, Integer ms_id, String manufacturer, String manufacture_year,
                    String registration_num, String model, String boat_name, String sail_number,

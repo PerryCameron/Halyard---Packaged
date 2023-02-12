@@ -23,11 +23,12 @@ import java.util.Arrays;
 
 public class TabBoats extends Tab {
 	protected ObservableList<BoatListDTO> boats = FXCollections.observableArrayList();
-
 	protected BoatListDTO selectedBoat;
+	private ControlBox controlBox;
 	
 	public TabBoats(String text) {
 		super(text);
+		this.controlBox = new ControlBox(this);
 		VBox vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
 		VBox vboxBlue = new VBox();
 		VBox vboxPink = new VBox(); // this creates a pink border around the table
@@ -177,6 +178,7 @@ public class TabBoats extends Tab {
 			TableRow<BoatListDTO> row = new TableRow<>();
 			row.setOnMouseClicked(event -> {
 				selectedBoat = row.getItem();
+				controlBox.refreshCurrentBoatDetails();
 //				if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
 //					// int rowIndex = row.getIndex();
 //					BoatListDTO clickedRow = row.getItem();
@@ -190,7 +192,7 @@ public class TabBoats extends Tab {
 
 		boatListTableView.getColumns()
 		.addAll(Arrays.asList(Col1, boatId, Col2, Col3, Col4, Col5, Col7, Col8, Col9));
-		hboxSplitScreen.getChildren().addAll(boatListTableView, new ControlBox(this));
+		hboxSplitScreen.getChildren().addAll(boatListTableView, controlBox);
 		vboxGrey.getChildren().add(hboxSplitScreen);
 		vboxBlue.getChildren().add(vboxPink);
 		vboxPink.getChildren().add(vboxGrey);
