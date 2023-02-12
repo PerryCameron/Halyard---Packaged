@@ -10,6 +10,7 @@ import com.ecsail.structures.DbBoatDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
@@ -45,16 +46,33 @@ public class ControlBox extends VBox {
         this.boatListRadioDTOs = SqlBoatListRadio.getBoatListRadioDTOs();
         this.dbBoatDTOS = SqlDbBoat.getDbBoat();
         this.boatDetailsBox = setUpBoatDetailsBox();
+        VBox frameBox = setUpDetailsBoxFrame();
         VBox radioButtonBox = setUpRadioButtonBox();
         HBox recordCountBox = setUpRecordCountBox();
         HBox searchBox = setUpSearchBox();
         HBox viewBoatBox = setUpViewBoatBox();
         setPadding(new Insets(0,5,0,15));
-        getChildren().addAll(recordCountBox,searchBox,radioButtonBox, boatDetailsBox, viewBoatBox);
+        frameBox.getChildren().add(boatDetailsBox);
+        getChildren().addAll(recordCountBox,searchBox,radioButtonBox, frameBox, viewBoatBox);
+    }
+
+    private VBox setUpDetailsBoxFrame() {
+        VBox vBox = new VBox();
+        HBox hBox = new HBox(); // title
+        Text text = new Text("Boat Details");
+        text.setId("invoice-header");
+        vBox.setStyle("-fx-background-color: #0a0a0a;");
+        hBox.setAlignment(Pos.CENTER);
+        vBox.setAlignment(Pos.CENTER);
+        vBox.setPadding(new Insets(5, 2, 2, 2));
+        hBox.getChildren().add(text);
+        vBox.getChildren().add(hBox);
+        return vBox;
     }
 
     private HBox setUpViewBoatBox() {
         HBox hBox = new HBox();
+        hBox.setPadding(new Insets(15,0,0,0));
         Button viewBoat = new Button("View Boat");
 //        Button temp = new Button("temp");
         hBox.getChildren().add(viewBoat);
@@ -68,7 +86,8 @@ public class ControlBox extends VBox {
     protected VBox setUpBoatDetailsBox() {
         VBox vBox = new VBox();
         vBox.setSpacing(5);
-        vBox.setPadding(new Insets(0,0,15,0));
+        vBox.setPadding(new Insets(5,0,5,5));
+        vBox.setId("box-background-light");
         return vBox;
     }
 
@@ -86,6 +105,7 @@ public class ControlBox extends VBox {
                 String label = getLabel(columnName.value());
                 Text valueText = new Text(value);
                 Text labelText = new Text(label);
+                labelText.setId("invoice-text-light");
                 vBox1.getChildren().add(labelText);
                 vBox2.getChildren().add(valueText);
                 hBox.getChildren().addAll(vBox1,vBox2);
