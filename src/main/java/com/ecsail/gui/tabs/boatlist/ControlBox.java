@@ -7,8 +7,8 @@ import com.ecsail.sql.select.SqlBoatListRadio;
 import com.ecsail.sql.select.SqlDbBoat;
 import com.ecsail.structures.BoatListDTO;
 import com.ecsail.structures.DbBoatDTO;
+import javafx.animation.PauseTransition;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -20,12 +20,11 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import org.jetbrains.annotations.NotNull;
+import javafx.util.Duration;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Optional;
 
 public class ControlBox extends VBox {
     TabBoats parent;
@@ -92,7 +91,7 @@ public class ControlBox extends VBox {
                 VBox vBox2 = new VBox();
                 vBox1.setPrefWidth(130);
                 field.setAccessible(true);
-                Text valueText = new Text(getObjectValue(field));
+                Text valueText = new Text(returnFieldValueAsString(field, parent.selectedBoat));
                 Text labelText = new Text(getLabel(columnName.value()));
                 labelText.setId("invoice-text-light");
                 vBox1.getChildren().add(labelText);
@@ -108,61 +107,68 @@ public class ControlBox extends VBox {
                 .map(dbBoatDTO -> dbBoatDTO.getName()).findFirst().orElse(value);
     }
 
-    @NotNull
-    private String getObjectValue(Field field) {
-        Object value;
-        try {
-            value = field.get(parent.selectedBoat);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }  // seems like a cheap hack but can't seem to get value out of a ObjectProperty .get() no work
-        return removeLastCharOptional(value.toString().substring(23).trim());
-    }
-
-    public static String removeLastCharOptional(String s) {
-        return Optional.ofNullable(s)
-                .filter(str -> str.length() != 0)
-                .map(str -> str.substring(0, str.length() - 1))
-                .orElse(s);
-    }
-
     private HBox setUpSearchBox() {
         HBox hBox = new HBox();
+        hBox.setAlignment(Pos.CENTER_LEFT);
         hBox.setSpacing(10);
         hBox.setPadding(new Insets(0,0,15,0));
         TextField textField = new TextField();
-        Button button = new Button("Search");
-        hBox.getChildren().addAll(textField,button);
-        button.setOnAction(event -> {
-            searchString(textField.getText());
-        });
+        Text text = new Text("Search");
+        text.setId("invoice-text-number");
+        hBox.getChildren().addAll(text, textField);
+        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+        // this is awesome, stole from stackoverflow.com
+        textField.textProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    pause.setOnFinished(event -> fillTableView(textField.getText()));
+                    pause.playFromStart();
+                }
+        );
         return hBox;
     }
 
-    private void searchString(String text) {
-        ObservableList<BoatListDTO> searchedBoats = FXCollections.observableArrayList();
-        if(!text.equals("")) {
-            parent.boats.forEach(boatListDTO -> {
-                Field[] fields = boatListDTO.getClass().getSuperclass().getDeclaredFields();
-                Arrays.stream(fields).forEach(field -> {
-                    field.setAccessible(true);
-                    getBoatDTOObjectValue(field, boatListDTO);
-//                    System.out.println(field.getName() + " " + getBoatDTOObjectValue(field, boatListDTO));
-                });
-                System.out.println();
-            });
+    private void fillTableView(String searchTerm) {
+        if(!searchTerm.equals("")) {
+            parent.searchedBoats.clear();
+            parent.searchedBoats.addAll(searchString(searchTerm));
+            parent.boatListTableView.setItems(parent.searchedBoats);
+        } else { // if search box has been cleared
+            parent.boatListTableView.setItems(parent.boats);
         }
     }
 
-    private String getBoatDTOObjectValue(Field field, BoatListDTO boatListDTO) {
-        SimpleObjectProperty value;
+    private ObservableList<BoatListDTO> searchString(String searchTerm) {
+        String text = searchTerm.toLowerCase();
+        ObservableList<BoatListDTO> searchedBoats = FXCollections.observableArrayList();
+        boolean hasMatch = false;
+            for(BoatListDTO boatListDTO: parent.boats) {
+                Field[] fields1 = boatListDTO.getClass().getDeclaredFields();
+                Field[] fields2 = boatListDTO.getClass().getSuperclass().getDeclaredFields();
+                Field[] allFields = new Field[fields1.length + fields2.length];
+                Arrays.setAll(allFields, i -> (i < fields1.length ? fields1[i] : fields2[i - fields1.length]));
+                for(Field field: allFields) {
+                    field.setAccessible(true);
+                    String value = returnFieldValueAsString(field, boatListDTO).toLowerCase();
+                    if(value.contains(text)) hasMatch = true;
+                };  // add boat DTO here
+                if(hasMatch)
+                searchedBoats.add(boatListDTO);
+                hasMatch = false;
+            };
+        return searchedBoats;
+    }
+
+    private <T> String returnFieldValueAsString(Field field, T pojo) {
+        String result;
         try {
-            value = new SimpleObjectProperty(field.get(boatListDTO));
-            System.out.println("value is" + value.getValue());
+            SimpleObjectProperty value = new SimpleObjectProperty(field.get(pojo));
+            int begin = value.getValue().toString().indexOf("value: ") + 7;
+            int end = value.getValue().toString().indexOf("]");
+            result = value.getValue().toString().substring(begin, end);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
-        }  // seems like a cheap hack but can't seem to get value out of a ObjectProperty .get() no work
-        return removeLastCharOptional(value.toString().substring(23).trim());
+        }
+        return result;
     }
 
     private HBox setUpRecordCountBox() {

@@ -24,6 +24,8 @@ import java.util.Arrays;
 
 public class TabBoats extends Tab {
 	protected ObservableList<BoatListDTO> boats = FXCollections.observableArrayList();
+	protected ObservableList<BoatListDTO> searchedBoats = FXCollections.observableArrayList();
+	protected TableView<BoatListDTO> boatListTableView = new TableView<>();
 	protected BoatListDTO selectedBoat;
 	private ControlBox controlBox;
 	
@@ -34,7 +36,7 @@ public class TabBoats extends Tab {
 		VBox vboxBlue = new VBox();
 		VBox vboxPink = new VBox(); // this creates a pink border around the table
 		HBox hboxSplitScreen = new HBox();
-		TableView<BoatListDTO> boatListTableView = new TableView<>();
+
 
 		boatListTableView.setItems(boats);
 		boatListTableView.setFixedCellSize(30);
@@ -119,8 +121,7 @@ public class TabBoats extends Tab {
 		Col7.setMaxWidth( 1f * Integer.MAX_VALUE * 16 );  // Boat Name
 		Col8.setMaxWidth( 1f * Integer.MAX_VALUE * 9 );   // Images
 		Col9.setMaxWidth( 1f * Integer.MAX_VALUE * 5 );   // aux
-//		Col10.setMaxWidth( 1f * Integer.MAX_VALUE * 11);	  // view button
-		
+
 		/////////////////// LISTENERS  /////////////////////////
 
 		boatListTableView.setRowFactory(tv -> {
@@ -164,8 +165,7 @@ public class TabBoats extends Tab {
 		});
 	}
 
-	private BoatListDTO getBoatObject(int id) {
-		return boats.stream().filter(boatListDTO -> boatListDTO.getBoat_id() == id).findFirst().orElse(null);
-	}
-	
+//	private BoatListDTO getBoatObject(int id) {
+//		return boats.stream().filter(boatListDTO -> boatListDTO.getBoat_id() == id).findFirst().orElse(null);
+//	}
 }

@@ -7,10 +7,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class BoatListDTO extends BoatDTO {
-	private IntegerProperty membership_id;
-	private StringProperty lName;
-	private StringProperty fName;
-	private IntegerProperty numberOfImages;
+	protected IntegerProperty membership_id;
+	protected StringProperty lName;
+	protected StringProperty fName;
+	protected IntegerProperty numberOfImages;
 	
 	public BoatListDTO(Integer boat_id, Integer ms_id, String manufacturer, String manufacture_year,
 					   String registration_num, String model, String boat_name, String sail_number,
@@ -84,5 +84,30 @@ public class BoatListDTO extends BoatDTO {
 		this.numberOfImagesProperty().set(numberOfImages);
 	}
 
-
+	@Override
+	public String toString() {
+		return "BoatListDTO{" +
+				"membership_id=" + membership_id +
+				", lName=" + lName +
+				", fName=" + fName +
+				", numberOfImages=" + numberOfImages +
+				", boat_id=" + boat_id +
+				", ms_id=" + ms_id +
+				", manufacturer=" + manufacturer +
+				", manufacture_year=" + manufacture_year +
+				", registration_num=" + registration_num +
+				", model=" + model +
+				", boat_name=" + boat_name +
+				", sail_number=" + sail_number +
+				", hasTrailer=" + hasTrailer +
+				", length=" + length +
+				", weight=" + weight +
+				", keel=" + keel +
+				", phrf=" + phrf +
+				", draft=" + draft +
+				", beam=" + beam +
+				", lwl=" + lwl +
+				", aux=" + aux +
+				"} " + super.toString();
+	}
 }
