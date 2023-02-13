@@ -13,10 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -27,11 +24,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ControlBox extends VBox {
-    TabBoats parent;
-    ArrayList<BoatListRadioDTO> boatListRadioDTOs;
-    private ObservableList<DbBoatDTO> dbBoatDTOS;
-    Text numberOfRecords;
-    VBox boatDetailsBox;
+    private final TabBoats parent;
+    private final ArrayList<BoatListRadioDTO> boatListRadioDTOs;
+    private final ObservableList<DbBoatDTO> dbBoatDTOS;
+    private Text numberOfRecords;
+    private final VBox boatDetailsBox;
 
     public ControlBox(TabBoats tabBoats) {
         this.parent = tabBoats;
@@ -67,9 +64,7 @@ public class ControlBox extends VBox {
         hBox.setPadding(new Insets(15,0,0,0));
         Button viewBoat = new Button("View Boat");
         hBox.getChildren().add(viewBoat);
-        viewBoat.setOnAction(event -> {
-            Launcher.openBoatViewTab(parent.selectedBoat);
-        });
+        viewBoat.setOnAction(event -> Launcher.openBoatViewTab(parent.selectedBoat));
         return hBox;
     }
 
@@ -104,7 +99,7 @@ public class ControlBox extends VBox {
 
     private String getLabel(String value) {
         return dbBoatDTOS.stream().filter(dbBoatDTO -> dbBoatDTO.getFieldName().equals(value))
-                .map(dbBoatDTO -> dbBoatDTO.getName()).findFirst().orElse(value);
+                .map(DbBoatDTO::getName).findFirst().orElse(value);
     }
 
     private HBox setUpSearchBox() {
@@ -113,6 +108,7 @@ public class ControlBox extends VBox {
         hBox.setSpacing(10);
         hBox.setPadding(new Insets(0,0,15,0));
         TextField textField = new TextField();
+        ComboBox<String> comboBox = new ComboBox<>();
         Text text = new Text("Search");
         text.setId("invoice-text-number");
         hBox.getChildren().addAll(text, textField);
@@ -150,18 +146,18 @@ public class ControlBox extends VBox {
                     field.setAccessible(true);
                     String value = returnFieldValueAsString(field, boatListDTO).toLowerCase();
                     if(value.contains(text)) hasMatch = true;
-                };  // add boat DTO here
+                }  // add boat DTO here
                 if(hasMatch)
-                searchedBoats.add(boatListDTO);
+                    searchedBoats.add(boatListDTO);
                 hasMatch = false;
-            };
+            }
         return searchedBoats;
     }
 
     private <T> String returnFieldValueAsString(Field field, T pojo) {
         String result;
         try {
-            SimpleObjectProperty value = new SimpleObjectProperty(field.get(pojo));
+            SimpleObjectProperty<T> value = new SimpleObjectProperty<>((T) field.get(pojo));
             int begin = value.getValue().toString().indexOf("value: ") + 7;
             int end = value.getValue().toString().indexOf("]");
             result = value.getValue().toString().substring(begin, end);
@@ -209,7 +205,7 @@ public class ControlBox extends VBox {
             parent.boats.clear();
             parent.boats.addAll(SqlBoat.getBoatList(r.getQuery()));
             if(numberOfRecords != null) // have we created the object yet?
-            updateRecordCount(parent.boats.size());
+                updateRecordCount(parent.boats.size());
         });
     }
 }
