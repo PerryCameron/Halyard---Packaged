@@ -29,6 +29,8 @@ public class ControlBox extends VBox {
     private final ObservableList<DbBoatDTO> dbBoatDTOS;
     private Text numberOfRecords;
     private final VBox boatDetailsBox;
+    private boolean isActiveSearch;
+    private TextField textField = new TextField();
 
     public ControlBox(TabBoats tabBoats) {
         this.parent = tabBoats;
@@ -107,7 +109,6 @@ public class ControlBox extends VBox {
         hBox.setAlignment(Pos.CENTER_LEFT);
         hBox.setSpacing(10);
         hBox.setPadding(new Insets(0,0,15,0));
-        TextField textField = new TextField();
         ComboBox<String> comboBox = new ComboBox<>();
         Text text = new Text("Search");
         text.setId("invoice-text-number");
@@ -128,9 +129,12 @@ public class ControlBox extends VBox {
             parent.searchedBoats.clear();
             parent.searchedBoats.addAll(searchString(searchTerm));
             parent.boatListTableView.setItems(parent.searchedBoats);
+            isActiveSearch = true;
         } else { // if search box has been cleared
             parent.boatListTableView.setItems(parent.boats);
+            isActiveSearch = false;
         }
+        updateRecordCount();
     }
 
     private ObservableList<BoatListDTO> searchString(String searchTerm) {
@@ -143,6 +147,7 @@ public class ControlBox extends VBox {
                 Field[] allFields = new Field[fields1.length + fields2.length];
                 Arrays.setAll(allFields, i -> (i < fields1.length ? fields1[i] : fields2[i - fields1.length]));
                 for(Field field: allFields) {
+                    System.out.println(field.getName());
                     field.setAccessible(true);
                     String value = returnFieldValueAsString(field, boatListDTO).toLowerCase();
                     if(value.contains(text)) hasMatch = true;
@@ -179,8 +184,13 @@ public class ControlBox extends VBox {
         return hBox;
     }
 
-    private void updateRecordCount(int size) {
-        numberOfRecords.setText(String.valueOf(size));
+    private void updateRecordCount() {
+        String number = null;
+        if(isActiveSearch)
+            number = String.valueOf(parent.searchedBoats.size()) + "/" + String.valueOf(parent.boats.size());
+        else
+            number = String.valueOf(parent.boats.size());
+        numberOfRecords.setText(number);
     }
 
     private VBox setUpRadioButtonBox() {
@@ -203,9 +213,11 @@ public class ControlBox extends VBox {
     private void setRadioButtonListener(BoatListRadioDTO r) {
         r.getRadioButton().selectedProperty().addListener((obs, wasPreviouslySelected, isNowSelected) -> {
             parent.boats.clear();
-            parent.boats.addAll(SqlBoat.getBoatList(r.getQuery()));
+            parent.boats.addAll(SqlBoat.getBoatList(r.getQuery())); // populates main list
             if(numberOfRecords != null) // have we created the object yet?
-                updateRecordCount(parent.boats.size());
+                updateRecordCount(); // updates the record count
+            if(isActiveSearch) // re apply search for new list
+                fillTableView(textField.getText());
         });
     }
 }

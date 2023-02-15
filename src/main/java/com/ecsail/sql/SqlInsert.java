@@ -139,8 +139,8 @@ public class SqlInsert {
 
 	public static boolean addBoatRecord(BoatDTO b, int msid) {
 		boolean noError = false;
-		String query = "INSERT INTO boat () VALUES (" + b.getBoat_id() + ",null,null,null,null,null,null,true,null,null,null,null,null,null,null,false)";
-		String query1 = "INSERT INTO boat_owner () VALUES (" + msid + "," + b.getBoat_id() + ")";
+		String query = "INSERT INTO boat () VALUES (" + b.getBoatId() + ",null,null,null,null,null,null,true,null,null,null,null,null,null,null,false)";
+		String query1 = "INSERT INTO boat_owner () VALUES (" + msid + "," + b.getBoatId() + ")";
 		try {
 			BaseApplication.connect.executeQuery(query);
 			BaseApplication.connect.executeQuery(query1);

@@ -24,7 +24,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -1466,7 +1465,7 @@ public class PDF_Renewal_Form {
 		Cell cell;
 		Paragraph p;
 
-		p = new Paragraph(removeNulls(boat.getBoat_name()));
+		p = new Paragraph(removeNulls(boat.getBoatName()));
 		p.setFontSize(10);
 		cell = new Cell();
 		if (isHeader) {
@@ -1479,7 +1478,7 @@ public class PDF_Renewal_Form {
 		cell.add(p);
 		mainTable.addCell(cell);
 
-		p = new Paragraph(removeNulls(boat.getRegistration_num()));
+		p = new Paragraph(removeNulls(boat.getRegistrationNum()));
 		p.setFontSize(10);
 		cell = new Cell();
 		if (isHeader) {
@@ -1503,7 +1502,7 @@ public class PDF_Renewal_Form {
 		cell.add(p);
 		mainTable.addCell(cell);
 
-		p = new Paragraph(removeNulls(boat.getManufacture_year()));
+		p = new Paragraph(removeNulls(boat.getManufactureYear()));
 		p.setFontSize(10);
 		cell = new Cell();
 		if (isHeader) {
@@ -1577,7 +1576,7 @@ public class PDF_Renewal_Form {
 		cell.add(p);
 		mainTable.addCell(cell);
 
-		p = new Paragraph(removeNulls(boat.getSail_number()));
+		p = new Paragraph(removeNulls(boat.getSailNumber()));
 		p.setFontSize(10);
 		cell = new Cell();
 		if (isHeader) {

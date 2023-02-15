@@ -1,6 +1,5 @@
 package com.ecsail.structures;
 
-import com.ecsail.annotation.ColumnName;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -91,14 +90,14 @@ public class BoatListDTO extends BoatDTO {
 				", lName=" + lName +
 				", fName=" + fName +
 				", numberOfImages=" + numberOfImages +
-				", boat_id=" + boat_id +
-				", ms_id=" + ms_id +
+				", boat_id=" + boatId +
+				", ms_id=" + msId +
 				", manufacturer=" + manufacturer +
-				", manufacture_year=" + manufacture_year +
-				", registration_num=" + registration_num +
+				", manufacture_year=" + manufactureYear +
+				", registration_num=" + registrationNum +
 				", model=" + model +
-				", boat_name=" + boat_name +
-				", sail_number=" + sail_number +
+				", boat_name=" + boatName +
+				", sail_number=" + sailNumber +
 				", hasTrailer=" + hasTrailer +
 				", length=" + length +
 				", weight=" + weight +

@@ -66,10 +66,10 @@ public class TabBoatView extends Tab {
     }
 
     private void createBoatView() {
-        this.boatOwners = SqlMembershipList.getBoatOwnerRoster(boatDTO.getBoat_id());
+        this.boatOwners = SqlMembershipList.getBoatOwnerRoster(boatDTO.getBoatId());
         this.dbBoatDTOS = SqlDbBoat.getDbBoat();
         this.scp = BaseApplication.connect.getScp();
-        this.images = SqlBoatPhotos.getImagesByBoatId(boatDTO.getBoat_id());
+        this.images = SqlBoatPhotos.getImagesByBoatId(boatDTO.getBoatId());
         this.imageView = new ImageView();
         // make sure directory exists, and create it if it does not
         this.selectedImage = getDefaultBoatPhotoDTO();
@@ -251,14 +251,14 @@ public class TabBoatView extends Tab {
         });
 
         boatOwnerAdd.setOnAction((event) -> {
-            new Dialogue_ChooseMember(boatOwners, boatDTO.getBoat_id());
+            new Dialogue_ChooseMember(boatOwners, boatDTO.getBoatId());
             // boatOwners.add(new Object_MembershipList());
         });
 
         boatOwnerDelete.setOnAction((event) -> {
             int selectedIndex = boatOwnerTableView.getSelectionModel().getSelectedIndex();
             if (selectedIndex >= 0)
-                if (SqlDelete.deleteBoatOwner(boatDTO.getBoat_id(), boatOwners.get(selectedIndex).getMsid())) // if it is																						// our database
+                if (SqlDelete.deleteBoatOwner(boatDTO.getBoatId(), boatOwners.get(selectedIndex).getMsid())) // if it is																						// our database
                     boatOwnerTableView.getItems().remove(selectedIndex); // remove it from our GUI
         });
 
@@ -331,10 +331,10 @@ public class TabBoatView extends Tab {
             // get number for photo
             int fileNumber = getNextFileNumberAvailable();
             // create filename
-            String fileName = boatDTO.getBoat_id() + "_" + fileNumber + "." + FileIO.getFileExtension(srcPath);
+            String fileName = boatDTO.getBoatId() + "_" + fileNumber + "." + FileIO.getFileExtension(srcPath);
             // create new POJO
             BoatPhotosDTO boatPhotosDTO = new BoatPhotosDTO(0,
-                    boatDTO.getBoat_id(),"",fileName,fileNumber,isFirstPic());
+                    boatDTO.getBoatId(),"",fileName,fileNumber,isFirstPic());
             // send file to remote server and change its group
             scp.sendFile(srcPath,remotePath + boatPhotosDTO.getFilename());
             scp.changeGroup(remotePath + boatPhotosDTO.getFilename(),groupId);
@@ -356,7 +356,7 @@ public class TabBoatView extends Tab {
 
     private BoatPhotosDTO resetImages() {
         images.clear();
-        images.addAll(SqlBoatPhotos.getImagesByBoatId(boatDTO.getBoat_id()));
+        images.addAll(SqlBoatPhotos.getImagesByBoatId(boatDTO.getBoatId()));
         // sort them so one just created is last
         images.sort(Comparator.comparingInt(BoatPhotosDTO::getId));
         // get the last

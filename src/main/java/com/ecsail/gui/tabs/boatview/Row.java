@@ -35,7 +35,7 @@ public class Row extends HBox {
                 .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                     // focus out
                     if (oldValue) { // we have focused and unfocused
-                        SqlUpdate.updateBoat(dbBoatDTO.getFieldName(), parent.boatDTO.getBoat_id(), textField.getText());
+                        SqlUpdate.updateBoat(dbBoatDTO.getFieldName(), parent.boatDTO.getBoatId(), textField.getText());
                         if(parent.fromList)
                         setPojo(dbBoatDTO.getFieldName(), textField.getText());
                     }
@@ -44,13 +44,13 @@ public class Row extends HBox {
 
     private void setCheckBoxListener(CheckBox checkBox) {
         checkBox.selectedProperty().addListener((obs, wasPreviouslySelected, isNowSelected) ->
-                SqlUpdate.updateBoat(parent.boatDTO.getBoat_id(), dbBoatDTO.getFieldName(), isNowSelected));
+                SqlUpdate.updateBoat(parent.boatDTO.getBoatId(), dbBoatDTO.getFieldName(), isNowSelected));
 //                setPojo(dbBoatDTO.getFieldName(), isNowSelected);
     }
 
     private void setComboBoxListener(ComboBox<KeelType> comboBox) {
         comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-            SqlUpdate.updateBoat(parent.boatDTO.getBoat_id(), newValue.getCode());
+            SqlUpdate.updateBoat(parent.boatDTO.getBoatId(), newValue.getCode());
             if(parent.fromList)
             setPojo(dbBoatDTO.getFieldName(), newValue.getCode());
         });
@@ -89,15 +89,15 @@ public class Row extends HBox {
     }
 
     private String setStringValue(String fieldName) {
-        if(fieldName.equals("BOAT_ID")) return String.valueOf(parent.boatDTO.getBoat_id());
-        else if(fieldName.equals("BOAT_NAME")) return parent.boatDTO.getBoat_name();
+        if(fieldName.equals("BOAT_ID")) return String.valueOf(parent.boatDTO.getBoatId());
+        else if(fieldName.equals("BOAT_NAME")) return parent.boatDTO.getBoatName();
         else if(fieldName.equals("MANUFACTURER")) return parent.boatDTO.getManufacturer();
-        else if(fieldName.equals("MANUFACTURE_YEAR")) return parent.boatDTO.getManufacture_year();
-        else if(fieldName.equals("REGISTRATION_NUM")) return parent.boatDTO.getRegistration_num();
+        else if(fieldName.equals("MANUFACTURE_YEAR")) return parent.boatDTO.getManufactureYear();
+        else if(fieldName.equals("REGISTRATION_NUM")) return parent.boatDTO.getRegistrationNum();
         else if(fieldName.equals("MODEL")) return parent.boatDTO.getModel();
         else if(fieldName.equals("PHRF")) return parent.boatDTO.getPhrf();
-        else if(fieldName.equals("BOAT_NAME")) return parent.boatDTO.getBoat_name();
-        else if(fieldName.equals("SAIL_NUMBER")) return parent.boatDTO.getSail_number();
+        else if(fieldName.equals("BOAT_NAME")) return parent.boatDTO.getBoatName();
+        else if(fieldName.equals("SAIL_NUMBER")) return parent.boatDTO.getSailNumber();
         else if(fieldName.equals("LENGTH")) return parent.boatDTO.getLength();
         else if(fieldName.equals("WEIGHT")) return parent.boatDTO.getWeight();
         else if(fieldName.equals("KEEL")) return parent.boatDTO.getKeel();
@@ -110,15 +110,15 @@ public class Row extends HBox {
 
     private String setPojo(String fieldName, String value) {
         if (parent.fromList) {
-            if (fieldName.equals("BOAT_ID")) parent.boatListDTO.setBoat_id(Integer.parseInt(value));
-            else if (fieldName.equals("BOAT_NAME")) parent.boatListDTO.setBoat_name(value);
+            if (fieldName.equals("BOAT_ID")) parent.boatListDTO.setBoatId(Integer.parseInt(value));
+            else if (fieldName.equals("BOAT_NAME")) parent.boatListDTO.setBoatName(value);
             else if (fieldName.equals("MANUFACTURER")) parent.boatListDTO.setManufacturer(value);
-            else if (fieldName.equals("MANUFACTURE_YEAR")) parent.boatListDTO.setManufacture_year(value);
-            else if (fieldName.equals("REGISTRATION_NUM")) parent.boatListDTO.setRegistration_num(value);
+            else if (fieldName.equals("MANUFACTURE_YEAR")) parent.boatListDTO.setManufactureYear(value);
+            else if (fieldName.equals("REGISTRATION_NUM")) parent.boatListDTO.setRegistrationNum(value);
             else if (fieldName.equals("MODEL")) parent.boatListDTO.setModel(value);
             else if (fieldName.equals("PHRF")) parent.boatListDTO.setPhrf(value);
-            else if (fieldName.equals("BOAT_NAME")) parent.boatListDTO.setBoat_name(value);
-            else if (fieldName.equals("SAIL_NUMBER")) parent.boatListDTO.setSail_number(value);
+            else if (fieldName.equals("BOAT_NAME")) parent.boatListDTO.setBoatName(value);
+            else if (fieldName.equals("SAIL_NUMBER")) parent.boatListDTO.setSailNumber(value);
             else if (fieldName.equals("LENGTH")) parent.boatListDTO.setLength(value);
             else if (fieldName.equals("WEIGHT")) parent.boatListDTO.setWeight(value);
             else if (fieldName.equals("KEEL")) parent.boatListDTO.setKeel(value);

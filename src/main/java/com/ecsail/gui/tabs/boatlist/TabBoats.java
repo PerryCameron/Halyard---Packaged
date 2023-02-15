@@ -1,5 +1,6 @@
 package com.ecsail.gui.tabs.boatlist;
 
+import com.ecsail.Launcher;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.structures.BoatListDTO;
 import javafx.application.Platform;
@@ -15,6 +16,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -98,7 +100,7 @@ public class TabBoats extends Tab {
 			// When "Listed?" column change.
 			booleanProp.addListener((observable, oldValue, newValue) -> {
 				boat.setAux(newValue);
-				SqlUpdate.updateAux(String.valueOf(boat.getBoat_id()), newValue);
+				SqlUpdate.updateAux(String.valueOf(boat.getBoatId()), newValue);
 
 			});
 			return booleanProp;
@@ -129,12 +131,9 @@ public class TabBoats extends Tab {
 			row.setOnMouseClicked(event -> {
 				selectedBoat = row.getItem();
 				controlBox.refreshCurrentBoatDetails();
-//				if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-//					// int rowIndex = row.getIndex();
-//					BoatListDTO clickedRow = row.getItem();
-//					BoatDTO selectedBoat = SqlBoat.getBoatbyBoatId(clickedRow.getBoat_id());
-//					Launcher.openBoatViewTab(selectedBoat);
-//				}
+				if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+					Launcher.openBoatViewTab(selectedBoat);
+				}
 			});
 			return row;
 		});
@@ -165,7 +164,4 @@ public class TabBoats extends Tab {
 		});
 	}
 
-//	private BoatListDTO getBoatObject(int id) {
-//		return boats.stream().filter(boatListDTO -> boatListDTO.getBoat_id() == id).findFirst().orElse(null);
-//	}
 }

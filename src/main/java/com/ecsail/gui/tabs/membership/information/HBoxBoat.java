@@ -82,12 +82,12 @@ public class HBoxBoat extends HBox {
         boatTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
 
-        final TableColumn<BoatDTO, String> col1 = createColumn("Boat Name", BoatDTO::boat_nameProperty);
+        final TableColumn<BoatDTO, String> col1 = createColumn("Boat Name", BoatDTO::boatNameProperty);
         col1.setOnEditCommit(
                 t -> {
                     t.getTableView().getItems().get(
-                            t.getTablePosition().getRow()).setBoat_name(t.getNewValue());
-                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoat_id();
+                            t.getTablePosition().getRow()).setBoatName(t.getNewValue());
+                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
                     SqlUpdate.updateBoat("boat_name", boat_id, t.getNewValue());
                 }
         );
@@ -97,17 +97,17 @@ public class HBoxBoat extends HBox {
                 t -> {
                     t.getTableView().getItems().get(
                             t.getTablePosition().getRow()).setManufacturer(t.getNewValue());
-                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoat_id();
+                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
                     SqlUpdate.updateBoat("manufacturer", boat_id, t.getNewValue());
                 }
         );
 
-        final TableColumn<BoatDTO, String> col3 = createColumn("Year", BoatDTO::manufacture_yearProperty);
+        final TableColumn<BoatDTO, String> col3 = createColumn("Year", BoatDTO::manufactureYearProperty);
         col3.setOnEditCommit(
                 t -> {
                     t.getTableView().getItems().get(
-                            t.getTablePosition().getRow()).setManufacture_year(t.getNewValue());
-                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoat_id();
+                            t.getTablePosition().getRow()).setManufactureYear(t.getNewValue());
+                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
                     SqlUpdate.updateBoat("manufacture_year", boat_id, t.getNewValue());
                 }
         );
@@ -117,27 +117,27 @@ public class HBoxBoat extends HBox {
                 t -> {
                     t.getTableView().getItems().get(
                             t.getTablePosition().getRow()).setModel(t.getNewValue());
-                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoat_id();
+                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
                     SqlUpdate.updateBoat("model", boat_id, t.getNewValue());
                 }
         );
 
-        final TableColumn<BoatDTO, String> col5 = createColumn("Registration", BoatDTO::registration_numProperty);
+        final TableColumn<BoatDTO, String> col5 = createColumn("Registration", BoatDTO::registrationNumProperty);
         col5.setOnEditCommit(
                 t -> {
                     t.getTableView().getItems().get(
-                            t.getTablePosition().getRow()).setRegistration_num(t.getNewValue());
-                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoat_id();
+                            t.getTablePosition().getRow()).setRegistrationNum(t.getNewValue());
+                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
                     SqlUpdate.updateBoat("registration_num", boat_id, t.getNewValue());
                 }
         );
 
-        final TableColumn<BoatDTO, String> col6 = createColumn("Sail #", BoatDTO::sail_numberProperty);
+        final TableColumn<BoatDTO, String> col6 = createColumn("Sail #", BoatDTO::sailNumberProperty);
         col6.setOnEditCommit(
                 t -> {
                     t.getTableView().getItems().get(
-                            t.getTablePosition().getRow()).setSail_number(t.getNewValue());
-                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoat_id();
+                            t.getTablePosition().getRow()).setSailNumber(t.getNewValue());
+                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
                     SqlUpdate.updateBoat("sail_number", boat_id, t.getNewValue());
                 }
         );
@@ -147,7 +147,7 @@ public class HBoxBoat extends HBox {
                 t -> {
                     t.getTableView().getItems().get(
                             t.getTablePosition().getRow()).setPhrf(t.getNewValue());
-                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoat_id();
+                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
                     SqlUpdate.updateBoat("phrf", boat_id, t.getNewValue());
                 }
         );
@@ -157,7 +157,7 @@ public class HBoxBoat extends HBox {
                 t -> {
                     t.getTableView().getItems().get(
                             t.getTablePosition().getRow()).setLength(t.getNewValue());
-                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoat_id();
+                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
                     SqlUpdate.updateBoat("length", boat_id, t.getNewValue());
                 }
         );
@@ -167,7 +167,7 @@ public class HBoxBoat extends HBox {
                 t -> {
                     t.getTableView().getItems().get(
                             t.getTablePosition().getRow()).setWeight(t.getNewValue());
-                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoat_id();
+                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
                     SqlUpdate.updateBoat("weight", boat_id, t.getNewValue());
                 }
         );
@@ -183,7 +183,7 @@ public class HBoxBoat extends HBox {
             // When "has trailer?" column change.
             booleanProp.addListener((observable, oldValue, newValue) -> {
                 boat.setHasTrailer(newValue);
-                SqlUpdate.updateBoat(boat.getBoat_id(), "HAS_TRAILER", newValue);
+                SqlUpdate.updateBoat(boat.getBoatId(), "HAS_TRAILER", newValue);
             });
             return booleanProp;
         });
@@ -212,7 +212,7 @@ public class HBoxBoat extends HBox {
             var newKeel = event.getNewValue();
             var row = pos.getRow();
             var boat = event.getTableView().getItems().get(row);
-            SqlUpdate.updateBoat(boat.getBoat_id(), newKeel.getCode());
+            SqlUpdate.updateBoat(boat.getBoatId(), newKeel.getCode());
             boat.setKeel(newKeel.getCode());
         });
 
@@ -240,7 +240,7 @@ public class HBoxBoat extends HBox {
                 // insert row into tableView to match SQL record
                 tm.getBoats().add(b);
             // Now we will sort it to the top
-            tm.getBoats().sort(Comparator.comparing(BoatDTO::getBoat_id).reversed());
+            tm.getBoats().sort(Comparator.comparing(BoatDTO::getBoatId).reversed());
             // this line prevents strange buggy behaviour
             boatTableView.layout();
             // edit the boat name cell after creating
@@ -254,7 +254,7 @@ public class HBoxBoat extends HBox {
                 var boatDTO = tm.getBoats().get(selectedIndex);
                 Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
                 conformation.setTitle("Delete Boat");
-                conformation.setHeaderText("Removing Boat " + boatDTO.getBoat_id());
+                conformation.setHeaderText("Removing Boat " + boatDTO.getBoatId());
                 conformation.setContentText("Are sure you want to delete this boat ?\n\n");
                 DialogPane dialogPane = conformation.getDialogPane();
                 dialogPane.getStylesheets().add("css/dark/dialogue.css");
@@ -262,7 +262,7 @@ public class HBoxBoat extends HBox {
                 Optional<ButtonType> result = conformation.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
                     // delete boat from database
-                    SqlDelete.deleteBoatOwner(boatDTO.getBoat_id(), tm.getMembership().getMsid());
+                    SqlDelete.deleteBoatOwner(boatDTO.getBoatId(), tm.getMembership().getMsid());
                     // remove from GUI
                     boatTableView.getItems().remove(selectedIndex);
                 }

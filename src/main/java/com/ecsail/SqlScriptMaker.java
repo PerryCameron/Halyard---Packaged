@@ -411,13 +411,13 @@ public class SqlScriptMaker {
 	public static String getBoatString(BoatDTO boa) {
 		return
 				"INSERT INTO boat () VALUES ("
-				+ boa.getBoat_id() + ","
+				+ boa.getBoatId() + ","
 				+ getCorrectString(boa.getManufacturer()) + ","
-				+ getCorrectString(boa.getManufacture_year())  + ","
-				+ getCorrectString(boa.getRegistration_num()) + ","
+				+ getCorrectString(boa.getManufactureYear())  + ","
+				+ getCorrectString(boa.getRegistrationNum()) + ","
 				+ getCorrectString(boa.getModel()) + ","
-				+ getCorrectString(boa.getBoat_name()) + ","
-				+ getCorrectString(boa.getSail_number()) + ","
+				+ getCorrectString(boa.getBoatName()) + ","
+				+ getCorrectString(boa.getSailNumber()) + ","
 				+ boa.isHasTrailer() + ","
 				+ getCorrectString(boa.getLength()) + ","
 				+ getCorrectString(boa.getWeight()) + ","

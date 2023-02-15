@@ -108,8 +108,8 @@ public class Object_MembershipInformation {
 			for (BoatDTO b : boats) {
 				count++;
 				memberBoats += b.getModel();
-				if (b.getRegistration_num() != null) {  // this boat has registration
-					memberBoats += "(" + b.getRegistration_num() + ")";
+				if (b.getRegistrationNum() != null) {  // this boat has registration
+					memberBoats += "(" + b.getRegistrationNum() + ")";
 				}
 				if (count < boats.size()) memberBoats += ", ";
 			}

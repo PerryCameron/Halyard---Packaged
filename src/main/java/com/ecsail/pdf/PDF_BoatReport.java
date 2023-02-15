@@ -146,19 +146,19 @@ public class PDF_BoatReport {
 
                 cell = new Cell();
                 cell.setBorder(Border.NO_BORDER);
-                cell.add(new Paragraph(b.getRegistration_num() + ""));
+                cell.add(new Paragraph(b.getRegistrationNum() + ""));
                 cell.setWidth(70);
                 detailTable.addCell(cell);
 
                 cell = new Cell();
                 cell.setBorder(Border.NO_BORDER);
-                cell.add(new Paragraph(b.getBoat_name() + ""));
+                cell.add(new Paragraph(b.getBoatName() + ""));
                 cell.setWidth(100);
                 detailTable.addCell(cell);
 
                 cell = new Cell();
                 cell.setBorder(Border.NO_BORDER);
-                cell.add(new Paragraph(b.getManufacture_year() + ""));
+                cell.add(new Paragraph(b.getManufactureYear() + ""));
                 cell.setWidth(60);
                 detailTable.addCell(cell);
             }

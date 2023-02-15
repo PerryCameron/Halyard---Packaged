@@ -95,7 +95,7 @@ public class HBoxBoatNotes extends HBox {
         add.setOnAction(e -> {
 			String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
 			int boat_memo_id = SqlSelect.getNextAvailablePrimaryKey("boat_memo", "boat_memo_id"); // gets last memo_id number and add one
-			 memos.add(new BoatMemoDTO(boat_memo_id,b.getBoat_id(), date, "new note"));
+			 memos.add(new BoatMemoDTO(boat_memo_id,b.getBoatId(), date, "new note"));
 		});
         
 		delete.setOnAction(e -> {

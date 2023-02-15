@@ -83,15 +83,15 @@ public class Launcher extends VBox {
 
     public static void openBoatViewTab(BoatDTO b) {
         if (!tabOpen("Boat"))
-            tabPane.getTabs().add(new TabBoatView("Boat " + b.getBoat_id(), b));
-        tabPane.getSelectionModel().select(getTabIndex("Boat " + b.getBoat_id()));
+            tabPane.getTabs().add(new TabBoatView("Boat " + b.getBoatId(), b));
+        tabPane.getSelectionModel().select(getTabIndex("Boat " + b.getBoatId()));
     }
 
     public static void openBoatViewTab(BoatListDTO b) {
         System.out.println("From launcher " + b);
         if (!tabOpen("Boat"))
-            tabPane.getTabs().add(new TabBoatView("Boat " + b.getBoat_id(), b));
-        tabPane.getSelectionModel().select(getTabIndex("Boat " + b.getBoat_id()));
+            tabPane.getTabs().add(new TabBoatView("Boat " + b.getBoatId(), b));
+        tabPane.getSelectionModel().select(getTabIndex("Boat " + b.getBoatId()));
     }
 
     public static void openWelcomeTab(HBoxWelcome boxWelcome) {
