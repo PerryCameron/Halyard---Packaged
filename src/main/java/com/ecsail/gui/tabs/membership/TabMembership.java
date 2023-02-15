@@ -2,7 +2,7 @@ package com.ecsail.gui.tabs.membership;
 
 
 import com.ecsail.BaseApplication;
-import com.ecsail.Note;
+import com.ecsail.gui.common.Note;
 import com.ecsail.enums.MemberType;
 import com.ecsail.gui.tabs.membership.fiscal.HBoxHistory;
 import com.ecsail.gui.tabs.membership.fiscal.HBoxInvoiceList;
@@ -45,7 +45,7 @@ public class TabMembership extends Tab {
 	public TabMembership(MembershipListDTO me) {
 		super();
 		this.membership = me;
-		var memos = SqlMemos.getMemos(membership.getMsid());
+		var memos = SqlMemos.getMemosByMsId(membership.getMsid());
 		this.note = new Note(memos,membership.getMsid());
         this.people = SqlPerson.getPeople(membership.getMsid());
 		this.invoices = SqlInvoice.getInvoicesByMsid(membership.getMsid());

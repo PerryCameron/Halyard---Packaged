@@ -66,17 +66,15 @@ public class TabBoats extends Tab {
 		var Col8 = new TableColumn<BoatListDTO, Text>("Images");
 		var Col9 = new TableColumn<BoatListDTO, Boolean>("Aux");
 
-		Col1.setCellValueFactory(new PropertyValueFactory<BoatListDTO, String>("membership_id"));
+		Col1.setCellValueFactory(new PropertyValueFactory<BoatListDTO, String>("membershipId"));
 		Col1.setStyle("-fx-alignment: top-center");
-
-		boatId.setCellValueFactory(new PropertyValueFactory<>("boat_id"));
+		boatId.setCellValueFactory(new PropertyValueFactory<>("boatId"));
 		boatId.setStyle("-fx-alignment: top-center");
-
 		Col2.setCellValueFactory(new PropertyValueFactory<>("lName"));
 		Col3.setCellValueFactory(new PropertyValueFactory<>("fName"));
 		Col4.setCellValueFactory(new PropertyValueFactory<>("model"));
-		Col5.setCellValueFactory(new PropertyValueFactory<>("registration_num"));
-		Col7.setCellValueFactory(new PropertyValueFactory<>("boat_name"));
+		Col5.setCellValueFactory(new PropertyValueFactory<>("registrationNum"));
+		Col7.setCellValueFactory(new PropertyValueFactory<>("boatName"));
 		Col8.setCellValueFactory(new PropertyValueFactory<>("numberOfImages"));
 		Col8.setStyle("-fx-alignment: top-center");
 		Col8.setCellValueFactory(param -> {  // don't need this now but will use for subleases

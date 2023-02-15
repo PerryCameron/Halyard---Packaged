@@ -2,7 +2,7 @@ package com.ecsail.gui.tabs.membership.fiscal.invoice;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
-import com.ecsail.Note;
+import com.ecsail.gui.common.Note;
 import com.ecsail.gui.tabs.membership.fiscal.HBoxInvoiceList;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlInsert;

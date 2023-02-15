@@ -182,22 +182,25 @@ public class HBoxPhone extends HBox {
 
         
         /////////////////// LISTENERS //////////////////////////////
-        
+
         phoneAdd.setOnAction((event) -> {
             BaseApplication.logger.info("Added new phone entry for " + person.getNameWithInfo());
-                // return next key id for phone table
-                int phone_id = SqlSelect.getNextAvailablePrimaryKey("phone", "phone_id");
-                // attempt to add a new record and return if it is successful
-                if (SqlInsert.addPhoneRecord(phone_id, person.getP_id(), true, "new phone", ""))
-                    // if successfully added to SQL then add a new row in the tableview
-                    phone.add(new PhoneDTO(phone_id, person.getP_id(), true, "new phone", ""));
-                // Now we will sort it to the top
-                phone.sort(Comparator.comparing(PhoneDTO::getPhone_ID).reversed());
-                // this line prevents strange buggy behaviour
-                phoneTableView.layout();
-                // edit the phone number cell after creating
-                phoneTableView.edit(0, Col1);
-            });
+            // return next key id for phone table
+            int phone_id = SqlSelect.getNextAvailablePrimaryKey("phone", "phone_id");
+            // attempt to add a new record and return if it is successful
+            if (SqlInsert.addPhoneRecord(phone_id, person.getP_id(), true, "new phone", ""))
+                // if successfully added to SQL then add a new row in the tableview
+                phone.add(new PhoneDTO(phone_id, person.getP_id(), true, "", ""));
+            // Now we will sort it to the top
+            phone.sort(Comparator.comparing(PhoneDTO::getPhone_ID).reversed());
+            // this line prevents strange buggy behaviour
+            phoneTableView.layout();
+            phoneTableView.requestFocus();
+            phoneTableView.getSelectionModel().select(0);
+            phoneTableView.getFocusModel().focus(0);
+            // edit the phone number cell after creating
+            phoneTableView.edit(0, Col1);
+        });
 
         phoneDelete.setOnAction((event) -> {
             int selectedIndex = phoneTableView.getSelectionModel().getSelectedIndex();

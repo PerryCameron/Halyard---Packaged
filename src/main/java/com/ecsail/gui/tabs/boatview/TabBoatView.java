@@ -6,6 +6,7 @@ import com.ecsail.FileIO;
 import com.ecsail.HalyardPaths;
 import com.ecsail.ImageViewPane;
 import com.ecsail.connection.Sftp;
+import com.ecsail.gui.common.HBoxNotes;
 import com.ecsail.gui.dialogues.Dialogue_ChooseMember;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
@@ -283,7 +284,7 @@ public class TabBoatView extends Tab {
         vboxRightContainer.getChildren().addAll(hboxPictureControls, vboxPicture);
 
         hboxContainer.getChildren().addAll(vboxLeftContainer, vboxRightContainer);
-        vboxGrey.getChildren().addAll(hboxContainer, new HBoxBoatNotes(boatDTO));
+        vboxGrey.getChildren().addAll(hboxContainer, new HBoxNotes(boatDTO));
         vboxBlue.getChildren().add(vboxPink);
         vboxPink.getChildren().add(vboxGrey);
         setContent(vboxBlue);

@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 public class HBoxEmail extends HBox {
 
@@ -83,11 +84,15 @@ public class HBoxEmail extends HBox {
         TableColumn<EmailDTO, String> Col1 = createColumn(EmailDTO::emailProperty);
         Col1.setPrefWidth(137);
         Col1.setOnEditCommit(t -> {
-            t.getTableView().getItems().get(t.getTablePosition().getRow())
-                    .setEmail(t.getNewValue());
-            int email_id = t.getTableView().getItems().get(t.getTablePosition().getRow())
-                    .getEmail_id();
-            SqlUpdate.updateEmail(email_id, t.getNewValue());
+            int email_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getEmail_id();
+            if(isValidEmail(t.getNewValue())) {
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setEmail(t.getNewValue());
+                SqlUpdate.updateEmail(email_id, t.getNewValue());
+            } else {
+                email.stream()
+                        .filter(q -> q.getEmail_id() == email_id)
+                        .forEach(s -> s.setEmail("Bad Email"));
+            }
         });
 
         // example for this column found at https://o7planning.org/en/11079/javafx-tableview-tutorial
@@ -136,12 +141,15 @@ public class HBoxEmail extends HBox {
             // add record to SQL and return success or not
             if (SqlInsert.addEmailRecord(email_id, person.getP_id(), true, "new email", true))
                 // if we have added it to SQL we need to create a new row in tableview to match
-                email.add(new EmailDTO(email_id, person.getP_id(), true, "new email", true));
+                email.add(new EmailDTO(email_id, person.getP_id(), true, "", true));
             // Now we will sort it to the top
             email.sort(Comparator.comparing(EmailDTO::getEmail_id).reversed());
             // this line prevents strange buggy behaviour
             emailTableView.layout();
             // edit the phone number cell after creating
+            emailTableView.requestFocus();
+            emailTableView.getSelectionModel().select(0);
+            emailTableView.getFocusModel().focus(0);
             emailTableView.edit(0, Col1);
         });
 
@@ -190,6 +198,21 @@ public class HBoxEmail extends HBox {
         col.setCellFactory(column -> EditCell.createStringEditCell());
         return col;
     }
+
+    public static boolean isValidEmail(String email)
+    {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";
+
+        Pattern pat = Pattern.compile(emailRegex);
+        if (email == null)
+            return false;
+        return pat.matcher(email).matches();
+    }
+
+
 
 //    public static class RadioButtonTableCell<S> extends TableCell<S, Boolean> {
 //

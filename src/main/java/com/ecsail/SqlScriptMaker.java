@@ -57,7 +57,7 @@ public class SqlScriptMaker {
 		boats = SqlBoat.getBoats();
 		boatowners = SqlBoat.getBoatOwners();
 		slips = SqlSlip.getSlips();
-		memos = SqlMemos.getMemos(ALL);
+		memos = SqlMemos.getMemosByMsId(ALL);
 		email = SqlEmail.getEmail(ALL);
 		invoiceDTOS = SqlInvoice.getAllInvoices();
 		invoiceItemDTOS = SqlInvoiceItem.getAllInvoiceItems();

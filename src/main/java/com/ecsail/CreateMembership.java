@@ -1,5 +1,6 @@
 package com.ecsail;
 
+import com.ecsail.gui.common.Note;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.select.SqlMembership_Id;
 import com.ecsail.sql.select.SqlSelect;

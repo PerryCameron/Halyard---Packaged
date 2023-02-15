@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class BoatListDTO extends BoatDTO {
-	protected IntegerProperty membership_id;
+	protected IntegerProperty membershipId;
 	protected StringProperty lName;
 	protected StringProperty fName;
 	protected IntegerProperty numberOfImages;
@@ -14,29 +14,29 @@ public class BoatListDTO extends BoatDTO {
 	public BoatListDTO(Integer boat_id, Integer ms_id, String manufacturer, String manufacture_year,
 					   String registration_num, String model, String boat_name, String sail_number,
 					   Boolean hasTrailer, String length, String weight, String keel, String phrf,
-					   String draft, String beam, String lwl, Boolean aux, Integer membership_id,
+					   String draft, String beam, String lwl, Boolean aux, Integer membershipId,
 					   String lName, String fName, Integer numberOfImages) {
 		
 		super(boat_id, ms_id, manufacturer, manufacture_year, registration_num, model, boat_name,
 				sail_number, hasTrailer, length, weight, keel, phrf, draft, beam, lwl, aux);
-		this.membership_id = new SimpleIntegerProperty(membership_id);
+		this.membershipId = new SimpleIntegerProperty(membershipId);
 		this.lName = new SimpleStringProperty(lName);
 		this.fName = new SimpleStringProperty(fName);
 		this.numberOfImages = new SimpleIntegerProperty(numberOfImages);
 	}
 
-	public final IntegerProperty membership_idProperty() {
-		return this.membership_id;
+	public final IntegerProperty membershipIdProperty() {
+		return this.membershipId;
 	}
 	
 
-	public final int getMembership_id() {
-		return this.membership_idProperty().get();
+	public final int getMembershipId() {
+		return this.membershipIdProperty().get();
 	}
 	
 
-	public final void setMembership_id(final int membership_id) {
-		this.membership_idProperty().set(membership_id);
+	public final void setMembershipId(final int membershipId) {
+		this.membershipIdProperty().set(membershipId);
 	}
 	
 
@@ -45,12 +45,12 @@ public class BoatListDTO extends BoatDTO {
 	}
 	
 
-	public final String getlName() {
+	public final String getLastName() {
 		return this.lNameProperty().get();
 	}
 	
 
-	public final void setlName(final String lName) {
+	public final void setLastName(final String lName) {
 		this.lNameProperty().set(lName);
 	}
 	
@@ -60,12 +60,12 @@ public class BoatListDTO extends BoatDTO {
 	}
 	
 
-	public final String getfName() {
+	public final String getFirstName() {
 		return this.fNameProperty().get();
 	}
 	
 
-	public final void setfName(final String fName) {
+	public final void setFirstName(final String fName) {
 		this.fNameProperty().set(fName);
 	}
 
@@ -83,30 +83,4 @@ public class BoatListDTO extends BoatDTO {
 		this.numberOfImagesProperty().set(numberOfImages);
 	}
 
-	@Override
-	public String toString() {
-		return "BoatListDTO{" +
-				"membership_id=" + membership_id +
-				", lName=" + lName +
-				", fName=" + fName +
-				", numberOfImages=" + numberOfImages +
-				", boat_id=" + boatId +
-				", ms_id=" + msId +
-				", manufacturer=" + manufacturer +
-				", manufacture_year=" + manufactureYear +
-				", registration_num=" + registrationNum +
-				", model=" + model +
-				", boat_name=" + boatName +
-				", sail_number=" + sailNumber +
-				", hasTrailer=" + hasTrailer +
-				", length=" + length +
-				", weight=" + weight +
-				", keel=" + keel +
-				", phrf=" + phrf +
-				", draft=" + draft +
-				", beam=" + beam +
-				", lwl=" + lwl +
-				", aux=" + aux +
-				"} " + super.toString();
-	}
 }

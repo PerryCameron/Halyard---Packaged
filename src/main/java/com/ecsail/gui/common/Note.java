@@ -1,4 +1,4 @@
-package com.ecsail;
+package com.ecsail.gui.common;
 
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
@@ -26,10 +26,10 @@ public class Note {
 		super();
 	}
 
-	public int addMemoAndReturnId(String note, String date, int invoice_id, String category, int boat_id) {
+	public int addMemoAndReturnId(String note, String date, int invoice_id, String category, int boatId) {
 		//String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
 		int memo_id = SqlSelect.getNextAvailablePrimaryKey("memo","memo_id");
-		MemoDTO memo = new MemoDTO(memo_id,msid,date,note,invoice_id,category,boat_id);
+		MemoDTO memo = new MemoDTO(memo_id,msid,date,note,invoice_id,category,boatId);
 		memos.add(memo); // add in observable list
 		addMemo(memo); // add in SQL
 		Collections.sort(memos, Comparator.comparing(MemoDTO::getMemo_id).reversed());
