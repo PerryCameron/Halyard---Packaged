@@ -26,7 +26,8 @@ public class SqlMemos {
                         rs.getString("MEMO_DATE"),
                         rs.getString("MEMO"),
                         rs.getInt("INVOICE_ID"),
-                        rs.getString("CATEGORY")));
+                        rs.getString("CATEGORY"),
+                        rs.getInt("BOAT_ID")));
             }
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {
@@ -71,7 +72,8 @@ public class SqlMemos {
                         rs.getString("MEMO_DATE"),
                         rs.getString("MEMO"),
                         rs.getInt("INVOICE_ID"),
-                        rs.getString("CATEGORY"));
+                        rs.getString("CATEGORY"),
+                        rs.getInt("boat_id"));
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {
             new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");

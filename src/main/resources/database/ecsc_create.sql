@@ -107,6 +107,7 @@ create table ECSC_SQL.memo
     MEMO       varchar(2000),
     INVOICE_ID INTEGER,
     CATEGORY   varchar(20) NOT NULL,
+    BOAT_ID    INTEGER,
     foreign key (MS_ID) references membership (MS_ID)
 );
 

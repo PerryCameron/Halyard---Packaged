@@ -26,10 +26,10 @@ public class Note {
 		super();
 	}
 
-	public int addMemoAndReturnId(String note, String date, int invoice_id, String category) {
+	public int addMemoAndReturnId(String note, String date, int invoice_id, String category, int boat_id) {
 		//String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
 		int memo_id = SqlSelect.getNextAvailablePrimaryKey("memo","memo_id");
-		MemoDTO memo = new MemoDTO(memo_id,msid,date,note,invoice_id,category);
+		MemoDTO memo = new MemoDTO(memo_id,msid,date,note,invoice_id,category,boat_id);
 		memos.add(memo); // add in observable list
 		addMemo(memo); // add in SQL
 		Collections.sort(memos, Comparator.comparing(MemoDTO::getMemo_id).reversed());

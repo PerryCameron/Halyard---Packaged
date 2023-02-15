@@ -138,7 +138,7 @@ public class VBoxAddPerson extends VBox {
 			// if adding member succeeds, clear the form
 			if (!setNewMember(person)) {
 				String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
-				t.getNote().addMemoAndReturnId("New person: " + person.getNameWithInfo() + " added as " + memberType.getValue().toString() + ".", date, 0, "N");
+				t.getNote().addMemoAndReturnId("New person: " + person.getNameWithInfo() + " added as " + memberType.getValue().toString() + ".", date, 0, "N",0);
 				firstNameTextField.setText("");
 				lastNameTextField.setText("");
 				businessTextField.setText("");

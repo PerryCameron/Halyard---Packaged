@@ -205,7 +205,7 @@ public class SqlInsert {
 
 	public static void addMemo(MemoDTO m) {
 		String query = "INSERT INTO memo () VALUES (" + m.getMemo_id() + "," + m.getMsid() + ",'" + m.getMemo_date() + "','" + m.getMemo() + "',"
-				+ m.getInvoice_id() + ",'" + m.getCategory() + "');";
+				+ m.getInvoice_id() + ",'" + m.getCategory() + "'," +m.getBoat_id()+ ");";
 		try {
 			BaseApplication.connect.executeQuery(query);
 		 } catch (SQLException e) {

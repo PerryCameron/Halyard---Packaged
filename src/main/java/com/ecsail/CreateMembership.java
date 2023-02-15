@@ -38,7 +38,7 @@ public class CreateMembership {
 					"", "", 0, "", "", "", "", HalyardPaths.getYear());
 			PersonDTO newPrimary = new PersonDTO(pid,ms_id,1,"","",null,"","",true,"",0);
 			if (SqlInsert.addMembershipIsSucessful(newMembership)) {
-				newMemNote.addMemo(new MemoDTO(note_id, ms_id, date, "Created new membership record", 0, "N"));
+				newMemNote.addMemo(new MemoDTO(note_id, ms_id, date, "Created new membership record", 0, "N",0));
 				BaseApplication.activeMemberships.add(newMembership);
 				SqlInsert.addPersonRecord(newPrimary);
 				SqlInsert.addMembershipId(new MembershipIdDTO(mid, HalyardPaths.getYear(), ms_id, membership_id + "", true,

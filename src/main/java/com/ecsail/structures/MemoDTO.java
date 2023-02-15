@@ -13,9 +13,11 @@ public class MemoDTO {
 	private StringProperty memo;
 	private IntegerProperty invoice_id;
 	private StringProperty category;
+
+	private IntegerProperty boat_id;
 	
 	public MemoDTO(Integer memo_id, Integer msid, String memo_date,
-                   String memo, Integer invoice_id, String category) {
+                   String memo, Integer invoice_id, String category, int boat_id) {
 		super();
 		this.memo_id = new SimpleIntegerProperty(memo_id);
 		this.msid = new SimpleIntegerProperty(msid);
@@ -23,6 +25,7 @@ public class MemoDTO {
 		this.memo = new SimpleStringProperty(memo);
 		this.invoice_id = new SimpleIntegerProperty(invoice_id);
 		this.category = new SimpleStringProperty(category);
+		this.boat_id = new SimpleIntegerProperty(boat_id);
 	}
 
 	public final IntegerProperty memo_idProperty() {
@@ -114,6 +117,20 @@ public class MemoDTO {
 
 	public final void setCategory(final String category) {
 		this.categoryProperty().set(category);
+	}
+
+	public final IntegerProperty boat_idProperty() {
+		return this.boat_id;
+	}
+
+
+	public final int getBoat_id() {
+		return this.boat_idProperty().get();
+	}
+
+
+	public final void setBoat_id(final int boat_id) {
+		this.boat_idProperty().set(boat_id);
 	}
 
 }
