@@ -45,8 +45,7 @@ public class HBoxMembershipNotes extends HBox {
 		buttonVBox.setSpacing(5);
 		buttonVBox.setPrefWidth(80);
 		hboxGrey.setSpacing(10);
-		
-		
+
 		hboxGrey.setPadding(new Insets(5, 5, 5, 5));
 		vboxPink.setPadding(new Insets(2,2,2,2)); // spacing to make pink frame around table
 		this.setPadding(new Insets(5, 5, 5, 5));  // creates space for blue frame

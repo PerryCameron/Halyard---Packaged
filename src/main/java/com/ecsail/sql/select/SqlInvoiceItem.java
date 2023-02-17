@@ -163,4 +163,28 @@ public class SqlInvoiceItem {
         }
         return invoiceItem;
     }
+
+    public static InvoiceItemDTO sumInvoiceitem(FeeDTO feeDTO, int msId) { // overload
+        InvoiceItemDTO invoiceItem = null;
+        String query = "";
+        System.out.println(query);
+        try {
+            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+            while (rs.next()) {
+                invoiceItem = new InvoiceItemDTO(
+                        rs.getInt("ID"),
+                        rs.getInt("INVOICE_ID"),
+                        rs.getInt("MS_ID"),
+                        rs.getInt("FISCAL_YEAR"),
+                        rs.getString("FIELD_NAME"),
+                        rs.getBoolean("IS_CREDIT"),
+                        rs.getString("VALUE"),
+                        rs.getInt("QTY"));
+            }
+            BaseApplication.connect.closeResultSet(rs);
+        } catch (SQLException e) {
+            new Dialogue_ErrorSQL(e, "Unable to retrieve invoice items", "See below for details");
+        }
+        return invoiceItem;
+    }
 }

@@ -270,8 +270,12 @@ public class PDF_DepositReport {
 		mainTable.addCell(new Cell().setWidth(70));
 		mainTable.addCell(new Cell().setWidth(40));
 		for (InvoiceItemDTO item : invoiceSummedItems) {
-			if (!item.getValue().equals("0.00"))
+			sumItemsForCategories(item);
+
+			if (!item.getValue().equals("0.00")) {
+				System.out.println(item.getFieldName() + " " + item.getQty() + " " + item.getValue());
 				addSummaryRow(mainTable, item);
+			}
 		}
 		RemoveBorder(mainTable);
 		DepositTotalDTO depositTotal = SqlDeposit.getTotals(depositDTO, false); // gets count of totals
@@ -279,6 +283,70 @@ public class PDF_DepositReport {
 			addTotalsFooter(mainTable, depositTotal.getFullLabels()[i],depositTotal.getValues()[i],i == 2);
 		}
 		return mainTable;
+	}
+
+	// TODO this is a temporary hack until I can make a boolean for if it is a category or not
+	private void sumItemsForCategories(InvoiceItemDTO item) {
+		BigDecimal value = new BigDecimal("0.00");
+		int count = 0;
+		if(item.getFieldName().equals("Summer Storage")) {
+			for(InvoiceItemDTO i: invoiceItems) {
+				if(!i.getValue().equals("0.00")) {
+					if (i.getFieldName().equals("Beam Over 5 foot")) {
+						value = value.add(new BigDecimal(i.getValue()));
+						count+= i.getQty();
+					}
+					if (i.getFieldName().equals("Beam Under 5 foot")) {
+						value = value.add(new BigDecimal(i.getValue()));
+						count+= i.getQty();
+					}
+				}
+			}
+
+		}
+		if(item.getFieldName().equals("Keys")) {
+			for(InvoiceItemDTO i: invoiceItems) {
+				if(!i.getValue().equals("0.00")) {
+					if (i.getFieldName().equals("Gate Key")) {
+						value = value.add(new BigDecimal(i.getValue()));
+						count+= i.getQty();
+					}
+					if (i.getFieldName().equals("Sail Loft Key")) {
+						value = value.add(new BigDecimal(i.getValue()));
+						count+= i.getQty();
+					}
+					if (i.getFieldName().equals("Kayak Shed Key")) {
+						value = value.add(new BigDecimal(i.getValue()));
+						count+= i.getQty();
+					}
+				}
+			}
+		}
+		if(item.getFieldName().equals("Kayak")) {
+			for(InvoiceItemDTO i: invoiceItems) {
+				if(!i.getValue().equals("0.00")) {
+					if (i.getFieldName().equals("Kayak Rack")) {
+						value = value.add(new BigDecimal(i.getValue()));
+						count+= i.getQty();
+					}
+					if (i.getFieldName().equals("Kayak Beach Rack")) {
+						value = value.add(new BigDecimal(i.getValue()));
+						count+= i.getQty();
+					}
+					if (i.getFieldName().equals("Kayak Shed")) {
+						value = value.add(new BigDecimal(i.getValue()));
+						count+= i.getQty();
+					}
+				}
+			}
+			item.setFieldName("Kayak Storage");  // super hack!!! lol
+		}
+		BigDecimal test = new BigDecimal("0.00");
+		int result = value.compareTo(test);
+		if(result == 1) { /// more than 0 dollars
+			item.setValue(String.valueOf(value));
+			item.setQty(count);
+		}
 	}
 
 	private String addRecordsLabel() {

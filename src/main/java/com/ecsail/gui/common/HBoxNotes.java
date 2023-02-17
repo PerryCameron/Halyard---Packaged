@@ -2,14 +2,18 @@ package com.ecsail.gui.common;
 
 
 import com.ecsail.EditCell;
+import com.ecsail.Launcher;
 import com.ecsail.sql.select.SqlMemos;
 import com.ecsail.structures.BoatDTO;
+import com.ecsail.structures.BoatListDTO;
 import com.ecsail.structures.MemoDTO;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -23,7 +27,7 @@ public class HBoxNotes extends HBox {
 
 	private Note note;
 	private TableView<MemoDTO> memoTableView;
-	private TableColumn<MemoDTO, String> Col3;
+	private TableColumn<MemoDTO, String> Col2;
 	private BoatDTO selectedBoat;
 	
 	public HBoxNotes(BoatDTO b) {
@@ -77,9 +81,9 @@ public class HBoxNotes extends HBox {
 				}
 		);
 
-		Col3 = createColumn("Note", MemoDTO::memoProperty);
-		Col3.setPrefWidth(740);
-		Col3.setOnEditCommit(
+		Col2 = createColumn("Note", MemoDTO::memoProperty);
+		Col2.setPrefWidth(740);
+		Col2.setOnEditCommit(
 				t -> {
 					t.getTableView().getItems().get(t.getTablePosition().getRow()).setMemo(t.getNewValue());
 					int memo_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getMemo_id();
@@ -88,8 +92,20 @@ public class HBoxNotes extends HBox {
 		);
 		/// sets width of columns by percentage
 		Col1.setMaxWidth( 1f * Integer.MAX_VALUE * 15 );   // Date
-		Col3.setMaxWidth( 1f * Integer.MAX_VALUE * 85 );   // Note
-		tableView.getColumns().addAll(Arrays.asList(Col1,Col3));
+		Col2.setMaxWidth( 1f * Integer.MAX_VALUE * 85 );   // Note
+		tableView.getColumns().addAll(Arrays.asList(Col1, Col2));
+
+//		tableView.setRowFactory(tv -> {
+//			TableRow<MemoDTO> row = new TableRow<>();
+//			row.setOnMouseClicked(event -> {
+//				MemoDTO memoDTO = row.getItem();
+//				if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+//					// TODO
+//				}
+//			});
+//			return row;
+//		});
+
 		memoTableView = tableView;
 	}
 
@@ -123,7 +139,10 @@ public class HBoxNotes extends HBox {
 			int boat_memo_id = note.addMemoAndReturnId("new memo", date,0,"B",selectedBoat.getBoatId());
 			memoTableView.layout();
 			// open memo for editing
-			memoTableView.edit(0,Col3);
+			memoTableView.requestFocus();
+			memoTableView.getSelectionModel().select(0);
+			memoTableView.getFocusModel().focus(0);
+			memoTableView.edit(0, Col2);
 		});
 	}
 
