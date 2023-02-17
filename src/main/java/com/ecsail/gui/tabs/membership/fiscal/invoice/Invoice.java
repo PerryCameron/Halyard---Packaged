@@ -42,10 +42,10 @@ public class Invoice extends HBox {
 
     protected ObservableList<InvoiceItemDTO> items;
 
-    public Invoice(HBoxInvoiceList il, int index) {
-        this.invoice = il.getTabMembership().getInvoices().get(index);
-        this.membership = il.getTabMembership().getMembership();
-        this.note = il.getTabMembership().getNote();
+    public Invoice(HBoxInvoiceList parent, int index) {
+        this.invoice = parent.getTabMembership().getInvoices().get(index);
+        this.membership = parent.getTabMembership().getMembership();
+        this.note = parent.getTabMembership().getNote();
         ArrayList<DbInvoiceDTO> dbInvoiceDTOs = SqlDbInvoice.getDbInvoiceByYear(invoice.getYear());
         this.items = SqlInvoiceItem.getInvoiceItemsByInvoiceId(invoice.getId());
         this.fees = SqlFee.getFeesFromYear(invoice.getYear());
@@ -103,7 +103,7 @@ public class Invoice extends HBox {
             for (String key : invoiceItemMap.keySet()) {
                 if (invoiceItemMap.get(key).getDbInvoiceDTO().getOrder() == i) {
                     vboxMain.getChildren().add(invoiceItemMap.get(key));
-                    System.out.println("item " + i + " " + invoiceItemMap.get(key).itemName);
+//                    System.out.println("item " + i + " " + invoiceItemMap.get(key).itemName);
                 }
             }
         }

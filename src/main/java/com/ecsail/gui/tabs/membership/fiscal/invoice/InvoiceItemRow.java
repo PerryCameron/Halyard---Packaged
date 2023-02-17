@@ -136,6 +136,12 @@ public class InvoiceItemRow extends HBox {
                 textField.setPrefWidth(dbInvoiceDTO.getWidth());
                 textField.textProperty().bindBidirectional(rowTotal.textProperty());
                 setTextFieldListener();
+                // below if statement added because it needed to update dues.
+                if(!invoiceItemDTO.getValue().equals("0.00")) {
+                    invoiceItemDTO.setQty(1);
+                    updateBalance();
+                    checkIfNotCommittedAndUpdateSql();
+                }
                 return textField;
             }
             case "spinner" -> {
