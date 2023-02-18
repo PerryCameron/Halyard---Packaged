@@ -3,6 +3,7 @@ package com.ecsail.gui.tabs.membership.people.person;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.EditCell;
+import com.ecsail.connection.Mail;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
@@ -149,6 +150,14 @@ public class HBoxEmail extends HBox {
     }
 
     private void setEmailButtonListener(Button emailEmail) {
+        emailEmail.setOnAction((event) -> {
+            int selectedIndex = emailTableView.getSelectionModel().getSelectedIndex();
+            if (selectedIndex >= 0) {// make sure something is selected
+                EmailDTO emailDTO = email.get(selectedIndex);
+                Mail.composeEmail(emailDTO.getEmail(), "ECSC", "");
+            } else
+                alertToSelectRow();
+        });
     }
 
     private void setCopyButtonListener(Button emailCopy) {

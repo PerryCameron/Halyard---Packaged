@@ -1,5 +1,6 @@
-package com.ecsail;
+package com.ecsail.gui.common;
 
+import com.ecsail.BaseApplication;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
