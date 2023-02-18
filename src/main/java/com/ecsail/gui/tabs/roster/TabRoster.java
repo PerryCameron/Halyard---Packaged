@@ -165,14 +165,14 @@ public class TabRoster extends Tab {
 			return new SimpleObjectProperty<>(text);
 		});
 
-		Col5.setCellValueFactory(new PropertyValueFactory<>("fname"));
-		Col6.setCellValueFactory(new PropertyValueFactory<>("lname"));
+		Col5.setCellValueFactory(new PropertyValueFactory<>("fName"));
+		Col6.setCellValueFactory(new PropertyValueFactory<>("lName"));
 		Col7.setCellValueFactory(new PropertyValueFactory<>("address"));
 		Col8.setCellValueFactory(new PropertyValueFactory<>("city"));
 		Col9.setCellValueFactory(new PropertyValueFactory<>("state"));
 		Col9.setStyle("-fx-alignment: top-center");
 		Col10.setCellValueFactory(new PropertyValueFactory<>("zip"));
-		Col11.setCellValueFactory(new PropertyValueFactory<>("msid"));
+		Col11.setCellValueFactory(new PropertyValueFactory<>("msId"));
 
 
 		
@@ -289,7 +289,7 @@ public class TabRoster extends Tab {
 				if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
 					// int rowIndex = row.getIndex();
 					MembershipListDTO clickedRow = row.getItem();
-					Launcher.createMembershipTabForRoster(clickedRow.getMembershipId(), clickedRow.getMsid());
+					Launcher.createMembershipTabForRoster(clickedRow.getMembershipId(), clickedRow.getMsId());
 				}
 //				if (!row.isEmpty() && event.getButton() == MouseButton.SECONDARY && event.getClickCount() == 1) {
 //				row.setContextMenu(new rosterContextMenu(row.getItem(), selectedYear));

@@ -5,7 +5,6 @@ import com.ecsail.LabelPrinter;
 import com.ecsail.Launcher;
 import com.ecsail.gui.tabs.membership.TabMembership;
 import com.ecsail.sql.SqlDelete;
-import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.select.SqlPerson;
 import com.ecsail.structures.LabelDTO;
 import com.ecsail.structures.PersonDTO;
@@ -81,7 +80,7 @@ public class HBoxProperties extends HBox {
             dialogPane.getStyleClass().add("dialog");
             Optional<ButtonType> result = conformation.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                deleteMembership(tm.getMembership().getMsid());
+                deleteMembership(tm.getMembership().getMsId());
             }
         });
 

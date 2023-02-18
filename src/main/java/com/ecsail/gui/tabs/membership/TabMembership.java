@@ -45,14 +45,14 @@ public class TabMembership extends Tab {
 	public TabMembership(MembershipListDTO me) {
 		super();
 		this.membership = me;
-		var memos = SqlMemos.getMemosByMsId(membership.getMsid());
-		this.note = new Note(memos,membership.getMsid());
-        this.people = SqlPerson.getPeople(membership.getMsid());
-		this.invoices = SqlInvoice.getInvoicesByMsid(membership.getMsid());
+		var memos = SqlMemos.getMemosByMsId(membership.getMsId());
+		this.note = new Note(memos,membership.getMsId());
+        this.people = SqlPerson.getPeople(membership.getMsId());
+		this.invoices = SqlInvoice.getInvoicesByMsid(membership.getMsId());
 		this.id = FXCollections.observableArrayList(param -> new Observable[]{param.isRenewProperty()});
-		this.id.addAll(SqlMembership_Id.getIds(membership.getMsid()));
+		this.id.addAll(SqlMembership_Id.getIds(membership.getMsId()));
 		this.boats = FXCollections.observableArrayList(param -> new Observable[]{param.hasTrailerProperty()});
-		this.boats.addAll(SqlBoat.getBoats(membership.getMsid()));
+		this.boats.addAll(SqlBoat.getBoats(membership.getMsId()));
 		this.setText(setTabLabel());
 		BaseApplication.logger.info("Opening Membership tab for "
 				+ membership.getMembershipInfo()
@@ -152,7 +152,7 @@ public class TabMembership extends Tab {
 	private HBoxPerson getPrimaryMember(TabPane peopleTabPane) {
 		HBoxPerson primaryMember;
 		if (isNewMembership()) 
-			primaryMember = new HBoxPerson(SqlInsert.createUser(membership.getMsid()), membership,peopleTabPane);// create new primary
+			primaryMember = new HBoxPerson(SqlInsert.createUser(membership.getMsId()), membership,peopleTabPane);// create new primary
 		else
 			primaryMember = new HBoxPerson(getPerson(MemberType.PRIMARY.getCode()), membership,peopleTabPane); // load the primary member
 		return primaryMember;
@@ -165,7 +165,7 @@ public class TabMembership extends Tab {
 	private String setTabLabel() {
 		String tabLabel;
 		if(membership.getMembershipId() == 0) {
-			tabLabel = "MSID " + membership.getMsid();
+			tabLabel = "MSID " + membership.getMsId();
 		} else if (isNewMembership()) { 
 		    tabLabel = "New Membership";
 		} else {

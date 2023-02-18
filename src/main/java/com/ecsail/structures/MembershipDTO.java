@@ -7,8 +7,8 @@ import javafx.beans.property.StringProperty;
 
 public class MembershipDTO {
 
-	private IntegerProperty msid; /// unique auto key for Membership
-	private IntegerProperty pid;  /// pid of Main Member
+	private IntegerProperty msId; /// unique auto key for Membership
+	private IntegerProperty pId;  /// pid of Main Member
 	//private IntegerProperty membershipId;  // Member ID used in real life
 	private StringProperty joinDate;
 	private StringProperty memType;  // Type of Membership (Family, Regular, Lake Associate(race fellow), Social
@@ -18,11 +18,11 @@ public class MembershipDTO {
 	private StringProperty state;
 	private StringProperty zip;
 
-	public MembershipDTO(Integer msid, Integer pid, String joinDate, String memType
+	public MembershipDTO(Integer msId, Integer pId, String joinDate, String memType
 			, String address, String city, String state, String zip) {
 
-		this.msid = new SimpleIntegerProperty(msid);
-		this.pid = new SimpleIntegerProperty(pid);
+		this.msId = new SimpleIntegerProperty(msId);
+		this.pId = new SimpleIntegerProperty(pId);
 		//this.membershipId = new SimpleIntegerProperty(membershipId);
 		this.joinDate = new SimpleStringProperty(joinDate);
 		this.memType = new SimpleStringProperty(memType);		
@@ -41,33 +41,33 @@ public class MembershipDTO {
 
 
 
-	public final IntegerProperty msidProperty() {
-		return this.msid;
+	public final IntegerProperty msIdProperty() {
+		return this.msId;
 	}
 	
 
-	public final int getMsid() {
-		return this.msidProperty().get();
+	public final int getMsId() {
+		return this.msIdProperty().get();
 	}
 	
 
-	public final void setMsid(final int msid) {
-		this.msidProperty().set(msid);
+	public final void setMsId(final int msId) {
+		this.msIdProperty().set(msId);
 	}
 	
 
-	public final IntegerProperty pidProperty() {
-		return this.pid;
+	public final IntegerProperty pIdProperty() {
+		return this.pId;
 	}
 	
 
-	public final int getPid() {
-		return this.pidProperty().get();
+	public final int getpId() {
+		return this.pIdProperty().get();
 	}
 	
 
-	public final void setPid(final int pid) {
-		this.pidProperty().set(pid);
+	public final void setpId(final int pId) {
+		this.pIdProperty().set(pId);
 	}
 	
 	public final StringProperty joinDateProperty() {
@@ -162,7 +162,7 @@ public class MembershipDTO {
 
 	@Override
 	public String toString() {
-		return "Object_Membership [msid=" + msid + ", pid=" + pid + ", joinDate=" + joinDate + ", memType=" + memType
+		return "Object_Membership [msid=" + msId + ", pid=" + pId + ", joinDate=" + joinDate + ", memType=" + memType
 				+ ", address=" + address + ", city=" + city + ", state=" + state + ", zip=" + zip + "]";
 	}
 

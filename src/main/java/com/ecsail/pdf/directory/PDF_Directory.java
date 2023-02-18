@@ -57,7 +57,7 @@ public class PDF_Directory {
 		doc.setTopMargin(1f);
 		doc.setBottomMargin(0.5f);
 		
-		Collections.sort(rosters , Comparator.comparing(MembershipListDTO::getLname));
+		Collections.sort(rosters , Comparator.comparing(MembershipListDTO::getlName));
 		
 		createDirectoryTask();
 	}
@@ -145,7 +145,7 @@ public class PDF_Directory {
 			int count = 0;
 			doc.add(new Paragraph("\n"));
 			for(MembershipListDTO l: rosters) {
-			textArea.appendText("Creating entry for " + l.getFname() + " " + l.getLname() + "\n");
+			textArea.appendText("Creating entry for " + l.getfName() + " " + l.getlName() + "\n");
 			doc.add(new PDF_MemberShipInformation(2,l,set));
 			count++;
 			if(count % 6 == 0) {

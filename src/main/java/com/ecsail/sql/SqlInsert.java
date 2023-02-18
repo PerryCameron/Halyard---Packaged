@@ -193,7 +193,7 @@ public class SqlInsert {
 
 	public static boolean addMembershipIsSucessful(MembershipListDTO nm) {
 		boolean updateIsSucessful = false;
-		String query = "INSERT INTO membership () VALUES (" + nm.getMsid() + ",'" + nm.getPid() + "','" + nm.getJoinDate() + "','FM','','','IN','')";
+		String query = "INSERT INTO membership () VALUES (" + nm.getMsId() + ",'" + nm.getpId() + "','" + nm.getJoinDate() + "','FM','','','IN','')";
 		try {
 			BaseApplication.connect.executeQuery(query);
 			updateIsSucessful = true;

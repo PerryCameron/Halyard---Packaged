@@ -46,16 +46,16 @@ public class TabNewYearGenerator extends Tab {
 			rosters.forEach(membershipListDTO -> {
 				// TODO Add ability to compact records
 				// create a new membershipID for user
-				var newMembershipIdDTO = new MembershipIdDTO("2023",membershipListDTO.getMsid(),
+				var newMembershipIdDTO = new MembershipIdDTO("2023",membershipListDTO.getMsId(),
 						String.valueOf(membershipListDTO.getMembershipId()), membershipListDTO.getMemType());
 				// create invoice for a specified year for this membership
 				SqlInsert.addMembershipId(newMembershipIdDTO);
-				var newInvoice = new InvoiceDTO(membershipListDTO.getMsid(), 2023);
+				var newInvoice = new InvoiceDTO(membershipListDTO.getMsId(), 2023);
 				// insert the new record into the SQL database
 				SqlInsert.addInvoiceRecord(newInvoice);
 				// insert items for the invoice
 				// TODO change dues for each record
-				createInvoiceItems(newInvoice.getId(), 2023, membershipListDTO.getMsid());
+				createInvoiceItems(newInvoice.getId(), 2023, membershipListDTO.getMsId());
 			});
 		});
 

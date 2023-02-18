@@ -69,9 +69,9 @@ public class PDF_BoatReport {
     }
 
     public void membershipTable(MembershipListDTO ml, Document document) {
-        List<BoatDTO> boats = SqlBoat.getOnlySailboats(ml.getMsid());
+        List<BoatDTO> boats = SqlBoat.getOnlySailboats(ml.getMsId());
         if(boats.size() > 0) {
-            System.out.println("Creating Entry for mebership " + ml.getMsid() + " " + ml.getLname());
+            System.out.println("Creating Entry for mebership " + ml.getMsId() + " " + ml.getlName());
             Table detailTable = new Table(6);
             // mainTable.setKeepTogether(true);
             Cell cell;
@@ -81,7 +81,7 @@ public class PDF_BoatReport {
             cell.setBackgroundColor(new DeviceCmyk(.12f, .05f, 0, 0.02f));
             cell.setBorderTop(new SolidBorder(ColorConstants.BLACK, 1));
             cell.setWidth(50);
-            cell.add(new Paragraph(SqlMembership_Id.getMembershipId(HalyardPaths.getYear(), ml.getMsid()) + "" + "")).setFontSize(10);
+            cell.add(new Paragraph(SqlMembership_Id.getMembershipId(HalyardPaths.getYear(), ml.getMsId()) + "" + "")).setFontSize(10);
             detailTable.addCell(cell);
 
 
@@ -90,7 +90,7 @@ public class PDF_BoatReport {
             cell.setBackgroundColor(new DeviceCmyk(.12f, .05f, 0, 0.02f));
             cell.setBorderTop(new SolidBorder(ColorConstants.BLACK, 1));
             cell.setWidth(100);
-            cell.add(new Paragraph(ml.getLname() + "")).setFontSize(10);
+            cell.add(new Paragraph(ml.getlName() + "")).setFontSize(10);
             detailTable.addCell(cell);
 
             cell = new Cell();
@@ -98,7 +98,7 @@ public class PDF_BoatReport {
             cell.setBackgroundColor(new DeviceCmyk(.12f, .05f, 0, 0.02f));
             cell.setBorderTop(new SolidBorder(ColorConstants.BLACK, 1));
             cell.setWidth(100);
-            cell.add(new Paragraph(ml.getFname() + "")).setFontSize(10);
+            cell.add(new Paragraph(ml.getfName() + "")).setFontSize(10);
             detailTable.addCell(cell);
 
             cell = new Cell();

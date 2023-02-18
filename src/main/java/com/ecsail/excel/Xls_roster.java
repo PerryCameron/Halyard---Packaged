@@ -154,11 +154,11 @@ public class Xls_roster {
 			cellNumber++;
 		}
 		if(printChoices.isLastName()) {
-			row.createCell(cellNumber).setCellValue(m.getLname());
+			row.createCell(cellNumber).setCellValue(m.getlName());
 			cellNumber++;
 		}
 		if(printChoices.isFirstName()) {
-			row.createCell(cellNumber).setCellValue(m.getFname());
+			row.createCell(cellNumber).setCellValue(m.getfName());
 			cellNumber++;
 		}
 		if(printChoices.isJoinDate()) {
@@ -190,11 +190,11 @@ public class Xls_roster {
 			cellNumber++;
 		}
 		if(printChoices.isPhone()) {
-			row.createCell(cellNumber).setCellValue(getPhone(m.getPid()));
+			row.createCell(cellNumber).setCellValue(getPhone(m.getpId()));
 			cellNumber++;
 		}
 		if(printChoices.isEmail()) {
-			row.createCell(cellNumber).setCellValue(getEmail(m.getPid()));
+			row.createCell(cellNumber).setCellValue(getEmail(m.getpId()));
 			cellNumber++;
 		}
 		if(printChoices.isSubleasedto()) {

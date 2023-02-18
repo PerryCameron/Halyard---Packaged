@@ -130,7 +130,7 @@ public class VBoxAddPerson extends VBox {
 		addButton.setOnAction((event) -> {
 			hasError = false;
 			int pid = SqlSelect.getNextAvailablePrimaryKey("person", "p_id");
-			person = new PersonDTO(pid, t.getMembership().getMsid(), memberType.getValue().getCode(), firstNameTextField.getText(),
+			person = new PersonDTO(pid, t.getMembership().getMsId(), memberType.getValue().getCode(), firstNameTextField.getText(),
 					lastNameTextField.getText(), getBirthday(birthdayDatePicker.getValue()), occupationTextField.getText(),
 					businessTextField.getText(), true, "",0);
 			BaseApplication.logger.info("New Key=" + pid + " new person=" + person.getNameWithInfo());
@@ -199,7 +199,7 @@ public class VBoxAddPerson extends VBox {
 
 	private void checkIfCoreMembersExist(PersonDTO person) {
 		if(person.getMemberType() < 3)
-   			if (SqlExists.personExists(person.getMemberType(), t.getMembership().getMsid())) {
+   			if (SqlExists.personExists(person.getMemberType(), t.getMembership().getMsId())) {
 			printErrorMessage("A " + MemberType.getByCode(person.getMemberType())
 					+ " member already exists for this account");
 			hasError = true;

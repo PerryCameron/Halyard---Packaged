@@ -54,7 +54,7 @@ public class SqlPerson {
      * @return arraylist of PersonDTO objects
      */
     public static ArrayList<PersonDTO> getDependants(MembershipDTO m) {
-        String query = "SELECT * FROM person WHERE ms_id= '" + m.getMsid() + "' and member_type=3";
+        String query = "SELECT * FROM person WHERE ms_id= '" + m.getMsId() + "' and member_type=3";
         ArrayList<PersonDTO> thesepeople = new ArrayList<>();
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);

@@ -252,7 +252,7 @@ public class HBoxHistory extends HBox {
                     joinDatePicker.getEditor().setText(joinDatePicker.getConverter().toString(joinDatePicker.getValue()));
                 }
                 LocalDate date = joinDatePicker.getValue();
-                SqlUpdate.updateMembership(tm.getMembership().getMsid(), "JOIN_DATE", date);
+                SqlUpdate.updateMembership(tm.getMembership().getMsId(), "JOIN_DATE", date);
                 tm.getMembership().setJoinDate(joinDatePicker.getValue().toString());
                 tm.getLabels().getJoinDate().setText(joinDatePicker.getValue().toString());
             }
@@ -263,7 +263,7 @@ public class HBoxHistory extends HBox {
             // gets next available id for membership_id table
             int mid = SqlSelect.getNextAvailablePrimaryKey("membership_id", "mid"); // get last mid number add 1
             //	if tuple of year=0 and memId=0 exists anywhere in SQL not belonging to this membership then delete it
-            if (SqlExists.membershipIdBlankRowExists(String.valueOf(tm.getMembership().getMsid())))
+            if (SqlExists.membershipIdBlankRowExists(String.valueOf(tm.getMembership().getMsId())))
                 SqlDelete.deleteBlankMembershipIdRow();
             // see if another year=0 and memId=0 row exists in current tableView, bring it to top and edit
             if (blankTupleExistsInTableView()) {
@@ -274,7 +274,7 @@ public class HBoxHistory extends HBox {
                 BaseApplication.logger.info("Added history record for membership " + tm.getMembership().getMembershipId());
                 // create a blank membershipId object
                 MembershipIdDTO newIdTuple = new MembershipIdDTO(mid, "0",
-                        tm.getMembership().getMsid(), "0", true, tm.getMembership().getMemType(), false, false);
+                        tm.getMembership().getMsId(), "0", true, tm.getMembership().getMemType(), false, false);
                 // add the information from the new object into SQL
                 SqlInsert.addMembershipId(newIdTuple);
                 // add the new tuple to the appropriate history tableView

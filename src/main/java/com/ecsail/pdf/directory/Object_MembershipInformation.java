@@ -26,7 +26,7 @@ public class Object_MembershipInformation {
 	String boats;
 	
 	public Object_MembershipInformation(MembershipListDTO m) {
-		this.primary = SqlPerson.getPersonByPid(m.getPid());
+		this.primary = SqlPerson.getPersonByPid(m.getpId());
 		this.secondary = getSecondaryPerson(m);
 		this.children = getChildrenString(m);
 		getSecondaryPhoneAndEmail();
@@ -61,8 +61,8 @@ public class Object_MembershipInformation {
 	private PersonDTO getSecondaryPerson(MembershipListDTO m) {
 		PersonDTO s = new PersonDTO();
 		this.secondaryExists = false;
-		if (SqlExists.activePersonExists(m.getMsid(), 2)) {
-			s = SqlPerson.getPerson(m.getMsid(), 2);
+		if (SqlExists.activePersonExists(m.getMsId(), 2)) {
+			s = SqlPerson.getPerson(m.getMsId(), 2);
 			this.secondaryExists = true;
 		}
 		return s;
@@ -102,7 +102,7 @@ public class Object_MembershipInformation {
 	private String getBoatsString(MembershipListDTO m) {
 		String memberBoats = "";
 		List<BoatDTO> boats = new ArrayList<BoatDTO>();
-		boats = SqlBoat.getBoats(m.getMsid());
+		boats = SqlBoat.getBoats(m.getMsId());
 		int count = 0;
 		if (boats.size() > 0) {  // there are some boats
 			for (BoatDTO b : boats) {

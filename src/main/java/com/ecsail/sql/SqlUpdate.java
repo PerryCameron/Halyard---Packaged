@@ -83,7 +83,7 @@ public class SqlUpdate {
 
 	public static void updateAddress(MembershipListDTO membership) {
 		String query = "UPDATE membership SET address='" + membership.getAddress()
-				+ "' WHERE ms_id=" + membership.getMsid();
+				+ "' WHERE ms_id=" + membership.getMsId();
 		try {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {
@@ -93,7 +93,7 @@ public class SqlUpdate {
 
 	public static void updateCity(MembershipListDTO membership) {
 		String query = "UPDATE membership SET city='" + membership.getCity()
-				+ "' WHERE ms_id=" + membership.getMsid();
+				+ "' WHERE ms_id=" + membership.getMsId();
 		try {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {
@@ -103,7 +103,7 @@ public class SqlUpdate {
 
 	public static void updateState(MembershipListDTO membership) {
 		String query = "UPDATE membership SET state='" + membership.getState()
-				+ "' WHERE ms_id=" + membership.getMsid();
+				+ "' WHERE ms_id=" + membership.getMsId();
 		try {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {
@@ -113,7 +113,7 @@ public class SqlUpdate {
 
 	public static void updateZipcode(MembershipListDTO membership) {
 		String query = "UPDATE membership SET zip='" + membership.getZip()
-				+ "' WHERE ms_id=" + membership.getMsid();
+				+ "' WHERE ms_id=" + membership.getMsId();
 		try {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {
@@ -319,7 +319,7 @@ public class SqlUpdate {
 	}
 
 	public static void updateSlip(int ms_id, MembershipListDTO membership) {  // ms_id in this case came from the text field and is converted from membership_id
-		String query = "UPDATE slip SET subleased_to=" + ms_id + " where ms_id=" + membership.getMsid();
+		String query = "UPDATE slip SET subleased_to=" + ms_id + " where ms_id=" + membership.getMsId();
 		try {
 			BaseApplication.connect.executeQuery(query);
 			membership.setSubleaser(ms_id);
@@ -329,7 +329,7 @@ public class SqlUpdate {
 	}
 
 	public static void releaseSlip(MembershipListDTO membership) {  // this releases the slip using the slip owners ms_id
-		String query = "UPDATE slip SET subleased_to=null where ms_id=" + membership.getMsid();
+		String query = "UPDATE slip SET subleased_to=null where ms_id=" + membership.getMsId();
 		try {
 			BaseApplication.connect.executeQuery(query);
 			membership.setSubleaser(0);
@@ -350,7 +350,7 @@ public class SqlUpdate {
 	}
 
 	public static void reAssignSlip(int ms_id, MembershipListDTO membership) {  // this reassignes the slip using the subleasee ms_id (came from text field)
-		String query = "UPDATE slip SET ms_id=" + ms_id + " where ms_id=" + membership.getMsid();
+		String query = "UPDATE slip SET ms_id=" + ms_id + " where ms_id=" + membership.getMsId();
 		try {
 			BaseApplication.connect.executeQuery(query);
 			String slip = membership.getSlip();

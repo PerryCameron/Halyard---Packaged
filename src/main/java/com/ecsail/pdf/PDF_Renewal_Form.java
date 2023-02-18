@@ -182,8 +182,8 @@ public class PDF_Renewal_Form {
 		ms_id = SqlMembership_Id.getMsidFromMembershipID(Integer.parseInt(current_membership_id));
 		System.out.println("MSID=" + ms_id);
 		membership = SqlMembershipList.getMembershipFromList(ms_id,year);
-		System.out.println(membership.getMsid());
-		last_membership_id = SqlMembership_Id.getMembershipId((Integer.parseInt(year) -1) +"" , membership.getMsid());
+		System.out.println(membership.getMsId());
+		last_membership_id = SqlMembership_Id.getMembershipId((Integer.parseInt(year) -1) +"" , membership.getMsId());
 	// TODO recode this when you get time, because money changed, and this is pretty cool feature(although mostly unused)
 //				dues = SqlMoney.getMoneyRecordByMsidAndYear(ms_id, year);
 		boats = SqlBoat.getBoats(ms_id);

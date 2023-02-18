@@ -86,13 +86,13 @@ public class Dialogue_ChooseMember extends Stage {
             //focus out
             if (oldValue) {  // we have focused and unfocused
             	newOwner = SqlMembershipList.getMembershipByMembershipId(memIdTextField.getText());
-        		fnameTextField.setText(newOwner.getFname());
-                lnameTextField.setText(newOwner.getLname());
+        		fnameTextField.setText(newOwner.getfName());
+                lnameTextField.setText(newOwner.getlName());
             }
         });
 		
 		okButton.setOnAction((event) -> {
-			SqlInsert.addBoatOwner(boat_id, newOwner.getMsid());
+			SqlInsert.addBoatOwner(boat_id, newOwner.getMsId());
 			boatOwners.add(newOwner);
 			this.close();
 		});

@@ -7,18 +7,18 @@ import javafx.beans.property.StringProperty;
 
 public class MembershipListDTO extends MembershipDTO {
 
-	private StringProperty lname;
-	private StringProperty fname;
+	private StringProperty lName;
+	private StringProperty fName;
 	private StringProperty slip;
 	private IntegerProperty subleaser;
 	private IntegerProperty membershipId;
 	private StringProperty selectedYear;
 	
 	public MembershipListDTO(Integer msid, Integer pid, Integer membershipId, String joinDate, String memType,
-							 String slip, String lname, String fname, Integer subleaser, String address, String city, String state, String zip, String selectedYear) {
+							 String slip, String lName, String fName, Integer subleaser, String address, String city, String state, String zip, String selectedYear) {
 		super(msid, pid, joinDate, memType, address, city, state, zip);
-		this.lname = new SimpleStringProperty(lname);
-		this.fname = new SimpleStringProperty(fname);
+		this.lName = new SimpleStringProperty(lName);
+		this.fName = new SimpleStringProperty(fName);
 		this.slip = new SimpleStringProperty(slip);
 		this.subleaser = new SimpleIntegerProperty(subleaser);
 		this.membershipId = new SimpleIntegerProperty(membershipId);
@@ -26,21 +26,21 @@ public class MembershipListDTO extends MembershipDTO {
 	}
 
 	public String getMembershipInfo() {
-		return "Membership " + getMembershipId() + " (ms_id " + getMsid() + ") ";
+		return "Membership " + getMembershipId() + " (ms_id " + getMsId() + ") ";
 	}
 
 	public MembershipListDTO() {
 		super();
 	}
 
-	public void setLname(StringProperty lname) {
-		this.lname = lname;
+	public void setlName(StringProperty lName) {
+		this.lName = lName;
 	}
 
 
 
-	public void setFname(StringProperty fname) {
-		this.fname = fname;
+	public void setfName(StringProperty fName) {
+		this.fName = fName;
 	}
 
 
@@ -50,38 +50,38 @@ public class MembershipListDTO extends MembershipDTO {
 	}
 
 
-	public final StringProperty lnameProperty() {
-		return this.lname;
+	public final StringProperty lNameProperty() {
+		return this.lName;
 	}
 	
 
 
-	public final String getLname() {
-		return this.lnameProperty().get();
+	public final String getlName() {
+		return this.lNameProperty().get();
 	}
 	
 
 
 	public final void setLname(final String lname) {
-		this.lnameProperty().set(lname);
+		this.lNameProperty().set(lname);
 	}
 	
 
 
-	public final StringProperty fnameProperty() {
-		return this.fname;
+	public final StringProperty fNameProperty() {
+		return this.fName;
 	}
 	
 
 
-	public final String getFname() {
-		return this.fnameProperty().get();
+	public final String getfName() {
+		return this.fNameProperty().get();
 	}
 	
 
 
 	public final void setFname(final String fname) {
-		this.fnameProperty().set(fname);
+		this.fNameProperty().set(fname);
 	}
 
 
@@ -164,10 +164,10 @@ public class MembershipListDTO extends MembershipDTO {
 
 	@Override
 	public String toString() {
-		return "Object_MembershipList [lname=" + lname + ", fname=" + fname + ", slip=" + slip + ", subleaser="
+		return "Object_MembershipList [lname=" + lName + ", fname=" + fName + ", slip=" + slip + ", subleaser="
 				+ subleaser + ", membershipId=" + membershipId + ", selectedYear=" + selectedYear + ", msidProperty()="
-				+ msidProperty() + ", getMsid()=" + getMsid() + ", pidProperty()=" + pidProperty() + ", getPid()="
-				+ getPid() + ", joinDateProperty()=" + joinDateProperty() + ", getJoinDate()=" + getJoinDate()
+				+ msIdProperty() + ", getMsid()=" + getMsId() + ", pidProperty()=" + pIdProperty() + ", getPid()="
+				+ getpId() + ", joinDateProperty()=" + joinDateProperty() + ", getJoinDate()=" + getJoinDate()
 				+ ", memTypeProperty()=" + memTypeProperty() + ", getMemType()=" + getMemType() + ", addressProperty()="
 				+ addressProperty() + ", getAddress()=" + getAddress() + ", cityProperty()=" + cityProperty()
 				+ ", getCity()=" + getCity() + ", stateProperty()=" + stateProperty() + ", getState()=" + getState()

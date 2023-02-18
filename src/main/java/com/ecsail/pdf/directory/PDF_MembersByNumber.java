@@ -116,7 +116,7 @@ public class PDF_MembersByNumber {
 		cell = new Cell();
 		cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
 		cell.setBorder(Border.NO_BORDER);
-		p = new Paragraph(m.getMembershipId() + "  " + m.getLname());
+		p = new Paragraph(m.getMembershipId() + "  " + m.getlName());
 		p.setFontSize(set.getNormalFontSize() - 2);
 		p.setTextAlignment(TextAlignment.LEFT);
 		cell.add(p);

@@ -213,7 +213,7 @@ public class PDF_Envelope {
 
 		mainTable.addCell(cell);
 		
-		p = new Paragraph(membership.getFname() + " " + membership.getLname() + " #" + current_membership_id);
+		p = new Paragraph(membership.getfName() + " " + membership.getlName() + " #" + current_membership_id);
 		p.setFont(font);
 		p.setFontSize(16);
 		p.setFixedLeading(14);

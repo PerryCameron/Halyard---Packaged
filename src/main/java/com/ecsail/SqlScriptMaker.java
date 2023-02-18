@@ -480,8 +480,8 @@ public class SqlScriptMaker {
 	public static String getMembershipString(MembershipDTO mem) {  // change back once done
 
 			return "INSERT INTO membership () VALUES ("
-					+ mem.getMsid() + ","
-					+ mem.getPid() + ","
+					+ mem.getMsId() + ","
+					+ mem.getpId() + ","
 					+ getCorrectString(mem.getJoinDate()) + ","
 					+ getCorrectString(mem.getMemType()) + ","
 					+ getCorrectString(mem.getAddress()) + ","

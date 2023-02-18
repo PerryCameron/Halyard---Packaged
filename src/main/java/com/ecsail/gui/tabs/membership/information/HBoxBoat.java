@@ -234,9 +234,9 @@ public class HBoxBoat extends HBox {
             // get next available primary key for boat table
             int boat_id = SqlSelect.getNextAvailablePrimaryKey("boat", "boat_id");
             // create boat object
-            BoatDTO b = new BoatDTO(boat_id, tm.getMembership().getMsid(), "", "", "", "", "", "", true, "", "", "", "", "", "", "", false);
+            BoatDTO b = new BoatDTO(boat_id, tm.getMembership().getMsId(), "", "", "", "", "", "", true, "", "", "", "", "", "", "", false);
             // insert data from new boat object into SQL table boat, return true if successful
-            if (SqlInsert.addBoatRecord(b, tm.getMembership().getMsid()))
+            if (SqlInsert.addBoatRecord(b, tm.getMembership().getMsId()))
                 // insert row into tableView to match SQL record
                 tm.getBoats().add(b);
             // Now we will sort it to the top
@@ -262,7 +262,7 @@ public class HBoxBoat extends HBox {
                 Optional<ButtonType> result = conformation.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
                     // delete boat from database
-                    SqlDelete.deleteBoatOwner(boatDTO.getBoatId(), tm.getMembership().getMsid());
+                    SqlDelete.deleteBoatOwner(boatDTO.getBoatId(), tm.getMembership().getMsId());
                     // remove from GUI
                     boatTableView.getItems().remove(selectedIndex);
                 }

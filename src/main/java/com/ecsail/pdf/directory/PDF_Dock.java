@@ -226,7 +226,7 @@ public class PDF_Dock extends Table {
         if (slips.get(element + offset).getSubleaseMsID() != 0) {
             MembershipListDTO subleaser;
             subleaser = SqlMembershipList.getMembershipList(slips.get(element + offset).getSubleaseMsID(), set.getSelectedYear());
-            name = subleaser.getLname() + " " + returnInitial(subleaser.getFname());
+            name = subleaser.getlName() + " " + returnInitial(subleaser.getfName());
             isSublease = true;
         }
         Paragraph p;

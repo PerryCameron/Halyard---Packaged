@@ -159,7 +159,7 @@ public class Launcher extends VBox {
 
     //	// fills incomplete object with latest information and opens tab.
     public static void createActiveMembershipTab(MembershipListDTO membership) {
-        membership = SqlMembershipList.getMembershipFromList(membership.getMsid(), HalyardPaths.getYear());
+        membership = SqlMembershipList.getMembershipFromList(membership.getMsId(), HalyardPaths.getYear());
         createOrOpenTab(membership, "Membership");
     }
 
@@ -194,7 +194,7 @@ public class Launcher extends VBox {
         if (label.equals("Membership")) {
             tabLabel = "Membership " + membership.getMembershipId();
         } else if (label.equals("MSID")) {
-            tabLabel = "MSID " + membership.getMsid();
+            tabLabel = "MSID " + membership.getMsId();
         }
 
         if (!tabOpen(tabLabel)) // is the tab already open??
@@ -220,7 +220,7 @@ public class Launcher extends VBox {
         int count = 0;
         int element = 0;
         for (MembershipListDTO mem : BaseApplication.activeMemberships) {
-            if (mem.getMsid() == ms_id) element = count;
+            if (mem.getMsId() == ms_id) element = count;
             count++;
         }
         BaseApplication.activeMemberships.remove(element);
@@ -232,7 +232,7 @@ public class Launcher extends VBox {
         MembershipListDTO membership = null;
         int element = 0;
         for (MembershipListDTO mem : BaseApplication.activeMemberships) {
-            if (mem.getMsid() == ms_id) membership = BaseApplication.activeMemberships.get(element);
+            if (mem.getMsId() == ms_id) membership = BaseApplication.activeMemberships.get(element);
             element++;
         }
         return membership;

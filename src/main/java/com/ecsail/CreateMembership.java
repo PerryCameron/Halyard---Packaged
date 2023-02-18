@@ -44,7 +44,7 @@ public class CreateMembership {
 				SqlInsert.addPersonRecord(newPrimary);
 				SqlInsert.addMembershipId(new MembershipIdDTO(mid, HalyardPaths.getYear(), ms_id, membership_id + "", true,
 						"RM", false, false));
-				Launcher.createMembershipTabForRoster(newMembership.getMembershipId(), newMembership.getMsid());
+				Launcher.createMembershipTabForRoster(newMembership.getMembershipId(), newMembership.getMsId());
 			}
 		} else {
 			BaseApplication.tabPane.getSelectionModel().select(Launcher.getTabIndex("New Membership"));

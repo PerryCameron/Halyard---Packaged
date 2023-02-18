@@ -429,12 +429,12 @@ public class TabSlips extends Tab {
 	private void addNameToSlip(MembershipListDTO m) {
 		if(m.getSubleaser() != 0) {  /// this slip is subleased
 			subleaserMemberships.add(SqlMembershipList.getMembershipFromList(m.getSubleaser(), BaseApplication.selectedYear));
-			slipsHash.get(m.getSlip()).setText(m.getSlip() + " " + subleaserMemberships.get(subleaserMemberships.size() - 1).getLname() + " " + subleaserMemberships.get(subleaserMemberships.size() - 1).getFname().charAt(0) + ".");
+			slipsHash.get(m.getSlip()).setText(m.getSlip() + " " + subleaserMemberships.get(subleaserMemberships.size() - 1).getlName() + " " + subleaserMemberships.get(subleaserMemberships.size() - 1).getfName().charAt(0) + ".");
 			slipsHash.get(m.getSlip()).setFill(Color.CORNFLOWERBLUE);
 		} else { // this slip is owned
-			slipsHash.get(m.getSlip()).setText(m.getSlip() + " " + m.getLname() + " " + m.getFname().charAt(0) + ".");
+			slipsHash.get(m.getSlip()).setText(m.getSlip() + " " + m.getlName() + " " + m.getfName().charAt(0) + ".");
 		}
-		setMouseListener(slipsHash.get(m.getSlip()), m.getMsid(), m.getSubleaser());
+		setMouseListener(slipsHash.get(m.getSlip()), m.getMsId(), m.getSubleaser());
 	}
 
 	private void setMouseListener(Text text, int msid, int submsid) {
