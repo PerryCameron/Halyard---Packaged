@@ -4,7 +4,7 @@ package com.ecsail.gui.tabs.boatview;
 import com.ecsail.BaseApplication;
 import com.ecsail.FileIO;
 import com.ecsail.HalyardPaths;
-import com.ecsail.ImageViewPane;
+import com.ecsail.gui.common.ImageViewPane;
 import com.ecsail.connection.Sftp;
 import com.ecsail.gui.common.HBoxNotes;
 import com.ecsail.gui.dialogues.Dialogue_ChooseMember;

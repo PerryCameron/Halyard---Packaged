@@ -29,7 +29,6 @@ public class Mail {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     private static String uriEncode(String in) {

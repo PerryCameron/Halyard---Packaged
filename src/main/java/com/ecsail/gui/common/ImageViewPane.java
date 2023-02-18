@@ -1,4 +1,4 @@
-package com.ecsail;
+package com.ecsail.gui.common;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -62,6 +62,4 @@ public class ImageViewPane extends Region {
         }
         super.layoutChildren();
     }
-
-
 }
