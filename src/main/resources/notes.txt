@@ -21,3 +21,5 @@ When adding a fee, need to refresh the fee list or add the fee
 Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon_24.png")));
 		this.getIcons().add(mainIcon);
 
+EmailDTO emailDTO = email.get(selectedIndex);
+

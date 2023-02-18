@@ -22,6 +22,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -37,25 +39,16 @@ public class HBoxEmail extends HBox {
     private final PersonDTO person;
     private final ObservableList<EmailDTO> email;
     private final TableView<EmailDTO> emailTableView;
+    private TableColumn<EmailDTO, String> Col1;
 
     public HBoxEmail(PersonDTO p) {
         this.person = p;
         this.email = FXCollections.observableArrayList(param -> new Observable[]{param.isPrimaryUseProperty()});
         this.email.addAll(SqlEmail.getEmail(person.getP_id()));
-
-        //////////////// OBJECTS //////////////////////
-
-        var emailAdd = new Button("Add");
-        var emailDelete = new Button("Delete");
-        var vboxButtons = new VBox(); // holds email buttons
+        this.emailTableView = createTableView();
+        VBox vboxButtons = makeButtonBox();
         var hboxGrey = new HBox(); // this is here for the grey background to make nice appearance
         var vboxPink = new VBox(); // this creates a pink border around the table
-        emailTableView = new TableView<>();
-
-        /////////////////  ATTRIBUTES  /////////////////////
-        emailAdd.setPrefWidth(60);
-        emailDelete.setPrefWidth(60);
-        vboxButtons.setPrefWidth(80);
 
         HBox.setHgrow(hboxGrey, Priority.ALWAYS);
         HBox.setHgrow(vboxPink, Priority.ALWAYS);
@@ -72,16 +65,20 @@ public class HBoxEmail extends HBox {
         hboxGrey.setPadding(new Insets(5, 5, 5, 5));  // spacing around table and buttons
         vboxPink.setPadding(new Insets(2, 2, 2, 2)); // spacing to make pink frame around table
 
+        vboxPink.getChildren().add(emailTableView);
+        hboxGrey.getChildren().addAll(vboxPink, vboxButtons);
+        getChildren().add(hboxGrey);
 
-        ///////////////// TABLE VIEW ///////////////////////
+    } // CONSTRUCTOR END
 
+    private TableView<EmailDTO> createTableView() {
+        TableView<EmailDTO> tableView = new TableView<>();
+        tableView.setItems(email);
+        tableView.setFixedCellSize(30);
+        tableView.setEditable(true);
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        emailTableView.setItems(email);
-        emailTableView.setFixedCellSize(30);
-        emailTableView.setEditable(true);
-        emailTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
-        TableColumn<EmailDTO, String> Col1 = createColumn(EmailDTO::emailProperty);
+        Col1 = createColumn(EmailDTO::emailProperty);
         Col1.setPrefWidth(137);
         Col1.setOnEditCommit(t -> {
             int email_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getEmail_id();
@@ -95,8 +92,6 @@ public class HBoxEmail extends HBox {
             }
         });
 
-        // example for this column found at https://o7planning.org/en/11079/javafx-tableview-tutorial
-        ToggleGroup tg = new ToggleGroup();
         TableColumn<EmailDTO, Boolean> Col2 = new TableColumn<>("Primary");
         Col2.setStyle( "-fx-alignment: CENTER;");
         Col2.setCellValueFactory(new PropertyValueFactory<>("isPrimaryUse"));
@@ -120,7 +115,6 @@ public class HBoxEmail extends HBox {
             return booleanProp;
         });
 
-        //
         Col3.setCellFactory(p12 -> {
             CheckBoxTableCell<EmailDTO, Boolean> cell = new CheckBoxTableCell<>();
             cell.setAlignment(Pos.CENTER);
@@ -131,28 +125,47 @@ public class HBoxEmail extends HBox {
         Col1.setMaxWidth(1f * Integer.MAX_VALUE * 50);   // Phone
         Col2.setMaxWidth(1f * Integer.MAX_VALUE * 25);  // Type
         Col3.setMaxWidth(1f * Integer.MAX_VALUE * 25);  // Listed
+        tableView.getColumns().addAll(Arrays.asList(Col1, Col2, Col3));
+        return tableView;
+    }
 
-        /////////////////  LISTENERS ////////////////////////
+    private VBox makeButtonBox() {
+        VBox vBox = new VBox();
+        vBox.setPrefWidth(80);
+        Button emailAdd = new Button("Add");
+        Button emailDelete = new Button("Delete");
+        Button emailCopy = new Button("Copy");
+        Button emailEmail = new Button("Email");
+        emailAdd.setPrefWidth(60);
+        emailDelete.setPrefWidth(60);
+        emailCopy.setPrefWidth(60);
+        emailEmail.setPrefWidth(60);
+        setAddButtonListener(emailAdd);
+        setDeleteButtonListener(emailDelete);
+        setCopyButtonListener(emailCopy);
+        setEmailButtonListener(emailEmail);
+        vBox.getChildren().addAll(emailAdd, emailDelete, emailCopy, emailEmail);
+        return vBox;
+    }
 
-        emailAdd.setOnAction((event) -> {
-            BaseApplication.logger.info("Added new email entry for " + person.getNameWithInfo());
-            // get the next available primary key for table email
-            int email_id = SqlSelect.getNextAvailablePrimaryKey("email", "email_id"); // gets last memo_id number
-            // add record to SQL and return success or not
-            if (SqlInsert.addEmailRecord(email_id, person.getP_id(), true, "new email", true))
-                // if we have added it to SQL we need to create a new row in tableview to match
-                email.add(new EmailDTO(email_id, person.getP_id(), true, "", true));
-            // Now we will sort it to the top
-            email.sort(Comparator.comparing(EmailDTO::getEmail_id).reversed());
-            // this line prevents strange buggy behaviour
-            emailTableView.layout();
-            // edit the phone number cell after creating
-            emailTableView.requestFocus();
-            emailTableView.getSelectionModel().select(0);
-            emailTableView.getFocusModel().focus(0);
-            emailTableView.edit(0, Col1);
+    private void setEmailButtonListener(Button emailEmail) {
+    }
+
+    private void setCopyButtonListener(Button emailCopy) {
+        emailCopy.setOnAction((copy) -> {
+            int selectedIndex = emailTableView.getSelectionModel().getSelectedIndex();
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            final ClipboardContent content = new ClipboardContent();
+            if (selectedIndex >= 0) {// make sure something is selected
+                EmailDTO emailDTO = email.get(selectedIndex);
+                content.putString(emailDTO.getEmail());
+                clipboard.setContent(content);
+            } else
+                alertToSelectRow();
         });
+    }
 
+    private void setDeleteButtonListener(Button emailDelete) {
         emailDelete.setOnAction((event) -> {
             int selectedIndex = emailTableView.getSelectionModel().getSelectedIndex();
             if (selectedIndex >= 0) {// make sure something is selected
@@ -173,21 +186,46 @@ public class HBoxEmail extends HBox {
                                 + person.getNameWithInfo());
                     }
                 }
-            }
+            } else
+                alertToSelectRow();
         });
+    }
 
-        ///////////////////  SET CONTENT ////////////////////
+    private void alertToSelectRow() {
+        Alert information = new Alert(Alert.AlertType.INFORMATION);
+        information.setTitle("Row not selected");
+        information.setHeaderText("Opps!");
+        information.setContentText("You must select a row first!");
+        DialogPane dialogPane = information.getDialogPane();
+        dialogPane.getStylesheets().add("css/dark/dialogue.css");
+        dialogPane.getStyleClass().add("dialog");
+        Optional<ButtonType> result = information.showAndWait();
+        result.isPresent();
+    }
 
-        vboxButtons.getChildren().addAll(emailAdd, emailDelete);
-        emailTableView.getColumns().addAll(Arrays.asList(Col1, Col2, Col3));
-        vboxPink.getChildren().add(emailTableView);
-        hboxGrey.getChildren().addAll(vboxPink, vboxButtons);
-        getChildren().add(hboxGrey);
-
-    } // CONSTRUCTOR END
+    private void setAddButtonListener(Button emailAdd) {
+        emailAdd.setOnAction((event) -> {
+            BaseApplication.logger.info("Added new email entry for " + person.getNameWithInfo());
+            // get the next available primary key for table email
+            int email_id = SqlSelect.getNextAvailablePrimaryKey("email", "email_id"); // gets last memo_id number
+            // add record to SQL and return success or not
+            if (SqlInsert.addEmailRecord(email_id, person.getP_id(), true, "new email", true))
+                // if we have added it to SQL we need to create a new row in tableview to match
+                email.add(new EmailDTO(email_id, person.getP_id(), true, "", true));
+            // Now we will sort it to the top
+            email.sort(Comparator.comparing(EmailDTO::getEmail_id).reversed());
+            // this line prevents strange buggy behaviour
+            emailTableView.layout();
+            // edit the phone number cell after creating
+            emailTableView.requestFocus();
+            emailTableView.getSelectionModel().select(0);
+            emailTableView.getFocusModel().focus(0);
+            emailTableView.edit(0, Col1);
+        });
+    }
 
     private EmailDTO getOriginalEmailDTO() {
-        return email.stream().filter(emailDTO -> emailDTO.isPrimaryUse()==true).findFirst().orElse(null);
+        return email.stream().filter(EmailDTO::isPrimaryUse).findFirst().orElse(null);
     }
 
     ///////////////// CLASS METHODS /////////////////
@@ -205,38 +243,11 @@ public class HBoxEmail extends HBox {
                 "[a-zA-Z0-9_+&*-]+)*@" +
                 "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
                 "A-Z]{2,7}$";
-
         Pattern pat = Pattern.compile(emailRegex);
         if (email == null)
             return false;
         return pat.matcher(email).matches();
     }
-
-
-
-//    public static class RadioButtonTableCell<S> extends TableCell<S, Boolean> {
-//
-//        private RadioButton radioButton ;
-//
-//        public RadioButtonTableCell() {
-//            radioButton = new RadioButton();
-//            radioButton.setDisable(true);
-//        }
-//
-//        @Override
-//        protected void updateItem(Boolean item, boolean empty) {
-//            super.updateItem(item, empty);
-//
-//            if (empty) {
-//                setGraphic(null);
-//            } else {
-//                radioButton.setSelected(item);
-//                setGraphic(radioButton);
-//            }
-//
-//        }
-//    }
-
 }
 
 

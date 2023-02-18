@@ -72,7 +72,7 @@ public class InvoiceItemRow extends HBox {
         // OMFG This was a hard bug to find, by binding the itemized rows it caused the category rows
         // to put the value inside them. This caused a doubling of fees in total calculation
         // lesson learned, be very careful using bindings. line below fixes problem
-        System.out.println(this.itemName + " has a dbInvoiceDTO of " + dbInvoiceDTO.getWidgetType());
+//        System.out.println(this.itemName + " has a dbInvoiceDTO of " + dbInvoiceDTO.getWidgetType());
 //        if(!dbInvoiceDTO.getWidgetType().equals("itemized"))
         invoiceItemDTO.valueProperty().bind(rowTotal.textProperty()); //  value of Text to DTO
         if(this.invoiceItemDTO.isCredit()) rowTotal.setId("invoice-text-credit");
