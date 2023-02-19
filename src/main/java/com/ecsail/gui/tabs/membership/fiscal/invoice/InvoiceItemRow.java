@@ -1,7 +1,7 @@
 package com.ecsail.gui.tabs.membership.fiscal.invoice;
 
 import com.ecsail.BaseApplication;
-import com.ecsail.FixInput;
+import com.ecsail.StringTools;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlFee;
@@ -274,7 +274,7 @@ public class InvoiceItemRow extends HBox {
 	            //focus out
 	            if (oldValue) {  // we have focused and unfocused
                     // fix it or set to 0 if can't
-	            	if(!FixInput.isBigDecimal(textField.getText())) textField.setText("0");
+	            	if(!StringTools.isBigDecimal(textField.getText())) textField.setText("0");
 	            	BigDecimal item = new BigDecimal(textField.getText());
 					textField.setText(String.valueOf(item.setScale(2, RoundingMode.HALF_UP)));
                     invoiceItemDTO.setQty(1);
@@ -303,7 +303,7 @@ public class InvoiceItemRow extends HBox {
         textField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             //focus out
             if (oldValue) {  // we have focused and unfocused
-                if(!FixInput.isBigDecimal(textField.getText())) {
+                if(!StringTools.isBigDecimal(textField.getText())) {
                     textField.setText("0.00");
                 }
                 BigDecimal calculatedValue = new BigDecimal(textField.getText());

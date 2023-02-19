@@ -1,7 +1,7 @@
 package com.ecsail.gui.tabs.fee;
 
 import com.ecsail.EditCell;
-import com.ecsail.FixInput;
+import com.ecsail.StringTools;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.structures.FeeDTO;
 import javafx.beans.property.StringProperty;
@@ -41,7 +41,7 @@ public class FeeTableView extends TableView<FeeDTO> {
         TableColumn<FeeDTO, String> col2 = createColumn("Price", FeeDTO::fieldValueProperty);
         col2.setStyle("-fx-alignment: CENTER-RIGHT;");
         col2.setOnEditCommit(t -> {
-            String checkedValue = FixInput.changeEmptyStringToZero(t.getNewValue());
+            String checkedValue = StringTools.changeEmptyStringToZero(t.getNewValue());
             BigDecimal dollarValue = new BigDecimal(checkedValue);
             String fixedDollarValue = String.valueOf(dollarValue.setScale(2, RoundingMode.HALF_UP));
             t.getTableView().getItems().get(t.getTablePosition().getRow()).setFieldValue(fixedDollarValue);

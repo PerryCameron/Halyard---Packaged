@@ -15,6 +15,19 @@ import java.sql.SQLException;
 
 public class SqlMembershipList {
 
+    public static ObservableList<MembershipListDTO> getRoster(String query) {
+        ObservableList<MembershipListDTO> rosters = FXCollections.observableArrayList();
+        try {
+            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
+            queryToArrayList(rosters, rs);
+            BaseApplication.connect.closeResultSet(rs);
+        } catch (SQLException e) {
+            BaseApplication.logger.error(e.getMessage());
+        }
+        return rosters;
+    }
+
+
     public static ObservableList<MembershipListDTO> getRosterOfKayakRackOwners(String year) {
         ObservableList<MembershipListDTO> rosters = FXCollections.observableArrayList();
         String query = "SELECT m.ms_id,m.p_id,id.membership_id,id.fiscal_year,id.fiscal_year,m.join_date,id.mem_type,s.SLIP_NUM,p.l_name,p.f_name,s.subleased_to,m.address,m.city,m.state,m.zip \n"

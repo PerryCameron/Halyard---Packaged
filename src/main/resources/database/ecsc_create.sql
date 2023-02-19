@@ -414,6 +414,15 @@ create table ECSC_SQL.db_membership_list
     list_order        INTEGER NOT NULL
 );
 
+create table ECSC_SQL.db_membership_list_selection
+(
+    ID            INTEGER      NOT NULL auto_increment primary key,
+    LABEL         varchar(40)  NOT NULL,
+    SQL_QUERY     varchar(2000),
+    LIST_ORDER    INTEGER      NOT NULL,
+    LIST          INTEGER      NOT NULL
+);
+
 create table ECSC_SQL.boat_photos
 (
     ID            INTEGER      NOT NULL auto_increment primary key,

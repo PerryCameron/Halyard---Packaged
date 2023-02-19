@@ -1,8 +1,9 @@
 package com.ecsail;
 
 import java.math.BigDecimal;
+import java.util.StringJoiner;
 
-public class FixInput {
+public class StringTools {
 
 	public static String changeEmptyStringToZero(String input) {
 		if(input != null) {
@@ -33,6 +34,14 @@ public class FixInput {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	public static String ParseQuery(String query, String[] parameters) {
+		String[] slices = query.split("\\?");
+		for(int i = 0; i < parameters.length; i++) slices[i] = slices[i].concat(parameters[i]);
+		StringJoiner joiner = new StringJoiner("");
+		for(int i = 0; i < slices.length; i++) joiner.add(slices[i]);
+		return joiner.toString();
 	}
 	
 }

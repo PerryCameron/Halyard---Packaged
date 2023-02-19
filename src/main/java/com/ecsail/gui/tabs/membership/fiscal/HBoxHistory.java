@@ -2,7 +2,7 @@ package com.ecsail.gui.tabs.membership.fiscal;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.EditCell;
-import com.ecsail.FixInput;
+import com.ecsail.StringTools;
 import com.ecsail.enums.MembershipType;
 import com.ecsail.gui.tabs.membership.TabMembership;
 import com.ecsail.sql.SqlDelete;
@@ -103,7 +103,7 @@ public class HBoxHistory extends HBox {
 					.setFiscal_Year(t.getNewValue());
 			MembershipIdDTO thisId = t.getTableView().getItems().get(t.getTablePosition().getRow());
 			int mid = thisId.getMid();
-			if (!SqlUpdate.updateMembershipId(thisId, "fiscal_year", FixInput.changeEmptyStringToZero(t.getNewValue()))) {
+			if (!SqlUpdate.updateMembershipId(thisId, "fiscal_year", StringTools.changeEmptyStringToZero(t.getNewValue()))) {
 				// if it does not update correctly lets set tableview back to defaults
 				MembershipIdDTO storedId = SqlMembership_Id.getMembershipIdObject(mid);
 				thisId.setFiscal_Year(storedId.getFiscal_Year());
@@ -119,7 +119,7 @@ public class HBoxHistory extends HBox {
 					.setMembership_id(t.getNewValue());
 			MembershipIdDTO thisId = t.getTableView().getItems().get(t.getTablePosition().getRow());
 			int mid = thisId.getMid();
-			if (!SqlUpdate.updateMembershipId(thisId, "membership_id", FixInput.changeEmptyStringToZero(t.getNewValue()))) {
+			if (!SqlUpdate.updateMembershipId(thisId, "membership_id", StringTools.changeEmptyStringToZero(t.getNewValue()))) {
 				// if it does not update correctly lets set tableview back to defaults
 				MembershipIdDTO storedId = SqlMembership_Id.getMembershipIdObject(mid);
 				thisId.setFiscal_Year(storedId.getFiscal_Year());

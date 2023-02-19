@@ -1,13 +1,11 @@
 package com.ecsail.gui.tabs.fee;
 
-import com.ecsail.FixInput;
-import com.ecsail.gui.tabs.membership.fiscal.invoice.InvoiceFooter;
+import com.ecsail.StringTools;
 import com.ecsail.structures.DbInvoiceDTO;
 import com.ecsail.structures.FeeDTO;
 import com.ecsail.structures.InvoiceDTO;
 import com.ecsail.structures.InvoiceItemDTO;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -193,7 +191,7 @@ public class MockInvoiceItemRow extends HBox {
 	            //focus out
 	            if (oldValue) {  // we have focused and unfocused
                     // fix it or set to 0 if can't
-	            	if(!FixInput.isBigDecimal(textField.getText())) {
+	            	if(!StringTools.isBigDecimal(textField.getText())) {
 						textField.setText("0");
 	            	}
 	            	BigDecimal item = new BigDecimal(textField.getText());
@@ -209,7 +207,7 @@ public class MockInvoiceItemRow extends HBox {
         textField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             //focus out
             if (oldValue) {  // we have focused and unfocused
-                if(!FixInput.isBigDecimal(textField.getText())) {
+                if(!StringTools.isBigDecimal(textField.getText())) {
                     textField.setText("0.00");
                 }
                 BigDecimal calculatedValue = new BigDecimal(textField.getText());
