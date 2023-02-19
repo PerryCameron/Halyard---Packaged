@@ -24,14 +24,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import java.util.Arrays;
 
-public class TabBoats extends Tab {
+public class TabBoatList extends Tab {
 	protected ObservableList<BoatListDTO> boats = FXCollections.observableArrayList();
 	protected ObservableList<BoatListDTO> searchedBoats = FXCollections.observableArrayList();
 	protected TableView<BoatListDTO> boatListTableView = new TableView<>();
 	protected BoatListDTO selectedBoat;
 	private ControlBox controlBox;
 	
-	public TabBoats(String text) {
+	public TabBoatList(String text) {
 		super(text);
 		this.controlBox = new ControlBox(this);
 		VBox vboxGrey = new VBox();  // this is the vbox for organizing all the widgets

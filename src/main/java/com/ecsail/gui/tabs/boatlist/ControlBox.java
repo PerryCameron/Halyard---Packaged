@@ -1,6 +1,7 @@
 package com.ecsail.gui.tabs.boatlist;
 
 import com.ecsail.Launcher;
+import com.ecsail.StringTools;
 import com.ecsail.annotation.ColumnName;
 import com.ecsail.sql.select.SqlBoat;
 import com.ecsail.sql.select.SqlBoatListRadio;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ControlBox extends VBox {
-    private final TabBoats parent;
+    private final TabBoatList parent;
     private final ArrayList<BoatListRadioDTO> boatListRadioDTOs;
     private final ObservableList<DbBoatDTO> dbBoatDTOS;
     private Text numberOfRecords;
@@ -32,7 +33,7 @@ public class ControlBox extends VBox {
     private boolean isActiveSearch;
     private TextField textField = new TextField();
 
-    public ControlBox(TabBoats tabBoats) {
+    public ControlBox(TabBoatList tabBoats) {
         this.parent = tabBoats;
         this.boatListRadioDTOs = SqlBoatListRadio.getBoatListRadioDTOs();
         this.dbBoatDTOS = SqlDbBoat.getDbBoat();
@@ -88,7 +89,7 @@ public class ControlBox extends VBox {
                 VBox vBox2 = new VBox();
                 vBox1.setPrefWidth(130);
                 field.setAccessible(true);
-                Text valueText = new Text(returnFieldValueAsString(field, parent.selectedBoat));
+                Text valueText = new Text(StringTools.returnFieldValueAsString(field, parent.selectedBoat));
                 Text labelText = new Text(getLabel(columnName.value()));
                 labelText.setId("invoice-text-light");
                 vBox1.getChildren().add(labelText);
@@ -149,7 +150,7 @@ public class ControlBox extends VBox {
                 for(Field field: allFields) {
                     System.out.println(field.getName());
                     field.setAccessible(true);
-                    String value = returnFieldValueAsString(field, boatListDTO).toLowerCase();
+                    String value = StringTools.returnFieldValueAsString(field, boatListDTO).toLowerCase();
                     if(value.contains(text)) hasMatch = true;
                 }  // add boat DTO here
                 if(hasMatch)
@@ -157,19 +158,6 @@ public class ControlBox extends VBox {
                 hasMatch = false;
             }
         return searchedBoats;
-    }
-
-    private <T> String returnFieldValueAsString(Field field, T pojo) {
-        String result;
-        try {
-            SimpleObjectProperty<T> value = new SimpleObjectProperty<>((T) field.get(pojo));
-            int begin = value.getValue().toString().indexOf("value: ") + 7;
-            int end = value.getValue().toString().indexOf("]");
-            result = value.getValue().toString().substring(begin, end);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-        return result;
     }
 
     private HBox setUpRecordCountBox() {

@@ -1,18 +1,15 @@
 package com.ecsail.gui.tabs.roster;
 
-import com.ecsail.BaseApplication;
-import com.ecsail.HalyardPaths;
 import com.ecsail.Launcher;
 import com.ecsail.excel.Xls_roster;
-import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.sql.select.SqlMembershipListRadio;
 import com.ecsail.structures.MembershipListDTO;
 import com.ecsail.structures.RosterRadioButtonsDTO;
 import com.ecsail.structures.RosterSelectDTO;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.control.TabPane.TabClosingPolicy;
@@ -22,17 +19,16 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public class TabRoster extends Tab {
 	protected ObservableList<MembershipListDTO> rosters;
-	protected TableView<MembershipListDTO> rosterTableView;
 
+	protected ObservableList<MembershipListDTO> searchedRosters;
+	protected TableView<MembershipListDTO> rosterTableView;
 	protected ArrayList<MembershipListRadioDTO> radioChoices;
 	private final RosterSelectDTO printChoices;
 	private final RosterRadioButtonsDTO rb;
 	protected String selectedYear;
-	protected Label records = new Label();
 
 	VBox controlsBox;
 
@@ -41,6 +37,7 @@ public class TabRoster extends Tab {
 		this.rosters = a;
 		this.selectedYear = sy;
 		this.radioChoices = SqlMembershipListRadio.getRadioChoices();
+		this.searchedRosters = FXCollections.observableArrayList();
 		this.setText("Roster");
 		this.rb = new RosterRadioButtonsDTO();
 		// TODO this needs a rework, to complex for what it does.
@@ -216,7 +213,6 @@ public class TabRoster extends Tab {
 		tabPane.getTabs().addAll(new TabStandard(rb), new TabSlipOptions(rb), new TabKayakLists(rb));
 		vboxBlue.getChildren().add(hboxSplitScreen);
 		setContent(vboxBlue);
-		records.setText(rosters.size() + " Records");
 	}
 
 	private HBox splitScreen() {
