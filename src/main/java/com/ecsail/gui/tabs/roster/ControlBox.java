@@ -7,13 +7,10 @@ import com.ecsail.structures.MembershipListDTO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.Comparator;
-import java.util.HashMap;
 
 public class ControlBox extends VBox {
     protected TabRoster parent;
@@ -26,7 +23,6 @@ public class ControlBox extends VBox {
         this.setSpacing(10);
         this.setPrefWidth(200);
         this.getChildren().addAll(yearBox,radioBox);
-
     }
 
     private VBox createRadioBox() {
@@ -35,9 +31,11 @@ public class ControlBox extends VBox {
         vBox.setSpacing(7);
         vBox.setPadding(new Insets(20,0,0,0));
         for(MembershipListRadioDTO radio: parent.radioChoices) {
-            RadioHBox radioHBox = new RadioHBox(radio, this);
-            vBox.getChildren().add(radioHBox);
-            radioHBox.getRadioButton().setToggleGroup(tg);
+            if(!radio.getQuery().equals("query")) {
+                RadioHBox radioHBox = new RadioHBox(radio, this);
+                vBox.getChildren().add(radioHBox);
+                radioHBox.getRadioButton().setToggleGroup(tg);
+            }
         }
         return vBox;
     }
@@ -67,9 +65,22 @@ public class ControlBox extends VBox {
 
     protected void makeListByRadioButtonChoice() {
         parent.rosters.clear();
-        String[] parameters = { parent.selectedYear };
-        parent.rosters.addAll(SqlMembershipList.getRoster(StringTools.ParseQuery(selectedRadioBox.getQuery(),parameters)));
+        String query = StringTools.ParseQuery(selectedRadioBox.getQuery(), createParameters());
+        System.out.println(query);
+        parent.rosters.addAll(SqlMembershipList.getRoster(query));
         parent.records.setText(parent.rosters.size() + " Records");
         parent.rosters.sort(Comparator.comparing(MembershipListDTO::getMembershipId));
+    }
+
+    // The object tells it how many parameters there are, all parameters are the selected year
+    // the only difference is the number. Some queries require 0 some 5
+    // The number of parameters must match the ? in the query and for this use case it is always
+    // the selected year.
+    private String[] createParameters() {
+        String[] params = new String[selectedRadioBox.getNumberOfParameters()];
+        for(int i = 0; i < selectedRadioBox.getNumberOfParameters(); i++) {
+            params[i] = parent.selectedYear;
+        }
+        return params;
     }
 }

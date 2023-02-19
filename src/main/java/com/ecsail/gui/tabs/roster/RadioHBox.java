@@ -7,19 +7,27 @@ public class RadioHBox extends HBox {
     private MembershipListRadioDTO mrDTO;
     private RadioButton radioButton;
     private ControlBox parent;
+    private int numberOfParameters;
+
     public RadioHBox(MembershipListRadioDTO r, ControlBox p) {
         this.parent = p;
         this.mrDTO = r;
         this.radioButton = new RadioButton(mrDTO.getLabel());
+        this.numberOfParameters = countQuestionMarksUsingStream(mrDTO.getQuery());
         setRadioButtonListener();
         radioButton.setSelected(mrDTO.isSelected());
         this.getChildren().add(radioButton);
+    }
+
+    public static int countQuestionMarksUsingStream(String str) {
+        return (int) str.chars().filter(ch -> ch == '?').count();
     }
 
     private void setRadioButtonListener() {
         radioButton.selectedProperty().addListener((obs, wasPreviouslySelected, isNowSelected) -> {
             if (isNowSelected) {
             parent.selectedRadioBox = this;
+            parent.makeListByRadioButtonChoice();
             }
         });
     }
@@ -30,5 +38,9 @@ public class RadioHBox extends HBox {
 
     public String getQuery() {
         return mrDTO.getQuery();
+    }
+
+    public int getNumberOfParameters() { // number of parameters
+        return numberOfParameters;
     }
 }

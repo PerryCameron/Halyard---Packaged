@@ -10,6 +10,7 @@ public class MembershipListRadioDTO {
     private int list;
     private boolean selected;
 
+
     public MembershipListRadioDTO(int id, String label, String query, int order, int list, boolean selected) {
         this.id = id;
         this.label = label;
@@ -66,4 +67,5 @@ public class MembershipListRadioDTO {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
+
 }
