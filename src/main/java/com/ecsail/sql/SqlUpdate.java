@@ -5,7 +5,7 @@ import com.ecsail.DataBase;
 import com.ecsail.gui.dialogues.Dialogue_CustomErrorMessage;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.sql.select.SqlMembershipList;
-import com.ecsail.structures.*;
+import com.ecsail.dto.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 

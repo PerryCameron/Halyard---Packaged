@@ -1,6 +1,6 @@
 package com.ecsail.gui.tabs.people;
 
-import com.ecsail.structures.PersonDTO;
+import com.ecsail.dto.PersonDTO;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;

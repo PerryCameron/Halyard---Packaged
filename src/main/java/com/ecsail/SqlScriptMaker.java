@@ -3,7 +3,7 @@ package com.ecsail;
 import com.ecsail.gui.dialogues.Dialogue_DatabaseBackup;
 import com.ecsail.jotform.structures.ApiKeyDTO;
 import com.ecsail.sql.select.*;
-import com.ecsail.structures.*;
+import com.ecsail.dto.*;
 import javafx.collections.ObservableList;
 
 import java.io.*;

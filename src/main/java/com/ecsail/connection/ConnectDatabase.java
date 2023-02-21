@@ -8,7 +8,7 @@ import com.ecsail.gui.tabs.welcome.HBoxWelcome;
 import com.ecsail.gui.tabs.TabLogin;
 import com.ecsail.gui.tabs.welcome.TabWelcome;
 import com.ecsail.sql.select.SqlMembershipList;
-import com.ecsail.structures.LoginDTO;
+import com.ecsail.dto.LoginDTO;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -55,8 +55,7 @@ public class ConnectDatabase {
 
 	public static Stage logonStage;
 	Stage primaryStage;
-
-	private AppConfig appConfig = new AppConfig();
+	public AppConfig appConfig;
 
 	public ConnectDatabase(Stage primaryStage) {
 		this.primaryStage = primaryStage;
@@ -488,7 +487,8 @@ public class ConnectDatabase {
 	protected Boolean createConnection(String user, String password, String ip, int port) {
 		boolean successful = false;
 		try {
-			appConfig.createDataSource(ip,port,user,password);
+			this.appConfig = new AppConfig();
+			this.appConfig.createDataSource(ip,port,user,password);
 			sqlConnection = appConfig.getDataSource().getConnection();
 			BaseApplication.tabPane.getTabs()
 			.remove(BaseApplication.tabPane.getSelectionModel().getSelectedIndex());

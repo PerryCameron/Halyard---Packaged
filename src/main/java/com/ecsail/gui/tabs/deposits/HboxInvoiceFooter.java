@@ -1,13 +1,9 @@
 package com.ecsail.gui.tabs.deposits;
 
-import com.ecsail.structures.DepositDTO;
-import com.ecsail.structures.InvoiceItemDTO;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-
-import java.math.BigDecimal;
 
 public class HboxInvoiceFooter extends HBox {
 

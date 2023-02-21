@@ -2,9 +2,9 @@ package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
-import com.ecsail.structures.EmailDTO;
-import com.ecsail.structures.Email_InformationDTO;
-import com.ecsail.structures.PersonDTO;
+import com.ecsail.dto.EmailDTO;
+import com.ecsail.dto.Email_InformationDTO;
+import com.ecsail.dto.PersonDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

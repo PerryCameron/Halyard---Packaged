@@ -2,7 +2,7 @@ package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
-import com.ecsail.structures.WaitListDTO;
+import com.ecsail.dto.WaitListDTO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

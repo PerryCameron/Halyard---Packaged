@@ -5,7 +5,7 @@ import com.ecsail.sql.select.SqlDbInvoice;
 import com.ecsail.sql.select.SqlFee;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.sql.select.SqlSlip;
-import com.ecsail.structures.*;
+import com.ecsail.dto.*;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;

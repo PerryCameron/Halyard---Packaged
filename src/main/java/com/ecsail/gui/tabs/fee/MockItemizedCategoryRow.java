@@ -1,7 +1,7 @@
 package com.ecsail.gui.tabs.fee;
 
-import com.ecsail.structures.FeeDTO;
-import com.ecsail.structures.InvoiceItemDTO;
+import com.ecsail.dto.FeeDTO;
+import com.ecsail.dto.InvoiceItemDTO;
 import javafx.geometry.Pos;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;

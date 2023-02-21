@@ -7,7 +7,7 @@ import com.ecsail.gui.tabs.membership.TabMembership;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.select.SqlSelect;
-import com.ecsail.structures.PersonDTO;
+import com.ecsail.dto.PersonDTO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;

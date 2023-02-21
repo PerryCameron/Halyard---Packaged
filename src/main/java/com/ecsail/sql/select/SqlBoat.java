@@ -2,9 +2,9 @@ package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
-import com.ecsail.structures.BoatDTO;
-import com.ecsail.structures.BoatListDTO;
-import com.ecsail.structures.BoatOwnerDTO;
+import com.ecsail.dto.BoatDTO;
+import com.ecsail.dto.BoatListDTO;
+import com.ecsail.dto.BoatOwnerDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

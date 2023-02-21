@@ -1,8 +1,7 @@
 package com.ecsail.gui.tabs.database;
 
-import com.ecsail.gui.tabs.database.HBoxTableChanges;
 import com.ecsail.sql.select.SqlDbTableChanges;
-import com.ecsail.structures.DbTableChangesDTO;
+import com.ecsail.dto.DbTableChangesDTO;
 import javafx.geometry.Insets;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.HBox;

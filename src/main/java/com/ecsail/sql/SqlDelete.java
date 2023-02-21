@@ -3,7 +3,7 @@ package com.ecsail.sql;
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.sql.select.SqlInvoice;
-import com.ecsail.structures.*;
+import com.ecsail.dto.*;
 import javafx.collections.ObservableList;
 
 

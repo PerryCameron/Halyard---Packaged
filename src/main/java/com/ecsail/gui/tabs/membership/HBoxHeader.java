@@ -1,8 +1,8 @@
 package com.ecsail.gui.tabs.membership;
 
 import com.ecsail.enums.MembershipType;
-import com.ecsail.structures.MemLabelsDTO;
-import com.ecsail.structures.MembershipListDTO;
+import com.ecsail.dto.MemLabelsDTO;
+import com.ecsail.dto.MembershipListDTO;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;

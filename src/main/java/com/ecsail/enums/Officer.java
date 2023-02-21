@@ -2,7 +2,7 @@ package com.ecsail.enums;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.sql.select.SqlBoardPositions;
-import com.ecsail.structures.BoardPositionDTO;
+import com.ecsail.dto.BoardPositionDTO;
 
 import java.util.ArrayList;
 

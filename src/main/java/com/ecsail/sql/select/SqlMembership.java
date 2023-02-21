@@ -2,7 +2,7 @@ package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
-import com.ecsail.structures.MembershipDTO;
+import com.ecsail.dto.MembershipDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

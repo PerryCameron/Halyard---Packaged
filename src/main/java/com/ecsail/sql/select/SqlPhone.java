@@ -2,8 +2,8 @@ package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
-import com.ecsail.structures.PersonDTO;
-import com.ecsail.structures.PhoneDTO;
+import com.ecsail.dto.PersonDTO;
+import com.ecsail.dto.PhoneDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

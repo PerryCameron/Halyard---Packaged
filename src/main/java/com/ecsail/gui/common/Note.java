@@ -4,7 +4,7 @@ import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlSelect;
-import com.ecsail.structures.MemoDTO;
+import com.ecsail.dto.MemoDTO;
 import javafx.collections.ObservableList;
 
 import java.util.Collections;

@@ -2,9 +2,8 @@ package com.ecsail.gui.tabs.deposits;
 
 
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.structures.DepositDTO;
-import com.ecsail.structures.InvoiceDTO;
-import javafx.beans.property.BooleanProperty;
+import com.ecsail.dto.DepositDTO;
+import com.ecsail.dto.InvoiceDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableColumn;
@@ -16,8 +15,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 public class InvoicesTableView extends TableView {
     TabDeposits tabParent;

@@ -2,7 +2,7 @@ package com.ecsail.gui.dialogues;
 
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.select.SqlMembershipList;
-import com.ecsail.structures.MembershipListDTO;
+import com.ecsail.dto.MembershipListDTO;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;

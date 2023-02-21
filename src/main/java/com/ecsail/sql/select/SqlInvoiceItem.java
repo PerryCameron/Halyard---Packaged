@@ -2,15 +2,14 @@ package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
-import com.ecsail.structures.DepositDTO;
-import com.ecsail.structures.FeeDTO;
-import com.ecsail.structures.InvoiceItemDTO;
+import com.ecsail.dto.DepositDTO;
+import com.ecsail.dto.FeeDTO;
+import com.ecsail.dto.InvoiceItemDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Set;
 
 public class SqlInvoiceItem {
 

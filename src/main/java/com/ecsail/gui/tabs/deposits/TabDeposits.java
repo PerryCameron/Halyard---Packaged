@@ -2,7 +2,7 @@ package com.ecsail.gui.tabs.deposits;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.sql.select.SqlInvoice;
-import com.ecsail.structures.DepositDTO;
+import com.ecsail.dto.DepositDTO;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Tab;

@@ -9,7 +9,7 @@ import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlPerson;
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.structures.PersonDTO;
+import com.ecsail.dto.PersonDTO;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;

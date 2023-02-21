@@ -3,7 +3,7 @@ package com.ecsail.gui.tabs.membership.information;
 
 import com.ecsail.EditCell;
 import com.ecsail.gui.tabs.membership.TabMembership;
-import com.ecsail.structures.MemoDTO;
+import com.ecsail.dto.MemoDTO;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;

@@ -2,10 +2,12 @@ package com.ecsail.gui.tabs.roster;
 
 import com.ecsail.Launcher;
 import com.ecsail.excel.Xls_roster;
+import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.interfaces.MembershipRepository;
 import com.ecsail.sql.select.SqlMembershipListRadio;
-import com.ecsail.structures.MembershipListDTO;
-import com.ecsail.structures.RosterRadioButtonsDTO;
-import com.ecsail.structures.RosterSelectDTO;
+import com.ecsail.dto.MembershipListDTO;
+import com.ecsail.dto.RosterRadioButtonsDTO;
+import com.ecsail.dto.RosterSelectDTO;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,6 +23,8 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 
 public class TabRoster extends Tab {
+	protected MembershipRepository membershipRepository = new MembershipRepositoryImpl();
+
 	protected ObservableList<MembershipListDTO> rosters;
 	protected ObservableList<MembershipListDTO> searchedRosters;
 	protected TableView<MembershipListDTO> rosterTableView;

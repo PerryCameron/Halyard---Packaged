@@ -2,7 +2,7 @@ package com.ecsail.gui.tabs.boatview;
 
 import com.ecsail.enums.KeelType;
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.structures.DbBoatDTO;
+import com.ecsail.dto.DbBoatDTO;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

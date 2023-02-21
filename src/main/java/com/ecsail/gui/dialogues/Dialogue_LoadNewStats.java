@@ -4,7 +4,7 @@ import com.ecsail.HalyardPaths;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.select.SqlStats;
-import com.ecsail.structures.StatsDTO;
+import com.ecsail.dto.StatsDTO;
 import javafx.beans.property.BooleanProperty;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;

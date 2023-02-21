@@ -6,7 +6,7 @@ import com.ecsail.BaseApplication;
 //import com.ecsail.main.HalyardPaths;
 import com.ecsail.HalyardPaths;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
-import com.ecsail.structures.MembershipListDTO;
+import com.ecsail.dto.MembershipListDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

@@ -4,10 +4,10 @@ import com.ecsail.gui.common.Note;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.select.SqlMembership_Id;
 import com.ecsail.sql.select.SqlSelect;
-import com.ecsail.structures.MembershipIdDTO;
-import com.ecsail.structures.MembershipListDTO;
-import com.ecsail.structures.MemoDTO;
-import com.ecsail.structures.PersonDTO;
+import com.ecsail.dto.MembershipIdDTO;
+import com.ecsail.dto.MembershipListDTO;
+import com.ecsail.dto.MemoDTO;
+import com.ecsail.dto.PersonDTO;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

@@ -1,6 +1,6 @@
 package com.ecsail;
 
-import com.ecsail.structures.LabelDTO;
+import com.ecsail.dto.LabelDTO;
 
 import javax.print.PrintService;
 import java.awt.*;

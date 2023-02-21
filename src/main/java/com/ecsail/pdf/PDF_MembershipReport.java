@@ -4,7 +4,7 @@ package com.ecsail.pdf;
 import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.sql.select.SqlStats;
-import com.ecsail.structures.StatsDTO;
+import com.ecsail.dto.StatsDTO;
 import com.itextpdf.kernel.colors.DeviceCmyk;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;

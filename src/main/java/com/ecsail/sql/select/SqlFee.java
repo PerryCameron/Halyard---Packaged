@@ -3,8 +3,8 @@ package com.ecsail.sql.select;
 
 
 import com.ecsail.BaseApplication;
-import com.ecsail.structures.DbInvoiceDTO;
-import com.ecsail.structures.FeeDTO;
+import com.ecsail.dto.DbInvoiceDTO;
+import com.ecsail.dto.FeeDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

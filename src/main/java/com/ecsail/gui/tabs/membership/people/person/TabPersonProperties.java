@@ -1,10 +1,9 @@
 package com.ecsail.gui.tabs.membership.people.person;
 
-import com.ecsail.gui.tabs.membership.people.person.VBoxPersonMove;
 import com.ecsail.gui.tabs.people.TabPeople;
 import com.ecsail.sql.SqlPerson;
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.structures.PersonDTO;
+import com.ecsail.dto.PersonDTO;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

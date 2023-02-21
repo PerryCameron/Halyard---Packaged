@@ -3,7 +3,7 @@ package com.ecsail.pdf.directory;
 
 import com.ecsail.HalyardPaths;
 import com.ecsail.sql.select.SqlMembershipList;
-import com.ecsail.structures.MembershipListDTO;
+import com.ecsail.dto.MembershipListDTO;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;

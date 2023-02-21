@@ -1,7 +1,7 @@
 package com.ecsail.gui.tabs.fee;
 
-import com.ecsail.structures.DbInvoiceDTO;
-import com.ecsail.structures.FeeDTO;
+import com.ecsail.dto.DbInvoiceDTO;
+import com.ecsail.dto.FeeDTO;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Pos;

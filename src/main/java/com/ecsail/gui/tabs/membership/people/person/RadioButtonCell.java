@@ -1,7 +1,7 @@
 package com.ecsail.gui.tabs.membership.people.person;
 
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.structures.EmailDTO;
+import com.ecsail.dto.EmailDTO;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableCell;

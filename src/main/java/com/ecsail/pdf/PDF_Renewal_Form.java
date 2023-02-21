@@ -4,7 +4,7 @@ import com.ecsail.HalyardPaths;
 import com.ecsail.enums.KeelType;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.select.*;
-import com.ecsail.structures.*;
+import com.ecsail.dto.*;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.DeviceCmyk;
 import com.itextpdf.kernel.pdf.PdfDocument;

@@ -3,7 +3,7 @@ package com.ecsail.gui.tabs.welcome;
 import com.ecsail.gui.dialogues.Dialogue_LoadNewStats;
 import com.ecsail.HalyardPaths;
 import com.ecsail.sql.select.SqlStats;
-import com.ecsail.structures.StatsDTO;
+import com.ecsail.dto.StatsDTO;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;

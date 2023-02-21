@@ -1,20 +1,18 @@
 package com.ecsail.gui.tabs.roster;
 
-import javafx.scene.control.RadioButton;
-
 public class MembershipListRadioDTO {
     private int id;
     private String label;
-    private String query;
+    private String methodName;
     private int order;
     private int list;
     private boolean selected;
 
 
-    public MembershipListRadioDTO(int id, String label, String query, int order, int list, boolean selected) {
+    public MembershipListRadioDTO(int id, String label, String methodName, int order, int list, boolean selected) {
         this.id = id;
         this.label = label;
-        this.query = query;
+        this.methodName = methodName;
         this.order = order;
         this.list = list;
         this.selected = selected;
@@ -36,12 +34,12 @@ public class MembershipListRadioDTO {
         this.label = label;
     }
 
-    public String getQuery() {
-        return query;
+    public String getMethodName() {
+        return methodName;
     }
 
-    public void setQuery(String query) {
-        this.query = query;
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
     }
 
     public int getOrder() {

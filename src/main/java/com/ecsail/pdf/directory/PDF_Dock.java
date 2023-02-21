@@ -2,7 +2,7 @@ package com.ecsail.pdf.directory;
 
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.sql.select.SqlSlip;
-import com.ecsail.structures.MembershipListDTO;
+import com.ecsail.dto.MembershipListDTO;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.layout.borders.Border;

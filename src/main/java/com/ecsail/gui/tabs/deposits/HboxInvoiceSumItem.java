@@ -1,6 +1,6 @@
 package com.ecsail.gui.tabs.deposits;
 
-import com.ecsail.structures.InvoiceItemDTO;
+import com.ecsail.dto.InvoiceItemDTO;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;

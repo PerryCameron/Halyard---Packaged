@@ -1,6 +1,6 @@
 package com.ecsail.gui.tabs.welcome;
 
-import com.ecsail.structures.StatsDTO;
+import com.ecsail.dto.StatsDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;

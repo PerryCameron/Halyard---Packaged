@@ -3,8 +3,8 @@ package com.ecsail.sql.select;
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.pdf.directory.PDF_Object_Officer;
-import com.ecsail.structures.OfficerDTO;
-import com.ecsail.structures.OfficerWithNameDTO;
+import com.ecsail.dto.OfficerDTO;
+import com.ecsail.dto.OfficerWithNameDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

@@ -1,6 +1,6 @@
 package com.ecsail.pdf.directory;
 
-import com.ecsail.structures.MembershipListDTO;
+import com.ecsail.dto.MembershipListDTO;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;

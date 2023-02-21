@@ -11,7 +11,7 @@ import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlMembership_Id;
 import com.ecsail.sql.select.SqlSelect;
-import com.ecsail.structures.MembershipIdDTO;
+import com.ecsail.dto.MembershipIdDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;

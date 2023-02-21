@@ -1,10 +1,8 @@
 package com.ecsail.gui.tabs.roster;
 
-import com.ecsail.structures.RosterRadioButtonsDTO;
+import com.ecsail.dto.RosterRadioButtonsDTO;
 import javafx.geometry.Insets;
 import javafx.scene.control.Tab;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 

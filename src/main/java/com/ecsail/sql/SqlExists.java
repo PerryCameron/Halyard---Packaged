@@ -3,8 +3,8 @@ package com.ecsail.sql;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
-import com.ecsail.structures.MembershipDTO;
-import com.ecsail.structures.PersonDTO;
+import com.ecsail.dto.MembershipDTO;
+import com.ecsail.dto.PersonDTO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

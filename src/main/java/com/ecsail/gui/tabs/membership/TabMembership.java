@@ -16,7 +16,7 @@ import com.ecsail.sql.select.SqlBoat;
 import com.ecsail.sql.select.SqlInvoice;
 import com.ecsail.sql.select.SqlMembership_Id;
 import com.ecsail.sql.select.SqlMemos;
-import com.ecsail.structures.*;
+import com.ecsail.dto.*;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

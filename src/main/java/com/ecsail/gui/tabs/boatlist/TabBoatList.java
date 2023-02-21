@@ -2,7 +2,7 @@ package com.ecsail.gui.tabs.boatlist;
 
 import com.ecsail.Launcher;
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.structures.BoatListDTO;
+import com.ecsail.dto.BoatListDTO;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;

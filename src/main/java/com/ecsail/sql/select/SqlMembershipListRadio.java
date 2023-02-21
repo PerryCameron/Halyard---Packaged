@@ -18,7 +18,7 @@ public class SqlMembershipListRadio {
                 thisApiKey.add(new MembershipListRadioDTO(
                         rs.getInt("ID"),
                         rs.getString("LABEL"),
-                        rs.getString("SQL_QUERY"),
+                        rs.getString("METHOD_NAME"),
                         rs.getInt("LIST_ORDER"),
                         rs.getInt("LIST"),
                         rs.getBoolean("selected")

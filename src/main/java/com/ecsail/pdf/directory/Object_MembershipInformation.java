@@ -5,9 +5,9 @@ import com.ecsail.sql.select.SqlBoat;
 import com.ecsail.sql.select.SqlEmail;
 import com.ecsail.sql.select.SqlPerson;
 import com.ecsail.sql.select.SqlPhone;
-import com.ecsail.structures.BoatDTO;
-import com.ecsail.structures.MembershipListDTO;
-import com.ecsail.structures.PersonDTO;
+import com.ecsail.dto.BoatDTO;
+import com.ecsail.dto.MembershipListDTO;
+import com.ecsail.dto.PersonDTO;
 
 import java.util.ArrayList;
 import java.util.List;

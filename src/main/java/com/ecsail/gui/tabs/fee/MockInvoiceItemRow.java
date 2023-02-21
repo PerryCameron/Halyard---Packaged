@@ -1,10 +1,10 @@
 package com.ecsail.gui.tabs.fee;
 
 import com.ecsail.StringTools;
-import com.ecsail.structures.DbInvoiceDTO;
-import com.ecsail.structures.FeeDTO;
-import com.ecsail.structures.InvoiceDTO;
-import com.ecsail.structures.InvoiceItemDTO;
+import com.ecsail.dto.DbInvoiceDTO;
+import com.ecsail.dto.FeeDTO;
+import com.ecsail.dto.InvoiceDTO;
+import com.ecsail.dto.InvoiceItemDTO;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;

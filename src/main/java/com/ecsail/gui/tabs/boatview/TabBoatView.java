@@ -14,7 +14,7 @@ import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlBoatPhotos;
 import com.ecsail.sql.select.SqlDbBoat;
 import com.ecsail.sql.select.SqlMembershipList;
-import com.ecsail.structures.*;
+import com.ecsail.dto.*;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

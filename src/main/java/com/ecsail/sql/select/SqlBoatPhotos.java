@@ -1,7 +1,7 @@
 package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
-import com.ecsail.structures.BoatPhotosDTO;
+import com.ecsail.dto.BoatPhotosDTO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

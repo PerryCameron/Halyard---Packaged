@@ -3,7 +3,7 @@ package com.ecsail.sql.select;
 
 
 import com.ecsail.BaseApplication;
-import com.ecsail.structures.HashDTO;
+import com.ecsail.dto.HashDTO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

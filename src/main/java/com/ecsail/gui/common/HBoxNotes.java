@@ -2,18 +2,14 @@ package com.ecsail.gui.common;
 
 
 import com.ecsail.EditCell;
-import com.ecsail.Launcher;
 import com.ecsail.sql.select.SqlMemos;
-import com.ecsail.structures.BoatDTO;
-import com.ecsail.structures.BoatListDTO;
-import com.ecsail.structures.MemoDTO;
+import com.ecsail.dto.BoatDTO;
+import com.ecsail.dto.MemoDTO;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;

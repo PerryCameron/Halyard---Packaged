@@ -1,7 +1,7 @@
 package com.ecsail.connection;
 
 import com.ecsail.BaseApplication;
-import com.ecsail.structures.LoginDTO;
+import com.ecsail.dto.LoginDTO;
 import com.jcraft.jsch.*;
 
 import javax.swing.*;

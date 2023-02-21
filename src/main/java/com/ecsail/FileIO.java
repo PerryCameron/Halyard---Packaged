@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ecsail.structures.LoginDTO;
+import com.ecsail.dto.LoginDTO;
 
 
 public class FileIO {

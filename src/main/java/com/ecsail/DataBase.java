@@ -5,7 +5,7 @@ import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlDbTableChanges;
 import com.ecsail.sql.select.SqlSelect;
-import com.ecsail.structures.DbTableChangesDTO;
+import com.ecsail.dto.DbTableChangesDTO;
 
 import java.sql.Timestamp;
 import java.time.Instant;

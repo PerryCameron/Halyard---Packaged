@@ -1,7 +1,7 @@
 package com.ecsail.pdf.directory;
 
 import com.ecsail.sql.select.SqlOfficer;
-import com.ecsail.structures.OfficerWithNameDTO;
+import com.ecsail.dto.OfficerWithNameDTO;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;

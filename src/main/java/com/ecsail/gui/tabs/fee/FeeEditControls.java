@@ -3,7 +3,7 @@ package com.ecsail.gui.tabs.fee;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.structures.FeeDTO;
+import com.ecsail.dto.FeeDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;

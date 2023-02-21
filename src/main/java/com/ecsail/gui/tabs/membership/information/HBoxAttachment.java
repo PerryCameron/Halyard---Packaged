@@ -1,7 +1,6 @@
 package com.ecsail.gui.tabs.membership.information;
 
 import com.ecsail.gui.tabs.membership.TabMembership;
-import com.ecsail.structures.MembershipDTO;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;

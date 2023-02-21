@@ -1,6 +1,6 @@
 package com.ecsail.gui.tabs.fee;
 
-import com.ecsail.structures.FeeDTO;
+import com.ecsail.dto.FeeDTO;
 import javafx.geometry.Insets;
 import javafx.scene.layout.VBox;
 

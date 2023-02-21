@@ -2,7 +2,7 @@ package com.ecsail.excel;
 
 import com.ecsail.HalyardPaths;
 import com.ecsail.sql.select.SqlEmail;
-import com.ecsail.structures.Email_InformationDTO;
+import com.ecsail.dto.Email_InformationDTO;
 import javafx.collections.ObservableList;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;

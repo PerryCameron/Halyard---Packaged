@@ -2,7 +2,7 @@ package com.ecsail.sql.select;
 
 
 import com.ecsail.BaseApplication;
-import com.ecsail.structures.IdChangeDTO;
+import com.ecsail.dto.IdChangeDTO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

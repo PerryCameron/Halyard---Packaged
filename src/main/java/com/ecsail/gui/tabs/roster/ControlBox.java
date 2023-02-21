@@ -2,29 +2,21 @@ package com.ecsail.gui.tabs.roster;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.StringTools;
-import com.ecsail.connection.AppConfig;
-import com.ecsail.sql.select.SqlMembershipList;
-import com.ecsail.structures.MembershipListDTO;
+import com.ecsail.dto.MembershipListDTO;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.skin.ComboBoxListViewSkin;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -46,6 +38,18 @@ public class ControlBox extends VBox {
         this.setPrefWidth(220);
         this.getChildren().addAll(recordsBox,fieldsSelectToSearchBox,searchBox,radioBox);
     }
+
+//    private HBox setUPTestBox() {
+//        HBox hBox = new HBox();
+//        Button button = new Button("Test Me");
+//
+//        testlist = FXCollections.observableList(parent.membershipRepository.getRoster(parent.selectedYear));
+//        button.setOnAction(event -> {
+//            testlist.forEach(System.out::println);
+//        });
+//        hBox.getChildren().add(button);
+//        return hBox;
+//    }
 
     private VBox setUpFieldSelectedToSearchBox() {
         VBox vBox = new VBox();
@@ -124,7 +128,7 @@ public class ControlBox extends VBox {
     private void updateRecordCount() {
         String number = null;
         if(isActiveSearch)
-            number = String.valueOf(parent.searchedRosters.size()) + "/" + String.valueOf(parent.rosters.size());
+            number = parent.searchedRosters.size() + "/" + parent.rosters.size();
         else
             number = String.valueOf(parent.rosters.size());
         numberOfRecords.setText(number);
@@ -159,7 +163,7 @@ public class ControlBox extends VBox {
         vBox.setSpacing(7);
         vBox.setPadding(new Insets(20,0,0,20));
         for(MembershipListRadioDTO radio: parent.radioChoices) {
-            if(!radio.getQuery().equals("query")) {
+            if(!radio.getMethodName().equals("query")) {
                 RadioHBox radioHBox = new RadioHBox(radio, this);
                 vBox.getChildren().add(radioHBox);
                 radioHBox.getRadioButton().setToggleGroup(tg);
@@ -171,17 +175,21 @@ public class ControlBox extends VBox {
     private void setComboBoxListener(ComboBox<Integer> comboBox) {
         comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             parent.selectedYear = newValue.toString();
-            makeListByRadioButtonChoice();
+                makeListByRadioButtonChoice();
             updateRecordCount();
             parent.rosterTableView.sort();
         });
     }
 
-    protected void makeListByRadioButtonChoice() {
+    protected void makeListByRadioButtonChoice()  {
         parent.rosters.clear();
-        String query = StringTools.ParseQuery(selectedRadioBox.getQuery(), createParameters());
-//        System.out.println(query);
-        parent.rosters.addAll(SqlMembershipList.getRoster(query));
+        Method method = null;
+        try {
+            method = parent.membershipRepository.getClass().getMethod(selectedRadioBox.getQuery(),String.class);
+            parent.rosters.setAll((List<MembershipListDTO>) method.invoke(parent.membershipRepository, parent.selectedYear));
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
         updateRecordCount();
         parent.rosters.sort(Comparator.comparing(MembershipListDTO::getMembershipId));
     }

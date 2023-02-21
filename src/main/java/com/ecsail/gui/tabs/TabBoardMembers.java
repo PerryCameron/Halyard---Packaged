@@ -4,9 +4,7 @@ import com.ecsail.BaseApplication;
 import com.ecsail.Launcher;
 import com.ecsail.enums.Officer;
 import com.ecsail.sql.select.SqlBoard;
-import com.ecsail.sql.select.SqlBoardPositions;
-import com.ecsail.structures.BoardDTO;
-import com.ecsail.structures.BoardPositionDTO;
+import com.ecsail.dto.BoardDTO;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,8 +19,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 

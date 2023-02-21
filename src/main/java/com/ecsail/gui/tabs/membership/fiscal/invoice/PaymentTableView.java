@@ -4,7 +4,7 @@ import com.ecsail.EditCell;
 import com.ecsail.enums.PaymentType;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlPayment;
-import com.ecsail.structures.PaymentDTO;
+import com.ecsail.dto.PaymentDTO;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -16,7 +16,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.function.Function;
 

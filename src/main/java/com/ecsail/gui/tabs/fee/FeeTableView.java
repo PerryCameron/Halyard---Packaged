@@ -3,7 +3,7 @@ package com.ecsail.gui.tabs.fee;
 import com.ecsail.EditCell;
 import com.ecsail.StringTools;
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.structures.FeeDTO;
+import com.ecsail.dto.FeeDTO;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;

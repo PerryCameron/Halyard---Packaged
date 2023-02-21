@@ -1,17 +1,13 @@
 package com.ecsail.gui.tabs.membership.fiscal.invoice;
 
-import com.ecsail.gui.tabs.fee.MockItemizedCategoryRow;
 import com.ecsail.sql.select.SqlFee;
-import com.ecsail.sql.select.SqlSelect;
-import com.ecsail.structures.FeeDTO;
-import com.ecsail.structures.InvoiceItemDTO;
+import com.ecsail.dto.FeeDTO;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.layout.VBox;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Set;
 
 public class ItemizedCategory extends VBox {
     InvoiceItemRow parent;

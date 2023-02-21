@@ -3,8 +3,8 @@ package com.ecsail.sql.select;
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.gui.tabs.deposits.InvoiceWithMemberInfoDTO;
-import com.ecsail.structures.Memo2DTO;
-import com.ecsail.structures.MemoDTO;
+import com.ecsail.dto.Memo2DTO;
+import com.ecsail.dto.MemoDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

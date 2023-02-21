@@ -3,8 +3,8 @@ package com.ecsail;
 import com.ecsail.connection.ConnectDatabase;
 import com.ecsail.connection.PortForwardingL;
 import com.ecsail.plugin.*;
-import com.ecsail.structures.BoardPositionDTO;
-import com.ecsail.structures.MembershipListDTO;
+import com.ecsail.dto.BoardPositionDTO;
+import com.ecsail.dto.MembershipListDTO;
 
 import com.jcraft.jsch.JSchException;
 import javafx.application.Application;
@@ -29,6 +29,8 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
 
 import static com.ecsail.HalyardPaths.LOGFILEDIR;
 
@@ -56,6 +58,8 @@ public class BaseApplication extends Application implements Log {
     public static Stage stage;
     public static String user = "membership";
     public static Label statusLabel;
+
+
 
 
     public static void main(String[] args) {
@@ -172,5 +176,8 @@ public class BaseApplication extends Application implements Log {
     public static void setUpForFirstTime() {
         HalyardPaths.checkPath(System.getProperty("user.home") + "/.ecsc/scripts");
         HalyardPaths.checkPath(System.getProperty("user.home") + "/.ecsc/logs");
+    }
+    public static DataSource getDataSource() {
+        return connect.appConfig.getDataSource();
     }
 }

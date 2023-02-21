@@ -5,7 +5,7 @@ import com.ecsail.DataBase;
 import com.ecsail.SqlScriptMaker;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.sql.select.SqlSelect;
-import com.ecsail.structures.*;
+import com.ecsail.dto.*;
 
 import java.sql.SQLException;
 

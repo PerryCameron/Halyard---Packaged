@@ -1,11 +1,8 @@
 package com.ecsail.gui.tabs;
 
 import com.ecsail.BaseApplication;
-import com.ecsail.HalyardPaths;
 import com.ecsail.sql.select.SqlMemos;
-import com.ecsail.structures.Memo2DTO;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import com.ecsail.dto.Memo2DTO;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;

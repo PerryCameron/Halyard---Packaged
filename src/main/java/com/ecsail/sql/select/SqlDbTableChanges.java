@@ -2,17 +2,12 @@ package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
-import com.ecsail.structures.AwardDTO;
-import com.ecsail.structures.DbTableChangesDTO;
-import com.ecsail.structures.DbUpdatesDTO;
-import com.ecsail.structures.PersonDTO;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import com.ecsail.dto.DbTableChangesDTO;
+import com.ecsail.dto.DbUpdatesDTO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class SqlDbTableChanges {
 
