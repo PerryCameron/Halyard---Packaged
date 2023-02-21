@@ -36,7 +36,6 @@ public class ConnectDatabase {
 	private double titleBarHeight;
 	private LoginDTO currentLogon;
 	private int localSqlPort;
-	private int rport;
 	private ObservableList<String> choices = FXCollections.observableArrayList();
 	private String exception = "";
 	// used in class methods

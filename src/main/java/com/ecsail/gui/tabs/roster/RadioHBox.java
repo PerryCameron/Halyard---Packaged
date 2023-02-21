@@ -36,7 +36,7 @@ public class RadioHBox extends HBox {
         return radioButton;
     }
 
-    public String getQuery() {
+    public String getMethod() {
         return mrDTO.getMethodName();
     }
 

@@ -36,25 +36,15 @@ public class ControlBox extends VBox {
         VBox fieldsSelectToSearchBox = setUpFieldSelectedToSearchBox();
         this.setSpacing(10);
         this.setPrefWidth(220);
-        this.getChildren().addAll(recordsBox,fieldsSelectToSearchBox,searchBox,radioBox);
+        this.getChildren().addAll(recordsBox,searchBox,fieldsSelectToSearchBox,radioBox);
     }
-
-//    private HBox setUPTestBox() {
-//        HBox hBox = new HBox();
-//        Button button = new Button("Test Me");
-//
-//        testlist = FXCollections.observableList(parent.membershipRepository.getRoster(parent.selectedYear));
-//        button.setOnAction(event -> {
-//            testlist.forEach(System.out::println);
-//        });
-//        hBox.getChildren().add(button);
-//        return hBox;
-//    }
 
     private VBox setUpFieldSelectedToSearchBox() {
         VBox vBox = new VBox();
+        vBox.setPadding(new Insets(0,15,0,57));
         TitledPane titledPane = new TitledPane();
         titledPane.setText("Searchable Fields");
+        titledPane.setExpanded(false);
         VBox checkVBox = new VBox();
         checkVBox.setSpacing(5);
         checkVBox.getChildren().addAll(new CheckBox("Item 1"), new CheckBox("Item 2"), new CheckBox("Item 3"));
@@ -96,7 +86,7 @@ public class ControlBox extends VBox {
         HBox hBox = new HBox();
         hBox.setAlignment(Pos.CENTER_LEFT);
         hBox.setSpacing(10);
-        hBox.setPadding(new Insets(0,15,15,0));
+        hBox.setPadding(new Insets(0,15,0,0));
         ComboBox<String> comboBox = new ComboBox<>();
         Text text = new Text("Search");
         text.setId("invoice-text-number");
@@ -185,7 +175,7 @@ public class ControlBox extends VBox {
         parent.rosters.clear();
         Method method = null;
         try {
-            method = parent.membershipRepository.getClass().getMethod(selectedRadioBox.getQuery(),String.class);
+            method = parent.membershipRepository.getClass().getMethod(selectedRadioBox.getMethod(),String.class);
             parent.rosters.setAll((List<MembershipListDTO>) method.invoke(parent.membershipRepository, parent.selectedYear));
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
