@@ -22,7 +22,6 @@ import java.util.ArrayList;
 
 public class TabRoster extends Tab {
 	protected ObservableList<MembershipListDTO> rosters;
-
 	protected ObservableList<MembershipListDTO> searchedRosters;
 	protected TableView<MembershipListDTO> rosterTableView;
 	protected ArrayList<MembershipListRadioDTO> radioChoices;

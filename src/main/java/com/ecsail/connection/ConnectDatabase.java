@@ -56,6 +56,7 @@ public class ConnectDatabase {
 	public static Stage logonStage;
 	Stage primaryStage;
 
+	private AppConfig appConfig = new AppConfig();
 
 	public ConnectDatabase(Stage primaryStage) {
 		this.primaryStage = primaryStage;
@@ -486,15 +487,11 @@ public class ConnectDatabase {
 
 	protected Boolean createConnection(String user, String password, String ip, int port) {
 		boolean successful = false;
-		String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-		String DB_URL = "jdbc:mysql://" + ip + ":" + port + "/ECSC_SQL?autoReconnect=true&useSSL=false&serverTimezone=UTC";
 		try {
-			Class.forName(JDBC_DRIVER);
-			BaseApplication.logger.info("Connection: " + DB_URL);
-			sqlConnection = DriverManager.getConnection(DB_URL, user, password);
+			appConfig.createDataSource(ip,port,user,password);
+			sqlConnection = appConfig.getDataSource().getConnection();
 			BaseApplication.tabPane.getTabs()
 			.remove(BaseApplication.tabPane.getSelectionModel().getSelectedIndex());
-			//vboxGrey.getChildren().add();
 			BaseApplication.tabPane.getTabs().add(new TabWelcome(new HBoxWelcome()));
 			showStatus();
 			successful = true;

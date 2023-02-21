@@ -2,6 +2,7 @@ package com.ecsail.gui.tabs.roster;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.StringTools;
+import com.ecsail.connection.AppConfig;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.structures.MembershipListDTO;
 import javafx.animation.PauseTransition;
@@ -9,17 +10,24 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.skin.ComboBoxListViewSkin;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 public class ControlBox extends VBox {
     protected TabRoster parent;
@@ -30,24 +38,53 @@ public class ControlBox extends VBox {
 
     public ControlBox(TabRoster p) {
         this.parent = p;
-        VBox yearBox = createYearBox();
         HBox recordsBox = setUpRecordCountBox();
         VBox radioBox = createRadioBox();
         HBox searchBox = setUpSearchBox();
+        VBox fieldsSelectToSearchBox = setUpFieldSelectedToSearchBox();
         this.setSpacing(10);
-        this.setPrefWidth(200);
-        this.getChildren().addAll(yearBox,recordsBox,searchBox,radioBox);
+        this.setPrefWidth(220);
+        this.getChildren().addAll(recordsBox,fieldsSelectToSearchBox,searchBox,radioBox);
+    }
+
+    private VBox setUpFieldSelectedToSearchBox() {
+        VBox vBox = new VBox();
+        TitledPane titledPane = new TitledPane();
+        titledPane.setText("Searchable Fields");
+        VBox checkVBox = new VBox();
+        checkVBox.setSpacing(5);
+        checkVBox.getChildren().addAll(new CheckBox("Item 1"), new CheckBox("Item 2"), new CheckBox("Item 3"));
+        titledPane.setContent(checkVBox);
+        vBox.getChildren().add(titledPane);
+        return vBox;
+    }
+
+    private VBox createYearBox() {
+        VBox vBox = new VBox();
+        vBox.setSpacing(10);
+        vBox.setAlignment(Pos.CENTER);
+        vBox.setPadding(new Insets(0,10,0,0));
+        ComboBox<Integer> comboBox = new ComboBox<>();
+        for(int i = Integer.parseInt(BaseApplication.selectedYear) + 1; i > 1969; i--) {
+            comboBox.getItems().add(i);
+        }
+        comboBox.getSelectionModel().select(1);
+        setComboBoxListener(comboBox);
+        vBox.getChildren().add(comboBox);
+        return vBox;
     }
 
     private HBox setUpRecordCountBox() {
         HBox hBox = new HBox();
         hBox.setSpacing(5);
+        hBox.setAlignment(Pos.CENTER_LEFT);
+        VBox vBox = createYearBox();
         hBox.setPadding(new Insets(5,0,15,0));
         Text label = new Text("Records");
         this.numberOfRecords = new Text(String.valueOf(parent.rosters.size()));
         numberOfRecords.setId("invoice-text-number");
         label.setId("invoice-text-label");
-        hBox.getChildren().addAll(label,numberOfRecords);
+        hBox.getChildren().addAll(vBox,label,numberOfRecords);
         return hBox;
     }
 
@@ -103,7 +140,7 @@ public class ControlBox extends VBox {
             Field[] allFields = new Field[fields1.length + fields2.length];
             Arrays.setAll(allFields, i -> (i < fields1.length ? fields1[i] : fields2[i - fields1.length]));
             for(Field field: allFields) {
-//                System.out.println(field.getName());
+                System.out.println(field.getName());
                 // TODO filter out fields we don't want to search here
                 field.setAccessible(true);
                 String value = StringTools.returnFieldValueAsString(field, membershipListDTO).toLowerCase();
@@ -120,7 +157,7 @@ public class ControlBox extends VBox {
         ToggleGroup tg = new ToggleGroup();
         VBox vBox = new VBox();
         vBox.setSpacing(7);
-        vBox.setPadding(new Insets(20,0,0,0));
+        vBox.setPadding(new Insets(20,0,0,20));
         for(MembershipListRadioDTO radio: parent.radioChoices) {
             if(!radio.getQuery().equals("query")) {
                 RadioHBox radioHBox = new RadioHBox(radio, this);
@@ -131,25 +168,11 @@ public class ControlBox extends VBox {
         return vBox;
     }
 
-    private VBox createYearBox() {
-        VBox vBox = new VBox();
-        vBox.setSpacing(10);
-        vBox.setAlignment(Pos.CENTER);
-        ComboBox<Integer> comboBox = new ComboBox<>();
-        for(int i = Integer.parseInt(BaseApplication.selectedYear) + 1; i > 1969; i--) {
-            comboBox.getItems().add(i);
-        }
-        comboBox.getSelectionModel().select(1);
-        setComboBoxListener(comboBox);
-        vBox.getChildren().add(comboBox);
-        return vBox;
-    }
-
     private void setComboBoxListener(ComboBox<Integer> comboBox) {
         comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             parent.selectedYear = newValue.toString();
             makeListByRadioButtonChoice();
-            parent.records.setText(parent.rosters.size() + " Records");
+            updateRecordCount();
             parent.rosterTableView.sort();
         });
     }
@@ -159,7 +182,7 @@ public class ControlBox extends VBox {
         String query = StringTools.ParseQuery(selectedRadioBox.getQuery(), createParameters());
 //        System.out.println(query);
         parent.rosters.addAll(SqlMembershipList.getRoster(query));
-        parent.records.setText(parent.rosters.size() + " Records");
+        updateRecordCount();
         parent.rosters.sort(Comparator.comparing(MembershipListDTO::getMembershipId));
     }
 

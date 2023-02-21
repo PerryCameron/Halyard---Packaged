@@ -57,6 +57,7 @@ public class BaseApplication extends Application implements Log {
     public static String user = "membership";
     public static Label statusLabel;
 
+
     public static void main(String[] args) {
         setUpForFirstTime();
 //        startFileLogger();
