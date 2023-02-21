@@ -1,6 +1,6 @@
 package com.ecsail.dto;
 
-public class DbMembershipList {
+public class DbMembershipListDTO {
 
     private int id;
     private String name;
@@ -10,7 +10,7 @@ public class DbMembershipList {
     private int list_order;
     private boolean searchable;
 
-    public DbMembershipList(int id, String name, String pojo_name, String data_type, String field_name, int list_order, boolean searchable) {
+    public DbMembershipListDTO(int id, String name, String pojo_name, String data_type, String field_name, int list_order, boolean searchable) {
         this.id = id;
         this.name = name;
         this.pojo_name = pojo_name;

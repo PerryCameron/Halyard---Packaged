@@ -2,7 +2,10 @@ package com.ecsail.gui.tabs.roster;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.StringTools;
+import com.ecsail.dto.DbMembershipListDTO;
 import com.ecsail.dto.MembershipListDTO;
+import com.ecsail.repository.implementations.SettingsRepositoryImpl;
+import com.ecsail.repository.interfaces.SettingsRepository;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,6 +20,7 @@ import javafx.util.Duration;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -27,6 +31,11 @@ public class ControlBox extends VBox {
     protected RadioHBox selectedRadioBox;
     private boolean isActiveSearch;
     private Text numberOfRecords;
+
+    private SettingsRepository settingsRepository = new SettingsRepositoryImpl();
+    ArrayList<DbMembershipListDTO> searchSettings;
+
+    ArrayList<SettingsCheckBox> checkBoxes = new ArrayList<>();
 
     public ControlBox(TabRoster p) {
         this.parent = p;
@@ -40,6 +49,7 @@ public class ControlBox extends VBox {
     }
 
     private VBox setUpFieldSelectedToSearchBox() {
+        this.searchSettings = (ArrayList<DbMembershipListDTO>) settingsRepository.getSearchableListItems();
         VBox vBox = new VBox();
         vBox.setPadding(new Insets(0,15,0,57));
         TitledPane titledPane = new TitledPane();
@@ -47,11 +57,17 @@ public class ControlBox extends VBox {
         titledPane.setExpanded(false);
         VBox checkVBox = new VBox();
         checkVBox.setSpacing(5);
-        checkVBox.getChildren().addAll(new CheckBox("Item 1"), new CheckBox("Item 2"), new CheckBox("Item 3"));
+        for(DbMembershipListDTO dto: searchSettings) {
+            SettingsCheckBox checkBox = new SettingsCheckBox(this, dto);
+            checkBoxes.add(checkBox);
+            checkVBox.getChildren().add(checkBox);
+        }
         titledPane.setContent(checkVBox);
         vBox.getChildren().add(titledPane);
         return vBox;
     }
+
+
 
     private VBox createYearBox() {
         VBox vBox = new VBox();
@@ -135,16 +151,25 @@ public class ControlBox extends VBox {
             Arrays.setAll(allFields, i -> (i < fields1.length ? fields1[i] : fields2[i - fields1.length]));
             for(Field field: allFields) {
                 System.out.println(field.getName());
-                // TODO filter out fields we don't want to search here
-                field.setAccessible(true);
-                String value = StringTools.returnFieldValueAsString(field, membershipListDTO).toLowerCase();
-                if(value.contains(text)) hasMatch = true;
+                if(fieldIsSearchable(field.getName())) {
+                    field.setAccessible(true);
+                    String value = StringTools.returnFieldValueAsString(field, membershipListDTO).toLowerCase();
+                    if (value.contains(text)) hasMatch = true;
+                }
             }  // add boat DTO here
             if(hasMatch)
                 searchedBoats.add(membershipListDTO);
             hasMatch = false;
         }
         return searchedBoats;
+    }
+
+    private boolean fieldIsSearchable(String fieldName) {
+       return checkBoxes.stream()
+                .filter(dto -> dto.getDTOFieldName().equals(fieldName))
+                .findFirst()
+                .map(SettingsCheckBox::isSearchable)
+                .orElse(false);
     }
 
     private VBox createRadioBox() {
