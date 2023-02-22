@@ -1,4 +1,4 @@
-package com.ecsail.gui.tabs.roster;
+package com.ecsail.dto;
 
 public class MembershipListRadioDTO {
     private int id;

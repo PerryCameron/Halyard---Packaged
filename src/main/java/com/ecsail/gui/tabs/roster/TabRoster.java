@@ -2,6 +2,7 @@ package com.ecsail.gui.tabs.roster;
 
 import com.ecsail.Launcher;
 import com.ecsail.dto.MembershipListDTO;
+import com.ecsail.dto.MembershipListRadioDTO;
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
 import com.ecsail.repository.implementations.SettingsRepositoryImpl;
 import com.ecsail.repository.interfaces.MembershipRepository;

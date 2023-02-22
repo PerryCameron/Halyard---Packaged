@@ -1,6 +1,6 @@
 package com.ecsail.repository.rowmappers;
 
-import com.ecsail.gui.tabs.roster.MembershipListRadioDTO;
+import com.ecsail.dto.MembershipListRadioDTO;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

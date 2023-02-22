@@ -1,7 +1,7 @@
 package com.ecsail.repository.interfaces;
 
 import com.ecsail.dto.DbMembershipListDTO;
-import com.ecsail.gui.tabs.roster.MembershipListRadioDTO;
+import com.ecsail.dto.MembershipListRadioDTO;
 
 import java.util.List;
 

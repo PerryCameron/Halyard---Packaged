@@ -2,7 +2,7 @@ package com.ecsail.repository.implementations;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.dto.DbMembershipListDTO;
-import com.ecsail.gui.tabs.roster.MembershipListRadioDTO;
+import com.ecsail.dto.MembershipListRadioDTO;
 import com.ecsail.repository.interfaces.SettingsRepository;
 import com.ecsail.repository.rowmappers.DbMembershipListRadioRowMapper;
 import com.ecsail.repository.rowmappers.DbMembershipListRowMapper;

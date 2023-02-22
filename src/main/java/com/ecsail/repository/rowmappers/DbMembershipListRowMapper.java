@@ -17,7 +17,7 @@ public class DbMembershipListRowMapper implements RowMapper<DbMembershipListDTO>
         rs.getString("data_type"),
         rs.getString("field_name"),
         rs.getInt("list_order"),
-        rs.getBoolean("searchable"));
+        rs.getBoolean("searchable"), rs.getBoolean("exportable"));
         return dto;
     }
 }

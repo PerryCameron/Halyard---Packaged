@@ -4,6 +4,7 @@ import com.ecsail.BaseApplication;
 import com.ecsail.StringTools;
 import com.ecsail.dto.DbMembershipListDTO;
 import com.ecsail.dto.MembershipListDTO;
+import com.ecsail.dto.MembershipListRadioDTO;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -46,6 +47,25 @@ public class ControlBox extends VBox {
         this.setSpacing(10);
         this.setPrefWidth(220);
         this.getChildren().addAll(recordsBox,searchBox,fieldsSelectToSearchBox,radioBox);
+    }
+
+    private VBox setUpFieldSelectedToExport() {
+        this.searchSettings = (ArrayList<DbMembershipListDTO>) parent.settingsRepository.getSearchableListItems();
+        VBox vBox = new VBox();
+        vBox.setPadding(new Insets(0,15,0,15));
+        TitledPane titledPane = new TitledPane();
+        titledPane.setText("Export to XLS");
+        titledPane.setExpanded(false);
+        VBox checkVBox = new VBox();
+        checkVBox.setSpacing(5);
+        for(DbMembershipListDTO dto: searchSettings) {
+            SettingsCheckBox checkBox = new SettingsCheckBox(this, dto);
+            checkBoxes.add(checkBox);
+            checkVBox.getChildren().add(checkBox);
+        }
+        titledPane.setContent(checkVBox);
+        vBox.getChildren().add(titledPane);
+        return vBox;
     }
 
     private VBox setUpFieldSelectedToSearchBox() {

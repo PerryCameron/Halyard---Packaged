@@ -9,8 +9,9 @@ public class DbMembershipListDTO {
     private String field_name;
     private int list_order;
     private boolean searchable;
+    private boolean exportable;
 
-    public DbMembershipListDTO(int id, String name, String pojo_name, String data_type, String field_name, int list_order, boolean searchable) {
+    public DbMembershipListDTO(int id, String name, String pojo_name, String data_type, String field_name, int list_order, boolean searchable, boolean exportable) {
         this.id = id;
         this.name = name;
         this.pojo_name = pojo_name;
@@ -18,6 +19,7 @@ public class DbMembershipListDTO {
         this.field_name = field_name;
         this.list_order = list_order;
         this.searchable = searchable;
+        this.exportable = exportable;
     }
 
     public int getId() {
@@ -74,5 +76,13 @@ public class DbMembershipListDTO {
 
     public void setSearchable(boolean searchable) {
         this.searchable = searchable;
+    }
+
+    public boolean isExportable() {
+        return exportable;
+    }
+
+    public void setExportable(boolean exportable) {
+        this.exportable = exportable;
     }
 }

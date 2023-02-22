@@ -1,5 +1,6 @@
 package com.ecsail.gui.tabs.roster;
 
+import com.ecsail.dto.MembershipListRadioDTO;
 import javafx.scene.control.RadioButton;
 import javafx.scene.layout.HBox;
 
