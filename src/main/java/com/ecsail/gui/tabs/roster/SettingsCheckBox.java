@@ -7,15 +7,26 @@ public class SettingsCheckBox extends CheckBox {
 
     private ControlBox parent;
     private DbMembershipListDTO db;
-    public SettingsCheckBox(ControlBox p, DbMembershipListDTO db) {
+    public SettingsCheckBox(ControlBox p, DbMembershipListDTO db, String mode) {
         this.parent = p;
         this.db = db;
         this.setText(db.getName());
-        this.setSelected(db.isSearchable());
+        setListener(mode);
+    }
 
-        this.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            db.setSearchable(newValue);
-        });
+    private void setListener(String mode) {
+        if(mode.equals("searchable")) {
+            this.setSelected(db.isSearchable());
+            this.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                db.setSearchable(newValue);
+            });
+        }
+        if(mode.equals("exportable")) {
+            this.setSelected(db.isExportable());
+            this.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                db.setExportable(newValue);
+            });
+        }
     }
 
     public String getDTOFieldName() {

@@ -20,7 +20,7 @@ public class SettingsRepositoryImpl implements SettingsRepository {
 
     @Override
     public List<DbMembershipListDTO> getSearchableListItems() {
-        String query = "SELECT * FROM db_membership_list";
+        String query = "SELECT * FROM db_roster_settings";
         List<DbMembershipListDTO> dbMembershipListDTOS
                 = template.query(query, new DbMembershipListRowMapper());
         return dbMembershipListDTOS;

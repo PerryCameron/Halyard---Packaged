@@ -10,10 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -33,43 +30,43 @@ public class ControlBox extends VBox {
     protected RadioHBox selectedRadioBox;
     private boolean isActiveSearch;
     private Text numberOfRecords;
-
-    ArrayList<DbMembershipListDTO> searchSettings;
-
+    ArrayList<DbMembershipListDTO> rosterSettings;
     ArrayList<SettingsCheckBox> checkBoxes = new ArrayList<>();
 
     public ControlBox(TabRoster p) {
         this.parent = p;
+        this.rosterSettings = (ArrayList<DbMembershipListDTO>) parent.settingsRepository.getSearchableListItems();
         HBox recordsBox = setUpRecordCountBox();
         VBox radioBox = createRadioBox();
         HBox searchBox = setUpSearchBox();
         VBox fieldsSelectToSearchBox = setUpFieldSelectedToSearchBox();
+        VBox fieldsSelectToExportBox= setUpFieldSelectedToExport();
         this.setSpacing(10);
         this.setPrefWidth(220);
-        this.getChildren().addAll(recordsBox,searchBox,fieldsSelectToSearchBox,radioBox);
+        this.getChildren().addAll(recordsBox,searchBox,fieldsSelectToSearchBox,radioBox,fieldsSelectToExportBox);
     }
 
     private VBox setUpFieldSelectedToExport() {
-        this.searchSettings = (ArrayList<DbMembershipListDTO>) parent.settingsRepository.getSearchableListItems();
         VBox vBox = new VBox();
-        vBox.setPadding(new Insets(0,15,0,15));
+        vBox.setPadding(new Insets(15,15,0,0));
+        Button button = new Button("Export to XLS");
         TitledPane titledPane = new TitledPane();
         titledPane.setText("Export to XLS");
         titledPane.setExpanded(false);
         VBox checkVBox = new VBox();
         checkVBox.setSpacing(5);
-        for(DbMembershipListDTO dto: searchSettings) {
-            SettingsCheckBox checkBox = new SettingsCheckBox(this, dto);
+        for(DbMembershipListDTO dto: rosterSettings) {
+            SettingsCheckBox checkBox = new SettingsCheckBox(this, dto, "exportable");
             checkBoxes.add(checkBox);
             checkVBox.getChildren().add(checkBox);
         }
+        checkVBox.getChildren().add(button);
         titledPane.setContent(checkVBox);
         vBox.getChildren().add(titledPane);
         return vBox;
     }
 
     private VBox setUpFieldSelectedToSearchBox() {
-        this.searchSettings = (ArrayList<DbMembershipListDTO>) parent.settingsRepository.getSearchableListItems();
         VBox vBox = new VBox();
         vBox.setPadding(new Insets(0,15,0,57));
         TitledPane titledPane = new TitledPane();
@@ -77,8 +74,8 @@ public class ControlBox extends VBox {
         titledPane.setExpanded(false);
         VBox checkVBox = new VBox();
         checkVBox.setSpacing(5);
-        for(DbMembershipListDTO dto: searchSettings) {
-            SettingsCheckBox checkBox = new SettingsCheckBox(this, dto);
+        for(DbMembershipListDTO dto: rosterSettings) {
+            SettingsCheckBox checkBox = new SettingsCheckBox(this, dto, "searchable");
             checkBoxes.add(checkBox);
             checkVBox.getChildren().add(checkBox);
         }
