@@ -1,20 +1,20 @@
 package com.ecsail.gui.tabs.roster;
 
 import com.ecsail.Launcher;
-import com.ecsail.excel.Xls_roster;
-import com.ecsail.repository.implementations.MembershipRepositoryImpl;
-import com.ecsail.repository.interfaces.MembershipRepository;
-import com.ecsail.sql.select.SqlMembershipListRadio;
 import com.ecsail.dto.MembershipListDTO;
-import com.ecsail.dto.RosterRadioButtonsDTO;
-import com.ecsail.dto.RosterSelectDTO;
-import javafx.beans.value.ObservableValue;
+import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.implementations.SettingsRepositoryImpl;
+import com.ecsail.repository.interfaces.MembershipRepository;
+import com.ecsail.repository.interfaces.SettingsRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Side;
-import javafx.scene.control.*;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -24,13 +24,12 @@ import java.util.ArrayList;
 
 public class TabRoster extends Tab {
 	protected MembershipRepository membershipRepository = new MembershipRepositoryImpl();
+	protected SettingsRepository settingsRepository = new SettingsRepositoryImpl();
 
 	protected ObservableList<MembershipListDTO> rosters;
 	protected ObservableList<MembershipListDTO> searchedRosters;
 	protected TableView<MembershipListDTO> rosterTableView;
 	protected ArrayList<MembershipListRadioDTO> radioChoices;
-	private final RosterSelectDTO printChoices;
-	private final RosterRadioButtonsDTO rb;
 	protected String selectedYear;
 
 	VBox controlsBox;
@@ -39,13 +38,9 @@ public class TabRoster extends Tab {
 		super();
 		this.rosters = a;
 		this.selectedYear = sy;
-		this.radioChoices = SqlMembershipListRadio.getRadioChoices();
+		this.radioChoices = (ArrayList<MembershipListRadioDTO>) settingsRepository.getRadioChoices();
 		this.searchedRosters = FXCollections.observableArrayList();
 		this.setText("Roster");
-		this.rb = new RosterRadioButtonsDTO();
-		// TODO this needs a rework, to complex for what it does.
-		this.printChoices = new RosterSelectDTO(sy, false, false, true, false, false, false, false, true, true, true, false,
-				false, false, false, false, false, false, false, false, false);
 		this.rosterTableView = new RosterTableView(this);
 		/////////////////// OBJECTS //////////////////////////
 		this.controlsBox = new ControlBox(this);
@@ -60,29 +55,22 @@ public class TabRoster extends Tab {
 
 		TabPane tabPane = new TabPane();
 
-		CheckBox c1 = new CheckBox("Membership Id");
-		CheckBox c2 = new CheckBox("Last Name");
-		CheckBox c3 = new CheckBox("First Name");
-		CheckBox c4 = new CheckBox("Join Date");
-		CheckBox c5 = new CheckBox("Address");
-		CheckBox c6 = new CheckBox("City");
-		CheckBox c7 = new CheckBox("State");
-		CheckBox c8 = new CheckBox("Zip");
-		CheckBox c9 = new CheckBox("Membership Type");
-		CheckBox c10 = new CheckBox("Slip");
-		CheckBox c11 = new CheckBox("Phone");
-		CheckBox c12 = new CheckBox("Email");
-		CheckBox c13 = new CheckBox("Subleased To");
-		Button buttonXLS = new Button("Export XLS");
+//		CheckBox c1 = new CheckBox("Membership Id");
+//		CheckBox c2 = new CheckBox("Last Name");
+//		CheckBox c3 = new CheckBox("First Name");
+//		CheckBox c4 = new CheckBox("Join Date");
+//		CheckBox c5 = new CheckBox("Address");
+//		CheckBox c6 = new CheckBox("City");
+//		CheckBox c7 = new CheckBox("State");
+//		CheckBox c8 = new CheckBox("Zip");
+//		CheckBox c9 = new CheckBox("Membership Type");
+//		CheckBox c10 = new CheckBox("Slip");
+//		CheckBox c11 = new CheckBox("Phone");
+//		CheckBox c12 = new CheckBox("Email");
+//		CheckBox c13 = new CheckBox("Subleased To");
+//		Button buttonXLS = new Button("Export XLS");
 
 		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
-//		records.setText(rosters.size() + " Records");
-		rb.setSameToggleGroup();
-		
-		rb.getRadioActive().setSelected(true);
-		c1.setSelected(true);
-		c2.setSelected(true);
-		c3.setSelected(true);
 		
 		tabPane.setId("custom-mini-tab-pane");
 		hboxExportFrame.setId("hboxExport");
@@ -133,61 +121,61 @@ public class TabRoster extends Tab {
 
 
 		
-		buttonXLS.setOnAction((event) ->
-				new Xls_roster(rosters, printChoices)
-		);
-
-		c1.selectedProperty().addListener(
-				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> 
-				printChoices.setMembership_id(observable.getValue()));
-
-		c2.selectedProperty().addListener(
-				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> 
-				printChoices.setLastName(observable.getValue()));
-		
-		c3.selectedProperty().addListener(
-				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> 
-				printChoices.setFirstName(observable.getValue()));
-		
-		c4.selectedProperty().addListener(
-				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-				printChoices.setJoinDate(observable.getValue()));
-
-		c5.selectedProperty().addListener(
-				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> 
-				printChoices.setStreetAddress(observable.getValue()));
-
-		c6.selectedProperty().addListener(
-				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> 
-				printChoices.setCity(observable.getValue()));
-		
-		c7.selectedProperty().addListener(
-				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> 
-				printChoices.setState(observable.getValue()));
-		
-		c8.selectedProperty().addListener(
-				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> 
-				printChoices.setZip(observable.getValue()));
-		
-		c9.selectedProperty().addListener(
-				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> 
-				printChoices.setMemtype(observable.getValue()));
-		
-		c10.selectedProperty().addListener(
-				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> 
-				printChoices.setSlip(observable.getValue()));
-
-		c11.selectedProperty().addListener(
-				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> 
-				printChoices.setPhone(observable.getValue()));
-
-		c12.selectedProperty().addListener(
-				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> 
-				printChoices.setEmail(observable.getValue()));
-
-		c13.selectedProperty().addListener(
-				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> 
-				printChoices.setSubleasedto(observable.getValue()));
+//		buttonXLS.setOnAction((event) ->
+//				new Xls_roster(rosters, printChoices)
+//		);
+//
+//		c1.selectedProperty().addListener(
+//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
+//				printChoices.setMembership_id(observable.getValue()));
+//
+//		c2.selectedProperty().addListener(
+//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
+//				printChoices.setLastName(observable.getValue()));
+//
+//		c3.selectedProperty().addListener(
+//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
+//				printChoices.setFirstName(observable.getValue()));
+//
+//		c4.selectedProperty().addListener(
+//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
+//				printChoices.setJoinDate(observable.getValue()));
+//
+//		c5.selectedProperty().addListener(
+//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
+//				printChoices.setStreetAddress(observable.getValue()));
+//
+//		c6.selectedProperty().addListener(
+//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
+//				printChoices.setCity(observable.getValue()));
+//
+//		c7.selectedProperty().addListener(
+//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
+//				printChoices.setState(observable.getValue()));
+//
+//		c8.selectedProperty().addListener(
+//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
+//				printChoices.setZip(observable.getValue()));
+//
+//		c9.selectedProperty().addListener(
+//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
+//				printChoices.setMemtype(observable.getValue()));
+//
+//		c10.selectedProperty().addListener(
+//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
+//				printChoices.setSlip(observable.getValue()));
+//
+//		c11.selectedProperty().addListener(
+//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
+//				printChoices.setPhone(observable.getValue()));
+//
+//		c12.selectedProperty().addListener(
+//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
+//				printChoices.setEmail(observable.getValue()));
+//
+//		c13.selectedProperty().addListener(
+//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
+//				printChoices.setSubleasedto(observable.getValue()));
 
 		
 		rosterTableView.setRowFactory(tv -> {
@@ -205,15 +193,6 @@ public class TabRoster extends Tab {
 			return row;
 		});
 
-		//////////////////// SET CONTENT //////////////////////
-		
-//		vboxCheckBox1.getChildren().addAll(c1, c2, c3, c4);
-//		vboxCheckBox2.getChildren().addAll(c5, c6, c7, c8);
-//		vboxCheckBox3.getChildren().addAll(c9, c10, c11, c12);
-//		vboxCheckBox5.getChildren().addAll(buttonXLS);
-//		hboxExportFrame.getChildren().add(hboxExport);
-//		hboxExport.getChildren().addAll(vboxCheckBox1, vboxCheckBox2, vboxCheckBox3, vboxCheckBox4, vboxCheckBox5);
-		tabPane.getTabs().addAll(new TabStandard(rb), new TabSlipOptions(rb), new TabKayakLists(rb));
 		vboxBlue.getChildren().add(hboxSplitScreen);
 		setContent(vboxBlue);
 	}
@@ -227,36 +206,36 @@ public class TabRoster extends Tab {
 
 
 
-	//// Class Methods ////
-	private void setListType(String type) {
-		setChoicesFalse();
-		switch (type) {
-		case "all":
-			printChoices.setAll(true);
-		case "active":
-			printChoices.setActive(true);
-			break;
-		case "non-renew":
-			printChoices.setNonRenew(true);
-			break;
-		case "new-members":
-			printChoices.setNewMembers(true);
-			break;
-		case "return":
-			printChoices.setNewAndReturnd(true);
-			break;
-		case "slip-waitlist":
-			printChoices.setSlipwait(true);
-			break;
-		}
-	}
-
-	private void setChoicesFalse() {
-		printChoices.setAll(false);
-		printChoices.setActive(false);
-		printChoices.setNonRenew(false);
-		printChoices.setNewMembers(false);
-		printChoices.setNewAndReturnd(false);
-		printChoices.setSlipwait(false);
-	}
+//	//// Class Methods ////
+//	private void setListType(String type) {
+//		setChoicesFalse();
+//		switch (type) {
+//		case "all":
+//			printChoices.setAll(true);
+//		case "active":
+//			printChoices.setActive(true);
+//			break;
+//		case "non-renew":
+//			printChoices.setNonRenew(true);
+//			break;
+//		case "new-members":
+//			printChoices.setNewMembers(true);
+//			break;
+//		case "return":
+//			printChoices.setNewAndReturnd(true);
+//			break;
+//		case "slip-waitlist":
+//			printChoices.setSlipwait(true);
+//			break;
+//		}
+//	}
+//
+//	private void setChoicesFalse() {
+//		printChoices.setAll(false);
+//		printChoices.setActive(false);
+//		printChoices.setNonRenew(false);
+//		printChoices.setNewMembers(false);
+//		printChoices.setNewAndReturnd(false);
+//		printChoices.setSlipwait(false);
+//	}
 }
