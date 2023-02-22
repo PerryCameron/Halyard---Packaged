@@ -171,8 +171,8 @@ public class TabBoatView extends Tab {
         boatOwnerTableView.setPrefHeight(90);
 
         col1.setCellValueFactory(new PropertyValueFactory<>("membershipId"));
-        col2.setCellValueFactory(new PropertyValueFactory<>("lname"));
-        col3.setCellValueFactory(new PropertyValueFactory<>("fname"));
+        col2.setCellValueFactory(new PropertyValueFactory<>("lName"));
+        col3.setCellValueFactory(new PropertyValueFactory<>("fName"));
 
         /// sets width of columns by percentage
         col1.setMaxWidth(1f * Integer.MAX_VALUE * 20); // Mem 5%
