@@ -41,6 +41,8 @@ public class RadioHBox extends HBox {
         return mrDTO.getMethodName();
     }
 
+    public String getRadioLabel() { return mrDTO.getLabel(); }
+
     public int getNumberOfParameters() { // number of parameters
         return numberOfParameters;
     }

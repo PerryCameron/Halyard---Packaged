@@ -73,11 +73,10 @@ public class ControlBox extends VBox {
     }
 
     private void chooseRoster() { //
-        System.out.println("search roster size is" + parent.searchedRosters.size());
         if (parent.searchedRosters.size() > 0)
-            new Xls_roster(parent.searchedRosters, rosterSettings, parent.selectedYear, "");
+            new Xls_roster(parent.searchedRosters, rosterSettings, selectedRadioBox.getRadioLabel());
         else
-            new Xls_roster(parent.rosters, rosterSettings, parent.selectedYear, "");
+            new Xls_roster(parent.rosters, rosterSettings, selectedRadioBox.getRadioLabel());
     }
 
     private VBox setUpFieldSelectedToSearchBox() {

@@ -1,5 +1,6 @@
 package com.ecsail.excel;
 
+import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.dto.DbRosterSettingsDTO;
 import com.ecsail.gui.common.SaveFileChooser;
@@ -23,11 +24,13 @@ import java.util.ArrayList;
 
 public class Xls_roster {
     ArrayList<DbRosterSettingsDTO> rosterSettings;
+	String selectedYear = "";
 	
-	public Xls_roster(ObservableList<MembershipListDTO> rosters, ArrayList<DbRosterSettingsDTO> rosterSettings, String selectedYear, String rosterType) {
+	public Xls_roster(ObservableList<MembershipListDTO> rosters, ArrayList<DbRosterSettingsDTO> rosterSettings, String rosterType) {
 		this.rosterSettings = rosterSettings;
 		ArrayList<String> headers = getHeaders();
-		System.out.println("Creating Roster..");
+		if(rosters.size() > 1) this.selectedYear = rosters.get(0).getSelectedYear();
+		BaseApplication.logger.info("Creating Roster..");
 		//String[] columnHeads = {"Membership ID", "Last Name", "First Name", "Join Date", "Street Address","City","State","Zip"};
 
         // Create a Workbook
@@ -72,7 +75,9 @@ public class Xls_roster {
 			sheet.autoSizeColumn(i);
 		}
 
-		File file = new SaveFileChooser(HalyardPaths.ROSTERS + "/", "TestRoster", "Excel Files", "*.xlsx").getFile();
+		File file = new SaveFileChooser(HalyardPaths.ROSTERS + "/",
+				selectedYear + "_" + rosterType.replace(" ","_"),
+				"Excel Files", "*.xlsx").getFile();
 
 		if (file != null) {
 			FileOutputStream fileOut = getFileOutPutStream(file);

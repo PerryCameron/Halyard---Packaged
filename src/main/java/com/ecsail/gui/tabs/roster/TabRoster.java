@@ -10,10 +10,7 @@ import com.ecsail.repository.interfaces.SettingsRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.geometry.Side;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
@@ -32,8 +29,7 @@ public class TabRoster extends Tab {
 	protected TableView<MembershipListDTO> rosterTableView;
 	protected ArrayList<MembershipListRadioDTO> radioChoices;
 	protected String selectedYear;
-
-	VBox controlsBox;
+	private VBox controlsBox;
 
 	public TabRoster(ObservableList<MembershipListDTO> a, String sy) {
 		super();
@@ -43,43 +39,14 @@ public class TabRoster extends Tab {
 		this.searchedRosters = FXCollections.observableArrayList();
 		this.setText("Roster");
 		this.rosterTableView = new RosterTableView(this);
-		/////////////////// OBJECTS //////////////////////////
 		this.controlsBox = new ControlBox(this);
-		HBox hboxSplitScreen = splitScreen(); // inter vbox
+		VBox containerBox = createContainerBox();
+		this.setOnClosed(null);
+		setRosterRowFactory();
+		setContent(containerBox);
+	}
 
-		VBox vboxBlue = new VBox();
-		VBox vboxTableBox = new VBox();
-		VBox vboxRadioButton1 = new VBox();
-		VBox vboxRadioButton2 = new VBox();
-		HBox hboxExport = new HBox();
-		HBox hboxExportFrame = new HBox();
-
-		TabPane tabPane = new TabPane();
-
-		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
-		
-		tabPane.setId("custom-mini-tab-pane");
-		hboxExportFrame.setId("hboxExport");
-
-		hboxExport.setSpacing(10);
-
-		vboxRadioButton1.setSpacing(3);
-		vboxRadioButton2.setSpacing(3);
-		
-		hboxExportFrame.setPadding(new Insets(2, 2, 2, 2));
-		hboxExport.setPadding(new Insets(5, 5, 5, 5));
-		vboxBlue.setPadding(new Insets(10, 10, 10, 10));
-		hboxSplitScreen.setPadding(new Insets(3, 3, 5, 3));
-		vboxRadioButton1.setPadding(new Insets(5, 5, 5, 5));
-		vboxRadioButton2.setPadding(new Insets(5, 5, 5, 5));
-		
-		tabPane.setSide(Side.LEFT);
-		VBox.setVgrow(vboxBlue, Priority.ALWAYS);
-		VBox.setVgrow(hboxSplitScreen, Priority.ALWAYS);
-		VBox.setVgrow(vboxTableBox, Priority.ALWAYS);
-		setOnClosed(null);
-
-		
+	private void setRosterRowFactory() {
 		rosterTableView.setRowFactory(tv -> {
 			TableRow<MembershipListDTO> row = new TableRow<>();
 			row.setOnMouseClicked(event -> {
@@ -94,14 +61,23 @@ public class TabRoster extends Tab {
 			});
 			return row;
 		});
+	}
 
-		vboxBlue.getChildren().add(hboxSplitScreen);
-		setContent(vboxBlue);
+	private VBox createContainerBox() {
+		VBox vBox = new VBox();
+		HBox splitScreenBox = splitScreen(); // inter vbox
+		vBox.setPadding(new Insets(10, 10, 10, 10));
+		VBox.setVgrow(vBox, Priority.ALWAYS);
+		vBox.getChildren().add(splitScreenBox);
+		return vBox;
+
 	}
 
 	private HBox splitScreen() {
 		HBox hBox = new HBox();
 		hBox.getChildren().addAll(controlsBox,rosterTableView);
+		VBox.setVgrow(hBox, Priority.ALWAYS);
+		hBox.setPadding(new Insets(3, 3, 5, 3));
 		return hBox;
 	}
 }
