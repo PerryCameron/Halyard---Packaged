@@ -32,7 +32,7 @@ public class SettingsRepositoryImpl implements SettingsRepository {
 
     @Override
     public List<MembershipListRadioDTO> getRadioChoices() {
-        String query = "SELECT * FROM db_membership_list_selection";
+        String query = "SELECT * FROM db_roster_radio_selection";
         List<MembershipListRadioDTO> dbMembershipListDTOS
                 = template.query(query, new DbMembershipListRadioRowMapper());
         return dbMembershipListDTOS;
@@ -40,7 +40,7 @@ public class SettingsRepositoryImpl implements SettingsRepository {
 
     @Override
     public List<DbBoatSettingsDTO> getBoatSettings() {
-        String query = "SELECT * from db_boat_settings";
+        String query = "SELECT * from db_boat_list_settings";
         List<DbBoatSettingsDTO> dbBoatSettingsDTOS
                 = template.query(query,new DbBoatSettingsRowMapper());
         return dbBoatSettingsDTOS;

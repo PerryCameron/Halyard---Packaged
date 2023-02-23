@@ -5,9 +5,9 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.layout.HBox;
 
 public class RadioHBox extends HBox {
-    private MembershipListRadioDTO mrDTO;
-    private RadioButton radioButton;
-    private ControlBox parent;
+    private final MembershipListRadioDTO mrDTO;
+    private final RadioButton radioButton;
+    private final ControlBox parent;
 
     public RadioHBox(MembershipListRadioDTO r, ControlBox p) {
         this.parent = p;
@@ -21,7 +21,7 @@ public class RadioHBox extends HBox {
     private void setRadioButtonListener() {
         radioButton.selectedProperty().addListener((obs, wasPreviouslySelected, isNowSelected) -> {
             if (isNowSelected) {
-            parent.selectedRadioBox = this;
+            parent.parent.selectedRadioBox = this;
                     parent.makeListByRadioButtonChoice();
             }
         });

@@ -1,6 +1,7 @@
 package com.ecsail.gui.tabs.roster;
 
 import com.ecsail.Launcher;
+import com.ecsail.dto.DbRosterSettingsDTO;
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.dto.MembershipListRadioDTO;
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
@@ -13,21 +14,28 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
 public class TabRoster extends Tab {
 	protected MembershipRepository membershipRepository = new MembershipRepositoryImpl();
 	protected SettingsRepository settingsRepository = new SettingsRepositoryImpl();
-
+	protected ArrayList<DbRosterSettingsDTO> rosterSettings;
 	protected ObservableList<MembershipListDTO> rosters;
 	protected ObservableList<MembershipListDTO> searchedRosters;
 	protected TableView<MembershipListDTO> rosterTableView;
 	protected ArrayList<MembershipListRadioDTO> radioChoices;
+	protected TextField textField = new TextField();
+	protected ArrayList<SettingsCheckBox> checkBoxes = new ArrayList<>();
+	protected RadioHBox selectedRadioBox;
+	protected boolean isActiveSearch;
+	protected Text numberOfRecords;
 	protected String selectedYear;
 	private VBox controlsBox;
 

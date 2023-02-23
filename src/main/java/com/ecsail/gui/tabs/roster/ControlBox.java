@@ -26,17 +26,12 @@ import java.util.Comparator;
 import java.util.List;
 
 public class ControlBox extends VBox {
+
     protected TabRoster parent;
-    private TextField textField = new TextField();
-    protected RadioHBox selectedRadioBox;
-    private boolean isActiveSearch;
-    private Text numberOfRecords;
-    ArrayList<DbRosterSettingsDTO> rosterSettings;
-    ArrayList<SettingsCheckBox> checkBoxes = new ArrayList<>();
 
     public ControlBox(TabRoster p) {
         this.parent = p;
-        this.rosterSettings = (ArrayList<DbRosterSettingsDTO>) parent.settingsRepository.getSearchableListItems();
+        parent.rosterSettings = (ArrayList<DbRosterSettingsDTO>) parent.settingsRepository.getSearchableListItems();
         HBox recordsBox = setUpRecordCountBox();
         VBox radioBox = createRadioBox();
         HBox searchBox = setUpSearchBox();
@@ -59,9 +54,9 @@ public class ControlBox extends VBox {
         titledPane.setText("Export to XLS");
         titledPane.setExpanded(false);
         checkVBox.setSpacing(5);
-        for(DbRosterSettingsDTO dto: rosterSettings) {
+        for(DbRosterSettingsDTO dto: parent.rosterSettings) {
             SettingsCheckBox checkBox = new SettingsCheckBox(this, dto, "exportable");
-            checkBoxes.add(checkBox);
+            parent.checkBoxes.add(checkBox);
             checkVBox.getChildren().add(checkBox);
         }
         button.setOnAction((event) -> chooseRoster());
@@ -74,9 +69,9 @@ public class ControlBox extends VBox {
 
     private void chooseRoster() { //
         if (parent.searchedRosters.size() > 0)
-            new Xls_roster(parent.searchedRosters, rosterSettings, selectedRadioBox.getRadioLabel());
+            new Xls_roster(parent.searchedRosters, parent.rosterSettings, parent.selectedRadioBox.getRadioLabel());
         else
-            new Xls_roster(parent.rosters, rosterSettings, selectedRadioBox.getRadioLabel());
+            new Xls_roster(parent.rosters, parent.rosterSettings, parent.selectedRadioBox.getRadioLabel());
     }
 
     private VBox setUpFieldSelectedToSearchBox() {
@@ -87,9 +82,9 @@ public class ControlBox extends VBox {
         titledPane.setExpanded(false);
         VBox checkVBox = new VBox();
         checkVBox.setSpacing(5);
-        for(DbRosterSettingsDTO dto: rosterSettings) {
+        for(DbRosterSettingsDTO dto: parent.rosterSettings) {
             SettingsCheckBox checkBox = new SettingsCheckBox(this, dto, "searchable");
-            checkBoxes.add(checkBox);
+            parent.checkBoxes.add(checkBox);
             checkVBox.getChildren().add(checkBox);
         }
         titledPane.setContent(checkVBox);
@@ -119,10 +114,10 @@ public class ControlBox extends VBox {
         VBox vBox = createYearBox();
         hBox.setPadding(new Insets(5,0,15,0));
         Text label = new Text("Records");
-        this.numberOfRecords = new Text(String.valueOf(parent.rosters.size()));
-        numberOfRecords.setId("invoice-text-number");
+        parent.numberOfRecords = new Text(String.valueOf(parent.rosters.size()));
+        parent.numberOfRecords.setId("invoice-text-number");
         label.setId("invoice-text-label");
-        hBox.getChildren().addAll(vBox,label,numberOfRecords);
+        hBox.getChildren().addAll(vBox,label,parent.numberOfRecords);
         return hBox;
     }
 
@@ -131,15 +126,14 @@ public class ControlBox extends VBox {
         hBox.setAlignment(Pos.CENTER_LEFT);
         hBox.setSpacing(10);
         hBox.setPadding(new Insets(0,15,0,0));
-        ComboBox<String> comboBox = new ComboBox<>();
         Text text = new Text("Search");
         text.setId("invoice-text-number");
-        hBox.getChildren().addAll(text, textField);
+        hBox.getChildren().addAll(text, parent.textField);
         PauseTransition pause = new PauseTransition(Duration.seconds(1));
         // this is awesome, stole from stackoverflow.com
-        textField.textProperty().addListener(
+        parent.textField.textProperty().addListener(
                 (observable, oldValue, newValue) -> {
-                    pause.setOnFinished(event -> fillTableView(textField.getText()));
+                    pause.setOnFinished(event -> fillTableView(parent.textField.getText()));
                     pause.playFromStart();
                 }
         );
@@ -151,22 +145,22 @@ public class ControlBox extends VBox {
             parent.searchedRosters.clear();
             parent.searchedRosters.addAll(searchString(searchTerm));
             parent.rosterTableView.setItems(parent.searchedRosters);
-            isActiveSearch = true;
+            parent.isActiveSearch = true;
         } else { // if search box has been cleared
             parent.rosterTableView.setItems(parent.rosters);
-            isActiveSearch = false;
+            parent.isActiveSearch = false;
             parent.searchedRosters.clear();
         }
         updateRecordCount();
     }
 
     private void updateRecordCount() {
-        String number = null;
-        if(isActiveSearch)
+        String number;
+        if(parent.isActiveSearch)
             number = parent.searchedRosters.size() + "/" + parent.rosters.size();
         else
             number = String.valueOf(parent.rosters.size());
-        numberOfRecords.setText(number);
+        parent.numberOfRecords.setText(number);
     }
 
     private ObservableList<MembershipListDTO> searchString(String searchTerm) {
@@ -193,7 +187,7 @@ public class ControlBox extends VBox {
     }
 
     private boolean fieldIsSearchable(String fieldName) {
-       return checkBoxes.stream()
+       return parent.checkBoxes.stream()
                 .filter(dto -> dto.getDTOFieldName().equals(fieldName))
                 .findFirst()
                 .map(SettingsCheckBox::isSearchable)
@@ -228,12 +222,12 @@ public class ControlBox extends VBox {
         parent.rosters.clear();
         Method method;
         try {
-            method = parent.membershipRepository.getClass().getMethod(selectedRadioBox.getMethod(),String.class);
+            method = parent.membershipRepository.getClass().getMethod(parent.selectedRadioBox.getMethod(),String.class);
             parent.rosters.setAll((List<MembershipListDTO>) method.invoke(parent.membershipRepository, parent.selectedYear));
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
-        if(!textField.getText().equals("")) fillTableView(textField.getText());
+        if(!parent.textField.getText().equals("")) fillTableView(parent.textField.getText());
         updateRecordCount();
         parent.rosters.sort(Comparator.comparing(MembershipListDTO::getMembershipId));
     }
