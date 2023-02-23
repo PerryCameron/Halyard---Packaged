@@ -64,14 +64,20 @@ public class ControlBox extends VBox {
             checkBoxes.add(checkBox);
             checkVBox.getChildren().add(checkBox);
         }
-        button.setOnAction((event) ->
-				new Xls_roster(parent.rosters, rosterSettings, parent.selectedYear,"")
-		);
+        button.setOnAction((event) -> chooseRoster());
         buttonVBox.getChildren().add(button);
         checkVBox.getChildren().add(buttonVBox);
         titledPane.setContent(checkVBox);
         vBox.getChildren().add(titledPane);
         return vBox;
+    }
+
+    private void chooseRoster() { //
+        System.out.println("search roster size is" + parent.searchedRosters.size());
+        if (parent.searchedRosters.size() > 0)
+            new Xls_roster(parent.searchedRosters, rosterSettings, parent.selectedYear, "");
+        else
+            new Xls_roster(parent.rosters, rosterSettings, parent.selectedYear, "");
     }
 
     private VBox setUpFieldSelectedToSearchBox() {
@@ -150,6 +156,7 @@ public class ControlBox extends VBox {
         } else { // if search box has been cleared
             parent.rosterTableView.setItems(parent.rosters);
             isActiveSearch = false;
+            parent.searchedRosters.clear();
         }
         updateRecordCount();
     }
@@ -173,7 +180,6 @@ public class ControlBox extends VBox {
             Field[] allFields = new Field[fields1.length + fields2.length];
             Arrays.setAll(allFields, i -> (i < fields1.length ? fields1[i] : fields2[i - fields1.length]));
             for(Field field: allFields) {
-                System.out.println(field.getName());
                 if(fieldIsSearchable(field.getName())) {
                     field.setAccessible(true);
                     String value = StringTools.returnFieldValueAsString(field, membershipListDTO).toLowerCase();
@@ -221,15 +227,15 @@ public class ControlBox extends VBox {
 
     protected void makeListByRadioButtonChoice()  {
         parent.rosters.clear();
-        Method method = null;
+        Method method;
         try {
             method = parent.membershipRepository.getClass().getMethod(selectedRadioBox.getMethod(),String.class);
             parent.rosters.setAll((List<MembershipListDTO>) method.invoke(parent.membershipRepository, parent.selectedYear));
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
+        if(!textField.getText().equals("")) fillTableView(textField.getText());
         updateRecordCount();
         parent.rosters.sort(Comparator.comparing(MembershipListDTO::getMembershipId));
     }
-
 }
