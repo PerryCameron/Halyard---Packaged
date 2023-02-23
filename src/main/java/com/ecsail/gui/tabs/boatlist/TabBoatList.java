@@ -2,7 +2,9 @@ package com.ecsail.gui.tabs.boatlist;
 
 import com.ecsail.Launcher;
 import com.ecsail.dto.DbBoatSettingsDTO;
+import com.ecsail.repository.implementations.BoatRepositoryImpl;
 import com.ecsail.repository.implementations.SettingsRepositoryImpl;
+import com.ecsail.repository.interfaces.BoatRepository;
 import com.ecsail.repository.interfaces.SettingsRepository;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.dto.BoatListDTO;
@@ -30,10 +32,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class TabBoatList extends Tab {
+	protected SettingsRepository settingsRepository = new SettingsRepositoryImpl();
+	protected BoatRepository boatRepository = new BoatRepositoryImpl();
+
 	protected ObservableList<BoatListDTO> boats = FXCollections.observableArrayList();
 	protected ObservableList<BoatListDTO> searchedBoats = FXCollections.observableArrayList();
-
-	protected SettingsRepository settingsRepository = new SettingsRepositoryImpl();
+	protected ArrayList<BoatListRadioDTO> boatListRadioDTOs;
 	protected ArrayList<DbBoatSettingsDTO> boatSettings;
 	protected TableView<BoatListDTO> boatListTableView = new TableView<>();
 	protected BoatListDTO selectedBoat;
@@ -41,8 +45,10 @@ public class TabBoatList extends Tab {
 	
 	public TabBoatList(String text) {
 		super(text);
+		this.boatListRadioDTOs = (ArrayList<BoatListRadioDTO>) settingsRepository.getBoatRadioChoices();
 		this.controlBox = new ControlBox(this);
 		this.boatSettings = (ArrayList<DbBoatSettingsDTO>) settingsRepository.getBoatSettings();
+
 		VBox vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
 		VBox vboxBlue = new VBox();
 		VBox vboxPink = new VBox(); // this creates a pink border around the table

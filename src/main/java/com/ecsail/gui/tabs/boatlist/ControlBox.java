@@ -3,8 +3,6 @@ package com.ecsail.gui.tabs.boatlist;
 import com.ecsail.Launcher;
 import com.ecsail.StringTools;
 import com.ecsail.annotation.ColumnName;
-import com.ecsail.sql.select.SqlBoat;
-import com.ecsail.sql.select.SqlBoatListRadio;
 import com.ecsail.dto.BoatListDTO;
 import com.ecsail.dto.DbBoatSettingsDTO;
 import javafx.animation.PauseTransition;
@@ -19,13 +17,15 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 public class ControlBox extends VBox {
     private final TabBoatList parent;
-    private final ArrayList<BoatListRadioDTO> boatListRadioDTOs;
-
+    public RadioHBox selectedRadioBox;
     private Text numberOfRecords;
     private final VBox boatDetailsBox;
     private boolean isActiveSearch;
@@ -33,11 +33,10 @@ public class ControlBox extends VBox {
 
     public ControlBox(TabBoatList tabBoatList) {
         this.parent = tabBoatList;
-        this.boatListRadioDTOs = SqlBoatListRadio.getBoatListRadioDTOs();
         this.boatDetailsBox = setUpBoatDetailsBox();
-        VBox frameBox = setUpDetailsBoxFrame();
-        VBox radioButtonBox = setUpRadioButtonBox();
         HBox recordCountBox = setUpRecordCountBox();
+        VBox frameBox = setUpDetailsBoxFrame();
+        VBox radioButtonBox = createRadioBox();
         HBox searchBox = setUpSearchBox();
         HBox viewBoatBox = setUpViewBoatBox();
         setPadding(new Insets(0,5,0,15));
@@ -170,39 +169,40 @@ public class ControlBox extends VBox {
     }
 
     private void updateRecordCount() {
-        String number = null;
+        String number;
         if(isActiveSearch)
-            number = String.valueOf(parent.searchedBoats.size()) + "/" + String.valueOf(parent.boats.size());
+            number = parent.searchedBoats.size() + "/" + parent.boats.size();
         else
             number = String.valueOf(parent.boats.size());
         numberOfRecords.setText(number);
     }
 
-    private VBox setUpRadioButtonBox() {
+    private VBox createRadioBox() {
+        ToggleGroup tg = new ToggleGroup();
         VBox vBox = new VBox();
         vBox.setSpacing(7);
         vBox.setPadding(new Insets(0,0,15,0));
-        vBox.setPrefWidth(400);
-        ToggleGroup tg = new ToggleGroup();
-        boatListRadioDTOs.forEach(r -> {
-            RadioButton rb = new RadioButton(r.getLabel());
-            r.setRadioButton(rb);
-            rb.setToggleGroup(tg);
-            vBox.getChildren().add(rb);
-            setRadioButtonListener(r);
-            if(r.getOrder() == 1) rb.setSelected(true);
-        });
+        for(BoatListRadioDTO radio: parent.boatListRadioDTOs) {
+            if(!radio.getMethod().equals("query")) {
+                RadioHBox radioHBox = new RadioHBox(radio, this);
+                vBox.getChildren().add(radioHBox);
+                radioHBox.getRadioButton().setToggleGroup(tg);
+            }
+        }
         return vBox;
     }
 
-    private void setRadioButtonListener(BoatListRadioDTO r) {
-        r.getRadioButton().selectedProperty().addListener((obs, wasPreviouslySelected, isNowSelected) -> {
-            parent.boats.clear();
-            parent.boats.addAll(SqlBoat.getBoatList(r.getQuery())); // populates main list
-            if(numberOfRecords != null) // have we created the object yet?
-                updateRecordCount(); // updates the record count
-            if(isActiveSearch) // re apply search for new list
-                fillTableView(textField.getText());
-        });
+    protected void makeListByRadioButtonChoice()  {
+        parent.boats.clear();
+        Method method;
+        try {
+            method = parent.boatRepository.getClass().getMethod(selectedRadioBox.getMethod());
+            parent.boats.setAll((List<BoatListDTO>) method.invoke(parent.boatRepository));
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+        if(!textField.getText().equals("")) fillTableView(textField.getText());
+        updateRecordCount();
+        parent.boats.sort(Comparator.comparing(BoatListDTO::getBoatId));
     }
 }

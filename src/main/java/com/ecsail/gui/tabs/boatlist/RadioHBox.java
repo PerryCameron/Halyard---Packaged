@@ -1,15 +1,14 @@
-package com.ecsail.gui.tabs.roster;
+package com.ecsail.gui.tabs.boatlist;
 
-import com.ecsail.dto.MembershipListRadioDTO;
 import javafx.scene.control.RadioButton;
 import javafx.scene.layout.HBox;
 
 public class RadioHBox extends HBox {
-    private MembershipListRadioDTO mrDTO;
+    private BoatListRadioDTO mrDTO;
     private RadioButton radioButton;
     private ControlBox parent;
 
-    public RadioHBox(MembershipListRadioDTO r, ControlBox p) {
+    public RadioHBox(BoatListRadioDTO r, ControlBox p) {
         this.parent = p;
         this.mrDTO = r;
         this.radioButton = new RadioButton(mrDTO.getLabel());
@@ -17,7 +16,7 @@ public class RadioHBox extends HBox {
         radioButton.setSelected(mrDTO.isSelected());
         this.getChildren().add(radioButton);
     }
-
+    
     private void setRadioButtonListener() {
         radioButton.selectedProperty().addListener((obs, wasPreviouslySelected, isNowSelected) -> {
             if (isNowSelected) {
@@ -32,7 +31,7 @@ public class RadioHBox extends HBox {
     }
 
     public String getMethod() {
-        return mrDTO.getMethodName();
+        return mrDTO.getMethod();
     }
 
     public String getRadioLabel() { return mrDTO.getLabel(); }

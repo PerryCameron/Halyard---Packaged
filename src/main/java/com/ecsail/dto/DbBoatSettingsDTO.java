@@ -1,10 +1,5 @@
 package com.ecsail.dto;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 public class DbBoatSettingsDTO {
     private int id;
     private String name;

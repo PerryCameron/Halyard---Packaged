@@ -4,7 +4,9 @@ import com.ecsail.BaseApplication;
 import com.ecsail.dto.DbBoatSettingsDTO;
 import com.ecsail.dto.DbRosterSettingsDTO;
 import com.ecsail.dto.MembershipListRadioDTO;
+import com.ecsail.gui.tabs.boatlist.BoatListRadioDTO;
 import com.ecsail.repository.interfaces.SettingsRepository;
+import com.ecsail.repository.rowmappers.BoatListRadioRowMapper;
 import com.ecsail.repository.rowmappers.DbBoatSettingsRowMapper;
 import com.ecsail.repository.rowmappers.DbMembershipListRadioRowMapper;
 import com.ecsail.repository.rowmappers.DbRosterSettingsRowMapper;
@@ -41,6 +43,14 @@ public class SettingsRepositoryImpl implements SettingsRepository {
         String query = "SELECT * from db_boat_settings";
         List<DbBoatSettingsDTO> dbBoatSettingsDTOS
                 = template.query(query,new DbBoatSettingsRowMapper());
+        return dbBoatSettingsDTOS;
+    }
+
+    @Override
+    public List<BoatListRadioDTO> getBoatRadioChoices() {
+        String query = "select * from db_boat_list_radio_selection";
+        List<BoatListRadioDTO> dbBoatSettingsDTOS
+                = template.query(query,new BoatListRadioRowMapper());
         return dbBoatSettingsDTOS;
     }
 }
