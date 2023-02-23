@@ -24,7 +24,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class ControlBox extends VBox {
-    private final TabBoatList parent;
+    protected TabBoatList parent;
 
     public ControlBox(TabBoatList tabBoatList) {
         this.parent = tabBoatList;

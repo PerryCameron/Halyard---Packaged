@@ -20,7 +20,7 @@ public class RadioHBox extends HBox {
     private void setRadioButtonListener() {
         radioButton.selectedProperty().addListener((obs, wasPreviouslySelected, isNowSelected) -> {
             if (isNowSelected) {
-            parent.selectedRadioBox = this;
+            parent.parent.selectedRadioBox = this;
                     parent.makeListByRadioButtonChoice();
             }
         });
