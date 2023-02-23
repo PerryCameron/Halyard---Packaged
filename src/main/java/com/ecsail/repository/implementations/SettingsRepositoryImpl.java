@@ -1,11 +1,11 @@
 package com.ecsail.repository.implementations;
 
 import com.ecsail.BaseApplication;
-import com.ecsail.dto.DbMembershipListDTO;
+import com.ecsail.dto.DbRosterSettingsDTO;
 import com.ecsail.dto.MembershipListRadioDTO;
 import com.ecsail.repository.interfaces.SettingsRepository;
 import com.ecsail.repository.rowmappers.DbMembershipListRadioRowMapper;
-import com.ecsail.repository.rowmappers.DbMembershipListRowMapper;
+import com.ecsail.repository.rowmappers.DbRosterSettingsRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
@@ -19,10 +19,10 @@ public class SettingsRepositoryImpl implements SettingsRepository {
     }
 
     @Override
-    public List<DbMembershipListDTO> getSearchableListItems() {
+    public List<DbRosterSettingsDTO> getSearchableListItems() {
         String query = "SELECT * FROM db_roster_settings";
-        List<DbMembershipListDTO> dbMembershipListDTOS
-                = template.query(query, new DbMembershipListRowMapper());
+        List<DbRosterSettingsDTO> dbMembershipListDTOS
+                = template.query(query, new DbRosterSettingsRowMapper());
         return dbMembershipListDTOS;
     }
 

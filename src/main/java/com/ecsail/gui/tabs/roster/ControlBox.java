@@ -2,9 +2,10 @@ package com.ecsail.gui.tabs.roster;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.StringTools;
-import com.ecsail.dto.DbMembershipListDTO;
+import com.ecsail.dto.DbRosterSettingsDTO;
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.dto.MembershipListRadioDTO;
+import com.ecsail.excel.Xls_roster;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,12 +31,12 @@ public class ControlBox extends VBox {
     protected RadioHBox selectedRadioBox;
     private boolean isActiveSearch;
     private Text numberOfRecords;
-    ArrayList<DbMembershipListDTO> rosterSettings;
+    ArrayList<DbRosterSettingsDTO> rosterSettings;
     ArrayList<SettingsCheckBox> checkBoxes = new ArrayList<>();
 
     public ControlBox(TabRoster p) {
         this.parent = p;
-        this.rosterSettings = (ArrayList<DbMembershipListDTO>) parent.settingsRepository.getSearchableListItems();
+        this.rosterSettings = (ArrayList<DbRosterSettingsDTO>) parent.settingsRepository.getSearchableListItems();
         HBox recordsBox = setUpRecordCountBox();
         VBox radioBox = createRadioBox();
         HBox searchBox = setUpSearchBox();
@@ -48,19 +49,26 @@ public class ControlBox extends VBox {
 
     private VBox setUpFieldSelectedToExport() {
         VBox vBox = new VBox();
+        VBox checkVBox = new VBox();
+        VBox buttonVBox = new VBox();
+        buttonVBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(15,15,0,0));
+        buttonVBox.setPadding(new Insets(10,0,0,0));
         Button button = new Button("Export to XLS");
         TitledPane titledPane = new TitledPane();
         titledPane.setText("Export to XLS");
         titledPane.setExpanded(false);
-        VBox checkVBox = new VBox();
         checkVBox.setSpacing(5);
-        for(DbMembershipListDTO dto: rosterSettings) {
+        for(DbRosterSettingsDTO dto: rosterSettings) {
             SettingsCheckBox checkBox = new SettingsCheckBox(this, dto, "exportable");
             checkBoxes.add(checkBox);
             checkVBox.getChildren().add(checkBox);
         }
-        checkVBox.getChildren().add(button);
+        button.setOnAction((event) ->
+				new Xls_roster(parent.rosters, rosterSettings, parent.selectedYear,"")
+		);
+        buttonVBox.getChildren().add(button);
+        checkVBox.getChildren().add(buttonVBox);
         titledPane.setContent(checkVBox);
         vBox.getChildren().add(titledPane);
         return vBox;
@@ -74,7 +82,7 @@ public class ControlBox extends VBox {
         titledPane.setExpanded(false);
         VBox checkVBox = new VBox();
         checkVBox.setSpacing(5);
-        for(DbMembershipListDTO dto: rosterSettings) {
+        for(DbRosterSettingsDTO dto: rosterSettings) {
             SettingsCheckBox checkBox = new SettingsCheckBox(this, dto, "searchable");
             checkBoxes.add(checkBox);
             checkVBox.getChildren().add(checkBox);
@@ -83,8 +91,6 @@ public class ControlBox extends VBox {
         vBox.getChildren().add(titledPane);
         return vBox;
     }
-
-
 
     private VBox createYearBox() {
         VBox vBox = new VBox();
@@ -226,15 +232,4 @@ public class ControlBox extends VBox {
         parent.rosters.sort(Comparator.comparing(MembershipListDTO::getMembershipId));
     }
 
-    // The object tells it how many parameters there are, all parameters are the selected year
-    // the only difference is the number. Some queries require 0 some 5
-    // The number of parameters must match the ? in the query and for this use case it is always
-    // the selected year.
-    private String[] createParameters() {
-        String[] params = new String[selectedRadioBox.getNumberOfParameters()];
-        for(int i = 0; i < selectedRadioBox.getNumberOfParameters(); i++) {
-            params[i] = parent.selectedYear;
-        }
-        return params;
-    }
 }

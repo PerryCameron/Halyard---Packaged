@@ -56,21 +56,6 @@ public class TabRoster extends Tab {
 
 		TabPane tabPane = new TabPane();
 
-//		CheckBox c1 = new CheckBox("Membership Id");
-//		CheckBox c2 = new CheckBox("Last Name");
-//		CheckBox c3 = new CheckBox("First Name");
-//		CheckBox c4 = new CheckBox("Join Date");
-//		CheckBox c5 = new CheckBox("Address");
-//		CheckBox c6 = new CheckBox("City");
-//		CheckBox c7 = new CheckBox("State");
-//		CheckBox c8 = new CheckBox("Zip");
-//		CheckBox c9 = new CheckBox("Membership Type");
-//		CheckBox c10 = new CheckBox("Slip");
-//		CheckBox c11 = new CheckBox("Phone");
-//		CheckBox c12 = new CheckBox("Email");
-//		CheckBox c13 = new CheckBox("Subleased To");
-//		Button buttonXLS = new Button("Export XLS");
-
 		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 		
 		tabPane.setId("custom-mini-tab-pane");
@@ -92,91 +77,7 @@ public class TabRoster extends Tab {
 		VBox.setVgrow(vboxBlue, Priority.ALWAYS);
 		VBox.setVgrow(hboxSplitScreen, Priority.ALWAYS);
 		VBox.setVgrow(vboxTableBox, Priority.ALWAYS);
-
-
-
-
 		setOnClosed(null);
-
-
-
-
-		//////////////////// LISTENERS //////////////////////////
-
-		/// this listens for a focus on the slips tab and refreshes data everytime.
-//		this.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-//			if (newValue) {  // focus Gained
-//				makeListByRadioButtonChoice();
-//				// sets up printing choices for excel export
-//				setListType(rb.getTg1().getSelectedToggle().getUserData().toString());			}
-//		});
-//
-//		// makes change when a radio button is selected
-//		rb.getTg1().selectedToggleProperty().addListener((ov, old_toggle, new_toggle) -> {
-//			if (rb.getTg1().getSelectedToggle() != null) {
-//				makeListByRadioButtonChoice();
-//				// sets up printing choices for excel export
-//				setListType(rb.getTg1().getSelectedToggle().getUserData().toString());
-//			}
-//		});
-
-
-		
-//		buttonXLS.setOnAction((event) ->
-//				new Xls_roster(rosters, printChoices)
-//		);
-//
-//		c1.selectedProperty().addListener(
-//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-//				printChoices.setMembership_id(observable.getValue()));
-//
-//		c2.selectedProperty().addListener(
-//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-//				printChoices.setLastName(observable.getValue()));
-//
-//		c3.selectedProperty().addListener(
-//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-//				printChoices.setFirstName(observable.getValue()));
-//
-//		c4.selectedProperty().addListener(
-//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-//				printChoices.setJoinDate(observable.getValue()));
-//
-//		c5.selectedProperty().addListener(
-//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-//				printChoices.setStreetAddress(observable.getValue()));
-//
-//		c6.selectedProperty().addListener(
-//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-//				printChoices.setCity(observable.getValue()));
-//
-//		c7.selectedProperty().addListener(
-//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-//				printChoices.setState(observable.getValue()));
-//
-//		c8.selectedProperty().addListener(
-//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-//				printChoices.setZip(observable.getValue()));
-//
-//		c9.selectedProperty().addListener(
-//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-//				printChoices.setMemtype(observable.getValue()));
-//
-//		c10.selectedProperty().addListener(
-//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-//				printChoices.setSlip(observable.getValue()));
-//
-//		c11.selectedProperty().addListener(
-//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-//				printChoices.setPhone(observable.getValue()));
-//
-//		c12.selectedProperty().addListener(
-//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-//				printChoices.setEmail(observable.getValue()));
-//
-//		c13.selectedProperty().addListener(
-//				(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-//				printChoices.setSubleasedto(observable.getValue()));
 
 		
 		rosterTableView.setRowFactory(tv -> {
@@ -203,40 +104,4 @@ public class TabRoster extends Tab {
 		hBox.getChildren().addAll(controlsBox,rosterTableView);
 		return hBox;
 	}
-
-
-
-
-//	//// Class Methods ////
-//	private void setListType(String type) {
-//		setChoicesFalse();
-//		switch (type) {
-//		case "all":
-//			printChoices.setAll(true);
-//		case "active":
-//			printChoices.setActive(true);
-//			break;
-//		case "non-renew":
-//			printChoices.setNonRenew(true);
-//			break;
-//		case "new-members":
-//			printChoices.setNewMembers(true);
-//			break;
-//		case "return":
-//			printChoices.setNewAndReturnd(true);
-//			break;
-//		case "slip-waitlist":
-//			printChoices.setSlipwait(true);
-//			break;
-//		}
-//	}
-//
-//	private void setChoicesFalse() {
-//		printChoices.setAll(false);
-//		printChoices.setActive(false);
-//		printChoices.setNonRenew(false);
-//		printChoices.setNewMembers(false);
-//		printChoices.setNewAndReturnd(false);
-//		printChoices.setSlipwait(false);
-//	}
 }

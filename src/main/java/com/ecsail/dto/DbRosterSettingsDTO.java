@@ -1,23 +1,23 @@
 package com.ecsail.dto;
 
-public class DbMembershipListDTO {
+public class DbRosterSettingsDTO {
 
     private int id;
     private String name;
     private String pojo_name;
     private String data_type;
     private String field_name;
-    private int list_order;
+    private String getter;
     private boolean searchable;
     private boolean exportable;
 
-    public DbMembershipListDTO(int id, String name, String pojo_name, String data_type, String field_name, int list_order, boolean searchable, boolean exportable) {
+    public DbRosterSettingsDTO(int id, String name, String pojo_name, String data_type, String field_name, String getter, boolean searchable, boolean exportable) {
         this.id = id;
         this.name = name;
         this.pojo_name = pojo_name;
         this.data_type = data_type;
         this.field_name = field_name;
-        this.list_order = list_order;
+        this.getter = getter;
         this.searchable = searchable;
         this.exportable = exportable;
     }
@@ -62,12 +62,12 @@ public class DbMembershipListDTO {
         this.field_name = field_name;
     }
 
-    public int getList_order() {
-        return list_order;
+    public String getGetter() {
+        return getter;
     }
 
-    public void setList_order(int list_order) {
-        this.list_order = list_order;
+    public void setGetter(String getter) {
+        this.getter = getter;
     }
 
     public boolean isSearchable() {

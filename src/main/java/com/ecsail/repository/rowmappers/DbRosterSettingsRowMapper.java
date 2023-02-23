@@ -1,22 +1,22 @@
 package com.ecsail.repository.rowmappers;
 
-import com.ecsail.dto.DbMembershipListDTO;
+import com.ecsail.dto.DbRosterSettingsDTO;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DbMembershipListRowMapper implements RowMapper<DbMembershipListDTO> {
+public class DbRosterSettingsRowMapper implements RowMapper<DbRosterSettingsDTO> {
 
     @Override
-    public DbMembershipListDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-        DbMembershipListDTO dto = new DbMembershipListDTO(
+    public DbRosterSettingsDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+        DbRosterSettingsDTO dto = new DbRosterSettingsDTO(
         rs.getInt("id"),
         rs.getString("name"),
         rs.getString("pojo_name"),
         rs.getString("data_type"),
         rs.getString("field_name"),
-        rs.getInt("list_order"),
+        rs.getString("getter"),
         rs.getBoolean("searchable"), rs.getBoolean("exportable"));
         return dto;
     }

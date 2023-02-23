@@ -1,13 +1,13 @@
 package com.ecsail.gui.tabs.roster;
 
-import com.ecsail.dto.DbMembershipListDTO;
+import com.ecsail.dto.DbRosterSettingsDTO;
 import javafx.scene.control.CheckBox;
 
 public class SettingsCheckBox extends CheckBox {
 
     private ControlBox parent;
-    private DbMembershipListDTO db;
-    public SettingsCheckBox(ControlBox p, DbMembershipListDTO db, String mode) {
+    private DbRosterSettingsDTO db;
+    public SettingsCheckBox(ControlBox p, DbRosterSettingsDTO db, String mode) {
         this.parent = p;
         this.db = db;
         this.setText(db.getName());
