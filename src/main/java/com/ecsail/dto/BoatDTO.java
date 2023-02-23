@@ -22,9 +22,9 @@ public class BoatDTO {
 	@ColumnName(value = "HAS_TRAILER")
 	protected BooleanProperty hasTrailer;
 	@ColumnName(value = "LENGTH")
-	protected StringProperty length;
+	protected StringProperty loa;
 	@ColumnName(value = "WEIGHT")
-	protected StringProperty weight;
+	protected StringProperty displacement;
 	@ColumnName(value = "KEEL")
 	protected StringProperty keel;
 	@ColumnName(value = "PHRF")
@@ -40,7 +40,7 @@ public class BoatDTO {
 	
 	public BoatDTO(Integer boatId, Integer msId, String manufacturer, String manufactureYear,
 				   String registrationNum, String model, String boatName, String sailNumber,
-				   Boolean hasTrailer, String length, String weight, String keel, String phrf,
+				   Boolean hasTrailer, String loa, String displacement, String keel, String phrf,
 				   String draft, String beam, String lwl, Boolean aux) {
 
 		this.boatId = new SimpleIntegerProperty(boatId);
@@ -52,8 +52,8 @@ public class BoatDTO {
 		this.boatName = new SimpleStringProperty(boatName);
 		this.sailNumber = new SimpleStringProperty(sailNumber);
 		this.hasTrailer = new SimpleBooleanProperty(hasTrailer);
-		this.length = new SimpleStringProperty(length);
-		this.weight = new SimpleStringProperty(weight);
+		this.loa = new SimpleStringProperty(loa);
+		this.displacement = new SimpleStringProperty(displacement);
 		this.keel = new SimpleStringProperty(keel);
 		this.phrf = new SimpleStringProperty(phrf);
 		this.draft = new SimpleStringProperty(draft);
@@ -202,7 +202,7 @@ public class BoatDTO {
 	}
 	
 
-	public final boolean isHasTrailer() {
+	public final boolean hasTrailer() {
 		return this.hasTrailerProperty().get();
 	}
 	
@@ -212,33 +212,33 @@ public class BoatDTO {
 	}
 	
 
-	public final StringProperty lengthProperty() {
-		return this.length;
+	public final StringProperty loaProperty() {
+		return this.loa;
 	}
 	
 
-	public final String getLength() {
-		return this.lengthProperty().get();
+	public final String getLoa() {
+		return this.loaProperty().get();
 	}
 	
 
-	public final void setLength(final String length) {
-		this.lengthProperty().set(length);
+	public final void setLoa(final String loa) {
+		this.loaProperty().set(loa);
 	}
 	
 
-	public final StringProperty weightProperty() {
-		return this.weight;
+	public final StringProperty displacementProperty() {
+		return this.displacement;
 	}
 	
 
-	public final String getWeight() {
-		return this.weightProperty().get();
+	public final String getDisplacement() {
+		return this.displacementProperty().get();
 	}
 	
 
-	public final void setWeight(final String weight) {
-		this.weightProperty().set(weight);
+	public final void setDisplacement(final String displacement) {
+		this.displacementProperty().set(displacement);
 	}
 	
 

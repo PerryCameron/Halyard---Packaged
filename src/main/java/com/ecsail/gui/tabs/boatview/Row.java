@@ -83,7 +83,7 @@ public class Row extends HBox {
     }
 
     private boolean setBooleanValue(String fieldName) {
-        if(fieldName.equals("HAS_TRAILER")) return parent.boatDTO.isHasTrailer();
+        if(fieldName.equals("HAS_TRAILER")) return parent.boatDTO.hasTrailer();
         else if (fieldName.equals("AUX")) return parent.boatDTO.isAux();
         return false;
     }
@@ -98,8 +98,8 @@ public class Row extends HBox {
         else if(fieldName.equals("PHRF")) return parent.boatDTO.getPhrf();
         else if(fieldName.equals("BOAT_NAME")) return parent.boatDTO.getBoatName();
         else if(fieldName.equals("SAIL_NUMBER")) return parent.boatDTO.getSailNumber();
-        else if(fieldName.equals("LENGTH")) return parent.boatDTO.getLength();
-        else if(fieldName.equals("WEIGHT")) return parent.boatDTO.getWeight();
+        else if(fieldName.equals("LENGTH")) return parent.boatDTO.getLoa();
+        else if(fieldName.equals("WEIGHT")) return parent.boatDTO.getDisplacement();
         else if(fieldName.equals("KEEL")) return parent.boatDTO.getKeel();
         else if(fieldName.equals("DRAFT")) return parent.boatDTO.getDraft();
         else if(fieldName.equals("BEAM")) return parent.boatDTO.getBeam();
@@ -119,8 +119,8 @@ public class Row extends HBox {
             else if (fieldName.equals("PHRF")) parent.boatListDTO.setPhrf(value);
             else if (fieldName.equals("BOAT_NAME")) parent.boatListDTO.setBoatName(value);
             else if (fieldName.equals("SAIL_NUMBER")) parent.boatListDTO.setSailNumber(value);
-            else if (fieldName.equals("LENGTH")) parent.boatListDTO.setLength(value);
-            else if (fieldName.equals("WEIGHT")) parent.boatListDTO.setWeight(value);
+            else if (fieldName.equals("LENGTH")) parent.boatListDTO.setLoa(value);
+            else if (fieldName.equals("WEIGHT")) parent.boatListDTO.setDisplacement(value);
             else if (fieldName.equals("KEEL")) parent.boatListDTO.setKeel(value);
             else if (fieldName.equals("DRAFT")) parent.boatListDTO.setDraft(value);
             else if (fieldName.equals("BEAM")) parent.boatListDTO.setBeam(value);

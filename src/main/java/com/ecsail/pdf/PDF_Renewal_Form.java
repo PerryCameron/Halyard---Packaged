@@ -1456,8 +1456,8 @@ public class PDF_Renewal_Form {
 	public void createBoatTableRow(Table mainTable, BoatDTO boat) {
 		Boolean isHeader = false;
 		//////// Determine if Header ///
-		if(boat.getWeight() == null) boat.setWeight("");  // quick hack to prevent null exception if weight is null
-		if (boat.getWeight().equals("Header")) // Used unused field to mark the header
+		if(boat.getDisplacement() == null) boat.setDisplacement("");  // quick hack to prevent null exception if weight is null
+		if (boat.getDisplacement().equals("Header")) // Used unused field to mark the header
 			isHeader = true;
 		else
 			isHeader = false;
@@ -1526,7 +1526,7 @@ public class PDF_Renewal_Form {
 		cell.add(p);
 		mainTable.addCell(cell);
 
-		p = new Paragraph(removeNulls(boat.getLength()));
+		p = new Paragraph(removeNulls(boat.getLoa()));
 		p.setFontSize(10);
 		cell = new Cell();
 		if (isHeader) {
@@ -1557,10 +1557,10 @@ public class PDF_Renewal_Form {
 		if (isHeader)
 			p = new Paragraph("Trailer");
 		else
-			if(boat.getWeight().equals("Blank")) {  // this is the blank row
+			if(boat.getDisplacement().equals("Blank")) {  // this is the blank row
 				p = new Paragraph(".");  //maybe put in image?
 			} else {
-				if(boat.isHasTrailer()) 
+				if(boat.hasTrailer())
 					p = new Paragraph("yes");
 				else
 					p = new Paragraph("no");

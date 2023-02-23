@@ -152,21 +152,21 @@ public class HBoxBoat extends HBox {
                 }
         );
 
-        final TableColumn<BoatDTO, String> col8 = createColumn("Length", BoatDTO::lengthProperty);
+        final TableColumn<BoatDTO, String> col8 = createColumn("Length", BoatDTO::loaProperty);
         col8.setOnEditCommit(
                 t -> {
                     t.getTableView().getItems().get(
-                            t.getTablePosition().getRow()).setLength(t.getNewValue());
+                            t.getTablePosition().getRow()).setLoa(t.getNewValue());
                     var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
                     SqlUpdate.updateBoat("length", boat_id, t.getNewValue());
                 }
         );
 
-        final TableColumn<BoatDTO, String> col9 = createColumn("Weight", BoatDTO::weightProperty);
+        final TableColumn<BoatDTO, String> col9 = createColumn("Weight", BoatDTO::displacementProperty);
         col9.setOnEditCommit(
                 t -> {
                     t.getTableView().getItems().get(
-                            t.getTablePosition().getRow()).setWeight(t.getNewValue());
+                            t.getTablePosition().getRow()).setDisplacement(t.getNewValue());
                     var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
                     SqlUpdate.updateBoat("weight", boat_id, t.getNewValue());
                 }
@@ -176,7 +176,7 @@ public class HBoxBoat extends HBox {
         final TableColumn<BoatDTO, Boolean> col10 = new TableColumn<>("Trailer");
         col10.setCellValueFactory(param -> {
             BoatDTO boat = param.getValue();
-            SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(boat.isHasTrailer());
+            SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(boat.hasTrailer());
             // Note: singleCol.setOnEditCommit(): Not work for
             // CheckBoxTableCell.
 
