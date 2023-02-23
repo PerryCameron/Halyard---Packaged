@@ -44,7 +44,7 @@ public class TabRoster extends Tab {
 		this.setText("Roster");
 		this.rosterTableView = new RosterTableView(this);
 		VBox containerBox = createContainerBox();
-		this.setOnClosed(null);
+//		this.setOnClosed(null);
 		setContent(containerBox);
 	}
 

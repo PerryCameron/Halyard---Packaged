@@ -25,23 +25,37 @@ import java.util.List;
 
 public class ControlBox extends VBox {
     private final TabBoatList parent;
-    public RadioHBox selectedRadioBox;
-    private Text numberOfRecords;
-    private final VBox boatDetailsBox;
-    private boolean isActiveSearch;
-    private TextField textField = new TextField();
 
     public ControlBox(TabBoatList tabBoatList) {
         this.parent = tabBoatList;
-        this.boatDetailsBox = setUpBoatDetailsBox();
+        parent.boatDetailsBox = setUpBoatDetailsBox();
         HBox recordCountBox = setUpRecordCountBox();
         VBox frameBox = setUpDetailsBoxFrame();
         VBox radioButtonBox = createRadioBox();
         HBox searchBox = setUpSearchBox();
+        VBox fieldsSelectToSearchBox = setUpFieldSelectedToSearchBox();
         HBox viewBoatBox = setUpViewBoatBox();
         setPadding(new Insets(0,5,0,15));
-        frameBox.getChildren().add(boatDetailsBox);
-        getChildren().addAll(recordCountBox,searchBox,radioButtonBox, frameBox, viewBoatBox);
+        frameBox.getChildren().add(parent.boatDetailsBox);
+        getChildren().addAll(recordCountBox,searchBox,fieldsSelectToSearchBox, radioButtonBox, frameBox, viewBoatBox);
+    }
+
+    private VBox setUpFieldSelectedToSearchBox() {
+        VBox vBox = new VBox();
+        vBox.setPadding(new Insets(0,15,0,57));
+        TitledPane titledPane = new TitledPane();
+        titledPane.setText("Searchable Fields");
+        titledPane.setExpanded(false);
+        VBox checkVBox = new VBox();
+        checkVBox.setSpacing(5);
+        for(DbBoatSettingsDTO dto: parent.boatSettings) {
+            SettingsCheckBox checkBox = new SettingsCheckBox(this, dto, "searchable");
+            parent.checkBoxes.add(checkBox);
+            checkVBox.getChildren().add(checkBox);
+        }
+        titledPane.setContent(checkVBox);
+        vBox.getChildren().add(titledPane);
+        return vBox;
     }
 
     private VBox setUpDetailsBoxFrame() {
@@ -76,7 +90,7 @@ public class ControlBox extends VBox {
     }
 
     protected void refreshCurrentBoatDetails() {
-        boatDetailsBox.getChildren().clear();
+        parent.boatDetailsBox.getChildren().clear();
         for (Field field: parent.selectedBoat.getClass().getSuperclass().getDeclaredFields()) {
             ColumnName columnName = field.getAnnotation(ColumnName.class);
             if(columnName != null) {
@@ -91,7 +105,7 @@ public class ControlBox extends VBox {
                 vBox1.getChildren().add(labelText);
                 vBox2.getChildren().add(valueText);
                 hBox.getChildren().addAll(vBox1,vBox2);
-                boatDetailsBox.getChildren().add(hBox);
+                parent.boatDetailsBox.getChildren().add(hBox);
             }
         }
     }
@@ -109,12 +123,12 @@ public class ControlBox extends VBox {
         ComboBox<String> comboBox = new ComboBox<>();
         Text text = new Text("Search");
         text.setId("invoice-text-number");
-        hBox.getChildren().addAll(text, textField);
+        hBox.getChildren().addAll(text, parent.textField);
         PauseTransition pause = new PauseTransition(Duration.seconds(1));
         // this is awesome, stole from stackoverflow.com
-        textField.textProperty().addListener(
+        parent.textField.textProperty().addListener(
                 (observable, oldValue, newValue) -> {
-                    pause.setOnFinished(event -> fillTableView(textField.getText()));
+                    pause.setOnFinished(event -> fillTableView(parent.textField.getText()));
                     pause.playFromStart();
                 }
         );
@@ -126,10 +140,10 @@ public class ControlBox extends VBox {
             parent.searchedBoats.clear();
             parent.searchedBoats.addAll(searchString(searchTerm));
             parent.boatListTableView.setItems(parent.searchedBoats);
-            isActiveSearch = true;
+            parent.isActiveSearch = true;
         } else { // if search box has been cleared
             parent.boatListTableView.setItems(parent.boats);
-            isActiveSearch = false;
+            parent.isActiveSearch = false;
         }
         updateRecordCount();
     }
@@ -161,27 +175,27 @@ public class ControlBox extends VBox {
         hBox.setSpacing(5);
         hBox.setPadding(new Insets(5,0,15,0));
         Text label = new Text("Records");
-        this.numberOfRecords = new Text(String.valueOf(parent.boats.size()));
-        numberOfRecords.setId("invoice-text-number");
+        parent.numberOfRecords = new Text(String.valueOf(parent.boats.size()));
+        parent.numberOfRecords.setId("invoice-text-number");
         label.setId("invoice-text-label");
-        hBox.getChildren().addAll(label,numberOfRecords);
+        hBox.getChildren().addAll(label,parent.numberOfRecords);
         return hBox;
     }
 
     private void updateRecordCount() {
         String number;
-        if(isActiveSearch)
+        if(parent.isActiveSearch)
             number = parent.searchedBoats.size() + "/" + parent.boats.size();
         else
             number = String.valueOf(parent.boats.size());
-        numberOfRecords.setText(number);
+        parent.numberOfRecords.setText(number);
     }
 
     private VBox createRadioBox() {
         ToggleGroup tg = new ToggleGroup();
         VBox vBox = new VBox();
         vBox.setSpacing(7);
-        vBox.setPadding(new Insets(0,0,15,0));
+        vBox.setPadding(new Insets(15,0,15,0));
         for(BoatListRadioDTO radio: parent.boatListRadioDTOs) {
             if(!radio.getMethod().equals("query")) {
                 RadioHBox radioHBox = new RadioHBox(radio, this);
@@ -196,12 +210,12 @@ public class ControlBox extends VBox {
         parent.boats.clear();
         Method method;
         try {
-            method = parent.boatRepository.getClass().getMethod(selectedRadioBox.getMethod());
+            method = parent.boatRepository.getClass().getMethod(parent.selectedRadioBox.getMethod());
             parent.boats.setAll((List<BoatListDTO>) method.invoke(parent.boatRepository));
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
-        if(!textField.getText().equals("")) fillTableView(textField.getText());
+        if(!parent.textField.getText().equals("")) fillTableView(parent.textField.getText());
         updateRecordCount();
         parent.boats.sort(Comparator.comparing(BoatListDTO::getBoatId));
     }

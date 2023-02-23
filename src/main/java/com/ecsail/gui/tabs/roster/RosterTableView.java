@@ -24,7 +24,6 @@ public class RosterTableView extends TableView<MembershipListDTO> {
         VBox.setVgrow(this, Priority.ALWAYS);
         HBox.setHgrow(this, Priority.ALWAYS);
 
-
         TableColumn<MembershipListDTO, Integer> idCol = new TableColumn<>("ID");
         TableColumn<MembershipListDTO, String> joinDateCol = new TableColumn<>("Join Date");
         TableColumn<MembershipListDTO, Text> typeCol = new TableColumn<>("Type");
@@ -49,9 +48,11 @@ public class RosterTableView extends TableView<MembershipListDTO> {
             if (m.getMemType() != null) {
                 valueDisplayed = m.getMemType();
             }
-            if (valueDisplayed.equals("SO")) text.setFill(Color.GREEN);
-            else if (valueDisplayed.equals("FM")) text.setFill(Color.BLUE);
-            else if (valueDisplayed.equals("RM")) text.setFill(Color.RED);
+            switch (valueDisplayed) {
+                case "SO" -> text.setFill(Color.GREEN);
+                case "FM" -> text.setFill(Color.BLUE);
+                case "RM" -> text.setFill(Color.RED);
+            }
 //			else if(valueDisplayed.equals("LA")) text.setFill(Color.KHAKI);
             text.setText(valueDisplayed);
             return new SimpleObjectProperty<>(text);
@@ -77,7 +78,6 @@ public class RosterTableView extends TableView<MembershipListDTO> {
         stateCol.setStyle("-fx-alignment: top-center");
         msIdCol.setCellValueFactory(new PropertyValueFactory<>("msId"));
 
-
         /// sets width of columns by percentage
         idCol.setMaxWidth(1f * Integer.MAX_VALUE * 5);   // Mem 5%
         joinDateCol.setMaxWidth(1f * Integer.MAX_VALUE * 15);  // Join Date 15%
@@ -90,6 +90,7 @@ public class RosterTableView extends TableView<MembershipListDTO> {
 
         this.getColumns()
                 .addAll(Arrays.asList(idCol, firstNameCol, lastNameCol, typeCol, joinDateCol, slipCol, stateCol, msIdCol));
+        setRosterRowFactory();
     }
 
     private void setRosterRowFactory() {

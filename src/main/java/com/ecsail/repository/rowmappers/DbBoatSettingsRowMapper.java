@@ -13,7 +13,7 @@ public class DbBoatSettingsRowMapper implements RowMapper<DbBoatSettingsDTO> {
         DbBoatSettingsDTO boatSettingsDTO = new DbBoatSettingsDTO(
                 rs.getInt("ID"),
                 rs.getString("name"),
-                rs.getString("control_type"),
+                rs.getString("pojo_field_name"),
                 rs.getString("data_type"),
                 rs.getString("field_name"),
                 rs.getString("getter"),

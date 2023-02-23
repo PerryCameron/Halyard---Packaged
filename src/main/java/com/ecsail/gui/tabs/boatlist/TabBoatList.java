@@ -15,10 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
@@ -42,18 +39,22 @@ public class TabBoatList extends Tab {
 	protected TableView<BoatListDTO> boatListTableView = new TableView<>();
 	protected BoatListDTO selectedBoat;
 	private ControlBox controlBox;
+	protected ArrayList<SettingsCheckBox> checkBoxes = new ArrayList<>();
+	protected RadioHBox selectedRadioBox;
+	protected Text numberOfRecords;
+	protected VBox boatDetailsBox;
+	protected boolean isActiveSearch;
+	protected TextField textField = new TextField();
 	
 	public TabBoatList(String text) {
 		super(text);
 		this.boatListRadioDTOs = (ArrayList<BoatListRadioDTO>) settingsRepository.getBoatRadioChoices();
-		this.controlBox = new ControlBox(this);
 		this.boatSettings = (ArrayList<DbBoatSettingsDTO>) settingsRepository.getBoatSettings();
-
+		this.controlBox = new ControlBox(this);
 		VBox vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
 		VBox vboxBlue = new VBox();
 		VBox vboxPink = new VBox(); // this creates a pink border around the table
 		HBox hboxSplitScreen = new HBox();
-
 
 		boatListTableView.setItems(boats);
 		boatListTableView.setFixedCellSize(30);
