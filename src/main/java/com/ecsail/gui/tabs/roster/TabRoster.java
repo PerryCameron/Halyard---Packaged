@@ -1,6 +1,5 @@
 package com.ecsail.gui.tabs.roster;
 
-import com.ecsail.Launcher;
 import com.ecsail.dto.DbRosterSettingsDTO;
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.dto.MembershipListRadioDTO;
@@ -12,10 +11,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -37,7 +34,6 @@ public class TabRoster extends Tab {
 	protected boolean isActiveSearch;
 	protected Text numberOfRecords;
 	protected String selectedYear;
-	private VBox controlsBox;
 
 	public TabRoster(ObservableList<MembershipListDTO> a, String sy) {
 		super();
@@ -47,28 +43,9 @@ public class TabRoster extends Tab {
 		this.searchedRosters = FXCollections.observableArrayList();
 		this.setText("Roster");
 		this.rosterTableView = new RosterTableView(this);
-		this.controlsBox = new ControlBox(this);
 		VBox containerBox = createContainerBox();
 		this.setOnClosed(null);
-		setRosterRowFactory();
 		setContent(containerBox);
-	}
-
-	private void setRosterRowFactory() {
-		rosterTableView.setRowFactory(tv -> {
-			TableRow<MembershipListDTO> row = new TableRow<>();
-			row.setOnMouseClicked(event -> {
-				if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-					// int rowIndex = row.getIndex();
-					MembershipListDTO clickedRow = row.getItem();
-					Launcher.createMembershipTabForRoster(clickedRow.getMembershipId(), clickedRow.getMsId());
-				}
-//				if (!row.isEmpty() && event.getButton() == MouseButton.SECONDARY && event.getClickCount() == 1) {
-//				row.setContextMenu(new rosterContextMenu(row.getItem(), selectedYear));
-//				}
-			});
-			return row;
-		});
 	}
 
 	private VBox createContainerBox() {
@@ -83,7 +60,7 @@ public class TabRoster extends Tab {
 
 	private HBox splitScreen() {
 		HBox hBox = new HBox();
-		hBox.getChildren().addAll(controlsBox,rosterTableView);
+		hBox.getChildren().addAll(new ControlBox(this),rosterTableView);
 		VBox.setVgrow(hBox, Priority.ALWAYS);
 		hBox.setPadding(new Insets(3, 3, 5, 3));
 		return hBox;
