@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class SqlScriptMaker {
 //	static Object_TupleCount newTupleCount;
-	static ObservableList<DbBoatDTO> dbBoatDTOS;
+	static ObservableList<DbBoatSettingsDTO> dbBoatDTOS;
 	static ArrayList<DbTableChangesDTO> tableChangesDTOS;
 	static ArrayList<DbUpdatesDTO> dbUpdatesDTOS;
 	static ArrayList<DbInvoiceDTO> invoiceWidgets;
@@ -74,7 +74,7 @@ public class SqlScriptMaker {
 		invoiceWidgets = SqlDbInvoice.getInvoiceWidgets();
 		dbUpdatesDTOS = SqlDbTableChanges.getDbUpdates();
 		tableChangesDTOS = SqlDbTableChanges.getDbTableChanges();
-		dbBoatDTOS = SqlDbBoat.getDbBoat();
+//		dbBoatDTOS = SqlDbBoat.getDbBoat();
 
 		BaseApplication.logger.info("2");
 		HalyardPaths.checkPath(HalyardPaths.SQLBACKUP + "/" + BaseApplication.selectedYear);
@@ -141,7 +141,7 @@ public class SqlScriptMaker {
 				writer.write((getDbUpdatesString(u)));
 			for(DbTableChangesDTO t: tableChangesDTOS)
 				writer.write(getTableChanges(t));
-			for(DbBoatDTO d: dbBoatDTOS)
+			for(DbBoatSettingsDTO d: dbBoatDTOS)
 				writer.write(getDbBoatString(d));
 
 			clearMemory();
@@ -179,14 +179,17 @@ public class SqlScriptMaker {
 		tableChangesDTOS.clear();
 	}
 
-	private static String getDbBoatString(DbBoatDTO d) {
+	private static String getDbBoatString(DbBoatSettingsDTO d) {
 		return "INSERT INTO db_boat () VALUES("
 				+ d.getId() + ","
 				+ getCorrectString(d.getName()) + ","
 				+ getCorrectString(d.getControlType()) + ","
 				+ getCorrectString(d.getDataType()) + ","
 				+ getCorrectString(d.getFieldName()) + ","
-				+ d.getOrder() + ");\n";
+				+ getCorrectString(d.getGetter()) + ","
+				+ d.isSearchable() + ","
+				+ d.isExportable() +
+				");\n";
 	}
 
 	private static String getTableChanges(DbTableChangesDTO t) {

@@ -5,9 +5,8 @@ import com.ecsail.StringTools;
 import com.ecsail.annotation.ColumnName;
 import com.ecsail.sql.select.SqlBoat;
 import com.ecsail.sql.select.SqlBoatListRadio;
-import com.ecsail.sql.select.SqlDbBoat;
 import com.ecsail.dto.BoatListDTO;
-import com.ecsail.dto.DbBoatDTO;
+import com.ecsail.dto.DbBoatSettingsDTO;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,16 +25,15 @@ import java.util.Arrays;
 public class ControlBox extends VBox {
     private final TabBoatList parent;
     private final ArrayList<BoatListRadioDTO> boatListRadioDTOs;
-    private final ObservableList<DbBoatDTO> dbBoatDTOS;
+
     private Text numberOfRecords;
     private final VBox boatDetailsBox;
     private boolean isActiveSearch;
     private TextField textField = new TextField();
 
-    public ControlBox(TabBoatList tabBoats) {
-        this.parent = tabBoats;
+    public ControlBox(TabBoatList tabBoatList) {
+        this.parent = tabBoatList;
         this.boatListRadioDTOs = SqlBoatListRadio.getBoatListRadioDTOs();
-        this.dbBoatDTOS = SqlDbBoat.getDbBoat();
         this.boatDetailsBox = setUpBoatDetailsBox();
         VBox frameBox = setUpDetailsBoxFrame();
         VBox radioButtonBox = setUpRadioButtonBox();
@@ -100,8 +98,8 @@ public class ControlBox extends VBox {
     }
 
     private String getLabel(String value) {
-        return dbBoatDTOS.stream().filter(dbBoatDTO -> dbBoatDTO.getFieldName().equals(value))
-                .map(DbBoatDTO::getName).findFirst().orElse(value);
+        return parent.boatSettings.stream().filter(setting -> setting.getFieldName().equals(value))
+                .map(DbBoatSettingsDTO::getName).findFirst().orElse(value);
     }
 
     private HBox setUpSearchBox() {

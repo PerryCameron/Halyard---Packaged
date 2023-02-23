@@ -2,7 +2,7 @@ package com.ecsail.gui.tabs.boatview;
 
 import com.ecsail.enums.KeelType;
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.dto.DbBoatDTO;
+import com.ecsail.dto.DbBoatSettingsDTO;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,8 +16,8 @@ import javafx.scene.text.Text;
 
 public class Row extends HBox {
     TabBoatView parent;
-    DbBoatDTO dbBoatDTO;
-    public Row(TabBoatView tabBoatView, DbBoatDTO dbBoatDTO) {
+    DbBoatSettingsDTO dbBoatDTO;
+    public Row(TabBoatView tabBoatView, DbBoatSettingsDTO dbBoatDTO) {
         this.parent = tabBoatView;
         this.dbBoatDTO = dbBoatDTO;
         VBox labelBox = new VBox();
@@ -56,7 +56,7 @@ public class Row extends HBox {
         });
     }
 
-    private Node getDataBoxContent(DbBoatDTO dbBoatDTO) {
+    private Node getDataBoxContent(DbBoatSettingsDTO dbBoatDTO) {
         if(dbBoatDTO.getControlType().equals("Text")) {
             Text text = new Text(setStringValue(dbBoatDTO.getFieldName()));
             return text;

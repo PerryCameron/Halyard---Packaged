@@ -1,6 +1,9 @@
 package com.ecsail.gui.tabs.boatlist;
 
 import com.ecsail.Launcher;
+import com.ecsail.dto.DbBoatSettingsDTO;
+import com.ecsail.repository.implementations.SettingsRepositoryImpl;
+import com.ecsail.repository.interfaces.SettingsRepository;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.dto.BoatListDTO;
 import javafx.application.Platform;
@@ -22,11 +25,16 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class TabBoatList extends Tab {
 	protected ObservableList<BoatListDTO> boats = FXCollections.observableArrayList();
 	protected ObservableList<BoatListDTO> searchedBoats = FXCollections.observableArrayList();
+
+	protected SettingsRepository settingsRepository = new SettingsRepositoryImpl();
+	protected ArrayList<DbBoatSettingsDTO> boatSettings;
 	protected TableView<BoatListDTO> boatListTableView = new TableView<>();
 	protected BoatListDTO selectedBoat;
 	private ControlBox controlBox;
@@ -34,6 +42,7 @@ public class TabBoatList extends Tab {
 	public TabBoatList(String text) {
 		super(text);
 		this.controlBox = new ControlBox(this);
+		this.boatSettings = (ArrayList<DbBoatSettingsDTO>) settingsRepository.getBoatSettings();
 		VBox vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
 		VBox vboxBlue = new VBox();
 		VBox vboxPink = new VBox(); // this creates a pink border around the table

@@ -8,11 +8,12 @@ import com.ecsail.gui.common.ImageViewPane;
 import com.ecsail.connection.Sftp;
 import com.ecsail.gui.common.HBoxNotes;
 import com.ecsail.gui.dialogues.Dialogue_ChooseMember;
+import com.ecsail.repository.implementations.SettingsRepositoryImpl;
+import com.ecsail.repository.interfaces.SettingsRepository;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlBoatPhotos;
-import com.ecsail.sql.select.SqlDbBoat;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.dto.*;
 import javafx.collections.ObservableList;
@@ -36,8 +37,9 @@ import java.util.Objects;
 // TODO need to add history to boat_owner table
 public class TabBoatView extends Tab {
     private ObservableList<MembershipListDTO> boatOwners;
+    protected SettingsRepository settingsRepository = new SettingsRepositoryImpl();
     private Sftp scp;
-    private ObservableList<DbBoatDTO> dbBoatDTOS;
+    protected ArrayList<DbBoatSettingsDTO> boatSettings;
     protected BoatDTO boatDTO;
     protected BoatListDTO boatListDTO;
     protected ArrayList<BoatPhotosDTO> images;
@@ -55,6 +57,7 @@ public class TabBoatView extends Tab {
         super(text);
         this.boatDTO = boat;
         this.fromList = false;
+        this.boatSettings = (ArrayList<DbBoatSettingsDTO>) settingsRepository.getBoatSettings();
         createBoatView();
     }
 
@@ -63,12 +66,13 @@ public class TabBoatView extends Tab {
         this.boatListDTO = boatList;
         this.boatDTO = boatList;
         this.fromList = true;
+        this.boatSettings = (ArrayList<DbBoatSettingsDTO>) settingsRepository.getBoatSettings();
         createBoatView();
     }
 
     private void createBoatView() {
         this.boatOwners = SqlMembershipList.getBoatOwnerRoster(boatDTO.getBoatId());
-        this.dbBoatDTOS = SqlDbBoat.getDbBoat();
+
         this.scp = BaseApplication.connect.getScp();
         this.images = SqlBoatPhotos.getImagesByBoatId(boatDTO.getBoatId());
         this.imageView = new ImageView();
@@ -88,7 +92,7 @@ public class TabBoatView extends Tab {
         var vboxInformationBackgroundColor = new VBox();
         var vboxTableBackgroundColor = new VBox();
 
-        for(DbBoatDTO dbBoatDTO: dbBoatDTOS) {
+        for(DbBoatSettingsDTO dbBoatDTO: boatSettings) {
             vboxInformationBackgroundColor.getChildren().add(new Row(this, dbBoatDTO));
         }
 
