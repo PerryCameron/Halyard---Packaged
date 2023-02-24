@@ -117,7 +117,7 @@ public class BoatListTableView extends TableView<BoatListDTO> {
     selectFirstRow(this); // this allows boat details to start off populated.
     }
 
-    public void selectFirstRow(TableView<BoatListDTO> boatListTableView) {
+    private void selectFirstRow(TableView<BoatListDTO> boatListTableView) {
         Platform.runLater(() -> {
             boatListTableView.requestFocus();
             boatListTableView.getSelectionModel().select(0);

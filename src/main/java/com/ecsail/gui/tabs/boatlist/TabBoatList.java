@@ -6,7 +6,6 @@ import com.ecsail.repository.implementations.BoatRepositoryImpl;
 import com.ecsail.repository.implementations.SettingsRepositoryImpl;
 import com.ecsail.repository.interfaces.BoatRepository;
 import com.ecsail.repository.interfaces.SettingsRepository;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -44,25 +43,24 @@ public class TabBoatList extends Tab {
 		this.boatListRadioDTOs = (ArrayList<BoatListRadioDTO>) settingsRepository.getBoatRadioChoices();
 		this.boatSettings = (ArrayList<DbBoatSettingsDTO>) settingsRepository.getBoatSettings();
 		this.controlBox = new ControlBox(this);
-
-		VBox vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
-		VBox vboxBlue = new VBox();
-		VBox vboxPink = new VBox(); // this creates a pink border around the table
-		HBox hboxSplitScreen = new HBox();
-		
-		vboxBlue.setId("box-blue");
-		vboxBlue.setPadding(new Insets(10,10,10,10));
-		vboxPink.setPadding(new Insets(3,3,3,3)); // spacing to make pink from around table
-		vboxPink.setId("box-pink");
-		
-		VBox.setVgrow(vboxGrey, Priority.ALWAYS);
-		VBox.setVgrow(vboxPink, Priority.ALWAYS);
-		VBox.setVgrow(hboxSplitScreen, Priority.ALWAYS);
-		hboxSplitScreen.getChildren().addAll(boatListTableView, controlBox);
-		vboxGrey.getChildren().add(hboxSplitScreen);
-		vboxBlue.getChildren().add(vboxPink);
-		vboxPink.getChildren().add(vboxGrey);
-		setContent(vboxBlue);
-
+		HBox hboxSplitScreen = createSplitScreenBox();
+		VBox contentBox = createContentBox(hboxSplitScreen);
+		setContent(contentBox);
 	}
+
+	private VBox createContentBox(HBox hBox) {
+		VBox vBox = new VBox();
+		vBox.setId("box-blue");
+		vBox.setPadding(new Insets(10,10,10,10));
+		vBox.getChildren().add(hBox);
+		return vBox;
+	}
+
+	private HBox createSplitScreenBox() {
+		HBox hBox = new HBox();
+		hBox.getChildren().addAll(boatListTableView, controlBox);
+		VBox.setVgrow(hBox, Priority.ALWAYS);
+		return hBox;
+	}
+
 }

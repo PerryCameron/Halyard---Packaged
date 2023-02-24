@@ -141,8 +141,8 @@ public class SqlScriptMaker {
 				writer.write((getDbUpdatesString(u)));
 			for(DbTableChangesDTO t: tableChangesDTOS)
 				writer.write(getTableChanges(t));
-			for(DbBoatSettingsDTO d: dbBoatDTOS)
-				writer.write(getDbBoatString(d));
+//			for(DbBoatSettingsDTO d: dbBoatDTOS)
+//				writer.write(getDbBoatString(d));
 
 			clearMemory();
 			writer.close();
@@ -179,18 +179,18 @@ public class SqlScriptMaker {
 		tableChangesDTOS.clear();
 	}
 
-	private static String getDbBoatString(DbBoatSettingsDTO d) {
-		return "INSERT INTO db_boat () VALUES("
-				+ d.getId() + ","
-				+ getCorrectString(d.getName()) + ","
-				+ getCorrectString(d.getControlType()) + ","
-				+ getCorrectString(d.getDataType()) + ","
-				+ getCorrectString(d.getFieldName()) + ","
-				+ getCorrectString(d.getGetter()) + ","
-				+ d.isSearchable() + ","
-				+ d.isExportable() +
-				");\n";
-	}
+//	private static String getDbBoatString(DbBoatSettingsDTO d) {
+//		return "INSERT INTO db_boat () VALUES("
+//				+ d.getId() + ","
+//				+ getCorrectString(d.getName()) + ","
+//				+ getCorrectString(d.getControlType()) + ","
+//				+ getCorrectString(d.getDataType()) + ","
+//				+ getCorrectString(d.getFieldName()) + ","
+//				+ getCorrectString(d.getGetter()) + ","
+//				+ d.isSearchable() + ","
+//				+ d.isExportable() +
+//				");\n";
+//	}
 
 	private static String getTableChanges(DbTableChangesDTO t) {
 		return "INSERT INTO db_table_changes () VALUES("

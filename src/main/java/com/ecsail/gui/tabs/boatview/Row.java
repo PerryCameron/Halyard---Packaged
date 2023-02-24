@@ -16,18 +16,20 @@ import javafx.scene.text.Text;
 
 public class Row extends HBox {
     TabBoatView parent;
-    DbBoatSettingsDTO dbBoatDTO;
-    public Row(TabBoatView tabBoatView, DbBoatSettingsDTO dbBoatDTO) {
+    DbBoatSettingsDTO dbBoatSettingsDTO;
+    public Row(TabBoatView tabBoatView, DbBoatSettingsDTO dbBoatSettingsDTO) {
         this.parent = tabBoatView;
-        this.dbBoatDTO = dbBoatDTO;
-        VBox labelBox = new VBox();
-        VBox dataBox = new VBox();
-        labelBox.setPrefWidth(90);
-        labelBox.setAlignment(Pos.CENTER_LEFT);
-        labelBox.getChildren().add(new Text(dbBoatDTO.getName()));
-        dataBox.getChildren().add(getDataBoxContent(dbBoatDTO));
-        setPadding(new Insets(0, 5, 5, 15));
-        getChildren().addAll(labelBox, dataBox);
+        this.dbBoatSettingsDTO = dbBoatSettingsDTO;
+        if(dbBoatSettingsDTO.isVisible()) {
+            VBox labelBox = new VBox();
+            VBox dataBox = new VBox();
+            labelBox.setPrefWidth(90);
+            labelBox.setAlignment(Pos.CENTER_LEFT);
+            labelBox.getChildren().add(new Text(dbBoatSettingsDTO.getName()));
+            dataBox.getChildren().add(getDataBoxContent(dbBoatSettingsDTO));
+            setPadding(new Insets(0, 5, 5, 15));
+            getChildren().addAll(labelBox, dataBox);
+        }
     }
 
     private void setTextFieldListener(TextField textField) {
@@ -35,16 +37,16 @@ public class Row extends HBox {
                 .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                     // focus out
                     if (oldValue) { // we have focused and unfocused
-                        SqlUpdate.updateBoat(dbBoatDTO.getFieldName(), parent.boatDTO.getBoatId(), textField.getText());
+                        SqlUpdate.updateBoat(dbBoatSettingsDTO.getFieldName(), parent.boatDTO.getBoatId(), textField.getText());
                         if(parent.fromList)
-                        setPojo(dbBoatDTO.getFieldName(), textField.getText());
+                        setPojo(dbBoatSettingsDTO.getFieldName(), textField.getText());
                     }
                 });
     }
 
     private void setCheckBoxListener(CheckBox checkBox) {
         checkBox.selectedProperty().addListener((obs, wasPreviouslySelected, isNowSelected) ->
-                SqlUpdate.updateBoat(parent.boatDTO.getBoatId(), dbBoatDTO.getFieldName(), isNowSelected));
+                SqlUpdate.updateBoat(parent.boatDTO.getBoatId(), dbBoatSettingsDTO.getFieldName(), isNowSelected));
 //                setPojo(dbBoatDTO.getFieldName(), isNowSelected);
     }
 
@@ -52,7 +54,7 @@ public class Row extends HBox {
         comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             SqlUpdate.updateBoat(parent.boatDTO.getBoatId(), newValue.getCode());
             if(parent.fromList)
-            setPojo(dbBoatDTO.getFieldName(), newValue.getCode());
+            setPojo(dbBoatSettingsDTO.getFieldName(), newValue.getCode());
         });
     }
 

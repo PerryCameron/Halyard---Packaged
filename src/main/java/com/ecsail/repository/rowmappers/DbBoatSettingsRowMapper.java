@@ -14,11 +14,12 @@ public class DbBoatSettingsRowMapper implements RowMapper<DbBoatSettingsDTO> {
                 rs.getInt("ID"),
                 rs.getString("name"),
                 rs.getString("pojo_field_name"),
-                rs.getString("data_type"),
+                rs.getString("control_type"),
                 rs.getString("field_name"),
                 rs.getString("getter"),
                 rs.getBoolean("searchable"),
-                rs.getBoolean("exportable")
+                rs.getBoolean("exportable"),
+                rs.getBoolean("visible")
         );
         return boatSettingsDTO;
     }

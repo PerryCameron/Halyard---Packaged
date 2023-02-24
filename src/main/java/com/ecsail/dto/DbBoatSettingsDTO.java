@@ -3,22 +3,24 @@ package com.ecsail.dto;
 public class DbBoatSettingsDTO {
     private int id;
     private String name;
+    private String pojoName;
     private String controlType;
-    private String dataType;
     private String fieldName;
     private String getter;
     private boolean searchable ;
     private boolean exportable;
+    private boolean visible;
 
-    public DbBoatSettingsDTO(int id, String name, String controlType, String dataType, String fieldName, String getter, boolean searchable, boolean exportable) {
+    public DbBoatSettingsDTO(int id, String name, String pojoName, String controlType, String fieldName, String getter, boolean searchable, boolean exportable, boolean visible) {
         this.id = id;
         this.name = name;
+        this.pojoName = pojoName;
         this.controlType = controlType;
-        this.dataType = dataType;
         this.fieldName = fieldName;
         this.getter = getter;
         this.searchable = searchable;
         this.exportable = exportable;
+        this.visible = visible;
     }
 
     public int getId() {
@@ -37,20 +39,20 @@ public class DbBoatSettingsDTO {
         this.name = name;
     }
 
+    public String getPojoName() {
+        return pojoName;
+    }
+
+    public void setPojoName(String pojoName) {
+        this.pojoName = pojoName;
+    }
+
     public String getControlType() {
         return controlType;
     }
 
     public void setControlType(String controlType) {
         this.controlType = controlType;
-    }
-
-    public String getDataType() {
-        return dataType;
-    }
-
-    public void setDataType(String dataType) {
-        this.dataType = dataType;
     }
 
     public String getFieldName() {
@@ -83,5 +85,13 @@ public class DbBoatSettingsDTO {
 
     public void setExportable(boolean exportable) {
         this.exportable = exportable;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }

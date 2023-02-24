@@ -36,6 +36,7 @@ public class ControlBox extends VBox {
         VBox fieldsSelectToSearchBox = setUpFieldSelectedToSearchBox();
         HBox viewBoatBox = setUpViewBoatBox();
         setPadding(new Insets(0,5,0,15));
+        this.setPrefWidth(300);
         frameBox.getChildren().add(parent.boatDetailsBox);
         getChildren().addAll(recordCountBox,searchBox,fieldsSelectToSearchBox, radioButtonBox, frameBox, viewBoatBox);
     }
