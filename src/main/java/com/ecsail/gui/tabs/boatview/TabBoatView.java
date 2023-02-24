@@ -44,11 +44,11 @@ public class TabBoatView extends Tab {
     protected BoatListDTO boatListDTO;
     protected ArrayList<BoatPhotosDTO> images;
     protected BoatPhotosDTO selectedImage;
-    String remotePath = "/home/ecsc/ecsc_files/boat_images/";
-    String localPath = System.getProperty("user.home") + "/.ecsc/boat_images/";
-    String[] extensionsAllowed = {"jpg","jpeg","png","bmp","gif"};
+    private String remotePath = "/home/ecsc/ecsc_files/boat_images/";
+    private String localPath = System.getProperty("user.home") + "/.ecsc/boat_images/";
+    private String[] extensionsAllowed = {"jpg","jpeg","png","bmp","gif"};
     // this is the group number for ecsc
-    int groupId = 1006;
+    private int groupId = 1006;
     private ImageView imageView;
 
     protected boolean fromList;

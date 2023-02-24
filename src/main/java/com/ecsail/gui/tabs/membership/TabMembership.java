@@ -10,6 +10,8 @@ import com.ecsail.gui.tabs.membership.fiscal.HBoxSlip;
 import com.ecsail.gui.tabs.membership.information.*;
 import com.ecsail.gui.tabs.membership.people.HBoxPerson;
 import com.ecsail.gui.tabs.membership.people.VBoxAddPerson;
+import com.ecsail.repository.implementations.PersonRepositoryImpl;
+import com.ecsail.repository.interfaces.PersonRepository;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlPerson;
 import com.ecsail.sql.select.SqlBoat;
@@ -32,8 +34,10 @@ import javafx.scene.layout.VBox;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TabMembership extends Tab {
+	protected PersonRepository personRepository = new PersonRepositoryImpl();
 	private final MembershipListDTO membership;
-	private final ObservableList<PersonDTO> people;  // has to be in this class because we pull up two instances
+
+	protected ObservableList<PersonDTO> people;
 	private final TabPane fiscalTabPane = new TabPane();
 	private final TabPane peopleTabPane = new TabPane();
 	private final Note note;
@@ -47,7 +51,7 @@ public class TabMembership extends Tab {
 		this.membership = me;
 		var memos = SqlMemos.getMemosByMsId(membership.getMsId());
 		this.note = new Note(memos,membership.getMsId());
-        this.people = SqlPerson.getPeople(membership.getMsId());
+		this.people = FXCollections.observableList(personRepository.getActivePeopleByMsId(membership.getMsId()));
 		this.invoices = SqlInvoice.getInvoicesByMsid(membership.getMsId());
 		this.id = FXCollections.observableArrayList(param -> new Observable[]{param.isRenewProperty()});
 		this.id.addAll(SqlMembership_Id.getIds(membership.getMsId()));
