@@ -141,7 +141,6 @@ public class HBoxProperties extends HBox {
     private void deleteMembership(int msId) {
         SqlDelete.deleteBoatOwner(msId);
         SqlDelete.deleteMemos(msId);
-        SqlDelete.deleteWorkCredits(msId);
         SqlDelete.deleteAllPaymentsAndInvoicesByMsId(msId);
         SqlDelete.deleteWaitList(msId);
         SqlDelete.deleteMembershipId(msId); // removes all entries
