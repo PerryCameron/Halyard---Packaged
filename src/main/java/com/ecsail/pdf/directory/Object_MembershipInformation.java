@@ -1,5 +1,7 @@
 package com.ecsail.pdf.directory;
 
+import com.ecsail.repository.implementations.BoatRepositoryImpl;
+import com.ecsail.repository.interfaces.BoatRepository;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.select.SqlBoat;
 import com.ecsail.sql.select.SqlEmail;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Object_MembershipInformation {
+	protected BoatRepository boatRepository = new BoatRepositoryImpl();
 	PersonDTO primary;
 	PersonDTO secondary;
 	String primaryEmail;
@@ -101,8 +104,8 @@ public class Object_MembershipInformation {
 	
 	private String getBoatsString(MembershipListDTO m) {
 		String memberBoats = "";
-		List<BoatDTO> boats = new ArrayList<BoatDTO>();
-		boats = SqlBoat.getBoats(m.getMsId());
+		List<BoatDTO> boats;
+		boats = boatRepository.getBoatsByMsId(m.getMsId());
 		int count = 0;
 		if (boats.size() > 0) {  // there are some boats
 			for (BoatDTO b : boats) {

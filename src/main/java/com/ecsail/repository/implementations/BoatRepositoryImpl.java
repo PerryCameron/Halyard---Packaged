@@ -110,4 +110,21 @@ public class BoatRepositoryImpl implements BoatRepository {
                 template.query(query, new BoatRowMapper(), new Object[]{msId});
         return boatListDTOS;
     }
+
+    @Override
+    public List<BoatDTO> getOnlySailboatsByMsId(int msId) {
+        String query = """
+                Select BOAT_ID, MS_ID, ifnull(MANUFACTURER,'') AS MANUFACTURER, ifnull(MANUFACTURE_YEAR,'') AS
+                MANUFACTURE_YEAR, ifnull(REGISTRATION_NUM,'') AS REGISTRATION_NUM, ifnull(MODEL,'') AS MODEL, 
+                ifnull(BOAT_NAME,'') AS BOAT_NAME, ifnull(SAIL_NUMBER,'') AS SAIL_NUMBER, HAS_TRAILER, 
+                ifnull(LENGTH,'') AS LENGTH, ifnull(WEIGHT,'') AS WEIGHT, KEEL, ifnull(PHRF,'') AS PHRF, ifnull(DRAFT,'') AS DRAFT, 
+                ifnull(BEAM,'') AS BEAM, ifnull(LWL,'') AS LWL, AUX from boat 
+                INNER JOIN boat_owner USING (boat_id) WHERE ms_id=? and 
+                MODEL NOT LIKE 'Kayak' and MODEL NOT LIKE 'Canoe' and MODEL NOT LIKE 'Row Boat' and 
+                MODEL NOT LIKE 'Paddle Board'
+                                """;
+        List<BoatDTO> boatListDTOS =
+                template.query(query, new BoatRowMapper(), new Object[]{msId});
+        return boatListDTOS;
+    }
 }

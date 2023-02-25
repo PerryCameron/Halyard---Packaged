@@ -58,8 +58,6 @@ public class TabMembership extends Tab {
 		this.invoices = SqlInvoice.getInvoicesByMsid(membership.getMsId());
 		this.id = FXCollections.observableArrayList(param -> new Observable[]{param.isRenewProperty()});
 		this.id.addAll(SqlMembership_Id.getIds(membership.getMsId()));
-//		this.boats = FXCollections.observableArrayList(param -> new Observable[]{param.hasTrailerProperty()});
-//		this.boats.addAll(SqlBoat.getBoats(membership.getMsId()));
 		this.boats = FXCollections.observableArrayList(boatRepository.getBoatsByMsId(membership.getMsId()));
 		this.setText(setTabLabel());
 		BaseApplication.logger.info("Opening Membership tab for "

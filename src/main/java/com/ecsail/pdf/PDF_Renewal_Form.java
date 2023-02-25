@@ -2,6 +2,8 @@ package com.ecsail.pdf;
 
 import com.ecsail.HalyardPaths;
 import com.ecsail.enums.KeelType;
+import com.ecsail.repository.implementations.BoatRepositoryImpl;
+import com.ecsail.repository.interfaces.BoatRepository;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.select.*;
 import com.ecsail.dto.*;
@@ -28,6 +30,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class PDF_Renewal_Form {
+	protected BoatRepository boatRepository = new BoatRepositoryImpl();
 	private static String year;
 	private static String last_membership_id;
 	private static String current_membership_id;
@@ -186,7 +189,7 @@ public class PDF_Renewal_Form {
 		last_membership_id = SqlMembership_Id.getMembershipId((Integer.parseInt(year) -1) +"" , membership.getMsId());
 	// TODO recode this when you get time, because money changed, and this is pretty cool feature(although mostly unused)
 //				dues = SqlMoney.getMoneyRecordByMsidAndYear(ms_id, year);
-		boats = SqlBoat.getBoats(ms_id);
+		boats = boatRepository.getBoatsByMsId(ms_id);
 		boats.add(0, new BoatDTO(0, 0, "Manufacturer", "Year", "Registration", "Model", "Boat Name", "Sail #", true, "Length", "Header", "Keel Type", "PHRF", "Draft", "Beam", "LWL",false));
 		boats.add(new BoatDTO(0, 0, "", "", "", "", "", "", false, "", "Blank", "", "","","","",false));
 		dependants = SqlPerson.getDependants

@@ -3,6 +3,8 @@ package com.ecsail.pdf;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
+import com.ecsail.repository.implementations.BoatRepositoryImpl;
+import com.ecsail.repository.interfaces.BoatRepository;
 import com.ecsail.sql.select.SqlBoat;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.sql.select.SqlMembership_Id;
@@ -28,6 +30,7 @@ import java.util.List;
 
 public class PDF_BoatReport {
     private ObservableList<MembershipListDTO> membershipLists;
+    protected BoatRepository boatRepository = new BoatRepositoryImpl();
 
     public PDF_BoatReport() {
         this.membershipLists = SqlMembershipList.getRoster(BaseApplication.selectedYear, true);
@@ -69,7 +72,7 @@ public class PDF_BoatReport {
     }
 
     public void membershipTable(MembershipListDTO ml, Document document) {
-        List<BoatDTO> boats = SqlBoat.getOnlySailboats(ml.getMsId());
+        List<BoatDTO> boats = boatRepository.getOnlySailboatsByMsId(ml.getMsId());
         if(boats.size() > 0) {
             System.out.println("Creating Entry for mebership " + ml.getMsId() + " " + ml.getlName());
             Table detailTable = new Table(6);

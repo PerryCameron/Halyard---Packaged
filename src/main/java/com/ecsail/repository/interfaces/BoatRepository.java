@@ -13,4 +13,5 @@ public interface BoatRepository {
     List<BoatListDTO> getAllAuxBoats();
     List<BoatListDTO> getAllBoats();
     List<BoatDTO> getBoatsByMsId(int msId);
+    List<BoatDTO> getOnlySailboatsByMsId(int msId);
 }
