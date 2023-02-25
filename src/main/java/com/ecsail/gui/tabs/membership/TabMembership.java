@@ -10,7 +10,9 @@ import com.ecsail.gui.tabs.membership.fiscal.HBoxSlip;
 import com.ecsail.gui.tabs.membership.information.*;
 import com.ecsail.gui.tabs.membership.people.HBoxPerson;
 import com.ecsail.gui.tabs.membership.people.VBoxAddPerson;
+import com.ecsail.repository.implementations.BoatRepositoryImpl;
 import com.ecsail.repository.implementations.PersonRepositoryImpl;
+import com.ecsail.repository.interfaces.BoatRepository;
 import com.ecsail.repository.interfaces.PersonRepository;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlPerson;
@@ -35,6 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class TabMembership extends Tab {
 	protected PersonRepository personRepository = new PersonRepositoryImpl();
+	protected BoatRepository boatRepository = new BoatRepositoryImpl();
 	private final MembershipListDTO membership;
 
 	protected ObservableList<PersonDTO> people;
@@ -55,8 +58,9 @@ public class TabMembership extends Tab {
 		this.invoices = SqlInvoice.getInvoicesByMsid(membership.getMsId());
 		this.id = FXCollections.observableArrayList(param -> new Observable[]{param.isRenewProperty()});
 		this.id.addAll(SqlMembership_Id.getIds(membership.getMsId()));
-		this.boats = FXCollections.observableArrayList(param -> new Observable[]{param.hasTrailerProperty()});
-		this.boats.addAll(SqlBoat.getBoats(membership.getMsId()));
+//		this.boats = FXCollections.observableArrayList(param -> new Observable[]{param.hasTrailerProperty()});
+//		this.boats.addAll(SqlBoat.getBoats(membership.getMsId()));
+		this.boats = FXCollections.observableArrayList(boatRepository.getBoatsByMsId(membership.getMsId()));
 		this.setText(setTabLabel());
 		BaseApplication.logger.info("Opening Membership tab for "
 				+ membership.getMembershipInfo()

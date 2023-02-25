@@ -40,8 +40,6 @@ public class HBoxProperties extends HBox {
         Button removeMembershipButton = new Button("Delete");
         Button printLabelsButton1 = new Button("Print Primary");
         Button printLabelsButton2 = new Button("Print Secondary");
-
-
 //		HalyardAlert alert = new HalyardAlert(AlertType.INFORMATION);
 
         /////////////  ATTRIBUTES /////////////
@@ -108,7 +106,7 @@ public class HBoxProperties extends HBox {
                 if(person.getMemberType() == 2) {
                     label = new LabelDTO();
                     label.setCity("Indianapolis, Indiana");
-                    label.setNameAndMemId(person.getFullName() + " #" + String.valueOf(tm.getMembership().getMembershipId()));
+                    label.setNameAndMemId(person.getFullName() + " #" + tm.getMembership().getMembershipId());
                     label.setExpires("Type "+tm.getMembership().getMemType()+", Expires: " + "03/01/" + getYear());
                     label.setMember("Member: U.S. Sailing ILYA &YCA");
                     labels.add(label);
@@ -125,14 +123,7 @@ public class HBoxProperties extends HBox {
         hboxGrey.getChildren().addAll(leftVBox, rightVBox);
         getChildren().add(hboxGrey);
     }
-
-    private void printDaLines(String[] lines) {
-        for(String line: lines) {
-            System.out.println(line);
-        }
-    }
-
-
+    
     private String getYear() {
         int current = Integer.parseInt(BaseApplication.selectedYear);
         return String.valueOf(current + 1);

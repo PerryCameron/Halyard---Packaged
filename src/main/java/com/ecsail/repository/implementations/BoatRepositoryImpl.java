@@ -1,9 +1,11 @@
 package com.ecsail.repository.implementations;
 
 import com.ecsail.BaseApplication;
+import com.ecsail.dto.BoatDTO;
 import com.ecsail.dto.BoatListDTO;
 import com.ecsail.repository.interfaces.BoatRepository;
 import com.ecsail.repository.rowmappers.BoatListRowMapper;
+import com.ecsail.repository.rowmappers.BoatRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
@@ -94,6 +96,18 @@ public class BoatRepositoryImpl implements BoatRepository {
                 """;
         List<BoatListDTO> boatListDTOS =
                 template.query(query, new BoatListRowMapper());
+        return boatListDTOS;
+    }
+
+    @Override
+    public List<BoatDTO> getBoatsByMsId(int msId) {
+        String query = """
+                SELECT b.boat_id, bo.ms_id, b.manufacturer, b.manufacture_year, b.registration_num, b.model, 
+                b.boat_name, b.sail_number, b.has_trailer, b.length, b.weight, b.keel, b.phrf, b.draft, b.beam, 
+                b.lwl, b.aux FROM boat b INNER JOIN boat_owner bo USING (boat_id) WHERE ms_id=?
+                """;
+        List<BoatDTO> boatListDTOS =
+                template.query(query, new BoatRowMapper(), new Object[]{msId});
         return boatListDTOS;
     }
 }
