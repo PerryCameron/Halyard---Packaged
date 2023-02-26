@@ -10,13 +10,12 @@ public class BoatListRadioRowMapper implements RowMapper<BoatListRadioDTO> {
 
     @Override
     public BoatListRadioDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-        BoatListRadioDTO boatListRadioDTO = new BoatListRadioDTO(
+        return new BoatListRadioDTO(
                 rs.getInt("ID"),
                 rs.getString("LABEL"),
                 rs.getString("METHOD_NAME"),
                 rs.getInt("LIST_ORDER"),
                 rs.getInt("LIST"),
                 rs.getBoolean("SELECTED"));
-        return boatListRadioDTO;
     }
 }

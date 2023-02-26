@@ -10,7 +10,7 @@ public class DbRosterSettingsRowMapper implements RowMapper<DbRosterSettingsDTO>
 
     @Override
     public DbRosterSettingsDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-        DbRosterSettingsDTO dto = new DbRosterSettingsDTO(
+        return new DbRosterSettingsDTO(
         rs.getInt("id"),
         rs.getString("name"),
         rs.getString("pojo_name"),
@@ -18,6 +18,5 @@ public class DbRosterSettingsRowMapper implements RowMapper<DbRosterSettingsDTO>
         rs.getString("field_name"),
         rs.getString("getter"),
         rs.getBoolean("searchable"), rs.getBoolean("exportable"));
-        return dto;
     }
 }

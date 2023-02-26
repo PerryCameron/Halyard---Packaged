@@ -10,7 +10,7 @@ public class BoatRowMapper implements RowMapper<BoatDTO> {
 
     @Override
     public BoatDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-        BoatDTO boatDTO = new BoatDTO(
+        return new BoatDTO(
         rs.getInt("boat_id"),
                 rs.getInt("ms_id"),
                 rs.getString("manufacturer"),
@@ -28,6 +28,5 @@ public class BoatRowMapper implements RowMapper<BoatDTO> {
                 rs.getString("beam"),
                 rs.getString("lwl"),
                 rs.getBoolean("aux"));
-        return boatDTO;
     }
 }

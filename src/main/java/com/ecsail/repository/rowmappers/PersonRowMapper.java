@@ -10,7 +10,7 @@ public class PersonRowMapper implements RowMapper<PersonDTO> {
 
     @Override
     public PersonDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-        PersonDTO personDTO = new PersonDTO(
+        return new PersonDTO(
                 rs.getInt("p_id"),
                 rs.getInt("MS_ID"),
                 rs.getInt("member_type"),
@@ -22,6 +22,5 @@ public class PersonRowMapper implements RowMapper<PersonDTO> {
                 rs.getBoolean("IS_ACTIVE"),
                 rs.getString("NICK_NAME"),
                 rs.getInt("OLD_MSID"));
-        return personDTO;
     }
 }

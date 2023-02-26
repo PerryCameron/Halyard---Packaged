@@ -10,13 +10,12 @@ public class DbMembershipListRadioRowMapper implements RowMapper<MembershipListR
 
     @Override
     public MembershipListRadioDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-        MembershipListRadioDTO dto = new MembershipListRadioDTO(
+        return new MembershipListRadioDTO(
         rs.getInt("ID"),
                 rs.getString("LABEL"),
                 rs.getString("METHOD_NAME"),
                 rs.getInt("LIST_ORDER"),
                 rs.getInt("LIST"),
                 rs.getBoolean("selected"));
-        return dto;
     }
 }

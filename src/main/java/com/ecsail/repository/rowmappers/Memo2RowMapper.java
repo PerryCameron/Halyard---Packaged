@@ -10,7 +10,7 @@ public class Memo2RowMapper implements RowMapper<Memo2DTO> {
 
     @Override
     public Memo2DTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Memo2DTO Memo2DTO = new Memo2DTO(
+        return new Memo2DTO(
                 rs.getString("MEMBERSHIP_ID"),
                 rs.getInt("MEMO_ID"),
                 rs.getInt("MS_ID"),
@@ -18,6 +18,5 @@ public class Memo2RowMapper implements RowMapper<Memo2DTO> {
                 rs.getString("MEMO"),
                 rs.getInt("INVOICE_ID"),
                 rs.getString("CATEGORY"));
-        return Memo2DTO;
     }
 }

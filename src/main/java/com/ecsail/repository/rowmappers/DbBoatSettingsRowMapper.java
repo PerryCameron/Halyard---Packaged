@@ -10,7 +10,7 @@ public class DbBoatSettingsRowMapper implements RowMapper<DbBoatSettingsDTO> {
 
     @Override
     public DbBoatSettingsDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-        DbBoatSettingsDTO boatSettingsDTO = new DbBoatSettingsDTO(
+        return new DbBoatSettingsDTO(
                 rs.getInt("ID"),
                 rs.getString("name"),
                 rs.getString("pojo_field_name"),
@@ -21,6 +21,5 @@ public class DbBoatSettingsRowMapper implements RowMapper<DbBoatSettingsDTO> {
                 rs.getBoolean("exportable"),
                 rs.getBoolean("visible")
         );
-        return boatSettingsDTO;
     }
 }

@@ -10,7 +10,7 @@ public class MembershipListRowMapper implements RowMapper<MembershipListDTO> {
 
     @Override
     public MembershipListDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-        MembershipListDTO membershipListDTO = new MembershipListDTO(
+        return new MembershipListDTO(
                 rs.getInt("ms_id"),
                 rs.getInt("p_id"),
                 rs.getInt("membership_id"),
@@ -25,6 +25,5 @@ public class MembershipListRowMapper implements RowMapper<MembershipListDTO> {
                 rs.getString("state"),
                 rs.getString("zip"),
                 rs.getString("fiscal_year"));
-        return membershipListDTO;
     }
 }
