@@ -5,6 +5,8 @@ import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.gui.tabs.deposits.InvoiceWithMemberInfoDTO;
 import com.ecsail.gui.tabs.deposits.TabDeposits;
+import com.ecsail.repository.implementations.MemoRepositoryImpl;
+import com.ecsail.repository.interfaces.MemoRepository;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.select.SqlDbInvoice;
 import com.ecsail.sql.select.SqlDeposit;
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class PDF_DepositReport {
+	protected MemoRepository memoRepository = new MemoRepositoryImpl();
 	private final ObservableList<InvoiceItemDTO> invoiceItems;
 	private final ArrayList<InvoiceItemDTO> invoiceSummedItems = new ArrayList<>();
 	private final ObservableList<InvoiceWithMemberInfoDTO> invoices;
@@ -221,7 +224,8 @@ public class PDF_DepositReport {
 		String thisMemo;
 		// make sure the memo exists
 		if(SqlExists.memoExists(invoice.getId(), "I")) {
-		thisMemo = SqlMemos.getMemosByMsId(invoice, "I").getMemo();
+//		thisMemo = SqlMemos.getMemoByMsId(invoice, "I").getMemo();
+			thisMemo = memoRepository.getMemoByMsId(invoice, "I").getMemo();
 		} else {
 		thisMemo = "No note for this entry";
 		}

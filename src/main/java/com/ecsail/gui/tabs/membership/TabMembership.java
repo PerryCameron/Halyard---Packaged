@@ -11,12 +11,12 @@ import com.ecsail.gui.tabs.membership.information.*;
 import com.ecsail.gui.tabs.membership.people.HBoxPerson;
 import com.ecsail.gui.tabs.membership.people.VBoxAddPerson;
 import com.ecsail.repository.implementations.BoatRepositoryImpl;
+import com.ecsail.repository.implementations.MemoRepositoryImpl;
 import com.ecsail.repository.implementations.PersonRepositoryImpl;
 import com.ecsail.repository.interfaces.BoatRepository;
+import com.ecsail.repository.interfaces.MemoRepository;
 import com.ecsail.repository.interfaces.PersonRepository;
 import com.ecsail.sql.SqlInsert;
-import com.ecsail.sql.SqlPerson;
-import com.ecsail.sql.select.SqlBoat;
 import com.ecsail.sql.select.SqlInvoice;
 import com.ecsail.sql.select.SqlMembership_Id;
 import com.ecsail.sql.select.SqlMemos;
@@ -38,6 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TabMembership extends Tab {
 	protected PersonRepository personRepository = new PersonRepositoryImpl();
 	protected BoatRepository boatRepository = new BoatRepositoryImpl();
+	protected MemoRepository memoRepository = new MemoRepositoryImpl();
 	private final MembershipListDTO membership;
 
 	protected ObservableList<PersonDTO> people;
@@ -52,7 +53,7 @@ public class TabMembership extends Tab {
 	public TabMembership(MembershipListDTO me) {
 		super();
 		this.membership = me;
-		var memos = SqlMemos.getMemosByMsId(membership.getMsId());
+		ObservableList<MemoDTO> memos = FXCollections.observableArrayList(memoRepository.getMemosByMsId(membership.getMsId()));
 		this.note = new Note(memos,membership.getMsId());
 		this.people = FXCollections.observableList(personRepository.getActivePeopleByMsId(membership.getMsId()));
 		this.invoices = SqlInvoice.getInvoicesByMsid(membership.getMsId());

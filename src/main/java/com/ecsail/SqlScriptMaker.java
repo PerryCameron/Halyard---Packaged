@@ -2,17 +2,22 @@ package com.ecsail;
 
 import com.ecsail.gui.dialogues.Dialogue_DatabaseBackup;
 import com.ecsail.jotform.structures.ApiKeyDTO;
+import com.ecsail.repository.implementations.MemoRepositoryImpl;
+import com.ecsail.repository.interfaces.MemoRepository;
 import com.ecsail.sql.select.*;
 import com.ecsail.dto.*;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class SqlScriptMaker {
+	static MemoRepository memoRepository = new MemoRepositoryImpl();
 //	static Object_TupleCount newTupleCount;
 	static ObservableList<DbBoatSettingsDTO> dbBoatDTOS;
 	static ArrayList<DbTableChangesDTO> tableChangesDTOS;
@@ -27,7 +32,7 @@ public class SqlScriptMaker {
 	static ObservableList<BoatDTO> boats;
 	static ObservableList<BoatOwnerDTO> boatowners;
 	static ArrayList<SlipDTO> slips;
-	static ObservableList<MemoDTO> memos;
+	static List<MemoDTO> memos;
 	static ObservableList<EmailDTO> email;
 	static ObservableList<InvoiceDTO> invoiceDTOS;
 	static ObservableList<InvoiceItemDTO> invoiceItemDTOS;
@@ -57,7 +62,7 @@ public class SqlScriptMaker {
 		boats = SqlBoat.getBoats();
 		boatowners = SqlBoat.getBoatOwners();
 		slips = SqlSlip.getSlips();
-		memos = SqlMemos.getMemosByMsId(ALL);
+		memos = memoRepository.getMemosByMsId(ALL);
 		email = SqlEmail.getEmail(ALL);
 		invoiceDTOS = SqlInvoice.getAllInvoices();
 		invoiceItemDTOS = SqlInvoiceItem.getAllInvoiceItems();

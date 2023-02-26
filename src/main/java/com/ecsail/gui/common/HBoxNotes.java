@@ -2,10 +2,14 @@ package com.ecsail.gui.common;
 
 
 import com.ecsail.EditCell;
+import com.ecsail.repository.implementations.MemoRepositoryImpl;
+import com.ecsail.repository.interfaces.MemoRepository;
 import com.ecsail.sql.select.SqlMemos;
 import com.ecsail.dto.BoatDTO;
 import com.ecsail.dto.MemoDTO;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -20,7 +24,7 @@ import java.util.Date;
 import java.util.function.Function;
 
 public class HBoxNotes extends HBox {
-
+	private MemoRepository memoRepository = new MemoRepositoryImpl();
 	private Note note;
 	private TableView<MemoDTO> memoTableView;
 	private TableColumn<MemoDTO, String> Col2;
@@ -28,7 +32,8 @@ public class HBoxNotes extends HBox {
 	
 	public HBoxNotes(BoatDTO b) {
 		this.selectedBoat = b;
-		this.note = new Note(SqlMemos.getMemosByBoatId(b.getBoatId()), b.getMsId());
+		ObservableList<MemoDTO> memos = FXCollections.observableArrayList(memoRepository.getMemosByBoatId(b.getBoatId()));
+		this.note = new Note(memos, b.getMsId());
 		VBox buttonBox = setUpButtonBox();
 		VBox tableViewBox = setUpTableViewBox();
 		HBox contentBox = setUpContentBox(tableViewBox,buttonBox);
