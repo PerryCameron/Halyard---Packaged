@@ -2,11 +2,12 @@ package com.ecsail;
 
 import com.ecsail.gui.dialogues.Dialogue_DatabaseBackup;
 import com.ecsail.jotform.structures.ApiKeyDTO;
+import com.ecsail.repository.implementations.BoatRepositoryImpl;
 import com.ecsail.repository.implementations.MemoRepositoryImpl;
+import com.ecsail.repository.interfaces.BoatRepository;
 import com.ecsail.repository.interfaces.MemoRepository;
 import com.ecsail.sql.select.*;
 import com.ecsail.dto.*;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.*;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class SqlScriptMaker {
 	static MemoRepository memoRepository = new MemoRepositoryImpl();
-//	static Object_TupleCount newTupleCount;
+	static BoatRepository boatRepository = new BoatRepositoryImpl();
 	static ObservableList<DbBoatSettingsDTO> dbBoatDTOS;
 	static ArrayList<DbTableChangesDTO> tableChangesDTOS;
 	static ArrayList<DbUpdatesDTO> dbUpdatesDTOS;
@@ -29,8 +30,8 @@ public class SqlScriptMaker {
 	static ObservableList<MembershipIdDTO> ids;
 	static ObservableList<PersonDTO> people;
 	static ObservableList<PhoneDTO> phones;
-	static ObservableList<BoatDTO> boats;
-	static ObservableList<BoatOwnerDTO> boatowners;
+	static List<BoatDTO> boats;
+	static List<BoatOwnerDTO> boatowners;
 	static ArrayList<SlipDTO> slips;
 	static List<MemoDTO> memos;
 	static ObservableList<EmailDTO> email;
@@ -59,8 +60,8 @@ public class SqlScriptMaker {
 		ids = SqlMembership_Id.getIds();
 		people = SqlPerson.getPeople();
 		phones = SqlPhone.getPhoneByPid(ALL);
-		boats = SqlBoat.getBoats();
-		boatowners = SqlBoat.getBoatOwners();
+		boats = boatRepository.getAllBoats();
+		boatowners = boatRepository.getBoatOwners();
 		slips = SqlSlip.getSlips();
 		memos = memoRepository.getMemosByMsId(ALL);
 		email = SqlEmail.getEmail(ALL);

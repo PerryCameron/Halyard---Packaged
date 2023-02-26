@@ -3,15 +3,17 @@ package com.ecsail.repository.implementations;
 import com.ecsail.BaseApplication;
 import com.ecsail.dto.BoatDTO;
 import com.ecsail.dto.BoatListDTO;
+import com.ecsail.dto.BoatOwnerDTO;
 import com.ecsail.repository.interfaces.BoatRepository;
 import com.ecsail.repository.rowmappers.BoatListRowMapper;
+import com.ecsail.repository.rowmappers.BoatOwnerRowMapper;
 import com.ecsail.repository.rowmappers.BoatRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
 
 public class BoatRepositoryImpl implements BoatRepository {
-    private JdbcTemplate template;
+    private final JdbcTemplate template;
 
     public BoatRepositoryImpl() {
         this.template = new JdbcTemplate(BaseApplication.getDataSource());
@@ -28,9 +30,7 @@ public class BoatRepositoryImpl implements BoatRepository {
                 LEFT JOIN (SELECT BOAT_ID,count(BOAT_ID) AS boat_count 
                 FROM boat_photos group by BOAT_ID having count(BOAT_ID) > 0) nb on b.BOAT_ID=nb.BOAT_ID
                 """;
-        List<BoatListDTO> boatListDTOS =
-                template.query(query, new BoatListRowMapper());
-        return boatListDTOS;
+        return template.query(query, new BoatListRowMapper());
     }
 
     @Override
@@ -44,9 +44,7 @@ public class BoatRepositoryImpl implements BoatRepository {
                 LEFT JOIN (SELECT BOAT_ID,count(BOAT_ID) AS boat_count 
                 FROM boat_photos group by BOAT_ID having count(BOAT_ID) > 0) nb on b.BOAT_ID=nb.BOAT_ID;
                 """;
-        List<BoatListDTO> boatListDTOS =
-                template.query(query, new BoatListRowMapper());
-        return boatListDTOS;
+        return template.query(query, new BoatListRowMapper());
     }
 
     @Override
@@ -62,9 +60,7 @@ public class BoatRepositoryImpl implements BoatRepository {
                 AS boat_count from boat_photos group by BOAT_ID having count(BOAT_ID) > 0) nb 
                 ON b.BOAT_ID=nb.BOAT_ID;
                 """;
-        List<BoatListDTO> boatListDTOS =
-                template.query(query, new BoatListRowMapper());
-        return boatListDTOS;
+        return template.query(query, new BoatListRowMapper());
     }
 
     @Override
@@ -78,13 +74,11 @@ public class BoatRepositoryImpl implements BoatRepository {
                 LEFT JOIN person p on m.P_ID = p.P_ID LEFT JOIN (select BOAT_ID,count(BOAT_ID) 
                 AS boat_count from boat_photos group by BOAT_ID having count(BOAT_ID) > 0) nb on b.BOAT_ID=nb.BOAT_ID;
                 """;
-        List<BoatListDTO> boatListDTOS =
-                template.query(query, new BoatListRowMapper());
-        return boatListDTOS;
+        return template.query(query, new BoatListRowMapper());
     }
 
     @Override
-    public List<BoatListDTO> getAllBoats() {
+    public List<BoatListDTO> getAllBoatLists() {
         String query = """
                 SELECT id.membership_id,id.ms_id, p.l_name, p.f_name,b.*,nb.boat_count FROM boat b 
                 LEFT JOIN boat_owner bo on b.BOAT_ID = bo.BOAT_ID 
@@ -94,9 +88,13 @@ public class BoatRepositoryImpl implements BoatRepository {
                 LEFT JOIN (select BOAT_ID,count(BOAT_ID) AS boat_count from boat_photos 
                 GROUP BY BOAT_ID having count(BOAT_ID) > 0) nb on b.BOAT_ID=nb.BOAT_ID
                 """;
-        List<BoatListDTO> boatListDTOS =
-                template.query(query, new BoatListRowMapper());
-        return boatListDTOS;
+        return template.query(query, new BoatListRowMapper());
+    }
+
+    @Override
+    public List<BoatDTO> getAllBoats() {
+        String query = "SELECT * from boat";
+        return template.query(query, new BoatRowMapper());
     }
 
     @Override
@@ -106,9 +104,7 @@ public class BoatRepositoryImpl implements BoatRepository {
                 b.boat_name, b.sail_number, b.has_trailer, b.length, b.weight, b.keel, b.phrf, b.draft, b.beam, 
                 b.lwl, b.aux FROM boat b INNER JOIN boat_owner bo USING (boat_id) WHERE ms_id=?
                 """;
-        List<BoatDTO> boatListDTOS =
-                template.query(query, new BoatRowMapper(), new Object[]{msId});
-        return boatListDTOS;
+        return template.query(query, new BoatRowMapper(), msId);
     }
 
     @Override
@@ -123,8 +119,12 @@ public class BoatRepositoryImpl implements BoatRepository {
                 MODEL NOT LIKE 'Kayak' and MODEL NOT LIKE 'Canoe' and MODEL NOT LIKE 'Row Boat' and 
                 MODEL NOT LIKE 'Paddle Board'
                                 """;
-        List<BoatDTO> boatListDTOS =
-                template.query(query, new BoatRowMapper(), new Object[]{msId});
-        return boatListDTOS;
+        return template.query(query, new BoatRowMapper(), msId);
+    }
+
+    @Override
+    public List<BoatOwnerDTO> getBoatOwners() {
+        String query = "SELECT * FROM boat_owner";
+        return template.query(query, new BoatOwnerRowMapper());
     }
 }
