@@ -11,7 +11,6 @@ import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.select.SqlDbInvoice;
 import com.ecsail.sql.select.SqlDeposit;
 import com.ecsail.sql.select.SqlInvoiceItem;
-import com.ecsail.sql.select.SqlMemos;
 import com.ecsail.dto.*;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.ColorConstants;

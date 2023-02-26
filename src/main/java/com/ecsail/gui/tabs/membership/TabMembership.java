@@ -19,7 +19,6 @@ import com.ecsail.repository.interfaces.PersonRepository;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.select.SqlInvoice;
 import com.ecsail.sql.select.SqlMembership_Id;
-import com.ecsail.sql.select.SqlMemos;
 import com.ecsail.dto.*;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;

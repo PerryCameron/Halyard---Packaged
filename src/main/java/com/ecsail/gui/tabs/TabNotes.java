@@ -1,8 +1,10 @@
 package com.ecsail.gui.tabs;
 
 import com.ecsail.BaseApplication;
-import com.ecsail.sql.select.SqlMemos;
+import com.ecsail.repository.implementations.MemoRepositoryImpl;
+import com.ecsail.repository.interfaces.MemoRepository;
 import com.ecsail.dto.Memo2DTO;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -18,18 +20,20 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class TabNotes extends Tab {
+	protected MemoRepository memoRepository = new MemoRepositoryImpl();
 	private TableView<Memo2DTO> notesTableView = new TableView<>();
 	private ObservableList<Memo2DTO> memos;
 	String selectedYear;
-	String options;
 	Boolean n = true;
 	Boolean o = true;
 	Boolean p = true;
 	
 	public TabNotes(String text) {
 		super(text);
+		MemoRepository memoRepository = new MemoRepositoryImpl();
 		this.selectedYear = BaseApplication.selectedYear;
-		this.memos = SqlMemos.getAllMemosForTabNotes(BaseApplication.selectedYear,setOptions());
+//		this.memos = SqlMemos.getAllMemosForTabNotes(BaseApplication.selectedYear,setOptions());
+		this.memos = FXCollections.observableArrayList(memoRepository.getAllMemosForTabNotes(BaseApplication.selectedYear,setOptions()));
 		VBox vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
 		VBox vboxBlue = new VBox();
 		VBox vboxPink = new VBox(); // this creates a pink border around the table
@@ -63,7 +67,7 @@ public class TabNotes extends Tab {
 			  if (!newValue) {
 				  selectedYear = yearSpinner.getEditor().getText();  /// kept this for clarity, could have used printChoices.getYear()
 				  memos.clear();
-				  memos.addAll(SqlMemos.getAllMemosForTabNotes(selectedYear, setOptions()));
+				  memos.addAll(memoRepository.getAllMemosForTabNotes(selectedYear, setOptions()));
 			  }
 			});
 		
@@ -124,19 +128,20 @@ public class TabNotes extends Tab {
 		oCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
 			o = newValue;
 			memos.clear();
-			memos.addAll(SqlMemos.getAllMemosForTabNotes(selectedYear, setOptions()));
+			memos.addAll(memoRepository.getAllMemosForTabNotes(selectedYear, setOptions()));
+
 		});
 		
 		nCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
 			n = newValue;
 			memos.clear();
-			memos.addAll(SqlMemos.getAllMemosForTabNotes(selectedYear, setOptions()));
+			memos.addAll(memoRepository.getAllMemosForTabNotes(selectedYear, setOptions()));
 		});
 		
 		pCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
 			p = newValue;
 			memos.clear();
-			memos.addAll(SqlMemos.getAllMemosForTabNotes(selectedYear, setOptions()));
+			memos.addAll(memoRepository.getAllMemosForTabNotes(selectedYear, setOptions()));
 		});
 		
 		notesTableView.getColumns().addAll(Arrays.asList(Col1, Col2, Col3, Col4, colBtn));

@@ -2,11 +2,10 @@ package com.ecsail.gui.common;
 
 
 import com.ecsail.EditCell;
-import com.ecsail.repository.implementations.MemoRepositoryImpl;
-import com.ecsail.repository.interfaces.MemoRepository;
-import com.ecsail.sql.select.SqlMemos;
 import com.ecsail.dto.BoatDTO;
 import com.ecsail.dto.MemoDTO;
+import com.ecsail.repository.implementations.MemoRepositoryImpl;
+import com.ecsail.repository.interfaces.MemoRepository;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
