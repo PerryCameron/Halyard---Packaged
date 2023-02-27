@@ -2,8 +2,9 @@ package com.ecsail.gui.tabs.membership;
 
 
 import com.ecsail.BaseApplication;
-import com.ecsail.gui.common.Note;
+import com.ecsail.dto.*;
 import com.ecsail.enums.MemberType;
+import com.ecsail.gui.common.Note;
 import com.ecsail.gui.tabs.membership.fiscal.HBoxHistory;
 import com.ecsail.gui.tabs.membership.fiscal.HBoxInvoiceList;
 import com.ecsail.gui.tabs.membership.fiscal.HBoxSlip;
@@ -11,15 +12,15 @@ import com.ecsail.gui.tabs.membership.information.*;
 import com.ecsail.gui.tabs.membership.people.HBoxPerson;
 import com.ecsail.gui.tabs.membership.people.VBoxAddPerson;
 import com.ecsail.repository.implementations.BoatRepositoryImpl;
+import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.implementations.MemoRepositoryImpl;
 import com.ecsail.repository.implementations.PersonRepositoryImpl;
 import com.ecsail.repository.interfaces.BoatRepository;
+import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.repository.interfaces.MemoRepository;
 import com.ecsail.repository.interfaces.PersonRepository;
 import com.ecsail.sql.SqlInsert;
-import com.ecsail.sql.select.SqlInvoice;
 import com.ecsail.sql.select.SqlMembership_Id;
-import com.ecsail.dto.*;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -38,6 +39,7 @@ public class TabMembership extends Tab {
 	protected PersonRepository personRepository = new PersonRepositoryImpl();
 	protected BoatRepository boatRepository = new BoatRepositoryImpl();
 	protected MemoRepository memoRepository = new MemoRepositoryImpl();
+	protected InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
 	private final MembershipListDTO membership;
 
 	protected ObservableList<PersonDTO> people;
@@ -55,7 +57,8 @@ public class TabMembership extends Tab {
 		ObservableList<MemoDTO> memos = FXCollections.observableArrayList(memoRepository.getMemosByMsId(membership.getMsId()));
 		this.note = new Note(memos,membership.getMsId());
 		this.people = FXCollections.observableList(personRepository.getActivePeopleByMsId(membership.getMsId()));
-		this.invoices = SqlInvoice.getInvoicesByMsid(membership.getMsId());
+		this.invoices = FXCollections.observableArrayList(invoiceRepository.getInvoicesByMsid(membership.getMsId()));
+//		this.invoices = SqlInvoice.getInvoicesByMsid(membership.getMsId());
 		this.id = FXCollections.observableArrayList(param -> new Observable[]{param.isRenewProperty()});
 		this.id.addAll(SqlMembership_Id.getIds(membership.getMsId()));
 		this.boats = FXCollections.observableArrayList(boatRepository.getBoatsByMsId(membership.getMsId()));

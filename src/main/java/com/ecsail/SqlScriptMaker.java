@@ -3,8 +3,10 @@ package com.ecsail;
 import com.ecsail.gui.dialogues.Dialogue_DatabaseBackup;
 import com.ecsail.jotform.structures.ApiKeyDTO;
 import com.ecsail.repository.implementations.BoatRepositoryImpl;
+import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.implementations.MemoRepositoryImpl;
 import com.ecsail.repository.interfaces.BoatRepository;
+import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.repository.interfaces.MemoRepository;
 import com.ecsail.sql.select.*;
 import com.ecsail.dto.*;
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 public class SqlScriptMaker {
 	static MemoRepository memoRepository = new MemoRepositoryImpl();
 	static BoatRepository boatRepository = new BoatRepositoryImpl();
+	static InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
+
 	static ObservableList<DbBoatSettingsDTO> dbBoatDTOS;
 	static ArrayList<DbTableChangesDTO> tableChangesDTOS;
 	static ArrayList<DbUpdatesDTO> dbUpdatesDTOS;
@@ -35,7 +39,7 @@ public class SqlScriptMaker {
 	static ArrayList<SlipDTO> slips;
 	static List<MemoDTO> memos;
 	static ObservableList<EmailDTO> email;
-	static ObservableList<InvoiceDTO> invoiceDTOS;
+	static List<InvoiceDTO> invoiceDTOS;
 	static ObservableList<InvoiceItemDTO> invoiceItemDTOS;
 	static ObservableList<OfficerDTO> officers;
 	static ObservableList<PaymentDTO> payments;
@@ -65,7 +69,7 @@ public class SqlScriptMaker {
 		slips = SqlSlip.getSlips();
 		memos = memoRepository.getMemosByMsId(ALL);
 		email = SqlEmail.getEmail(ALL);
-		invoiceDTOS = SqlInvoice.getAllInvoices();
+		invoiceDTOS = invoiceRepository.getAllInvoices();
 		invoiceItemDTOS = SqlInvoiceItem.getAllInvoiceItems();
 		officers = SqlOfficer.getOfficers();
 		payments = SqlPayment.getPayments();

@@ -5,7 +5,6 @@ import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.repository.implementations.BoatRepositoryImpl;
 import com.ecsail.repository.interfaces.BoatRepository;
-import com.ecsail.sql.select.SqlBoat;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.sql.select.SqlMembership_Id;
 import com.ecsail.dto.BoatDTO;

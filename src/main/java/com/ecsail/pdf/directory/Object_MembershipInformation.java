@@ -3,7 +3,6 @@ package com.ecsail.pdf.directory;
 import com.ecsail.repository.implementations.BoatRepositoryImpl;
 import com.ecsail.repository.interfaces.BoatRepository;
 import com.ecsail.sql.SqlExists;
-import com.ecsail.sql.select.SqlBoat;
 import com.ecsail.sql.select.SqlEmail;
 import com.ecsail.sql.select.SqlPerson;
 import com.ecsail.sql.select.SqlPhone;
