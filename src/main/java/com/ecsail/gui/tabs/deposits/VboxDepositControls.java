@@ -4,6 +4,8 @@ import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.gui.dialogues.Dialogue_DepositPDF;
 import com.ecsail.pdf.PDF_DepositReport;
+import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
+import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.sql.SqlCount;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlInsert;
@@ -31,7 +33,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class VboxDepositControls extends VBox {
-    private final TabDeposits tabParent;
+
+    private final TabDeposits parent;
     private final ArrayList<String> invoiceItemTypes; // a list of types of invoice items for a given year
     private final DepositDTO depositDTO;
     private final VBox vBoxSumItemsInner = new VBox();
@@ -48,8 +51,8 @@ public class VboxDepositControls extends VBox {
     private final Button insertInvoicesButton = new Button("Insert New Invoices");
 
     public VboxDepositControls(TabDeposits tabDeposits) {
-        this.tabParent = tabDeposits;
-        this.depositDTO = tabParent.getDepositDTO();
+        this.parent = tabDeposits;
+        this.depositDTO = parent.getDepositDTO();
         this.selectedYear = Integer.parseInt(depositDTO.getFiscalYear());
         this.invoiceItemTypes = SqlDbInvoice.getInvoiceCategoriesByYear(selectedYear);
         this.numberOfRecordsText.setText(String.valueOf(tabDeposits.getInvoices().size()));
@@ -219,7 +222,8 @@ public class VboxDepositControls extends VBox {
 
         insertInvoicesButton.setOnAction(event -> {
             ObservableList<InvoiceWithMemberInfoDTO> allInvoices =
-                    SqlInvoice.getInvoicesWithMembershipInfoByYear(String.valueOf(selectedYear));
+                    FXCollections.observableArrayList(parent.invoiceRepository
+                            .getInvoicesWithMembershipInfoByYear(String.valueOf(selectedYear)));
             AtomicInteger atomicBatch = new AtomicInteger(getCorrectBatch());
             allInvoices.stream()
                     .filter(invoice -> invoice.getBatch() == 0).forEach(invoice -> {
@@ -235,7 +239,7 @@ public class VboxDepositControls extends VBox {
             switch (comboBox.getValue()) {
                 case "Show All" -> new Dialogue_DepositPDF(tabDeposits, true);
                 case "Show Current" -> // Show Last always comes back to Show Current after the switch
-                        new PDF_DepositReport(tabParent, new DepositPDFDTO(true,
+                        new PDF_DepositReport(parent, new DepositPDFDTO(true,
                                 true,true, getCorrectBatch()));
             }
         });
@@ -310,7 +314,7 @@ public class VboxDepositControls extends VBox {
     }
 
     private void refreshInvoiceNumber() {
-        numberOfRecordsText.setText(String.valueOf(tabParent.getInvoices().size()));
+        numberOfRecordsText.setText(String.valueOf(parent.getInvoices().size()));
     }
 
     private void refreshDate() {
@@ -349,10 +353,11 @@ public class VboxDepositControls extends VBox {
     }
 
     private void refreshInvoices() {
-        tabParent.getInvoices().clear();
+        parent.getInvoices().clear();
         if (comboBox.getValue().equals("Show All"))
-            tabParent.getInvoices().addAll(SqlInvoice.getInvoicesWithMembershipInfoByYear(depositDTO.getFiscalYear()));
-        else tabParent.getInvoices().addAll(SqlInvoice.getInvoicesWithMembershipInfoByDeposit(depositDTO));
+            parent.getInvoices().addAll(parent.invoiceRepository.getInvoicesWithMembershipInfoByYear(depositDTO.getFiscalYear()));
+        else
+        parent.getInvoices().addAll(parent.invoiceRepository.getInvoicesWithMembershipInfoByDeposit(depositDTO));
     }
 
     private void refreshInvoiceTypes() {

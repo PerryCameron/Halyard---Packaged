@@ -109,6 +109,4 @@ public class MembershipRepositoryImpl implements MembershipRepository {
                 selectedYear,selectedYear,selectedYear,selectedYear});
         return membershipListDTOS;
     }
-
-
 }

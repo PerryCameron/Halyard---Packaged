@@ -1,8 +1,10 @@
 package com.ecsail.gui.tabs.deposits;
 
 import com.ecsail.BaseApplication;
-import com.ecsail.sql.select.SqlInvoice;
 import com.ecsail.dto.DepositDTO;
+import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
+import com.ecsail.repository.interfaces.InvoiceRepository;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Tab;
@@ -10,7 +12,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.util.List;
+
 public class TabDeposits extends Tab {
+	protected InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
 	private final ObservableList<InvoiceWithMemberInfoDTO> invoices;
 	private final String selectedYear;
 	private final InvoicesTableView tableView;
@@ -20,7 +25,7 @@ public class TabDeposits extends Tab {
 	public TabDeposits(String text) {
 		super(text);
 		this.selectedYear = BaseApplication.selectedYear;
-		this.invoices = getInvoiceItems(selectedYear);
+		this.invoices = FXCollections.observableArrayList(getInvoiceItems(selectedYear));
 		// controls on the right hand side of the screen
 		this.vboxControls = new VboxDepositControls(this);
 		// tableview on left hand side of the screen
@@ -41,8 +46,9 @@ public class TabDeposits extends Tab {
 		setContent(vboxYellow);
 	}
 
-	private ObservableList<InvoiceWithMemberInfoDTO> getInvoiceItems(String year) {
-		return SqlInvoice.getInvoicesWithMembershipInfoByYear(year);
+	private List<InvoiceWithMemberInfoDTO> getInvoiceItems(String year) {
+//		return SqlInvoice.getInvoicesWithMembershipInfoByYear(year);
+		return invoiceRepository.getInvoicesWithMembershipInfoByYear(year);
 	}
 
 	public ObservableList<InvoiceWithMemberInfoDTO> getInvoices() {
