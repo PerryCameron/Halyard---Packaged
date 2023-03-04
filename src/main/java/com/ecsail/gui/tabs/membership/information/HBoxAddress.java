@@ -16,10 +16,10 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 public class HBoxAddress extends HBox {
-    TabMembership tm;
+    TabMembership parent;
 	
-	public HBoxAddress(TabMembership tm) {
-        this.tm = tm;
+	public HBoxAddress(TabMembership parent) {
+        this.parent = parent;
 
 			ObservableList<String> states = 
 		    FXCollections.observableArrayList(
@@ -60,7 +60,7 @@ public class HBoxAddress extends HBox {
         var titledPane2 = new TitledPane();
 
         ///////////////// ATTRIBUTES //////////////////////////
-        stateComboBox.setValue(tm.getMembership().getState());
+        stateComboBox.setValue(parent.getModel().getMembership().getState());
         hbox1.setSpacing(5);
         hbox2.setSpacing(5);
         hbox3.setSpacing(5);
@@ -106,9 +106,9 @@ public class HBoxAddress extends HBox {
 		titledPane1.setId("titled");
 		titledPane2.setId("titled");
 		
-		memAddressTextField.setText(tm.getMembership().getAddress());
-		memCityTextField.setText(tm.getMembership().getCity());
-		memZipcodeTextField.setText(tm.getMembership().getZip());
+		memAddressTextField.setText(parent.getModel().getMembership().getAddress());
+		memCityTextField.setText(parent.getModel().getMembership().getCity());
+		memZipcodeTextField.setText(parent.getModel().getMembership().getZip());
 		titledPane1.setText("Primary Address");
 		titledPane2.setText("Secondary Address");
 		titledPane1.setCollapsible(false);
@@ -120,30 +120,30 @@ public class HBoxAddress extends HBox {
         memAddressTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 	            //focus out
 	            if (oldValue) {  // we have focused and unfocused
-                    tm.getMembership().setAddress(memAddressTextField.getText());
-	            		SqlUpdate.updateAddress(tm.getMembership());
+                    parent.getModel().getMembership().setAddress(memAddressTextField.getText());
+	            		SqlUpdate.updateAddress(parent.getModel().getMembership());
 	            }
 	        });
                 
         memCityTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 	            //focus out
 	            if (oldValue) {  // we have focused and unfocused
-                    tm.getMembership().setCity(memCityTextField.getText());
-	            		SqlUpdate.updateCity(tm.getMembership());
+                    parent.getModel().getMembership().setCity(memCityTextField.getText());
+	            		SqlUpdate.updateCity(parent.getModel().getMembership());
 	            }
 	        });
   
         memZipcodeTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
 	            //focus out
 	            if (oldValue) {  // we have focused and unfocused
-                    tm.getMembership().setZip(memZipcodeTextField.getText());
-	            		SqlUpdate.updateZipcode(tm.getMembership());
+                    parent.getModel().getMembership().setZip(memZipcodeTextField.getText());
+	            		SqlUpdate.updateZipcode(parent.getModel().getMembership());
 	            }
 	        });
         
         stateComboBox.getSelectionModel().selectedItemProperty().addListener( (options, oldValue, newValue) -> {
-            tm.getMembership().setState(newValue);
-        	SqlUpdate.updateState(tm.getMembership());
+            parent.getModel().getMembership().setState(newValue);
+        	SqlUpdate.updateState(parent.getModel().getMembership());
         }); 
         
 		///////////// SET CONTENT ////////////////////

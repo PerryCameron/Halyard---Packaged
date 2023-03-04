@@ -1,13 +1,10 @@
 package com.ecsail.sql;
 
 import com.ecsail.BaseApplication;
+import com.ecsail.dto.*;
 import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
-import com.ecsail.sql.select.SqlInvoice;
-import com.ecsail.dto.*;
-import javafx.collections.ObservableList;
-
 
 import java.sql.SQLException;
 import java.util.List;

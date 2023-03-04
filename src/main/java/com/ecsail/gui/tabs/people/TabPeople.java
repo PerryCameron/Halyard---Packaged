@@ -141,7 +141,7 @@ public class TabPeople extends Tab {
 		}
 		personHBox.getChildren().clear();  // remove if exists
 		//System.out.println("cleared the personHBox");
-		personHBox.getChildren().add(new HBoxPerson(person, membership,null)); // null is for tabpane not being used here.
+//		personHBox.getChildren().add(new HBoxPerson(person, )); // null is for tabpane not being used here.
 	}
 
 	public PersonDTO getPersonByPid(int pid) {

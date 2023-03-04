@@ -41,10 +41,10 @@ public class HBoxSlip extends HBox {
     private final Button submitButton = new Button("Submit");
     private final ToggleGroup group = new ToggleGroup();
 
-    TabMembership t;
+    TabMembership parent;
 
-    public HBoxSlip(TabMembership t) {
-        this.t = t;
+    public HBoxSlip(TabMembership parent) {
+        this.parent = parent;
 
 		// error messaging
 		this.noSlipLabel = new Label("None");
@@ -127,7 +127,7 @@ public class HBoxSlip extends HBox {
         ////////////// LISTENERS //////////////////////////
 
         /// this is for auto screen refreshing
-        t.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean focusLost, Boolean focusGained) -> {
+        parent.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean focusLost, Boolean focusGained) -> {
             if (focusGained) {  // focus Gained
                 refreshScreen();
             }
@@ -160,25 +160,25 @@ public class HBoxSlip extends HBox {
         });
 
         slipWaitCheckBox.selectedProperty().addListener((observable, oldValue, newValue) ->
-                SqlUpdate.updateWaitList(t.getMembership().getMsId(), "SLIP_WAIT", newValue));
+                SqlUpdate.updateWaitList(parent.getModel().getMembership().getMsId(), "SLIP_WAIT", newValue));
         kayakWaitCheckBox.selectedProperty().addListener((observable, oldValue, newValue) ->
-                SqlUpdate.updateWaitList(t.getMembership().getMsId(), "KAYAK_RACK_WAIT", newValue));
+                SqlUpdate.updateWaitList(parent.getModel().getMembership().getMsId(), "KAYAK_RACK_WAIT", newValue));
         shedWaitCheckBox.selectedProperty().addListener((observable, oldValue, newValue) ->
-                SqlUpdate.updateWaitList(t.getMembership().getMsId(), "SHED_WAIT", newValue));
+                SqlUpdate.updateWaitList(parent.getModel().getMembership().getMsId(), "SHED_WAIT", newValue));
         wantsToSubleaseCheckBox.selectedProperty().addListener((observable, oldValue, newValue) ->
-                SqlUpdate.updateWaitList(t.getMembership().getMsId(), "WANT_SUBLEASE", newValue));
+                SqlUpdate.updateWaitList(parent.getModel().getMembership().getMsId(), "WANT_SUBLEASE", newValue));
         wantsToReleaseCheckBox.selectedProperty().addListener((observable, oldValue, newValue) ->
-                SqlUpdate.updateWaitList(t.getMembership().getMsId(), "WANT_RELEASE", newValue));
+                SqlUpdate.updateWaitList(parent.getModel().getMembership().getMsId(), "WANT_RELEASE", newValue));
         slipChangeCheckBox.selectedProperty().addListener((observable, oldValue, newValue) ->
-                SqlUpdate.updateWaitList(t.getMembership().getMsId(), "WANT_SLIP_CHANGE", newValue));
+                SqlUpdate.updateWaitList(parent.getModel().getMembership().getMsId(), "WANT_SLIP_CHANGE", newValue));
 
         ///////////// ACTIONS //////////////////////////////
 
         WaitListDTO waitList;
-        if (SqlExists.waitListExists(t.getMembership().getMsId())) {
-            waitList = SqlWaitList.getWaitList(t.getMembership().getMsId());
+        if (SqlExists.waitListExists(parent.getModel().getMembership().getMsId())) {
+            waitList = SqlWaitList.getWaitList(parent.getModel().getMembership().getMsId());
         } else { //it doesn't exist
-            waitList = new WaitListDTO(t.getMembership().getMsId(), false,
+            waitList = new WaitListDTO(parent.getModel().getMembership().getMsId(), false,
                     false, false, false, false, false);
             SqlInsert.addWaitList(waitList);
         }
@@ -234,8 +234,8 @@ public class HBoxSlip extends HBox {
             if (ownsSlip(ms_id)) // this member already has a slip
                 printErrorMessage("Membership " + membershipIdTextField.getText() + " already has a slip");
             else {
-                SqlUpdate.releaseSlip(t.getMembership()); // Release all sub-leases in SQL
-                SqlUpdate.reAssignSlip(ms_id, t.getMembership()); // reassign slip to this ms_id in SQL
+                SqlUpdate.releaseSlip(parent.getModel().getMembership()); // Release all sub-leases in SQL
+                SqlUpdate.reAssignSlip(ms_id, parent.getModel().getMembership()); // reassign slip to this ms_id in SQL
                 setSlipToNone();
             }
         } else
@@ -261,18 +261,18 @@ public class HBoxSlip extends HBox {
         hbox1.getChildren().clear();
         hbox2.getChildren().clear();
         hbox1.getChildren().addAll(new Label("Slip Number:"), noSlipLabel);
-        t.getMembership().setSlip("");
+        parent.getModel().getMembership().setSlip("");
     }
 
     private void setSlipAsNone() { // for displayInformation()
-        slip = new SlipDTO(0, t.getMembership().getMsId(), "none", 0, "");
+        slip = new SlipDTO(0, parent.getModel().getMembership().getMsId(), "none", 0, "");
         hbox1.getChildren().addAll(new Label("Slip Number:"), noSlipLabel);
         setRadioButtonVisibility(false, false, false);
         hbox3.setVisible(false);
     }
 
     private void releaseSlip() {  // overloaded method
-        SqlUpdate.releaseSlip(t.getMembership());
+        SqlUpdate.releaseSlip(parent.getModel().getMembership());
         r3.setVisible(false);
     }
 
@@ -286,9 +286,9 @@ public class HBoxSlip extends HBox {
             if (ownsSlip(ms_id))  // this member already has a slip
                 printErrorMessage("Membership " + membershipIdTextField.getText() + " already has a slip");
             else {
-                SqlUpdate.updateSlip(ms_id, t.getMembership());
-                slip = SqlSlip.getSlip(t.getMembership().getMsId()); // added in because sublease changed it
-                t.getMembership().setSlip(slip.getSlipNumber());
+                SqlUpdate.updateSlip(ms_id, parent.getModel().getMembership());
+                slip = SqlSlip.getSlip(parent.getModel().getMembership().getMsId()); // added in because sublease changed it
+                parent.getModel().getMembership().setSlip(slip.getSlipNumber());
             }
         } else  // Member does not exist
             printErrorMessage("User " + membershipIdTextField.getText() + " does not exist");
@@ -364,7 +364,7 @@ public class HBoxSlip extends HBox {
     }
 
     private boolean isSubleasingSlip() {
-        return SqlExists.slipRentExists(t.getMembership().getMsId());
+        return SqlExists.slipRentExists(parent.getModel().getMembership().getMsId());
     }
 
     private boolean isLeasingOutSlip() {
@@ -372,7 +372,7 @@ public class HBoxSlip extends HBox {
     }
 
     private void setSubleasedSlip() {
-        slip = SqlSlip.getSubleasedSlip(t.getMembership().getMsId());  // gets the slip information using the sub-slip attribute
+        slip = SqlSlip.getSubleasedSlip(parent.getModel().getMembership().getMsId());  // gets the slip information using the sub-slip attribute
         Label slipNumber = new Label(slip.getSlipNumber());
         slipNumber.setTextFill(Color.DARKCYAN);
         slipNumber.setStyle("-fx-font-weight: bold;");
@@ -386,7 +386,7 @@ public class HBoxSlip extends HBox {
     }
 
     private Label setMemberSlip() {
-        slip = SqlSlip.getSlip(t.getMembership().getMsId());
+        slip = SqlSlip.getSlip(parent.getModel().getMembership().getMsId());
         Label slipNumber = new Label(slip.getSlipNumber());
         slipNumber.setTextFill(Color.BLUE);
         slipNumber.setStyle("-fx-font-weight: bold;");
@@ -400,14 +400,14 @@ public class HBoxSlip extends HBox {
     private void displaySublease(Label slipNumber) {
         Text subLease = new Text("" + SqlMembership_Id.getMembershipIDfromMsid(slip.getSubleased_to()));
         subLease.setStyle("-fx-font-weight: bold;");
-        setMouseListener(subLease, t.getMembership().getSubleaser());
+        setMouseListener(subLease, parent.getModel().getMembership().getSubleaser());
         hbox1.getChildren().addAll(new Text("Slip Number:"), slipNumber);  // member plus their slip number
         hbox2.getChildren().addAll(new Text("Subleased to:"), subLease);  // subleased to (member)
         setRadioButtonVisibility(true, true, true);
     }
 
     private boolean hasSlip() {
-        return SqlExists.slipExists((t.getMembership().getMsId()));
+        return SqlExists.slipExists((parent.getModel().getMembership().getMsId()));
     }
 
     private void setRadioButtonVisibility(boolean rb1, boolean rb2, boolean rb3) {

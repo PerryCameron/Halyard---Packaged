@@ -1,5 +1,6 @@
 package com.ecsail.gui.tabs.membership.people.person;
 
+import com.ecsail.gui.tabs.membership.people.HBoxPerson;
 import com.ecsail.gui.tabs.people.TabPeople;
 import com.ecsail.sql.SqlPerson;
 import com.ecsail.sql.SqlUpdate;
@@ -17,14 +18,14 @@ import javafx.scene.layout.VBox;
 
 public class TabPersonProperties extends Tab {
 	private final PersonDTO person;  // this is the person we are focused on.
-	private final ObservableList<PersonDTO> people;  // this is only for updating people list when in people list mode
 	private final VBoxPersonMove personMove;
-
-	public TabPersonProperties(PersonDTO p, ObservableList<PersonDTO> pe, TabPane personTabPane) {
+	HBoxPerson parent;
+	public TabPersonProperties(PersonDTO p, HBoxPerson parent) {
 		super("Properties");
+		this.parent = parent;
 		this.person = p;
-		this.people = pe;
-		this.personMove = new VBoxPersonMove(person, personTabPane);
+//		this.people = pe;
+		this.personMove = new VBoxPersonMove(person, parent.parent.getModel().getPeopleTabPane());
 		int age = SqlPerson.getPersonAge(person);
 
 		//////////// OBJECTS /////////////////
@@ -60,8 +61,8 @@ public class TabPersonProperties extends Tab {
         activeCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
 		   //activeCheckBox.setSelected(!newValue);
 			SqlUpdate.updatePersonField("IS_ACTIVE",person.getP_id(),newValue);
-			if(people != null)  // this updates the people list if in people mode
-				people.get(TabPeople.getIndexByPid(person.getP_id())).setActive(newValue);
+			if(parent.parent.getModel().getPeople() != null)  // this updates the people list if in people mode
+				parent.parent.getModel().getPeople().get(TabPeople.getIndexByPid(person.getP_id())).setActive(newValue);
 		});
 
 		//////////////// SET  CONTENT ////////////////

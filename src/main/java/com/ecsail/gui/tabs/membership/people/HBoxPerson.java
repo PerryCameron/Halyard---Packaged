@@ -3,11 +3,11 @@ package com.ecsail.gui.tabs.membership.people;
 import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.Launcher;
+import com.ecsail.dto.PersonDTO;
+import com.ecsail.gui.tabs.membership.TabMembership;
 import com.ecsail.gui.tabs.membership.people.person.*;
 import com.ecsail.gui.tabs.people.TabPeople;
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.dto.MembershipListDTO;
-import com.ecsail.dto.PersonDTO;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -30,14 +30,15 @@ import java.util.Objects;
 
 public class HBoxPerson extends HBox {
     private final PersonDTO person;
-    private final MembershipListDTO membership;
+    public TabMembership parent;
     private final ObservableList<PersonDTO> people;  // this is only for updating people list when in people list mode
     TabPersonProperties propertiesTab; // this is here for a getter, so I can get to combobox
 
 
-    public HBoxPerson(PersonDTO p, MembershipListDTO me, TabPane personTabPane) {
+    public HBoxPerson(PersonDTO p, TabMembership parent) {
+        this.parent = parent;
         this.person = p;
-        this.membership = me;
+
 
         if (Launcher.tabOpen("People List")) {
             this.people = TabPeople.people;
@@ -45,7 +46,7 @@ public class HBoxPerson extends HBox {
             this.people = null;
         }
 
-        this.propertiesTab = new TabPersonProperties(p, people, personTabPane);
+        this.propertiesTab = new TabPersonProperties(p, this);
         ImageView photo = getMemberPhoto();
         ///////////// OBJECTS /////////////////
 
@@ -175,7 +176,7 @@ public class HBoxPerson extends HBox {
             if (oldValue) {  // we have focused and unfocused
                 SqlUpdate.updateFirstName(fnameTextField.getText(), person);
                 if (person.getMemberType() == 1)  // only update table if this is the primary member
-                    membership.setFname(fnameTextField.getText());
+                    parent.getModel().getMembership().setFname(fnameTextField.getText());
                 if (people != null)  // this updates the people list if in people mode
                     people.get(TabPeople.getIndexByPid(person.getP_id())).setFname(fnameTextField.getText());
             }
@@ -186,7 +187,7 @@ public class HBoxPerson extends HBox {
             if (oldValue) {  // we have focused and unfocused
                 SqlUpdate.updateLastName(lnameTextField.getText(), person);
                 if (person.getMemberType() == 1)  // only update table if this is the primary member
-                    membership.setLname(lnameTextField.getText());
+                    parent.getModel().getMembership().setLname(lnameTextField.getText());
                 if (people != null)  // this updates the people list if in people mode
                     people.get(TabPeople.getIndexByPid(person.getP_id())).setLname(lnameTextField.getText());
             }
@@ -218,12 +219,7 @@ public class HBoxPerson extends HBox {
                     people.get(TabPeople.getIndexByPid(person.getP_id())).setBusiness(businessTextField.getText());
             }
         });
-
-//		photo.setOnMouseClicked((e) -> {
-//			if (e.getClickCount() == 1) {
-//				new Dialogue_ChoosePicture();
-//			}
-//		});
+        
 
         photo.setOnMouseExited(ex -> hboxPictureFrame.setStyle("-fx-background-color: #010e11;"));
 

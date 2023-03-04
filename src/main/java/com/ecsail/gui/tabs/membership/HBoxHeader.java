@@ -9,9 +9,9 @@ import javafx.scene.layout.HBox;
 
 public class HBoxHeader extends HBox {
 
-    public HBoxHeader(TabMembership t) {
-        MembershipListDTO m = t.getMembership();
-        MemLabelsDTO ml = t.getLabels();
+    public HBoxHeader(TabMembership parent) {
+        MembershipListDTO m = parent.getModel().getMembership();
+        MemLabelsDTO ml = parent.getModel().getLabels();
         //////////// OBJECTS //////////
         var hbox1 = new HBox(); // sub HBox1 a
         var hbox2 = new HBox(); // sub HBox1 b

@@ -3,12 +3,10 @@ package com.ecsail.repository.implementations;
 import com.ecsail.BaseApplication;
 import com.ecsail.dto.DepositDTO;
 import com.ecsail.dto.InvoiceDTO;
-import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.gui.tabs.deposits.InvoiceWithMemberInfoDTO;
 import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.repository.rowmappers.InvoiceRowMapper;
 import com.ecsail.repository.rowmappers.InvoiceWithMemberInfoRowMapper;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Collections;

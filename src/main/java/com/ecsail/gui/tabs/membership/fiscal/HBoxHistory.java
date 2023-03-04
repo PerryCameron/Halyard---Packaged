@@ -38,10 +38,10 @@ import java.util.function.Function;
 
 public class HBoxHistory extends HBox {
     private final TableView<MembershipIdDTO> idTableView;
-    private final TabMembership tm;
+    private final TabMembership parent;
     LocalDate date;
-    public HBoxHistory(TabMembership tm) {
-        this.tm = tm;
+    public HBoxHistory(TabMembership parent) {
+        this.parent = parent;
         this.idTableView = new TableView<>();
 
         /////// OBJECT INSTANCE //////
@@ -80,16 +80,16 @@ public class HBoxHistory extends HBox {
         HBox.setHgrow(this, Priority.ALWAYS);
         HBox.setHgrow(vboxGrey, Priority.ALWAYS);
 
-        tm.getMembershipId().sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year).reversed());
+        parent.getModel().getId().sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year).reversed());
 
-        idTableView.setItems(tm.getMembershipId());
+        idTableView.setItems(parent.getModel().getId());
         idTableView.setFixedCellSize(30);
         idTableView.setEditable(true);
         idTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        if (tm.getMembership().getJoinDate() != null) {
-            date = LocalDate.parse(tm.getMembership().getJoinDate(), formatter);
+        if (parent.getModel().getMembership().getJoinDate() != null) {
+            date = LocalDate.parse(parent.getModel().getMembership().getJoinDate(), formatter);
         } else {
             date = LocalDate.parse("1900-01-01", formatter);
         }
@@ -252,9 +252,9 @@ public class HBoxHistory extends HBox {
                     joinDatePicker.getEditor().setText(joinDatePicker.getConverter().toString(joinDatePicker.getValue()));
                 }
                 LocalDate date = joinDatePicker.getValue();
-                SqlUpdate.updateMembership(tm.getMembership().getMsId(), "JOIN_DATE", date);
-                tm.getMembership().setJoinDate(joinDatePicker.getValue().toString());
-                tm.getLabels().getJoinDate().setText(joinDatePicker.getValue().toString());
+                SqlUpdate.updateMembership(parent.getModel().getMembership().getMsId(), "JOIN_DATE", date);
+                parent.getModel().getMembership().setJoinDate(joinDatePicker.getValue().toString());
+                parent.getModel().getLabels().getJoinDate().setText(joinDatePicker.getValue().toString());
             }
         });
 
@@ -263,24 +263,24 @@ public class HBoxHistory extends HBox {
             // gets next available id for membership_id table
             int mid = SqlSelect.getNextAvailablePrimaryKey("membership_id", "mid"); // get last mid number add 1
             //	if tuple of year=0 and memId=0 exists anywhere in SQL not belonging to this membership then delete it
-            if (SqlExists.membershipIdBlankRowExists(String.valueOf(tm.getMembership().getMsId())))
+            if (SqlExists.membershipIdBlankRowExists(String.valueOf(parent.getModel().getMembership().getMsId())))
                 SqlDelete.deleteBlankMembershipIdRow();
             // see if another year=0 and memId=0 row exists in current tableView, bring it to top and edit
             if (blankTupleExistsInTableView()) {
-                tm.getMembershipId().sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year));
+                parent.getModel().getId().sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year));
                 idTableView.edit(0, Col1);
                 // create an appropriate new object to place in list
             } else {
-                BaseApplication.logger.info("Added history record for membership " + tm.getMembership().getMembershipId());
+                BaseApplication.logger.info("Added history record for membership " + parent.getModel().getMembership().getMembershipId());
                 // create a blank membershipId object
                 MembershipIdDTO newIdTuple = new MembershipIdDTO(mid, "0",
-                        tm.getMembership().getMsId(), "0", true, tm.getMembership().getMemType(), false, false);
+                        parent.getModel().getMembership().getMsId(), "0", true, parent.getModel().getMembership().getMemType(), false, false);
                 // add the information from the new object into SQL
                 SqlInsert.addMembershipId(newIdTuple);
                 // add the new tuple to the appropriate history tableView
-                tm.getMembershipId().add(newIdTuple);
+                parent.getModel().getId().add(newIdTuple);
                 // sort so that new membership id entry is at the top
-                tm.getMembershipId().sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year));
+                parent.getModel().getId().sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year));
                 // this line prevents strange buggy behaviour I found the solution here:
                 // https://stackoverflow.com/questions/49531071/insert-row-in-javafx-tableview-and-start-editing-is-not-working-correctly
                 idTableView.layout();
@@ -292,7 +292,7 @@ public class HBoxHistory extends HBox {
         idDelete.setOnAction((event) -> {
             int selectedIndex = idTableView.getSelectionModel().getSelectedIndex();
             if (selectedIndex >= 0) {
-                MembershipIdDTO membershipIdDTO = tm.getMembershipId().get(selectedIndex);
+                MembershipIdDTO membershipIdDTO = parent.getModel().getId().get(selectedIndex);
                 Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
                 conformation.setTitle("Delete History Entry");
                 conformation.setHeaderText(membershipIdDTO.getFiscal_Year() + " Membership " + membershipIdDTO.getMembership_id());
@@ -323,7 +323,7 @@ public class HBoxHistory extends HBox {
 
     private boolean blankTupleExistsInTableView() {
         boolean tupleExists = false;
-        for (MembershipIdDTO i : tm.getMembershipId()) {
+        for (MembershipIdDTO i : parent.getModel().getId()) {
             if (i.getFiscal_Year().equals("0") && i.getMembership_id().equals("0")) tupleExists = true;
         }
         return tupleExists;

@@ -43,9 +43,9 @@ public class Invoice extends HBox {
     protected ObservableList<InvoiceItemDTO> items;
 
     public Invoice(HBoxInvoiceList parent, int index) {
-        this.invoice = parent.getTabMembership().getInvoices().get(index);
-        this.membership = parent.getTabMembership().getMembership();
-        this.note = parent.getTabMembership().getNote();
+        this.invoice = parent.getTabMembership().getModel().getInvoices().get(index);
+        this.membership = parent.getTabMembership().getModel().getMembership();
+        this.note = parent.getTabMembership().getModel().getNote();
         ArrayList<DbInvoiceDTO> dbInvoiceDTOs = SqlDbInvoice.getDbInvoiceByYear(invoice.getYear());
         this.items = SqlInvoiceItem.getInvoiceItemsByInvoiceId(invoice.getId());
         this.fees = SqlFee.getFeesFromYear(invoice.getYear());

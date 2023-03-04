@@ -26,10 +26,9 @@ public class VBoxAddPerson extends VBox {
 	private PersonDTO person;
 	private Boolean hasError = false;
 
-
-	private final TabMembership t;
-	public VBoxAddPerson(TabMembership t) {
-		this.t = t;
+	private final TabMembership parent;
+	public VBoxAddPerson(TabMembership parent) {
+		this.parent = parent;
 
 		
 		////// OBJECTS //////
@@ -130,7 +129,7 @@ public class VBoxAddPerson extends VBox {
 		addButton.setOnAction((event) -> {
 			hasError = false;
 			int pid = SqlSelect.getNextAvailablePrimaryKey("person", "p_id");
-			person = new PersonDTO(pid, t.getMembership().getMsId(), memberType.getValue().getCode(), firstNameTextField.getText(),
+			person = new PersonDTO(pid, parent.getModel().getMembership().getMsId(), memberType.getValue().getCode(), firstNameTextField.getText(),
 					lastNameTextField.getText(), getBirthday(birthdayDatePicker.getValue()), occupationTextField.getText(),
 					businessTextField.getText(), true, "",0);
 			BaseApplication.logger.info("New Key=" + pid + " new person=" + person.getNameWithInfo());
@@ -138,7 +137,7 @@ public class VBoxAddPerson extends VBox {
 			// if adding member succeeds, clear the form
 			if (!setNewMember(person)) {
 				String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
-				t.getNote().addMemoAndReturnId("New person: " + person.getNameWithInfo() + " added as " + memberType.getValue().toString() + ".", date, 0, "N",0);
+				parent.getModel().getNote().addMemoAndReturnId("New person: " + person.getNameWithInfo() + " added as " + memberType.getValue().toString() + ".", date, 0, "N",0);
 				firstNameTextField.setText("");
 				lastNameTextField.setText("");
 				businessTextField.setText("");
@@ -192,14 +191,15 @@ public class VBoxAddPerson extends VBox {
 		checkName(person.getLname());
 		if(!hasError) {
 			addPerson(memberStringType);
-			BaseApplication.logger.info("Added " + person.getNameWithInfo() + " to " + t.getMembership().getMembershipInfo());
+			BaseApplication.logger.info("Added " + person.getNameWithInfo() + " to "
+					+ parent.getModel().getMembership().getMembershipInfo());
 		}
 		return hasError;
 	}
 
 	private void checkIfCoreMembersExist(PersonDTO person) {
 		if(person.getMemberType() < 3)
-   			if (SqlExists.personExists(person.getMemberType(), t.getMembership().getMsId())) {
+   			if (SqlExists.personExists(person.getMemberType(), parent.getModel().getMembership().getMsId())) {
 			printErrorMessage("A " + MemberType.getByCode(person.getMemberType())
 					+ " member already exists for this account");
 			hasError = true;
@@ -221,8 +221,8 @@ public class VBoxAddPerson extends VBox {
 	
 	private void addPerson(String memberType) {
 		SqlInsert.addPersonRecord(person);
-		t.getPeopleTabPane().getTabs().add(new Tab(memberType,
-				new HBoxPerson(person, t.getMembership(),t.getPeopleTabPane())));
+		parent.getModel().getPeopleTabPane().getTabs().add(new Tab(memberType,
+				new HBoxPerson(person, parent)));
     	titleLabel.setText("Add New Member");
 		titleLabel.setTextFill(Color.BLACK);
 	}

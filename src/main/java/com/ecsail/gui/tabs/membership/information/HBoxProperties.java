@@ -24,7 +24,7 @@ import java.util.Optional;
 public class HBoxProperties extends HBox {
 
     //private TextField duesText;
-    public HBoxProperties(TabMembership tm) {
+    public HBoxProperties(TabMembership parent) {
         super();
 
         //this.duesText = dt;
@@ -71,26 +71,26 @@ public class HBoxProperties extends HBox {
         removeMembershipButton.setOnAction(e -> {
             Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
             conformation.setTitle("Delete Membership");
-            conformation.setHeaderText("Membership " + tm.getMembership().getMembershipId());
+            conformation.setHeaderText("Membership " + parent.getModel().getMembership().getMembershipId());
             conformation.setContentText("Are sure you want to delete this membership?\n\n");
             DialogPane dialogPane = conformation.getDialogPane();
             dialogPane.getStylesheets().add("css/dark/dialogue.css");
             dialogPane.getStyleClass().add("dialog");
             Optional<ButtonType> result = conformation.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                deleteMembership(tm.getMembership().getMsId());
+                deleteMembership(parent.getModel().getMembership().getMsId());
             }
         });
 
         printLabelsButton1.setOnAction((actionEvent -> {
             ArrayList< LabelDTO> labels = new ArrayList<>();
             LabelDTO label = null;
-            for(PersonDTO person: tm.getPeople()) {
+            for(PersonDTO person: parent.getModel().getPeople()) {
                 if(person.getMemberType() == 1) {
                     label = new LabelDTO();
                     label.setCity("Indianapolis, Indiana");
-                    label.setNameAndMemId(person.getFullName() + " #" + String.valueOf(tm.getMembership().getMembershipId()));
-                    label.setExpires("Type "+tm.getMembership().getMemType()+", Expires: " + "03/01/" + getYear());
+                    label.setNameAndMemId(person.getFullName() + " #" + String.valueOf(parent.getModel().getMembership().getMembershipId()));
+                    label.setExpires("Type "+parent.getModel().getMembership().getMemType()+", Expires: " + "03/01/" + getYear());
                     label.setMember("Member: U.S. Sailing ILYA &YCA");
                     labels.add(label);
                     LabelPrinter.printMembershipLabel(label);
@@ -102,12 +102,12 @@ public class HBoxProperties extends HBox {
         printLabelsButton2.setOnAction((actionEvent -> {
             ArrayList< LabelDTO> labels = new ArrayList<>();
             LabelDTO label = null;
-            for(PersonDTO person: tm.getPeople()) {
+            for(PersonDTO person: parent.getModel().getPeople()) {
                 if(person.getMemberType() == 2) {
                     label = new LabelDTO();
                     label.setCity("Indianapolis, Indiana");
-                    label.setNameAndMemId(person.getFullName() + " #" + tm.getMembership().getMembershipId());
-                    label.setExpires("Type "+tm.getMembership().getMemType()+", Expires: " + "03/01/" + getYear());
+                    label.setNameAndMemId(person.getFullName() + " #" + parent.getModel().getMembership().getMembershipId());
+                    label.setExpires("Type "+parent.getModel().getMembership().getMemType()+", Expires: " + "03/01/" + getYear());
                     label.setMember("Member: U.S. Sailing ILYA &YCA");
                     labels.add(label);
                     LabelPrinter.printMembershipLabel(label);
