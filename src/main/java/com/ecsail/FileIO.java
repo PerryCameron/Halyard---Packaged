@@ -13,14 +13,14 @@ public class FileIO {
 	private static final String UNIX_FILE_SEPARATOR = "/";
 	private static final String FILE_EXTENSION = ".";
 
-public static List<LoginDTO> logins = new ArrayList<>();
+
 	
-	public static void saveLoginObjects() {  // saves user file to disk
+	public static void saveLoginObjects(List<LoginDTO> logins) {  // saves user file to disk
 		File g = new File(HalyardPaths.HOSTS);
 
 		try	{
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(g));
-			out.writeObject(logins); 
+			out.writeObject(logins);
 			out.close();
 		} catch (Exception e) {
 			BaseApplication.logger.error(e.getMessage());
@@ -30,7 +30,7 @@ public static List<LoginDTO> logins = new ArrayList<>();
 		BaseApplication.logger.info(HalyardPaths.HOSTS + " saved");
 	}
 
-	public static int getSelectedHost(String hostname) {
+	public static int getSelectedHost(String hostname, List<LoginDTO> logins) {
 		boolean error = true;
 		int count = 0;
 		int iterate = 0;
@@ -45,7 +45,7 @@ public static List<LoginDTO> logins = new ArrayList<>();
 		return count;
 	}
 	
-	public static void openLoginObjects() {
+	public static void openLoginObjects(List<LoginDTO> logins) {
 		File g = new File(HalyardPaths.HOSTS);
 		if (g.exists()) {
 			try {
@@ -75,7 +75,7 @@ public static List<LoginDTO> logins = new ArrayList<>();
 		return doesExist;
 	}
 	
-	public static int getDefaultLogon() {
+	public static int getDefaultLogon(List<LoginDTO> logins) {
 		int count = 0;
 		int iterate = 0;
 		for(LoginDTO login: logins) {

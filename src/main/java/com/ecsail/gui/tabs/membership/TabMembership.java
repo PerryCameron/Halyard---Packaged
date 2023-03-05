@@ -11,6 +11,7 @@ import com.ecsail.gui.tabs.membership.fiscal.HBoxSlip;
 import com.ecsail.gui.tabs.membership.information.*;
 import com.ecsail.gui.tabs.membership.people.HBoxPerson;
 import com.ecsail.gui.tabs.membership.people.VBoxAddPerson;
+import com.ecsail.models.MembershipTabModel;
 import com.ecsail.sql.SqlInsert;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

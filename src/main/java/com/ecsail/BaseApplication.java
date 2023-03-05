@@ -2,11 +2,12 @@ package com.ecsail;
 
 import com.ecsail.connection.ConnectDatabase;
 import com.ecsail.connection.PortForwardingL;
-import com.ecsail.plugin.*;
 import com.ecsail.dto.BoardPositionDTO;
 import com.ecsail.dto.MembershipListDTO;
-
-import com.jcraft.jsch.JSchException;
+import com.ecsail.plugin.FileDrop;
+import com.ecsail.plugin.LogFile;
+import com.ecsail.plugin.SearchToolBar;
+import com.ecsail.plugin.StandardMenus;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -20,17 +21,13 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.io.*;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Objects;
-
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Objects;
 
 import static com.ecsail.HalyardPaths.LOGFILEDIR;
 
@@ -112,7 +109,7 @@ public class BaseApplication extends Application implements Log {
         Scene scene = new Scene(borderPane, 1028, 830);
 
         // closing program with x button
-        stage.setOnHiding(event -> Platform.runLater(BaseApplication::closeDatabaseConnection));
+        stage.setOnHiding(event -> Platform.runLater(getModel().closeDatabaseConnection()));
         Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));
         stage.getIcons().add(mainIcon);
         stage.setTitle("Halyard");
@@ -146,25 +143,7 @@ public class BaseApplication extends Application implements Log {
                 "css/dark/invoice.css");
     }
 
-    public static void closeDatabaseConnection() {
-        try {
-            ConnectDatabase.getSqlConnection().close();
-            logger.info("SQL: Connection closed");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        // if ssh is connected then disconnect
-        if(connect.getSshConnection() != null)
-            if(connect.getSshConnection().getSession().isConnected()) {
-                try {
-                    connect.getSshConnection().getSession().delPortForwardingL(3306);
-                    connect.getSshConnection().getSession().disconnect();
-                    logger.info("SSH: port forwarding closed");
-                } catch (JSchException e) {
-                    e.printStackTrace();
-                }
-            }
-    }
+
 
     public static void connectDatabase() {
         connect = new ConnectDatabase(stage);
@@ -180,4 +159,6 @@ public class BaseApplication extends Application implements Log {
     public static DataSource getDataSource() {
         return connect.appConfig.getDataSource();
     }
+
+    public static com.ecsail.models.MainModel getModel() { return connect.getMainModel(); }
 }

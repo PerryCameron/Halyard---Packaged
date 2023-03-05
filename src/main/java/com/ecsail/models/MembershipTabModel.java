@@ -1,4 +1,4 @@
-package com.ecsail.gui.tabs.membership;
+package com.ecsail.models;
 
 import com.ecsail.dto.*;
 import com.ecsail.gui.common.Note;
@@ -17,13 +17,12 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TabPane;
 
 public class MembershipTabModel {
-
+    private MembershipListDTO membership;
     private PersonRepository personRepository;
     private BoatRepository boatRepository;
     private MemoRepository memoRepository;
     private InvoiceRepository invoiceRepository;
-    ObservableList<MemoDTO> memos;
-    private MembershipListDTO membership;
+    private ObservableList<MemoDTO> memos;
     private ObservableList<PersonDTO> people;
     private TabPane fiscalTabPane;
     private TabPane peopleTabPane;
@@ -34,11 +33,11 @@ public class MembershipTabModel {
     private ObservableList<BoatDTO> boats;
 
     public MembershipTabModel(MembershipListDTO membershipListDTO) {
+        this.membership = membershipListDTO;
         this.personRepository = new PersonRepositoryImpl();
         this.boatRepository = new BoatRepositoryImpl();
         this.memoRepository  = new MemoRepositoryImpl();
         this.invoiceRepository  = new InvoiceRepositoryImpl();
-        this.membership = membershipListDTO;
         this.memos = FXCollections.observableArrayList(memoRepository.getMemosByMsId(membership.getMsId()));
         this.note = new Note(memos,membership.getMsId());
         this.people = FXCollections.observableList(personRepository.getActivePeopleByMsId(membership.getMsId()));

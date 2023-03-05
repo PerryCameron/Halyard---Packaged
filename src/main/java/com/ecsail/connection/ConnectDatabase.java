@@ -7,6 +7,7 @@ import com.ecsail.enums.Officer;
 import com.ecsail.gui.tabs.welcome.HBoxWelcome;
 import com.ecsail.gui.tabs.TabLogin;
 import com.ecsail.gui.tabs.welcome.TabWelcome;
+import com.ecsail.models.MainModel;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.dto.LoginDTO;
 import javafx.application.Platform;
@@ -30,11 +31,8 @@ import java.util.Objects;
 
 public class ConnectDatabase {
 
-	public static Connection sqlConnection;
-	public PortForwardingL sshConnection;
-	public Sftp scp;
+	private MainModel mainModel = new MainModel();
 	private double titleBarHeight;
-	private LoginDTO currentLogon;
 	private int localSqlPort;
 	private ObservableList<String> choices = FXCollections.observableArrayList();
 	private String exception = "";
@@ -58,29 +56,19 @@ public class ConnectDatabase {
 
 	public ConnectDatabase(Stage primaryStage) {
 		this.primaryStage = primaryStage;
-
-		if (FileIO.hostFileExists())
-			FileIO.openLoginObjects();
-		else
-			// we are starting application for the first time
-			FileIO.logins.add(new LoginDTO(3306,3306, 22, "", "", "", "",
-					"", System.getProperty("user.home") + "/.ssh/known_hosts",
-					System.getProperty("user.home") + "/.ssh/id_rsa", false, false));
-		// our default login will be the first in the array
-		this.currentLogon = FileIO.logins.get(0);
-		this.localSqlPort = currentLogon.getLocalSqlPort();
+		this.localSqlPort = mainModel.getCurrentLogon().getLocalSqlPort();
 		loadHostsInComboBox();
 		// makes it look nice, tab not for anything useful
 			BaseApplication.tabPane.getTabs().add(new TabLogin("Log in"));
 		displayLogOn(primaryStage);
 	}
 
-	public static Connection getSqlConnection() {
-		return sqlConnection;
+	public Connection getSqlConnection() {
+		return mainModel.getSqlConnection();
 	}
 
 	public PortForwardingL getSshConnection() {
-		return sshConnection;
+		return mainModel.getSshConnection();
 	}
 
 
@@ -221,7 +209,7 @@ public class ConnectDatabase {
 		newConnectText.setFill(Color.CORNFLOWERBLUE);
 		editConnectText.setFill(Color.CORNFLOWERBLUE);
 		
-		if(currentLogon != null) {  // only true if starting for first time
+		if(mainModel.getCurrentLogon() != null) {  // only true if starting for first time
 			populateFields();
 		}
 		mainHBox.setId("box-pink");
@@ -239,7 +227,7 @@ public class ConnectDatabase {
 		
 		// when host name combo box changes
 		hostName.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-			currentLogon = FileIO.logins.get(FileIO.getSelectedHost(options.getValue()));
+			mainModel.setCurrentLogon(mainModel.getLogins().get(FileIO.getSelectedHost(options.getValue(),mainModel.getLogins())));
 			populateFields();
         });
 		
@@ -307,12 +295,12 @@ public class ConnectDatabase {
         		BaseApplication.logger.info("Host is " + host);
         		String loopback = "127.0.0.1";
         		// create ssh tunnel
-        		if(currentLogon.isSshForward()) {
+        		if(mainModel.getCurrentLogon().isSshForward()) {
         			BaseApplication.logger.info("SSH tunnel enabled");
 					BaseApplication.logger.info("Attempting to connect to " + host);
 					System.out.println("Time to port forward");
-					this.sshConnection = new PortForwardingL(currentLogon);
-					BaseApplication.logger.info("Server Alive interval: " + sshConnection.getSession().getServerAliveInterval());
+					mainModel.setSshConnection(new PortForwardingL(mainModel.getCurrentLogon()));
+					BaseApplication.logger.info("Server Alive interval: " + mainModel.getSshConnection().getSession().getServerAliveInterval());
         		} else
         			BaseApplication.logger.info("SSH connection is not being used");
         		// create mysql login
@@ -321,7 +309,7 @@ public class ConnectDatabase {
         		BaseApplication.activeMemberships = SqlMembershipList.getRoster(BaseApplication.selectedYear, true);
 				// gets a list of all the board positions to use throughout the application
 				BaseApplication.boardPositions = Officer.getPositionList();
-				this.scp = new Sftp();
+				mainModel.setScp(new Sftp());
         		logonStage.close();
         		} else {
 					BaseApplication.logger.error(exception);
@@ -330,10 +318,10 @@ public class ConnectDatabase {
         
         // deletes log on from list
 		deleteButton.setOnAction((event) -> {
-				int element = FileIO.getSelectedHost(currentLogon.getHost());
+				int element = FileIO.getSelectedHost(mainModel.getCurrentLogon().getHost(), mainModel.getLogins());
 				if (element >= 0) {
-					FileIO.logins.remove(element);
-					FileIO.saveLoginObjects();
+					mainModel.getLogins().remove(element);
+					FileIO.saveLoginObjects(mainModel.getLogins());
 					removeHostFromComboBox(hostNameField.getText());
 					// should probably set combo box to default here
 	            	cancelButton2.fire(); // refresh login back to original
@@ -344,13 +332,13 @@ public class ConnectDatabase {
 		
 		// saves new login object
         saveButton1.setOnAction((event) -> {
-            	FileIO.logins.add(new LoginDTO(Integer.parseInt(localSqlPortText.getText()),
+            	mainModel.getLogins().add(new LoginDTO(Integer.parseInt(localSqlPortText.getText()),
 						3306,22, hostNameField.getText(), userName.getText(),
 						passWord.getText(), sshUser.getText(),knownHost.getText(),
 						System.getProperty("user.home") + "/.ssh/known_hosts" ,
 						System.getProperty("user.home") + "/.ssh/id_rsa",
 						defaultCheck.isSelected(), useSshTunnel.isSelected()));
-            	FileIO.saveLoginObjects();
+            	FileIO.saveLoginObjects(mainModel.getLogins());
             	choices.add(hostNameField.getText());  // add new host name into combo box
             	hostName.setValue(hostNameField.getText());  // set combo box default to new host name
             	cancelButton2.fire(); // refresh login back to original
@@ -358,22 +346,22 @@ public class ConnectDatabase {
         
 		// saves changes to existing login object
         saveButton2.setOnAction((event) -> {
-			BaseApplication.logger.info(currentLogon.getHost());
+			BaseApplication.logger.info(mainModel.getCurrentLogon().getHost());
         		// get element number
-            	int element = FileIO.getSelectedHost(currentLogon.getHost());
+            	int element = FileIO.getSelectedHost(mainModel.getCurrentLogon().getHost(), mainModel.getLogins());
             	// save hostname for later
-            	String oldHost = currentLogon.getHost();
+            	String oldHost = mainModel.getCurrentLogon().getHost();
             	if(element >= 0) {  // the element exists, why wouldn't it exist
             		// change the specific login in the login list
-            		FileIO.logins.get(element).setHost(hostNameField.getText());
-            		FileIO.logins.get(element).setUser(userName.getText());
-            		FileIO.logins.get(element).setPasswd(passWord.getText());
-            		FileIO.logins.get(element).setLocalSqlPort(Integer.parseInt(localSqlPortText.getText()));
-            		FileIO.logins.get(element).setSshUser(sshUser.getText());
-            		FileIO.logins.get(element).setSshPass(knownHost.getText());
-            		FileIO.logins.get(element).setDefault(defaultCheck.isSelected());
-            		FileIO.logins.get(element).setSshForward(useSshTunnel.isSelected());
-            		FileIO.saveLoginObjects();
+            		mainModel.getLogins().get(element).setHost(hostNameField.getText());
+					mainModel.getLogins().get(element).setUser(userName.getText());
+					mainModel.getLogins().get(element).setPasswd(passWord.getText());
+					mainModel.getLogins().get(element).setLocalSqlPort(Integer.parseInt(localSqlPortText.getText()));
+					mainModel.getLogins().get(element).setSshUser(sshUser.getText());
+					mainModel.getLogins().get(element).setSshPass(knownHost.getText());
+					mainModel.getLogins().get(element).setDefault(defaultCheck.isSelected());
+					mainModel.getLogins().get(element).setSshForward(useSshTunnel.isSelected());
+            		FileIO.saveLoginObjects(mainModel.getLogins());
             		updateHostInComboBox(oldHost, hostNameField.getText());
             		hostName.setValue(hostNameField.getText());
             		cancelButton2.fire(); // refresh login back to original
@@ -432,14 +420,14 @@ public class ConnectDatabase {
 
 	///////////////  CLASS METHODS ///////////////////
 	private void populateFields() {
-		userName.setText(currentLogon.getUser());
-		passWord.setText(currentLogon.getPasswd());
-		hostName.setValue(currentLogon.getHost());
-		hostNameField.setText(currentLogon.getHost());
-		sshUser.setText(currentLogon.getSshUser());
-		knownHost.setText(currentLogon.getKnownHostsFile());
-		useSshTunnel.setSelected(currentLogon.isSshForward());
-		defaultCheck.setSelected(currentLogon.isDefault());
+		userName.setText(mainModel.getCurrentLogon().getUser());
+		passWord.setText(mainModel.getCurrentLogon().getPasswd());
+		hostName.setValue(mainModel.getCurrentLogon().getHost());
+		hostNameField.setText(mainModel.getCurrentLogon().getHost());
+		sshUser.setText(mainModel.getCurrentLogon().getSshUser());
+		knownHost.setText(mainModel.getCurrentLogon().getKnownHostsFile());
+		useSshTunnel.setSelected(mainModel.getCurrentLogon().isSshForward());
+		defaultCheck.setSelected(mainModel.getCurrentLogon().isDefault());
 	}
 	
 	private void clearFields() {
@@ -478,7 +466,7 @@ public class ConnectDatabase {
 	}
 	
 	private void loadHostsInComboBox() {
-		for (LoginDTO l : FileIO.logins) {
+		for (LoginDTO l : mainModel.getLogins()) {
 			this.choices.add(l.getHost());
 		}
 	}
@@ -488,7 +476,7 @@ public class ConnectDatabase {
 		try {
 			this.appConfig = new AppConfig();
 			this.appConfig.createDataSource(ip,port,user,password);
-			sqlConnection = appConfig.getDataSource().getConnection();
+			mainModel.setSqlConnection(appConfig.getDataSource().getConnection());
 			BaseApplication.tabPane.getTabs()
 			.remove(BaseApplication.tabPane.getSelectionModel().getSelectedIndex());
 			BaseApplication.tabPane.getTabs().add(new TabWelcome(new HBoxWelcome()));
@@ -509,7 +497,7 @@ public class ConnectDatabase {
 	private void showStatus() {
 		Statement stmt;
 		try {
-			stmt = sqlConnection.createStatement();
+			stmt = mainModel.getSqlConnection().createStatement();
 			ResultSet rs = stmt.executeQuery("select @@hostname;");
 		while (rs.next()) {
 			BaseApplication.logger.info("Connected to " + rs.getString(1));
@@ -523,15 +511,15 @@ public class ConnectDatabase {
 	}
 
 	private void closeConnection() {
-		BaseApplication.closeDatabaseConnection();
+		getMainModel().closeDatabaseConnection();
 		primaryStage.setTitle("Halyard (not connected)");
 	}
 
 	public ResultSet executeSelectQuery(String query) throws SQLException {
 //		BaseApplication.logger.info(query);
-		Statement stmt = ConnectDatabase.sqlConnection.createStatement();
-		if (currentLogon.isSshForward()) {
-			if (!sshConnection.getSession().isConnected()) {
+		Statement stmt = mainModel.getSqlConnection().createStatement();
+		if (mainModel.getCurrentLogon().isSshForward()) {
+			if (!mainModel.getSshConnection().getSession().isConnected()) {
 				BaseApplication.logger.error("SSH Connection is no longer connected");
 				closeConnection();
 			}
@@ -543,9 +531,9 @@ public class ConnectDatabase {
 		if(!query.startsWith("UPDATE db_table_changes")) // lets remove noise
 		System.out.println(query);
 //		BaseApplication.logger.info(query);
-		Statement stmt = ConnectDatabase.sqlConnection.createStatement();
-		if (currentLogon.isSshForward()) {
-			if (!sshConnection.getSession().isConnected()) {
+		Statement stmt = mainModel.getSqlConnection().createStatement();
+		if (mainModel.getCurrentLogon().isSshForward()) {
+			if (!mainModel.getSshConnection().getSession().isConnected()) {
 				BaseApplication.logger.error("SSH Connection is no longer connected");
 				closeConnection();
 			}
@@ -563,6 +551,10 @@ public class ConnectDatabase {
 	}
 
 	public Sftp getScp() {
-		return scp;
+		return mainModel.getScp();
+	}
+
+	public MainModel getMainModel() {
+		return mainModel;
 	}
 }

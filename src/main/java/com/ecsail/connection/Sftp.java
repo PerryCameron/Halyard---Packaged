@@ -22,7 +22,7 @@ public class Sftp {
     private ChannelSftp c;
     public Sftp() {
         try{
-            Session session = BaseApplication.connect.sshConnection.getSession();
+            Session session = BaseApplication.getModel().getSshConnection().getSession();
             Channel channel=session.openChannel("sftp");
             channel.connect();
             this.c=(ChannelSftp)channel;

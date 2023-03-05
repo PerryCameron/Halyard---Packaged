@@ -81,7 +81,7 @@ public class StandardMenus implements Plugin {
     }
 
     private void closeConnection(Stage primaryStage) {
-        BaseApplication.closeDatabaseConnection();
+        BaseApplication.getModel().closeDatabaseConnection();
         Launcher.closeTabs();
         primaryStage.setTitle("ECSC Membership Database (not connected)");
         BaseApplication.connectDatabase();
