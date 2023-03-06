@@ -4,7 +4,7 @@ package com.ecsail.repository.interfaces;
 
 import com.ecsail.dto.DepositDTO;
 import com.ecsail.dto.InvoiceDTO;
-import com.ecsail.gui.tabs.deposits.InvoiceWithMemberInfoDTO;
+import com.ecsail.views.tabs.deposits.InvoiceWithMemberInfoDTO;
 
 import java.util.List;
 

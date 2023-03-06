@@ -3,7 +3,7 @@ package com.ecsail.repository.implementations;
 import com.ecsail.BaseApplication;
 import com.ecsail.dto.Memo2DTO;
 import com.ecsail.dto.MemoDTO;
-import com.ecsail.gui.tabs.deposits.InvoiceWithMemberInfoDTO;
+import com.ecsail.views.tabs.deposits.InvoiceWithMemberInfoDTO;
 import com.ecsail.repository.interfaces.MemoRepository;
 import com.ecsail.repository.rowmappers.Memo2RowMapper;
 import com.ecsail.repository.rowmappers.MemoRowMapper;

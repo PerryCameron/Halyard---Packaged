@@ -2,7 +2,7 @@ package com.ecsail.plugin;
 
 import com.ecsail.*;
 import com.ecsail.excel.Xls_email_list;
-import com.ecsail.gui.dialogues.Dialogue_DirectoryCreation;
+import com.ecsail.views.dialogues.Dialogue_DirectoryCreation;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

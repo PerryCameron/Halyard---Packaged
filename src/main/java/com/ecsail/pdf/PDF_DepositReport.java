@@ -3,8 +3,8 @@ package com.ecsail.pdf;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
-import com.ecsail.gui.tabs.deposits.InvoiceWithMemberInfoDTO;
-import com.ecsail.gui.tabs.deposits.TabDeposits;
+import com.ecsail.views.tabs.deposits.InvoiceWithMemberInfoDTO;
+import com.ecsail.views.tabs.deposits.TabDeposits;
 import com.ecsail.repository.implementations.MemoRepositoryImpl;
 import com.ecsail.repository.interfaces.MemoRepository;
 import com.ecsail.sql.SqlExists;

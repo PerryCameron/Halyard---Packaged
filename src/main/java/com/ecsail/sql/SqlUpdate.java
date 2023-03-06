@@ -2,8 +2,8 @@ package com.ecsail.sql;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.DataBase;
-import com.ecsail.gui.dialogues.Dialogue_CustomErrorMessage;
-import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
+import com.ecsail.views.dialogues.Dialogue_CustomErrorMessage;
+import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.dto.*;
 import javafx.scene.control.Alert;

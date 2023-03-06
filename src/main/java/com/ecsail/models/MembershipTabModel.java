@@ -1,7 +1,7 @@
 package com.ecsail.models;
 
 import com.ecsail.dto.*;
-import com.ecsail.gui.common.Note;
+import com.ecsail.views.common.Note;
 import com.ecsail.repository.implementations.BoatRepositoryImpl;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.implementations.MemoRepositoryImpl;

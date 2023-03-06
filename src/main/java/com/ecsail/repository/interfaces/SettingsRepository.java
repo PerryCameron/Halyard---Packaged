@@ -3,7 +3,7 @@ package com.ecsail.repository.interfaces;
 import com.ecsail.dto.DbBoatSettingsDTO;
 import com.ecsail.dto.DbRosterSettingsDTO;
 import com.ecsail.dto.MembershipListRadioDTO;
-import com.ecsail.gui.tabs.boatlist.BoatListRadioDTO;
+import com.ecsail.views.tabs.boatlist.BoatListRadioDTO;
 
 import java.util.List;
 

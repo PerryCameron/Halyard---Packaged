@@ -2,15 +2,14 @@ package com.ecsail.plugin;
 
 import com.ecsail.Log;
 import com.ecsail.Plugin;
-import com.ecsail.gui.dialogues.Dialogue_MembershipIdSearch;
-import com.ecsail.gui.dialogues.Dialogue_Msid;
+import com.ecsail.views.dialogues.Dialogue_MembershipIdSearch;
+import com.ecsail.views.dialogues.Dialogue_Msid;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.awt.Taskbar.Feature;
 
 import static com.ecsail.plugin.StandardMenus.Configure;

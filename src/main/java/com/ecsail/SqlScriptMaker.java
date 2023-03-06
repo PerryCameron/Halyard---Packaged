@@ -1,6 +1,6 @@
 package com.ecsail;
 
-import com.ecsail.gui.dialogues.Dialogue_DatabaseBackup;
+import com.ecsail.views.dialogues.Dialogue_DatabaseBackup;
 import com.ecsail.jotform.structures.ApiKeyDTO;
 import com.ecsail.repository.implementations.BoatRepositoryImpl;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;

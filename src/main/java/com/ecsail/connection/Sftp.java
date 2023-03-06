@@ -14,7 +14,7 @@ package com.ecsail.connection;
  */
 
 import com.ecsail.BaseApplication;
-import com.ecsail.gui.tabs.boatview.AppProgressMonitor;
+import com.ecsail.views.tabs.boatview.AppProgressMonitor;
 import com.jcraft.jsch.*;
 
 

@@ -3,7 +3,7 @@ package com.ecsail.sql;
 import com.ecsail.BaseApplication;
 import com.ecsail.DataBase;
 import com.ecsail.SqlScriptMaker;
-import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
+import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.dto.*;
 

@@ -2,7 +2,7 @@ package com.ecsail.sql;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.dto.*;
-import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
+import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
 

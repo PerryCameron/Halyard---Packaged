@@ -2,7 +2,7 @@ package com.ecsail.repository.implementations;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.dto.PersonDTO;
-import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
+import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.repository.interfaces.PersonRepository;
 import com.ecsail.repository.rowmappers.PersonRowMapper;
 import org.springframework.dao.DataAccessException;

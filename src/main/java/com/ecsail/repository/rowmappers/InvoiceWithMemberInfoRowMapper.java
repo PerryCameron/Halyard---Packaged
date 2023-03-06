@@ -1,6 +1,6 @@
 package com.ecsail.repository.rowmappers;
 
-import com.ecsail.gui.tabs.deposits.InvoiceWithMemberInfoDTO;
+import com.ecsail.views.tabs.deposits.InvoiceWithMemberInfoDTO;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

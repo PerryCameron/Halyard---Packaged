@@ -1,7 +1,7 @@
 package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
-import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
+import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.dto.EmailDTO;
 import com.ecsail.dto.Email_InformationDTO;
 import com.ecsail.dto.PersonDTO;

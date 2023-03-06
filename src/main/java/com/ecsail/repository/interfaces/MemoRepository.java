@@ -2,7 +2,7 @@ package com.ecsail.repository.interfaces;
 
 import com.ecsail.dto.Memo2DTO;
 import com.ecsail.dto.MemoDTO;
-import com.ecsail.gui.tabs.deposits.InvoiceWithMemberInfoDTO;
+import com.ecsail.views.tabs.deposits.InvoiceWithMemberInfoDTO;
 
 import java.util.List;
 

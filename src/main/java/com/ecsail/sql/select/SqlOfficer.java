@@ -1,7 +1,7 @@
 package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
-import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
+import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.pdf.directory.PDF_Object_Officer;
 import com.ecsail.dto.OfficerDTO;
 import com.ecsail.dto.OfficerWithNameDTO;
