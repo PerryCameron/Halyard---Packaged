@@ -157,7 +157,7 @@ public class BaseApplication extends Application implements Log {
         HalyardPaths.checkPath(System.getProperty("user.home") + "/.ecsc/logs");
     }
     public static DataSource getDataSource() {
-        return connect.appConfig.getDataSource();
+        return connect.getMainModel().getAppConfig().getDataSource();
     }
 
     public static com.ecsail.models.MainModel getModel() { return connect.getMainModel(); }
