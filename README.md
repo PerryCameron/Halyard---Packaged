@@ -9,7 +9,7 @@ https://github.com/PerryCameron/Halyard/blob/master/src/main/resources/database/
 
 ## Welcome Page
 <p>
-    <img src="https://raw.githubusercontent.com/PerryCameron/ECSC/master/src/main/resources/screenshots/Main_SS3.png"  />
+    <img src="https://raw.githubusercontent.com/PerryCameron/ECSC/master/src/main/resources/screenshots/Main_SS.png"  />
 </p>
 
 

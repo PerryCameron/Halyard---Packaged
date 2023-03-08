@@ -88,7 +88,7 @@ public class ConnectDatabase {
 		secondScene.getStylesheets().add("css/dark/dark.css");
 		
 		HBox errorHBox = new HBox();  // for displaying errors above
-		HBox vboxUserLabel = HBoxWidgets.createHBox(Pos.CENTER_LEFT, 90);
+		HBox hboxUserLabel = HBoxWidgets.createHBox(Pos.CENTER_LEFT, 90);
 		HBox hboxUserText = new HBox();
 		HBox hboxPassLabel = HBoxWidgets.createHBox(Pos.CENTER_LEFT, 90);
 		HBox hboxPassText = new HBox();
@@ -101,7 +101,7 @@ public class ConnectDatabase {
 		HBox hboxPortLabel = HBoxWidgets.createHBox(Pos.CENTER_LEFT, 90, InsetWidget.getCommonInsets(5));
 		HBox hboxSshUserText = HBoxWidgets.createHBox(InsetWidget.getCommonInsets(5));
 		HBox hboxSshPassText = HBoxWidgets.createHBox(InsetWidget.getCommonInsets(5));
-		HBox vboxPortText = new HBox();
+		HBox hboxPortText = HBoxWidgets.createHBox(Pos.CENTER_LEFT,200,new Insets(5,5,5,0),20);
 		HBox infoBox1 = new HBox();
 		HBox infoBox2 = HBoxWidgets.createHBox(InsetWidget.getCommonInsets(5));
 		HBox infoBox3 = HBoxWidgets.createHBox(InsetWidget.getCommonInsets(5));
@@ -116,6 +116,16 @@ public class ConnectDatabase {
 		HBox addBox = new HBox();
 		HBox mainHBox = new HBox();
 		VBox vboxRight = new VBox();
+
+		infoBox1.setPadding(new Insets(20,5,5,5));
+
+		infoBox8.setPadding(new Insets(15,5,25,5));
+		vboxRight.setPadding(new Insets(20,20,0,20));
+		vboxLeft.setPadding(new Insets(0,0,0,15));
+		vboxBlue.setPadding(new Insets(10,10,10,10));
+
+		infoBox4.setAlignment(Pos.CENTER_LEFT);
+		addBox.setAlignment(Pos.CENTER_LEFT);
 
 		this.hostName = new ComboBox<>(choices);
 		this.defaultCheck = new CheckBox("Default Login");
@@ -153,19 +163,7 @@ public class ConnectDatabase {
 		infoBox7.setStyle("-fx-background-color: #e89715;");  // orange
 		*/
 //		Insets fivePad = new Insets(5,5,5,5);
-		infoBox1.setPadding(new Insets(20,5,5,5));
 
-		infoBox8.setPadding(new Insets(15,5,25,5));
-		vboxRight.setPadding(new Insets(20,20,0,20));
-		vboxLeft.setPadding(new Insets(0,0,0,15));
-		vboxBlue.setPadding(new Insets(10,10,10,10));
-		vboxPortText.setPadding(new Insets(5,5,5,0));
-
-
-		vboxPortText.setAlignment(Pos.CENTER_LEFT);
-
-		infoBox4.setAlignment(Pos.CENTER_LEFT);
-		addBox.setAlignment(Pos.CENTER_LEFT);
 
 
 		userName.setPromptText("Username");
@@ -183,12 +181,12 @@ public class ConnectDatabase {
 		hostNameField.setPrefWidth(200);
 		sshUser.setPrefWidth(200);
 		knownHost.setPrefWidth(200);
-		vboxPortText.setPrefWidth(200);
+
 		vboxBlue.setPrefWidth(width);
 
 		buttonBox2.setSpacing(10);
 		addBox.setSpacing(15);
-		vboxPortText.setSpacing(20);	
+
 		logonStage.setAlwaysOnTop(true);
 		newConnectText.setFill(Color.CORNFLOWERBLUE);
 		editConnectText.setFill(Color.CORNFLOWERBLUE);
@@ -221,7 +219,7 @@ public class ConnectDatabase {
 				clearFields();
 				infoBox3.getChildren().clear();
 				infoBox3.getChildren().addAll(hboxHostLabel2, hboxHostText2);
-				infoBox4.getChildren().addAll(hboxPortLabel, vboxPortText);
+				infoBox4.getChildren().addAll(hboxPortLabel, hboxPortText);
 				infoBox5.getChildren().add(useSshTunnel);
 				infoBox6.getChildren().addAll(hboxSshUserLabel,hboxSshUserText);
 				infoBox7.getChildren().addAll(hboxSshPassLabel,hboxSshPassText);
@@ -236,7 +234,7 @@ public class ConnectDatabase {
 					//infoBox5.setPadding(new Insets(5,5,5,5));
 					infoBox3.getChildren().clear();
 					infoBox3.getChildren().addAll(hboxHostLabel2, hboxHostText2);
-					infoBox4.getChildren().addAll(hboxPortLabel, vboxPortText);
+					infoBox4.getChildren().addAll(hboxPortLabel, hboxPortText);
 					infoBox5.getChildren().add(useSshTunnel);
 					infoBox6.getChildren().addAll(hboxSshUserLabel,hboxSshUserText);
 					infoBox7.getChildren().addAll(hboxSshPassLabel,hboxSshPassText);
@@ -368,14 +366,14 @@ public class ConnectDatabase {
 		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));
 		logonStage.getIcons().add(mainIcon);
 		
-        vboxUserLabel.getChildren().add(new Label("Username:"));
+        hboxUserLabel.getChildren().add(new Label("Username:"));
         hboxPassLabel.getChildren().add(new Label("Password:"));
         hboxHostLabel.getChildren().add(new Label("Hostname:"));
         hboxHostLabel2.getChildren().add(new Label("Hostname:"));
         hboxSshUserLabel.getChildren().add(new Label("ssh user:"));
         hboxSshPassLabel.getChildren().add(new Label("known_hosts:"));
 		hboxPortLabel.getChildren().add(new Label("SQL Port:"));
-		vboxPortText.getChildren().addAll(localSqlPortText, defaultCheck);
+		hboxPortText.getChildren().addAll(localSqlPortText, defaultCheck);
         hboxUserText.getChildren().add(userName);
         hboxPassText.getChildren().add(passWord);
         hboxHostText.getChildren().add(hostName);
@@ -387,7 +385,7 @@ public class ConnectDatabase {
         buttonBox2.getChildren().addAll(saveButton2,deleteButton,cancelButton3);
         buttonBox3.getChildren().addAll(saveButton1,cancelButton2);
         
-		infoBox1.getChildren().addAll(vboxUserLabel, hboxUserText);
+		infoBox1.getChildren().addAll(hboxUserLabel, hboxUserText);
 		infoBox2.getChildren().addAll(hboxPassLabel, hboxPassText);
 		infoBox3.getChildren().addAll(hboxHostLabel, hboxHostText);
         infoBox8.getChildren().addAll(addBox, buttonBox1);
