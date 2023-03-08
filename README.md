@@ -9,7 +9,7 @@ https://github.com/PerryCameron/Halyard/blob/master/src/main/resources/database/
 
 ## Welcome Page
 <p>
-    <img src="https://raw.githubusercontent.com/PerryCameron/ECSC/master/src/main/resources/screenshots/Main_SS.png"  />
+    <img src="https://github.com/PerryCameron/Halyard---Packaged/blob/e277e0680348e5fbca79dbb00a25ee093c944ea2/src/main/resources/screenshots/Main_SS.png"  />
 </p>
 
 
@@ -26,7 +26,7 @@ https://github.com/PerryCameron/Halyard/blob/master/src/main/resources/database/
 
 ## Roster Page
 <p>
-    <img src="https://github.com/PerryCameron/Halyard---Packaged/blob/e277e0680348e5fbca79dbb00a25ee093c944ea2/src/main/resources/screenshots/Main_SS.png"  />
+    <img src="https://github.com/PerryCameron/Halyard---Packaged/blob/b7b69f928a40124fd59058c512816685d9ae72de/src/main/resources/screenshots/List_SS.png"  />
 </p>
 
 A running list of memberships, which can be organized in many ways, this list can be used as navigation to each membership or exported as XLS files.
@@ -34,28 +34,28 @@ A running list of memberships, which can be organized in many ways, this list ca
 
 ## Membership Page
 <p>
-    <img src="https://raw.githubusercontent.com/PerryCameron/ECSC/master/src/main/resources/screenshots/Membership_SS.png"  />
+    <img src="https://github.com/PerryCameron/Halyard---Packaged/blob/b7b69f928a40124fd59058c512816685d9ae72de/src/main/resources/screenshots/Membership_SS.png"  />
 </p>
 
 Everything about a membership can be viewed and edited from this screen with ease!
 
-## Slips Page
+## Boat Page
 <p>
-    <img src="https://raw.githubusercontent.com/PerryCameron/ECSC/master/src/main/resources/screenshots/Slip_SS.png"  />
+    <img src="https://github.com/PerryCameron/Halyard---Packaged/blob/b7b69f928a40124fd59058c512816685d9ae72de/src/main/resources/screenshots/Boat_SS.png"  />
 </p>
 
 Slips can be easily viewed.  PDF creation of slip charts are also just a button click away.
 
 ## Fees Page
 <p>
-    <img src="https://raw.githubusercontent.com/PerryCameron/ECSC/master/src/main/resources/screenshots/Fee_SS.png"  />
+    <img src="https://github.com/PerryCameron/Halyard---Packaged/blob/b7b69f928a40124fd59058c512816685d9ae72de/src/main/resources/screenshots/Fee_SS.png"  />
 </p>
 
 Fees and credits can be defined for each year here.
 
 ## Local or cloud based login
 <p>
-    <img src="https://raw.githubusercontent.com/PerryCameron/ECSC/master/src/main/resources/screenshots/Login_SS.png"  />
+    <img src="https://github.com/PerryCameron/Halyard---Packaged/blob/b7b69f928a40124fd59058c512816685d9ae72de/src/main/resources/screenshots/Welcome_SS.png"  />
 </p>
 
 
