@@ -44,14 +44,14 @@ Everything about a membership can be viewed and edited from this screen with eas
     <img src="https://github.com/PerryCameron/Halyard---Packaged/blob/b7b69f928a40124fd59058c512816685d9ae72de/src/main/resources/screenshots/Boat_SS.png"  />
 </p>
 
-Slips can be easily viewed.  PDF creation of slip charts are also just a button click away.
+Boats can be easily accounted for
 
 ## Fees Page
 <p>
     <img src="https://github.com/PerryCameron/Halyard---Packaged/blob/b7b69f928a40124fd59058c512816685d9ae72de/src/main/resources/screenshots/Fee_SS.png"  />
 </p>
 
-Fees and credits can be defined for each year here.
+Fees and credits can be defined for each year here. You can also determine what type of interface you would like to use for each
 
 ## Local or cloud based login
 <p>
