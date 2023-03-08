@@ -26,7 +26,7 @@ https://github.com/PerryCameron/Halyard/blob/master/src/main/resources/database/
 
 ## Roster Page
 <p>
-    <img src="https://raw.githubusercontent.com/PerryCameron/ECSC/master/src/main/resources/screenshots/Roster_SS.png"  />
+    <img src="https://github.com/PerryCameron/Halyard---Packaged/blob/e277e0680348e5fbca79dbb00a25ee093c944ea2/src/main/resources/screenshots/Main_SS.png"  />
 </p>
 
 A running list of memberships, which can be organized in many ways, this list can be used as navigation to each membership or exported as XLS files.
