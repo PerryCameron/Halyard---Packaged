@@ -45,6 +45,7 @@ public class PortForwardingL {
             int assingedPort = 0;
             // this prevents exception from filling log if mysql is running locally for testing
             try {
+                BaseApplication.logger.info("Attempting to bind SQL port");
                 assingedPort = session.setPortForwardingL(login.getLocalSqlPort(), "127.0.0.1", login.getRemoteSqlPort());
             } catch (JSchException e) {
                 BaseApplication.logger.error(e.getMessage() + " Check to see if database is running locally");

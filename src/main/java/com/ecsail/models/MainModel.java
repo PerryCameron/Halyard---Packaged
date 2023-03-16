@@ -34,10 +34,9 @@ public class MainModel {
         this.currentLogon = logins.get(0);
     }
 
-    public Runnable connect = () -> {
+    public Boolean connect()  {
         BaseApplication.logger.info("Host is " + host.get());
         String loopback = "127.0.0.1";
-
         // create ssh tunnel
         if(currentLogon.isSshForward()) {
             BaseApplication.logger.info("SSH tunnel enabled");
@@ -56,6 +55,7 @@ public class MainModel {
         } else {
             BaseApplication.logger.error("Can not connect to SQL server");
         }
+        return sshConnection.getSession().isConnected();
     };
 
     protected Boolean createConnection(String user, String password, String ip, int port) {

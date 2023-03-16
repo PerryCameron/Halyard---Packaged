@@ -10,9 +10,12 @@ import com.ecsail.views.tabs.welcome.HBoxWelcome;
 import com.ecsail.views.tabs.welcome.TabWelcome;
 import com.ecsail.widgetfx.HBoxWidgets;
 import com.ecsail.widgetfx.InsetWidget;
+import javafx.animation.Interpolator;
+import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -25,6 +28,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -56,6 +60,10 @@ public class ConnectDatabase {
 	Stage primaryStage;
 
 
+
+	RotateTransition rotateTransition;
+
+
 	public ConnectDatabase(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		this.localSqlPort = mainModel.getCurrentLogon().getLocalSqlPort();
@@ -81,6 +89,11 @@ public class ConnectDatabase {
 		logonStage.setTitle("Login");
 		Image loginLogo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/ships_wheel.png")));
 		ImageView logo = new ImageView(loginLogo);
+		rotateTransition = new RotateTransition(Duration.seconds(5), logo);
+		rotateTransition.setByAngle(360);
+		rotateTransition.setCycleCount(RotateTransition.INDEFINITE);
+		rotateTransition.setInterpolator(Interpolator.LINEAR);
+
 		VBox vboxBlue = new VBox();
 		VBox vboxLeft = new VBox(); // this creates a pink border around the table
 		Pane loginPane = new Pane();
@@ -129,6 +142,7 @@ public class ConnectDatabase {
 
 		this.hostName = new ComboBox<>(choices);
 		this.defaultCheck = new CheckBox("Default Login");
+
 		this.useSshTunnel = new CheckBox("Use ssh tunnel");
 		this.localSqlPortText = new TextField();
 		localSqlPortText.textProperty().bindBidirectional(mainModel.localSqlPortProperty());
@@ -272,40 +286,11 @@ public class ConnectDatabase {
 
 		loginButton.setOnAction((event) -> {
 			System.out.println("Starting thread");
-			Thread thread = new Thread(mainModel.connect);
-			thread.start();
-			try {
-				// Wait for the thread to complete
-				thread.join();
-				primaryStage.setTitle("Halyard");
-				BaseApplication.tabPane.getTabs().remove(BaseApplication.tabPane.getSelectionModel().getSelectedIndex());
-				BaseApplication.tabPane.getTabs().add(new TabWelcome(new HBoxWelcome()));
-				showStatus();
-				logonStage.close();
-				// Code to execute after the thread completes successfully
-			} catch (InterruptedException e) {
-				// Handle the exception if the thread is interrupted while waiting
-				e.printStackTrace();
-			}
-
-//			ProgressIndicatorWindow progressIndicatorWindow = new ProgressIndicatorWindow();
-//			Task<Void> task = new Task<>() {
-//				@Override
-//				protected Void call() throws Exception {
-//					for (int i = 0; i < 100; i++) {
-//						Thread.sleep(50);
-//						updateProgress(i + 1, 100);
-//					}
-//					return null;
-//				}
-//			};
-//			progressIndicatorWindow.startTask(task);
-//			progressIndicatorWindow.show();
-//			task.setOnSucceeded(e -> progressIndicatorWindow.hide());
-
+			rotateTransition.play();
+			connectToServer();
         });
 
-        // deletes log on from list
+		// deletes log on from list
 		deleteButton.setOnAction((event) -> {
 				int element = FileIO.getSelectedHost(mainModel.getCurrentLogon().getHost(), mainModel.getLogins());
 				if (element >= 0) {
@@ -400,8 +385,6 @@ public class ConnectDatabase {
 		loginPane.getChildren().add(vboxBlue);
 		logonStage.setScene(secondScene);
 		logonStage.show();
-
-//		BaseApplication.logger.info(HalyardPaths.getOperatingSystem() + " Detected");
 		this.titleBarHeight = logonStage.getHeight() - secondScene.getHeight();
 		logonStage.setHeight(vboxBlue.getHeight() + titleBarHeight);
 		logonStage.setResizable(false);
@@ -409,6 +392,34 @@ public class ConnectDatabase {
 
 	///////////////  CLASS METHODS ///////////////////
 
+	private void connectToServer() {
+		Task<Boolean> connectTask = new Task<Boolean>() {
+			@Override
+			protected Boolean call() throws Exception {
+				// Perform database connection here
+				return mainModel.connect();
+			}
+		};
+		connectTask.setOnSucceeded(event -> {
+			boolean connectionSuccessful = connectTask.getValue();
+			if (connectionSuccessful) {
+				rotateTransition.stop();
+				primaryStage.setTitle("Halyard");
+				BaseApplication.tabPane.getTabs().remove(BaseApplication.tabPane.getSelectionModel().getSelectedIndex());
+				BaseApplication.tabPane.getTabs().add(new TabWelcome(new HBoxWelcome()));
+				showStatus();
+				logonStage.close();
+				// Code to execute after the task completes successfully
+			} else {
+				// Handle the case where the connection fails
+			}
+		});
+		connectTask.setOnFailed(event -> {
+			BaseApplication.logger.error(connectTask.getException().getMessage());
+		});
+		Thread thread = new Thread(connectTask);
+		thread.start();
+	}
 
 	private void populateFields() {
 		userName.setText(mainModel.getCurrentLogon().getUser());
@@ -462,7 +473,6 @@ public class ConnectDatabase {
 		}
 	}
 
-	
 	private void setMouseListener(Text text) {
 		text.setOnMouseExited(ex -> text.setFill(Color.CORNFLOWERBLUE));
 		text.setOnMouseEntered(en -> text.setFill(Color.RED));
