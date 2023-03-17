@@ -199,6 +199,4 @@ public class MainModel {
                     System.getProperty("user.home") + "/.ssh/id_rsa", false, false));
         return loginDTOS;
     }
-
-
 }

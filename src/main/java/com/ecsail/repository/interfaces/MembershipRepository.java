@@ -11,4 +11,5 @@ public interface MembershipRepository {
     List<MembershipListDTO> getAllRoster(String selectedYear);
     List<MembershipListDTO> getNewMemberRoster(String selectedYear);
     List<MembershipListDTO> getReturnMemberRoster(String selectedYear);
+    List<MembershipListDTO> getSlipWaitList(String selectedYear);
 }

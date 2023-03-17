@@ -109,4 +109,20 @@ public class MembershipRepositoryImpl implements MembershipRepository {
                 selectedYear,selectedYear,selectedYear,selectedYear});
         return membershipListDTOS;
     }
+
+    @Override
+    public List<MembershipListDTO> getSlipWaitList(String selectedYear) {
+        String query = """
+                SELECT m.ms_id,m.p_id,id.membership_id,id.fiscal_year,id.fiscal_year,m.join_date,id.mem_type,
+                s.SLIP_NUM,p.l_name,p.f_name,s.subleased_to,m.address,m.city,m.state,m.zip
+                FROM (SELECT * from wait_list where SLIP_WAIT=true) wl
+                INNER JOIN (select * from membership_id where FISCAL_YEAR=? and RENEW=1) id on id.MS_ID=wl.MS_ID
+                INNER JOIN membership m on m.MS_ID=wl.MS_ID
+                LEFT JOIN (select * from person where MEMBER_TYPE=1) p on m.MS_ID= p.MS_ID
+                LEFT JOIN slip s on m.MS_ID = s.MS_ID;
+                """;
+        List<MembershipListDTO> membershipListDTOS
+                = template.query(query, new MembershipListRowMapper(), new Object[]{selectedYear});
+        return membershipListDTOS;
+    }
 }
