@@ -17,7 +17,6 @@ public class FileIO {
 	
 	public static void saveLoginObjects(List<LoginDTO> logins) {  // saves user file to disk
 		File g = new File(HalyardPaths.HOSTS);
-
 		try	{
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(g));
 			out.writeObject(logins);

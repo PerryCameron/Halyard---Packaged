@@ -199,7 +199,7 @@ public class ConnectDatabase {
 
 
 
-		buttonBox2.setSpacing(10);
+//		buttonBox2.setSpacing(10);
 		addBox.setSpacing(15);
 
 		logonStage.setAlwaysOnTop(true);
