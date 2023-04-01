@@ -103,7 +103,6 @@ public class Invoice extends HBox {
             for (String key : invoiceItemMap.keySet()) {
                 if (invoiceItemMap.get(key).getDbInvoiceDTO().getOrder() == i) {
                     vboxMain.getChildren().add(invoiceItemMap.get(key));
-//                    System.out.println("item " + i + " " + invoiceItemMap.get(key).itemName);
                 }
             }
         }
@@ -129,10 +128,7 @@ public class Invoice extends HBox {
             // has no officer but was once set as officer, will remove position credit // TODO need to test
             if(SqlExists.invoiceItemPositionCreditExistsWithValue(invoice.getYear(),invoice.getMsId())) {
                 invoiceItemMap.get("Position Credit").invoiceItemDTO.setQty(0);
-                // this is a stupid hack that seems to fix a problem of it being bound in InvoiceItemRow line 77
-//                invoiceItemMap.get("Position Credit").invoiceItemDTO.valueProperty().unbind();
                 invoiceItemMap.get("Position Credit").invoiceItemDTO.setValue("0.00");
-
                 updateInvoiceItem(invoiceItemMap.get("Position Credit").invoiceItemDTO);
             }
         }
