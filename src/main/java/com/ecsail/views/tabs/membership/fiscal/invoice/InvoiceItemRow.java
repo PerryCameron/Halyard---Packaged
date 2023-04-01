@@ -9,6 +9,8 @@ import com.ecsail.dto.DbInvoiceDTO;
 import com.ecsail.dto.FeeDTO;
 import com.ecsail.dto.InvoiceDTO;
 import com.ecsail.dto.InvoiceItemDTO;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -42,6 +44,8 @@ public class InvoiceItemRow extends HBox {
     InvoiceDTO invoice;
     Invoice parent;
 
+    private StringProperty thisValue = new SimpleStringProperty();
+
     public InvoiceItemRow(Invoice invoice, DbInvoiceDTO dbInvoiceDTO, InvoiceFooter footer) {
         this.parent = invoice;
         this.dbInvoiceDTO = dbInvoiceDTO;
@@ -68,13 +72,15 @@ public class InvoiceItemRow extends HBox {
         vBox4.getChildren().add(price);
         vBox5.setAlignment(Pos.CENTER_RIGHT);
         if(!dbInvoiceDTO.isItemized()) // don't set this for itemized rows
-            rowTotal.setText(invoiceItemDTO.getValue());
+//            rowTotal.setText(invoiceItemDTO.getValue());
+//            textField.setText(invoiceItemDTO.getValue());
         // OMFG This was a hard bug to find, by binding the itemized rows it caused the category rows
         // to put the value inside them. This caused a doubling of fees in total calculation
         // lesson learned, be very careful using bindings. line below fixes problem
 //        System.out.println(this.itemName + " has a dbInvoiceDTO of " + dbInvoiceDTO.getWidgetType());
 //        if(!dbInvoiceDTO.getWidgetType().equals("itemized"))
-        invoiceItemDTO.valueProperty().bind(rowTotal.textProperty()); //  value of Text to DTO
+//        invoiceItemDTO.valueProperty().bind(rowTotal.textProperty()); //  value of Text to DTO
+        rowTotal.textProperty().bind(invoiceItemDTO.valueProperty());
         if(this.invoiceItemDTO.isCredit()) rowTotal.setId("invoice-text-credit");
         vBox5.getChildren().add(rowTotal);
     }
@@ -134,7 +140,8 @@ public class InvoiceItemRow extends HBox {
             case "text-field" -> {
                 textField = new TextField();
                 textField.setPrefWidth(dbInvoiceDTO.getWidth());
-                textField.textProperty().bindBidirectional(rowTotal.textProperty());
+//                textField.textProperty().bindBidirectional(rowTotal.textProperty());
+                textField.setText(invoiceItemDTO.getValue());
                 setTextFieldListener();
                 // below if statement added because it needed to update dues.
                 if(!invoiceItemDTO.getValue().equals("0.00")) {
@@ -278,6 +285,7 @@ public class InvoiceItemRow extends HBox {
 	            	BigDecimal item = new BigDecimal(textField.getText());
 					textField.setText(String.valueOf(item.setScale(2, RoundingMode.HALF_UP)));
                     invoiceItemDTO.setQty(1);
+                    invoiceItemDTO.setValue(textField.getText());
                     updateBalance();
                     checkIfNotCommittedAndUpdateSql();
 	            }

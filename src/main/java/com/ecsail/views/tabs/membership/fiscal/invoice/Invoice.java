@@ -121,7 +121,7 @@ public class Invoice extends HBox {
             //if position doesn't already exist then add it
             if(!SqlExists.invoiceItemPositionCreditExistsWithValue(invoice.getYear(),invoice.getMsId())) {
                 invoiceItemMap.get("Position Credit").getRowTotal().setText(invoiceItemMap.get("Dues").getRowTotal().getText());
-                // TODO this needs to be tested ( added so that deposit reports witll show qty)
+                // TODO this needs to be tested ( added so that deposit reports will show qty)
                 invoiceItemMap.get("Position Credit").invoiceItemDTO.setQty(1);
                 updateInvoiceItem(invoiceItemMap.get("Position Credit").invoiceItemDTO);
             }
@@ -130,8 +130,9 @@ public class Invoice extends HBox {
             if(SqlExists.invoiceItemPositionCreditExistsWithValue(invoice.getYear(),invoice.getMsId())) {
                 invoiceItemMap.get("Position Credit").invoiceItemDTO.setQty(0);
                 // this is a stupid hack that seems to fix a problem of it being bound in InvoiceItemRow line 77
-                invoiceItemMap.get("Position Credit").invoiceItemDTO.valueProperty().unbind();
+//                invoiceItemMap.get("Position Credit").invoiceItemDTO.valueProperty().unbind();
                 invoiceItemMap.get("Position Credit").invoiceItemDTO.setValue("0.00");
+
                 updateInvoiceItem(invoiceItemMap.get("Position Credit").invoiceItemDTO);
             }
         }
