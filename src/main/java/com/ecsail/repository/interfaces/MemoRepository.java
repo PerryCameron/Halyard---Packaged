@@ -10,7 +10,7 @@ public interface MemoRepository {
 
     List<MemoDTO> getMemosByMsId(int ms_id);
     List<MemoDTO> getMemosByBoatId(int boat_id);
-    MemoDTO getMemoByMsId(InvoiceWithMemberInfoDTO invoice, String category);
+    MemoDTO getMemoByInvoiceIdAndCategory(InvoiceWithMemberInfoDTO invoice, String category);
     List<Memo2DTO> getAllMemosForTabNotes(String year, String category);
 
 }

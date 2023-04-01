@@ -223,8 +223,7 @@ public class PDF_DepositReport {
 		String thisMemo;
 		// make sure the memo exists
 		if(SqlExists.memoExists(invoice.getId(), "I")) {
-//		thisMemo = SqlMemos.getMemoByMsId(invoice, "I").getMemo();
-			thisMemo = memoRepository.getMemoByMsId(invoice, "I").getMemo();
+			thisMemo = memoRepository.getMemoByInvoiceIdAndCategory(invoice, "I").getMemo();
 		} else {
 		thisMemo = "No note for this entry";
 		}

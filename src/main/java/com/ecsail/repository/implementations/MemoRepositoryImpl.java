@@ -38,13 +38,15 @@ public class MemoRepositoryImpl implements MemoRepository {
     }
 
     @Override
-    public MemoDTO getMemoByMsId(InvoiceWithMemberInfoDTO invoice, String category) {
-        String query = "SELECT * FROM memo WHERE INVOICE_ID=:invoiceId AND category=:category";
-        SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("invoiceId", invoice.getId())
-                .addValue("category", category);
+    public MemoDTO getMemoByInvoiceIdAndCategory(InvoiceWithMemberInfoDTO invoice, String category) {
+                String query = "SELECT * FROM memo WHERE INVOICE_ID=" + invoice.getId() + " AND category='" + category + "'";
+
+//        String query = "SELECT * FROM memo WHERE INVOICE_ID=:invoiceId AND category=:category";
+//        SqlParameterSource params = new MapSqlParameterSource()
+//                .addValue("invoiceId", invoice.getId())
+//                .addValue("category", category);
         MemoDTO memoDTO =
-                template.queryForObject(query, new MemoRowMapper(), params);
+                template.queryForObject(query, new MemoRowMapper());
         return memoDTO;
     }
 
