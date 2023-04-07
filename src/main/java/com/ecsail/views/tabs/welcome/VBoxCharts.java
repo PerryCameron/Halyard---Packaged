@@ -1,15 +1,13 @@
 package com.ecsail.views.tabs.welcome;
 
-import com.ecsail.views.dialogues.Dialogue_LoadNewStats;
 import com.ecsail.HalyardPaths;
-import com.ecsail.sql.select.SqlStats;
 import com.ecsail.dto.StatsDTO;
+import com.ecsail.sql.select.SqlStats;
+import com.ecsail.views.dialogues.Dialogue_LoadNewStats;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -17,6 +15,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.stream.IntStream;
 
 
 public class VBoxCharts extends VBox {
@@ -38,10 +38,10 @@ public class VBoxCharts extends VBox {
         // problem is that the object hasn't been created yet
 //        reloadStats();
         this.totalNumbOfYears = SqlStats.getNumberOfStatYears();
-        final CategoryAxis xAxis = new CategoryAxis();
-        final NumberAxis yAxis = new NumberAxis();
-        var membershipsByYearChart = new MembershipStackedBarChart(stats, xAxis,yAxis);
-        var membershipBarChart = new MembershipBarChart(new CategoryAxis(),new NumberAxis(),stats,1);
+//        final CategoryAxis xAxis = new CategoryAxis();
+//        final NumberAxis yAxis = new NumberAxis();
+        var membershipsByYearChart = new MembershipStackedBarChart(stats);
+        var membershipBarChart = new MembershipBarChart(stats,1);
         var hBoxControlBar = new HBox();
         var vBoxCharts = new VBox();
         var refreshButton = new Button("Refresh Data");
@@ -64,7 +64,7 @@ public class VBoxCharts extends VBox {
         comboBoxYears.setValue(defaultNumbOfYears +1);
         comboBoxBottomChartSelection.setValue("Non-Renew");
         hBoxControlBar.setPadding(new Insets(5,0,5,5));
-        comboBoxStartYear.setValue(defaultStartYear);
+//        comboBoxStartYear.setValue(defaultStartYear);
         hBoxStart.setSpacing(5);
         hBoxStop.setSpacing(5);
         hBoxStart.setAlignment(Pos.CENTER_LEFT);
@@ -112,7 +112,6 @@ public class VBoxCharts extends VBox {
         hBoxTop.getChildren().addAll(new Label("Bottom"),comboBoxBottomChartSelection);
         hBoxControlBar.getChildren().addAll(hBoxStart,hBoxStop,hBoxTop,refreshButton);
         vBoxCharts.getChildren().addAll(membershipsByYearChart,membershipBarChart);
-
         this.getChildren().addAll(vBoxCharts,hBoxControlBar);
     }
 
@@ -129,15 +128,15 @@ public class VBoxCharts extends VBox {
     }
 
     private void populateComboBoxWithYears(ComboBox<Integer> comboBox) {
-        for(int i = currentYear -10; i > 1969; i--) {
-            comboBox.getItems().add(i);
-        }
+        IntStream.rangeClosed(1969, currentYear - 10)
+                .boxed()
+                .sorted(Comparator.reverseOrder())
+                .forEach(comboBox.getItems()::add);
     }
 
     private void populateComboBoxWithNumberOfYears(ComboBox<Integer> comboBox) {
-        for(int i = 10; i < totalNumbOfYears; i++) {
-            comboBox.getItems().add(i);
-        }
+        IntStream.rangeClosed(10, totalNumbOfYears - 1)
+                .forEach(comboBox.getItems()::add);
     }
 
     public void setDataBaseStatisticsRefreshed(boolean dataBaseStatisticsRefreshed) {

@@ -65,6 +65,7 @@ public class DataBase {
             case "UPDATE" -> tableName = splitQuery[1];
             case "DELETE" -> tableName = splitQuery[2];
             case "INSERT" -> tableName = splitQuery[2];
+            case "ALTER" -> tableName = splitQuery[2];
         }
         return tableName;
     }

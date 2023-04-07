@@ -250,7 +250,7 @@ public class SqlInsert {
 
 	public static void addStatRecord(StatsDTO s) {
 		String query = "INSERT INTO stats () VALUES ("
-				+ s.getStatId() + ","
+				+ null + "," // autoincrement
 				+ s.getFiscalYear() + ","
 				+ s.getActiveMemberships() + ","
 				+ s.getNonRenewMemberships() + ","

@@ -75,12 +75,10 @@ public class Dialogue_LoadNewStats extends Stage {
 	        @Override
 	        protected String call() {
 	        for (int i = 0; i < numberOfYears; i++) {
-	        StatsDTO stats = SqlStats.createStatDTO(startYear,statId);
+	        StatsDTO stats = SqlStats.createStatDTO(startYear);
 			SqlInsert.addStatRecord(stats);
-			System.out.print(startYear + " ");
 			startYear++;
 			statId++;
-			if(statId % 10 == 0) System.out.println();
 			pb.setProgress((double)statId/ numberOfYears);
 		}
 			return null;

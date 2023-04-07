@@ -43,13 +43,13 @@ public class SqlStats {
         return stats;
     }
 
-    public static StatsDTO createStatDTO(int year, int statID) {
+    public static StatsDTO createStatDTO(int year) {
         StatsDTO stat = null;
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(getStatQuery(year));
             while (rs.next()) {
                 stat = new StatsDTO(
-                        statID,
+                        0,
                         rs.getInt("YEAR"),
                         rs.getInt("ACTIVE_MEMBERSHIPS"), // active membership
                         rs.getInt("NON_RENEW"),

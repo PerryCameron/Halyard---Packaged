@@ -25,13 +25,13 @@ public class MembershipStackedBarChart extends StackedBarChart<String,Number> {
 	Series<String,Number> seriesLakeAssociate = new Series<>();
 	Series<String,Number> seriesLifeMember = new Series<>();
 
-	public MembershipStackedBarChart(ArrayList<StatsDTO> stats, CategoryAxis xAxis, NumberAxis yAxis) {
-		super(xAxis,yAxis);
+	public MembershipStackedBarChart(ArrayList<StatsDTO> stats) {
+		super(new CategoryAxis(),new NumberAxis());
 //		super(new CategoryAxis(), xAxis);
 
 		this.stats = stats;
 	        setTitle("Active Memberships By Year");
-			xAxis.setAutoRanging(true);
+			getXAxis().setAutoRanging(true);
 			setNames();
 			addData();
 

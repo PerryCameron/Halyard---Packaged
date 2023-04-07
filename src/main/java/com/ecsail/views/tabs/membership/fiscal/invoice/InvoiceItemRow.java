@@ -72,7 +72,13 @@ public class InvoiceItemRow extends HBox {
         vBox4.getChildren().add(price);
         vBox5.setAlignment(Pos.CENTER_RIGHT);
         if(!dbInvoiceDTO.isItemized()) // don't set this for itemized rows
-        rowTotal.textProperty().bind(invoiceItemDTO.valueProperty());
+            // caused too many problems
+//        rowTotal.textProperty().bind(invoiceItemDTO.valueProperty());
+            // sets all initial values
+        rowTotal.textProperty().set(invoiceItemDTO.getValue());
+        invoiceItemDTO.valueProperty().addListener(observable -> {
+            rowTotal.textProperty().set(invoiceItemDTO.getValue());
+        });
         if(this.invoiceItemDTO.isCredit()) rowTotal.setId("invoice-text-credit");
         vBox5.getChildren().add(rowTotal);
     }
@@ -132,7 +138,6 @@ public class InvoiceItemRow extends HBox {
             case "text-field" -> {
                 textField = new TextField();
                 textField.setPrefWidth(dbInvoiceDTO.getWidth());
-//                textField.textProperty().bindBidirectional(rowTotal.textProperty());
                 textField.setText(invoiceItemDTO.getValue());
                 setTextFieldListener();
                 // below if statement added because it needed to update dues.
@@ -226,6 +231,7 @@ public class InvoiceItemRow extends HBox {
 		spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
             String calculatedTotal = String.valueOf(new BigDecimal(fee.getFieldValue()).multiply(BigDecimal.valueOf(newValue)));
 			rowTotal.setText(calculatedTotal);
+            invoiceItemDTO.setValue(calculatedTotal);
             invoiceItemDTO.setQty(newValue);
             updateBalance();
 		});

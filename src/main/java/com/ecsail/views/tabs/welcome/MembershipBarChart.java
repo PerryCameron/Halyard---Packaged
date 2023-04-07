@@ -6,6 +6,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
 
 import java.util.ArrayList;
 
@@ -16,14 +18,14 @@ public class MembershipBarChart extends BarChart<String,Number> {
     ObservableList<Data<String,Number>> newMemberData = FXCollections.observableArrayList();
     ObservableList<Data<String,Number>> returnMemberData = FXCollections.observableArrayList();
     Series seriesData = new Series();
-    public MembershipBarChart(Axis xAxis, Axis yAxis, ArrayList<StatsDTO> stats, int set) {
-        super(xAxis, yAxis);
+    public MembershipBarChart(ArrayList<StatsDTO> stats, int set) {
+        super(new CategoryAxis(),new NumberAxis());
         this.stats = stats;
         this.set = set;
         setLegendVisible(false);
         setAnimated(false);
         setTitle("Non-Renewed Memberships");
-        xAxis.setLabel("Years");
+        getXAxis().setLabel("Years");
 
     addData();
     setSeriesData();

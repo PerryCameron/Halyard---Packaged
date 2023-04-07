@@ -6,7 +6,6 @@ import com.ecsail.Launcher;
 import com.ecsail.customwidgets.BigButton;
 import javafx.geometry.Insets;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 // this is the contents inside tabWelcome() launched from ConnectDatabase() about line 229
@@ -37,11 +36,8 @@ public class HBoxWelcome extends HBox {
 		vboxRight.setPadding(new Insets(15,0,0,0));
 		this.setPadding(new Insets(0,10,0,0));
 		this.setSpacing(10);
-		VBox.setVgrow(vboxRight, Priority.ALWAYS);
-		VBox.setVgrow(vboxLeft, Priority.ALWAYS);
 		
 		///////////////// LISTENERS  /////////////////////////
-
 
 		rosterButton.setOnAction((event) -> Launcher.openRosterTab());
 		peopleListButton.setOnAction((event) -> Launcher.openPeopleTab());
@@ -57,7 +53,6 @@ public class HBoxWelcome extends HBox {
 
 		vboxRight.getChildren().addAll(rosterButton,peopleListButton,slipListButton,bodButton,newButton,batchesButton,boatsButton,notesButton,jotFormButton);
 		getChildren().addAll(vboxLeft,vboxRight);
-
 	}
 }
 
