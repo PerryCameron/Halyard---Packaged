@@ -165,7 +165,7 @@ public class ControlBox extends VBox {
 
     private ObservableList<MembershipListDTO> searchString(String searchTerm) {
         String text = searchTerm.toLowerCase();
-        ObservableList<MembershipListDTO> searchedBoats = FXCollections.observableArrayList();
+        ObservableList<MembershipListDTO> searchedMemberships = FXCollections.observableArrayList();
         boolean hasMatch = false;
         for(MembershipListDTO membershipListDTO: parent.rosters) {
             Field[] fields1 = membershipListDTO.getClass().getDeclaredFields();
@@ -180,10 +180,10 @@ public class ControlBox extends VBox {
                 }
             }  // add boat DTO here
             if(hasMatch)
-                searchedBoats.add(membershipListDTO);
+                searchedMemberships.add(membershipListDTO);
             hasMatch = false;
         }
-        return searchedBoats;
+        return searchedMemberships;
     }
 
     private boolean fieldIsSearchable(String fieldName) {

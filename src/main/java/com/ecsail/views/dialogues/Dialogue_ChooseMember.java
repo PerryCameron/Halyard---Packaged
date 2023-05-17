@@ -86,8 +86,8 @@ public class Dialogue_ChooseMember extends Stage {
             //focus out
             if (oldValue) {  // we have focused and unfocused
             	newOwner = SqlMembershipList.getMembershipByMembershipId(memIdTextField.getText());
-        		fnameTextField.setText(newOwner.getfName());
-                lnameTextField.setText(newOwner.getlName());
+        		fnameTextField.setText(newOwner.getFirstName());
+                lnameTextField.setText(newOwner.getLastName());
             }
         });
 		

@@ -322,7 +322,7 @@ public class SqlUpdate {
 		String query = "UPDATE slip SET subleased_to=" + ms_id + " where ms_id=" + membership.getMsId();
 		try {
 			BaseApplication.connect.executeQuery(query);
-			membership.setSubleaser(ms_id);
+			membership.setSubLeaser(ms_id);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -332,7 +332,7 @@ public class SqlUpdate {
 		String query = "UPDATE slip SET subleased_to=null where ms_id=" + membership.getMsId();
 		try {
 			BaseApplication.connect.executeQuery(query);
-			membership.setSubleaser(0);
+			membership.setSubLeaser(0);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}
@@ -343,7 +343,7 @@ public class SqlUpdate {
 		try {
 			BaseApplication.connect.executeQuery(query);
 			MembershipListDTO ownerMembership = SqlMembershipList.getMembershipFromList(subleasee, BaseApplication.selectedYear);
-			ownerMembership.setSubleaser(0);
+			ownerMembership.setSubLeaser(0);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}

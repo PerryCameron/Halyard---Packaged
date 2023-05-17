@@ -73,7 +73,7 @@ public class PDF_BoatReport {
     public void membershipTable(MembershipListDTO ml, Document document) {
         List<BoatDTO> boats = boatRepository.getOnlySailboatsByMsId(ml.getMsId());
         if(boats.size() > 0) {
-            System.out.println("Creating Entry for mebership " + ml.getMsId() + " " + ml.getlName());
+            System.out.println("Creating Entry for mebership " + ml.getMsId() + " " + ml.getLastName());
             Table detailTable = new Table(6);
             // mainTable.setKeepTogether(true);
             Cell cell;
@@ -92,7 +92,7 @@ public class PDF_BoatReport {
             cell.setBackgroundColor(new DeviceCmyk(.12f, .05f, 0, 0.02f));
             cell.setBorderTop(new SolidBorder(ColorConstants.BLACK, 1));
             cell.setWidth(100);
-            cell.add(new Paragraph(ml.getlName() + "")).setFontSize(10);
+            cell.add(new Paragraph(ml.getLastName() + "")).setFontSize(10);
             detailTable.addCell(cell);
 
             cell = new Cell();
@@ -100,7 +100,7 @@ public class PDF_BoatReport {
             cell.setBackgroundColor(new DeviceCmyk(.12f, .05f, 0, 0.02f));
             cell.setBorderTop(new SolidBorder(ColorConstants.BLACK, 1));
             cell.setWidth(100);
-            cell.add(new Paragraph(ml.getfName() + "")).setFontSize(10);
+            cell.add(new Paragraph(ml.getFirstName() + "")).setFontSize(10);
             detailTable.addCell(cell);
 
             cell = new Cell();

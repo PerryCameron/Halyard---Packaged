@@ -37,7 +37,6 @@ public class HBoxSlip extends HBox {
     private final HBox hbox1 = new HBox();  // slip holder or none
     private final HBox hbox2 = new HBox();  // sublease or none
     private final HBox hbox3 = new HBox();  // Holds button and textfield
-
     private final Button submitButton = new Button("Submit");
     private final ToggleGroup group = new ToggleGroup();
 
@@ -330,7 +329,6 @@ public class HBoxSlip extends HBox {
             text.setOnMouseExited(ex -> text.setFill(Color.BLACK));
         }
         text.setOnMouseEntered(en -> text.setFill(Color.RED));
-
         text.setOnMouseClicked(e -> {
             if (e.getClickCount() == 1) {
                 Launcher.createTabForBoxSlip(msid);
@@ -400,7 +398,7 @@ public class HBoxSlip extends HBox {
     private void displaySublease(Label slipNumber) {
         Text subLease = new Text("" + SqlMembership_Id.getMembershipIDfromMsid(slip.getSubleased_to()));
         subLease.setStyle("-fx-font-weight: bold;");
-        setMouseListener(subLease, parent.getModel().getMembership().getSubleaser());
+        setMouseListener(subLease, parent.getModel().getMembership().getSubLeaser());
         hbox1.getChildren().addAll(new Text("Slip Number:"), slipNumber);  // member plus their slip number
         hbox2.getChildren().addAll(new Text("Subleased to:"), subLease);  // subleased to (member)
         setRadioButtonVisibility(true, true, true);

@@ -216,8 +216,8 @@ public class Xls_roster {
 
 	private String getSubleaser(MembershipListDTO owner) {
 		String subleaseString = "";
-		if(owner.getSubleaser() != 0) {
-			subleaseString = SqlMembership_Id.getId(owner.getSubleaser());
+		if(owner.getSubLeaser() != 0) {
+			subleaseString = SqlMembership_Id.getId(owner.getSubLeaser());
 		}
 		return subleaseString;
 	}

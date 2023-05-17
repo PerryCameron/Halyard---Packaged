@@ -57,7 +57,7 @@ public class PDF_Directory {
 		doc.setTopMargin(1f);
 		doc.setBottomMargin(0.5f);
 		
-		Collections.sort(rosters , Comparator.comparing(MembershipListDTO::getlName));
+		Collections.sort(rosters , Comparator.comparing(MembershipListDTO::getLastName));
 		
 		createDirectoryTask();
 	}
@@ -91,7 +91,7 @@ public class PDF_Directory {
 	    		createMemberInfoPages(doc);
 	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 				// this one below added in if book needs an extra page (should be even number of pages)
-				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+//				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 
 	    		new PDF_MembersByNumber(set, doc, rosters);
 
@@ -145,7 +145,7 @@ public class PDF_Directory {
 			int count = 0;
 			doc.add(new Paragraph("\n"));
 			for(MembershipListDTO l: rosters) {
-			textArea.appendText("Creating entry for " + l.getfName() + " " + l.getlName() + "\n");
+			textArea.appendText("Creating entry for " + l.getFirstName() + " " + l.getLastName() + "\n");
 			doc.add(new PDF_MemberShipInformation(2,l,set));
 			count++;
 			if(count % 6 == 0) {

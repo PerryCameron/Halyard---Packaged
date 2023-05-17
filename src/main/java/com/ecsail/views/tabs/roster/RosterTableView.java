@@ -72,8 +72,8 @@ public class RosterTableView extends TableView<MembershipListDTO> {
             return new SimpleObjectProperty<>(text);
         });
 
-        firstNameCol.setCellValueFactory(new PropertyValueFactory<>("fName"));
-        lastNameCol.setCellValueFactory(new PropertyValueFactory<>("lName"));
+        firstNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        lastNameCol.setCellValueFactory(new PropertyValueFactory<>("lastName"));
         stateCol.setCellValueFactory(new PropertyValueFactory<>("city"));
         stateCol.setStyle("-fx-alignment: top-center");
         msIdCol.setCellValueFactory(new PropertyValueFactory<>("msId"));

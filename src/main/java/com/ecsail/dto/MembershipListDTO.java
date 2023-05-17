@@ -7,20 +7,20 @@ import javafx.beans.property.StringProperty;
 
 public class MembershipListDTO extends MembershipDTO {
 
-	private StringProperty lName;
-	private StringProperty fName;
+	private StringProperty lastName;
+	private StringProperty firstName;
 	private StringProperty slip;
-	private IntegerProperty subleaser;
+	private IntegerProperty subLeaser;
 	private IntegerProperty membershipId;
 	private StringProperty selectedYear;
 	
 	public MembershipListDTO(Integer msid, Integer pid, Integer membershipId, String joinDate, String memType,
-							 String slip, String lName, String fName, Integer subleaser, String address, String city, String state, String zip, String selectedYear) {
+							 String slip, String lastName, String firstName, Integer subLeaser, String address, String city, String state, String zip, String selectedYear) {
 		super(msid, pid, joinDate, memType, address, city, state, zip);
-		this.lName = new SimpleStringProperty(lName);
-		this.fName = new SimpleStringProperty(fName);
+		this.lastName = new SimpleStringProperty(lastName);
+		this.firstName = new SimpleStringProperty(firstName);
 		this.slip = new SimpleStringProperty(slip);
-		this.subleaser = new SimpleIntegerProperty(subleaser);
+		this.subLeaser = new SimpleIntegerProperty(subLeaser);
 		this.membershipId = new SimpleIntegerProperty(membershipId);
 		this.selectedYear = new SimpleStringProperty(selectedYear);
 	}
@@ -33,14 +33,14 @@ public class MembershipListDTO extends MembershipDTO {
 		super();
 	}
 
-	public void setlName(StringProperty lName) {
-		this.lName = lName;
+	public void setLastName(StringProperty lastName) {
+		this.lastName = lastName;
 	}
 
 
 
-	public void setfName(StringProperty fName) {
-		this.fName = fName;
+	public void setFirstName(StringProperty firstName) {
+		this.firstName = firstName;
 	}
 
 
@@ -50,38 +50,38 @@ public class MembershipListDTO extends MembershipDTO {
 	}
 
 
-	public final StringProperty lNameProperty() {
-		return this.lName;
+	public final StringProperty lastNameProperty() {
+		return this.lastName;
 	}
 	
 
 
-	public final String getlName() {
-		return this.lNameProperty().get();
+	public final String getLastName() {
+		return this.lastNameProperty().get();
 	}
 	
 
 
 	public final void setLname(final String lname) {
-		this.lNameProperty().set(lname);
+		this.lastNameProperty().set(lname);
 	}
 	
 
 
-	public final StringProperty fNameProperty() {
-		return this.fName;
+	public final StringProperty firstNameProperty() {
+		return this.firstName;
 	}
 	
 
 
-	public final String getfName() {
-		return this.fNameProperty().get();
+	public final String getFirstName() {
+		return this.firstNameProperty().get();
 	}
 	
 
 
 	public final void setFname(final String fname) {
-		this.fNameProperty().set(fname);
+		this.firstNameProperty().set(fname);
 	}
 
 
@@ -105,22 +105,22 @@ public class MembershipListDTO extends MembershipDTO {
 
 
 
-	public final IntegerProperty subleaserProperty() {
-		return this.subleaser;
+	public final IntegerProperty subLeaserProperty() {
+		return this.subLeaser;
 	}
 	
 
 
 
-	public final int getSubleaser() {
-		return this.subleaserProperty().get();
+	public final int getSubLeaser() {
+		return this.subLeaserProperty().get();
 	}
 	
 
 
 
-	public final void setSubleaser(final int subleaser) {
-		this.subleaserProperty().set(subleaser);
+	public final void setSubLeaser(final int subLeaser) {
+		this.subLeaserProperty().set(subLeaser);
 	}
 
 
@@ -164,8 +164,8 @@ public class MembershipListDTO extends MembershipDTO {
 
 	@Override
 	public String toString() {
-		return "Object_MembershipList [lname=" + lName + ", fname=" + fName + ", slip=" + slip + ", subleaser="
-				+ subleaser + ", membershipId=" + membershipId + ", selectedYear=" + selectedYear + ", msidProperty()="
+		return "Object_MembershipList [lname=" + lastName + ", fname=" + firstName + ", slip=" + slip + ", subleaser="
+				+ subLeaser + ", membershipId=" + membershipId + ", selectedYear=" + selectedYear + ", msidProperty()="
 				+ msIdProperty() + ", getMsid()=" + getMsId() + ", pidProperty()=" + pIdProperty() + ", getPid()="
 				+ getpId() + ", joinDateProperty()=" + joinDateProperty() + ", getJoinDate()=" + getJoinDate()
 				+ ", memTypeProperty()=" + memTypeProperty() + ", getMemType()=" + getMemType() + ", addressProperty()="

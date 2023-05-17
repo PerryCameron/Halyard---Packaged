@@ -242,7 +242,7 @@ public class Launcher extends VBox {
         MembershipListDTO membership = null;
         int element = 0;
         for (MembershipListDTO mem : BaseApplication.activeMemberships) {
-            if (mem.getSubleaser() == ms_id) membership = BaseApplication.activeMemberships.get(element);
+            if (mem.getSubLeaser() == ms_id) membership = BaseApplication.activeMemberships.get(element);
             element++;
         }
         return membership;  // returns membership of subleaser

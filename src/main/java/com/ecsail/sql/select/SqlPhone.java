@@ -20,8 +20,12 @@ public class SqlPhone {
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             while (rs.next()) {
-                thisPhone.add(new PhoneDTO(rs.getInt("PHONE_ID"), rs.getInt("p_id"), rs.getBoolean("phone_listed"),
-                        rs.getString("PHONE"), rs.getString("phone_type")));
+                thisPhone.add(new PhoneDTO(
+                        rs.getInt("PHONE_ID"),
+                        rs.getInt("p_id"),
+                        rs.getBoolean("phone_listed"),
+                        rs.getString("PHONE"),
+                        rs.getString("phone_type")));
             }
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {

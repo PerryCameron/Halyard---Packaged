@@ -21,6 +21,7 @@ import java.util.Optional;
 // This class is for the options in the properties box inside the person tab
 public class VBoxPersonMove extends VBox {
     private final PersonDTO person;
+
     final ComboBox<String> combo_box = new ComboBox<>();
 
     boolean calledFromMembershipTab = false;
@@ -145,8 +146,6 @@ public class VBoxPersonMove extends VBox {
         else // this is from people list view
             this.getChildren().addAll(hBox2, hBox3, hbox4);
     }
-
-
 
     private boolean checkIfCanRemovePerson(PersonDTO person, List<PersonDTO> people) {
         if(person.getMemberType() != 1) return true;
