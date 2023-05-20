@@ -65,7 +65,7 @@ public class PDF_MembersByNumber {
 		Cell cell;
 
 		for(int i = 0; i < numberOfPdfPages * 5; i+=5 ) {
-		doc.add(new Paragraph("\n"));
+		doc.add(new Paragraph("\n\n"));
 		table = new Table(1);
 		cell = new Cell();
 		p = new Paragraph("Memberships " + position.get(i).getPersonStart() + " through " + position.get(i+4).getPersonEnd());

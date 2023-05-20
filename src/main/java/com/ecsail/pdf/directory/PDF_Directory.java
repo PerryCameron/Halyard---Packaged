@@ -88,8 +88,8 @@ public class PDF_Directory {
 	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 	    		textArea.appendText("Created Membership Information Chapter Page\n");
 	    		
-	    		createMemberInfoPages(doc);
-	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+	    		createMemberInfoPages(doc);  // creates info pages
+//	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 				// this one below added in if book needs an extra page (should be even number of pages)
 //				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 
@@ -150,7 +150,10 @@ public class PDF_Directory {
 			count++;
 			if(count % 6 == 0) {
 				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-				doc.add(new Paragraph("\n"));
+				textArea.appendText("<----New Page---->");
+				System.out.println("count =" + count + " size=" + rosters.size());
+				if(count < rosters.size()) // prevents adding a return for after this section
+				doc.add(new Paragraph("\n")); // I think this is screwing up
 			}
 			//if(count == 60) break;  // this reduces pages made for testing
 		}
