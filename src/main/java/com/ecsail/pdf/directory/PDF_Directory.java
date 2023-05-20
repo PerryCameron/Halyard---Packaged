@@ -19,6 +19,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.Year;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.Executor;
@@ -38,12 +39,12 @@ public class PDF_Directory {
 		this.message = new String();
 
 		this.rosters = SqlMembershipList.getRoster(year, true);
-		HalyardPaths.checkPath(HalyardPaths.ECSCHOME);
+		HalyardPaths.checkPath(HalyardPaths.DIRECTORIES);
 		textArea.setText("Creating " + year + " directory");
 		
 		PdfWriter writer = null;
 		try {
-			writer = new PdfWriter(HalyardPaths.ECSCHOME + "_directory.pdf");
+			writer = new PdfWriter(HalyardPaths.DIRECTORIES + Year.now() + "_directory.pdf");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

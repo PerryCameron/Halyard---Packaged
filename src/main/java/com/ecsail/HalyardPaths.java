@@ -12,6 +12,8 @@ public class HalyardPaths {
 	public static final String RENEWALFORM = System.getProperty("user.home") + "/Documents/ECSC/Renewal_Forms";
 	public static final String SQLBACKUP = System.getProperty("user.home") + "/Documents/ECSC/SQL_Backup";
 	public static final String ROSTERS = System.getProperty("user.home") + "/Documents/ECSC/Rosters";
+
+	public static final String DIRECTORIES = System.getProperty("user.home") + "/Documents/ECSC/Directories";
     public static final String ECSCHOME = System.getProperty("user.home") + "/Documents/ECSC";
 	public static final String LOGO = "/ECSClogo4.png";
 	public static final String HOSTS = System.getProperty("user.home") + "/.ecsc/hosts.ecs";
