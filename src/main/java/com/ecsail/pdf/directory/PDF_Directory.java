@@ -44,7 +44,7 @@ public class PDF_Directory {
 		
 		PdfWriter writer = null;
 		try {
-			writer = new PdfWriter(HalyardPaths.DIRECTORIES + Year.now() + "_directory.pdf");
+			writer = new PdfWriter(HalyardPaths.DIRECTORIES + "/" + Year.now() + "_ECSC_directory.pdf");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
