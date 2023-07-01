@@ -50,7 +50,6 @@ public class TabBoatView extends Tab {
     // this is the group number for ecsc
     private int groupId = 1006;
     private ImageView imageView;
-
     protected boolean fromList;
 
     public TabBoatView(String text, BoatDTO boat) {
@@ -72,7 +71,6 @@ public class TabBoatView extends Tab {
 
     private void createBoatView() {
         this.boatOwners = SqlMembershipList.getBoatOwnerRoster(boatDTO.getBoatId());
-
         this.scp = BaseApplication.connect.getScp();
         this.images = SqlBoatPhotos.getImagesByBoatId(boatDTO.getBoatId());
         this.imageView = new ImageView();
@@ -86,7 +84,7 @@ public class TabBoatView extends Tab {
         var vboxPink = new VBox(); // this creates a pink border around the table
         var hboxContainer = new HBox();
         var vboxLeftContainer = new VBox(); // contains boxes on left side
-        var vboxRightContainer = new VBox(); // contains boxes on left side
+        var vboxRightContainer = new VBox(); // contains boxes on right side
         var vboxButtons = new VBox(); // holds phone buttons
         var vboxTableFrame = new VBox(); // holds table
         var vboxInformationBackgroundColor = new VBox();
@@ -235,8 +233,6 @@ public class TabBoatView extends Tab {
 
         buttonAddPicture.setOnAction((event) -> {
 			LoadFileChooser fc = new LoadFileChooser(System.getProperty("user.home"));
-			System.out.println(fc.getFile().toString());
-
         });
 
         buttonDefault.setOnAction((event) -> {
@@ -276,7 +272,6 @@ public class TabBoatView extends Tab {
         hboxTable.getChildren().addAll(vboxTableFrame, vboxButtons);
         vboxTableBackgroundColor.getChildren().add(hboxTable);
         ownerTitlePane.setContent(vboxTableBackgroundColor);
-
         boatInfoTitlePane.setContent(vboxInformationBackgroundColor);
         vboxLeftContainer.getChildren().addAll(boatInfoTitlePane, ownerTitlePane);
 
@@ -286,11 +281,10 @@ public class TabBoatView extends Tab {
         vboxPicture.getChildren().add(viewPane);
         hboxPictureControls.getChildren().addAll(buttonReverse, buttonForward, buttonDefault, buttonAddPicture, buttonDelete);
         vboxRightContainer.getChildren().addAll(hboxPictureControls, vboxPicture);
-
         hboxContainer.getChildren().addAll(vboxLeftContainer, vboxRightContainer);
         vboxGrey.getChildren().addAll(hboxContainer, new HBoxNotes(boatDTO));
-        vboxBlue.getChildren().add(vboxPink);
         vboxPink.getChildren().add(vboxGrey);
+        vboxBlue.getChildren().add(vboxPink);
         setContent(vboxBlue);
     }
 
@@ -332,7 +326,6 @@ public class TabBoatView extends Tab {
 
     private void saveImage(String srcPath) {
         if(isImageType(srcPath)) {
-            System.out.println(srcPath);
             // get number for photo
             int fileNumber = getNextFileNumberAvailable();
             // create filename
