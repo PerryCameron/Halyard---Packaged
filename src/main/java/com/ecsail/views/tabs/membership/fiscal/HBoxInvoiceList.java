@@ -209,8 +209,10 @@ public class HBoxInvoiceList extends HBox {
 	}
 
 	private void createTab(int rowIndex) {
+		// open new invoice tab
 		parent.getModel().getFiscalTabPane().getTabs().add(new Tab(String.valueOf(parent.getModel().getInvoices().get(rowIndex).getYear()),
 				new Invoice(this, rowIndex))); // current year tab
+		// select the new tab
 		for(Tab tab: parent.getModel().getFiscalTabPane().getTabs()) {
 			if(tab.getText().equals(String.valueOf(parent.getModel().getInvoices().get(rowIndex).getYear())))
 				parent.getModel().getFiscalTabPane().getSelectionModel().select(tab);

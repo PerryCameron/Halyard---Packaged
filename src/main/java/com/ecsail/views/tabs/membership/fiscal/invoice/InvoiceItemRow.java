@@ -55,7 +55,9 @@ public class InvoiceItemRow extends HBox {
         this.invoiceItemDTO = setItem();
         this.fee = getFee();
         parent.invoiceItemMap.put(dbInvoiceDTO.getFieldName(),this);
+        System.out.println("Balance before addChildren=" + parent.invoice.getBalance());
         addChildren();
+        System.out.println("Balance after addChildren=" + parent.invoice.getBalance());
     }
 
     private void addChildren() {
@@ -244,24 +246,25 @@ public class InvoiceItemRow extends HBox {
     }
 
     protected void updateBalance() {
-        BigDecimal fees = new BigDecimal("0.00");
-        BigDecimal credit = new BigDecimal("0.00");
-        /**
-         * Using the invoice map insures that you add all the category rows and not the sub categories.
-         * I had a bug which was adding
-         * all the rows using this for loop -> for (InvoiceItemDTO i : parent.items) {
-         * There is a binding in invoice that relates closely to how this works.
-         */
-        for (String key : parent.invoiceItemMap.keySet()) {  // This only adds the invoiceItem that are categories
-            // check if is a category (has a matching dbInvoiceDTO)
-            if (parent.invoiceItemMap.get(key).invoiceItemDTO.isCredit()) {
-                credit = credit.add(new BigDecimal(parent.invoiceItemMap.get(key).invoiceItemDTO.getValue()));
+        if (!invoice.isCommitted()) {  // this prevents it from being updated if committed.
+            BigDecimal fees = new BigDecimal("0.00");
+            BigDecimal credit = new BigDecimal("0.00");
+            /**
+             * Using the invoice map insures that you add all the category rows and not the sub categories.
+             * I had a bug which was adding
+             * all the rows using this for loop -> for (InvoiceItemDTO i : parent.items) {
+             * There is a binding in invoice that relates closely to how this works.
+             */
+            for (String key : parent.invoiceItemMap.keySet()) {  // This only adds the invoiceItem that are categories
+                // check if is a category (has a matching dbInvoiceDTO)
+                if (parent.invoiceItemMap.get(key).invoiceItemDTO.isCredit()) {
+                    credit = credit.add(new BigDecimal(parent.invoiceItemMap.get(key).invoiceItemDTO.getValue()));
+                } else {
+                    fees = fees.add(new BigDecimal(parent.invoiceItemMap.get(key).invoiceItemDTO.getValue()));
+                }
             }
-            else {
-                fees = fees.add(new BigDecimal(parent.invoiceItemMap.get(key).invoiceItemDTO.getValue()));
-            }
+            footer.updateTotals(fees, credit);
         }
-        footer.updateTotals(fees,credit);
     }
 
     private void setComboBoxListener() {

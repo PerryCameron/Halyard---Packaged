@@ -85,6 +85,7 @@ public class Invoice extends HBox {
             SqlUpdate.updateMembershipId(membership.getMsId(),invoice.getYear(),footer.getRenewCheckBox().isSelected());
         });
 
+
 		// take list of DBInvoiceDTOs, insert appropriate fee into widget, insert reference to invoice items
 		// the put an HBOX with all this attached into a hash map
 		for (DbInvoiceDTO dbInvoiceDTO : dbInvoiceDTOs) {
@@ -92,7 +93,6 @@ public class Invoice extends HBox {
                 new InvoiceItemRow(this, dbInvoiceDTO, footer);
 		}
         //////////////// SETTING CONTENT //////////////
-
         // add table head
         header.setCommitMode(invoice.isCommitted());
         // add the rows
@@ -108,14 +108,12 @@ public class Invoice extends HBox {
         }
         // add footer
         footer.setCommitMode(invoice.isCommitted());
-
         vboxMain.getChildren().add(footer);
         scrollPane.setContent(vboxMain);
         mainVbox.getChildren().addAll(scrollPane);  // add error HBox in first
         vboxGrey.getChildren().addAll(mainVbox);
         getChildren().addAll(vboxGrey);
         updateAllowed = true; // may write to database
-
         if (getOfficerCredit()) { // has an officer
             //if position doesn't already exist then add it
             if(!SqlExists.invoiceItemPositionCreditExistsWithValue(invoice.getYear(),invoice.getMsId())) {
