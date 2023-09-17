@@ -62,12 +62,12 @@ public class MainModel {
         boolean successful = false;
         try {
             this.appConfig = new AppConfig();
-            this.appConfig.createDataSource(ip,port,user,password);
+            this.appConfig.createDataSource(ip,port,user,password,"ecsailor_ECSC_SQL");
             setSqlConnection(appConfig.getDataSource().getConnection());
             successful = true;
             // Creating a Statement object
-        } catch (ClassNotFoundException | SQLException e) {
-            BaseApplication.logger.error(e.getMessage());
+        } catch (Exception e) {
+            BaseApplication.logger.error(String.valueOf(e));
         }
         return successful;
     }

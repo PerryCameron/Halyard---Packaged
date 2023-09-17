@@ -52,7 +52,7 @@ public class ConnectDatabase {
 	private TextField sshUser;
 	private TextField knownHost;
 
-	private TextField publicKey;
+	private TextField privateKey;
 	private TextField userName;
 	private TextField passWord;
 	public static final String BLUE = "\033[0;34m";    // BLUE
@@ -119,8 +119,10 @@ public class ConnectDatabase {
 		HBox hboxSshPortLabel = HBoxWidgets.createHBox(Pos.CENTER_LEFT, 90, InsetWidget.getCommonInsets(5));
 		HBox hboxSshPassLabel = HBoxWidgets.createHBox(Pos.CENTER_LEFT, 90, InsetWidget.getCommonInsets(5));
 		HBox hboxSqlPortLabel = HBoxWidgets.createHBox(Pos.CENTER_LEFT, 90, InsetWidget.getCommonInsets(5));
+		HBox hboxPrivateKeyLabel = HBoxWidgets.createHBox(Pos.CENTER_LEFT, 90, InsetWidget.getCommonInsets(5));
 		HBox hboxSshUserText = HBoxWidgets.createHBox(InsetWidget.getCommonInsets(5));
-		HBox knownHostText = HBoxWidgets.createHBox(InsetWidget.getCommonInsets(5));
+		HBox hboxKnownHostText = HBoxWidgets.createHBox(InsetWidget.getCommonInsets(5));
+		HBox hboxPrivateKeyText = HBoxWidgets.createHBox(InsetWidget.getCommonInsets(5));
 		HBox hboxSqlPortText = HBoxWidgets.createHBox(Pos.CENTER_LEFT,200,new Insets(5,5,5,0),20);
 		HBox hboxSshPortText = HBoxWidgets.createHBox(Pos.CENTER_LEFT,200,new Insets(5,5,5,0),20);
 		HBox infoBox1 = new HBox();
@@ -130,6 +132,7 @@ public class ConnectDatabase {
 		HBox infoBox5 = HBoxWidgets.createHBox(Pos.CENTER,InsetWidget.getCommonInsets(5));
  		HBox infoBox6 = new HBox(); // no attributes
 		HBox infoBox7 = new HBox();	 // no attributes
+		HBox infoBox7_5 = new HBox();
 		HBox infoBox8 = new HBox(); // had padding
 		HBox buttonBox1 = HBoxWidgets.createHBox(InsetWidget.getLeftInset(35.0),10);
 		HBox buttonBox2 = HBoxWidgets.createHBox(InsetWidget.getLeftInset(60.0),10);
@@ -162,6 +165,7 @@ public class ConnectDatabase {
 		userName.textProperty().bindBidirectional(mainModel.userProperty());
 		this.passWord = new PasswordField();
 		passWord.textProperty().bindBidirectional(mainModel.passProperty());
+		this.privateKey = new TextField();
 		Button loginButton = new Button("Login");
 		Button cancelButton1 = new Button("Cancel");
 		Button cancelButton2 = new Button("Cancel");
@@ -200,6 +204,7 @@ public class ConnectDatabase {
 		hostNameField.setPrefWidth(200);
 		sshUser.setPrefWidth(200);
 		knownHost.setPrefWidth(200);
+		privateKey.setPrefWidth(200);
 
 
 
@@ -231,6 +236,8 @@ public class ConnectDatabase {
 			System.out.println(mainModel.getLogins().get(FileIO.getSelectedHost(options.getValue(),mainModel.getLogins())));
 			mainModel.setCurrentLogon(mainModel.getLogins().get(FileIO.getSelectedHost(options.getValue(),mainModel.getLogins())));
 			populateFields();
+			System.out.println("user=" + mainModel.getUser());
+			System.out.println("pass=" + mainModel.getPass());
         });
 		
 		// creates screen to add new host
@@ -242,7 +249,8 @@ public class ConnectDatabase {
 				infoBox4.getChildren().addAll(hboxSqlPortLabel, hboxSqlPortText);
 				infoBox5.getChildren().add(useSshTunnel);
 				infoBox6.getChildren().addAll(hboxSshUserLabel,hboxSshUserText);
-				infoBox7.getChildren().addAll(hboxSshPassLabel,knownHostText);
+				infoBox7.getChildren().addAll(hboxSshPassLabel,hboxKnownHostText);
+				infoBox7_5.getChildren().addAll(hboxPrivateKeyLabel,hboxPrivateKeyText);
 				infoBox8.getChildren().clear();
 				infoBox8.getChildren().add(buttonBox3);
 			}
@@ -257,7 +265,8 @@ public class ConnectDatabase {
 					infoBox4.getChildren().addAll(hboxSqlPortLabel, hboxSqlPortText);
 					infoBox5.getChildren().addAll(hboxSshPortLabel, hboxSshPortText);
 					infoBox6.getChildren().addAll(hboxSshUserLabel,hboxSshUserText);
-					infoBox7.getChildren().addAll(hboxSshPassLabel,knownHostText);
+					infoBox7.getChildren().addAll(hboxSshPassLabel,hboxKnownHostText);
+					infoBox7_5.getChildren().addAll(hboxPrivateKeyLabel,hboxPrivateKeyText);
 					infoBox8.getChildren().clear();
 					infoBox8.getChildren().add(buttonBox2);
 			}
@@ -273,6 +282,7 @@ public class ConnectDatabase {
 			infoBox5.setPadding(Insets.EMPTY);
 			infoBox6.getChildren().clear();
 			infoBox7.getChildren().clear();
+			infoBox7_5.getChildren().clear();
 			infoBox8.getChildren().clear();
 			infoBox8.getChildren().addAll(addBox, buttonBox1);
 		});
@@ -286,6 +296,7 @@ public class ConnectDatabase {
 			infoBox5.setPadding(Insets.EMPTY);
 			infoBox6.getChildren().clear();
 			infoBox7.getChildren().clear();
+			infoBox7_5.getChildren().clear();
 			infoBox8.getChildren().clear();
 			infoBox8.getChildren().addAll(addBox, buttonBox1);
 		});
@@ -322,7 +333,7 @@ public class ConnectDatabase {
 						sshUser.getText(),
 						knownHost.getText(),
 						System.getProperty("user.home") + "/.ssh/known_hosts" ,
-						System.getProperty("user.home") + "/.ssh/id_rsa",
+						privateKey.getText(),
 //						System.getProperty("user.home") + "/.ssh/membership",
 
 						defaultCheck.isSelected(), useSshTunnel.isSelected()));
@@ -342,12 +353,13 @@ public class ConnectDatabase {
             	if(element >= 0) {  // the element exists, why wouldn't it exist
             		// change the specific login in the login list
             		mainModel.getLogins().get(element).setHost(hostNameField.getText());
-					mainModel.getLogins().get(element).setUser(mainModel.getUser());
-					mainModel.getLogins().get(element).setPasswd(passWord.getText());
+					mainModel.getLogins().get(element).setSqlUser(mainModel.getUser());
+					mainModel.getLogins().get(element).setSqlPasswd(passWord.getText());
 					mainModel.getLogins().get(element).setLocalSqlPort(Integer.parseInt(localSqlPortText.getText()));
 					mainModel.getLogins().get(element).setSshPort(Integer.parseInt(sshPortText.getText()));
 					mainModel.getLogins().get(element).setSshUser(sshUser.getText());
 					mainModel.getLogins().get(element).setSshPass(knownHost.getText());
+					mainModel.getLogins().get(element).setPrivateKey(privateKey.getText());
 					mainModel.getLogins().get(element).setDefault(defaultCheck.isSelected());
 					mainModel.getLogins().get(element).setSshForward(useSshTunnel.isSelected());
             		FileIO.saveLoginObjects(mainModel.getLogins());
@@ -374,15 +386,16 @@ public class ConnectDatabase {
         hboxSshPassLabel.getChildren().add(new Label("known_hosts:"));
 		hboxSqlPortLabel.getChildren().add(new Label("SQL Port:"));
 		hboxSshPortLabel.getChildren().add(new Label("SSH Port:"));
+		hboxPrivateKeyLabel.getChildren().add(new Label("Private Key:"));
 		hboxSqlPortText.getChildren().addAll(localSqlPortText, defaultCheck);
 		hboxSshPortText.getChildren().addAll(sshPortText, useSshTunnel);
-
         hboxUserText.getChildren().add(userName);
         hboxPassText.getChildren().add(passWord);
         hboxHostText.getChildren().add(hostName);
         hboxHostText2.getChildren().add(hostNameField);
         hboxSshUserText.getChildren().add(sshUser);
-		knownHostText.getChildren().add(knownHost);
+		hboxKnownHostText.getChildren().add(knownHost);
+		hboxPrivateKeyText.getChildren().add(privateKey);
 		addBox.getChildren().addAll(newConnectText, editConnectText);
         buttonBox1.getChildren().addAll(loginButton,cancelButton1);
         buttonBox2.getChildren().addAll(saveButton2,deleteButton,cancelButton3);
@@ -393,7 +406,7 @@ public class ConnectDatabase {
 		infoBox3.getChildren().addAll(hboxHostLabel, hboxHostText);
         infoBox8.getChildren().addAll(addBox, buttonBox1);
         
-        vboxLeft.getChildren().addAll(errorHBox,infoBox1, infoBox2, infoBox3, infoBox4, infoBox5, infoBox6, infoBox7, infoBox8);
+        vboxLeft.getChildren().addAll(errorHBox,infoBox1, infoBox2, infoBox3, infoBox4, infoBox5, infoBox6, infoBox7, infoBox7_5, infoBox8);
         vboxRight.getChildren().addAll(logo);
         
 		logonStage.setX(primaryStage.getX() + 260);
@@ -440,8 +453,8 @@ public class ConnectDatabase {
 	}
 
 	private void populateFields() {
-		userName.setText(mainModel.getCurrentLogon().getUser());
-		passWord.setText(mainModel.getCurrentLogon().getPasswd());
+		userName.setText(mainModel.getCurrentLogon().getSqlUser());
+		passWord.setText(mainModel.getCurrentLogon().getSqlPasswd());
 		hostName.setValue(mainModel.getCurrentLogon().getHost());
 		hostNameField.setText(mainModel.getCurrentLogon().getHost());
 		localSqlPortText.setText(mainModel.getCurrentLogon().getLocalSqlPort() + "");
@@ -450,6 +463,7 @@ public class ConnectDatabase {
 		knownHost.setText(mainModel.getCurrentLogon().getKnownHostsFile());
 		useSshTunnel.setSelected(mainModel.getCurrentLogon().isSshForward());
 		defaultCheck.setSelected(mainModel.getCurrentLogon().isDefault());
+		privateKey.setText(mainModel.getCurrentLogon().getPrivateKey());
 	}
 	
 	private void clearFields() {
