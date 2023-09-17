@@ -18,12 +18,12 @@ public class LoginDTO implements Serializable {
 	private String sshUser;
 	private String sshPass;
 	private String knownHostsFile;
-	private String publicKeyFile;
+	private String privateKey;
 	private boolean isDefault;
 	private boolean sshForward;
 
 	public LoginDTO(int localSqlPort, int remoteSqlPort, int sshPort, String host, String user, String passwd,
-					String sshUser, String sshPass, String knownHostsFile, String publicKeyFile, boolean isDefault,
+					String sshUser, String sshPass, String knownHostsFile, String privateKey, boolean isDefault,
 					boolean sshForward) {
 		this.localSqlPort = localSqlPort;
 		this.remoteSqlPort = remoteSqlPort;
@@ -34,7 +34,7 @@ public class LoginDTO implements Serializable {
 		this.sshUser = sshUser;
 		this.sshPass = sshPass;
 		this.knownHostsFile = knownHostsFile;
-		this.publicKeyFile = publicKeyFile;
+		this.privateKey = privateKey;
 		this.isDefault = isDefault;
 		this.sshForward = sshForward;
 	}
@@ -111,12 +111,12 @@ public class LoginDTO implements Serializable {
 		this.knownHostsFile = knownHostsFile;
 	}
 
-	public String getPublicKeyFile() {
-		return publicKeyFile;
+	public String getPrivateKey() {
+		return privateKey;
 	}
 
-	public void setPublicKeyFile(String publicKeyFile) {
-		this.publicKeyFile = publicKeyFile;
+	public void setPrivateKey(String privateKey) {
+		this.privateKey = privateKey;
 	}
 
 	public boolean isDefault() {
@@ -147,7 +147,7 @@ public class LoginDTO implements Serializable {
 				", sshUser='" + sshUser + '\'' +
 				", sshPass='" + sshPass + '\'' +
 				", knownHostsFile='" + knownHostsFile + '\'' +
-				", publicKeyFile='" + publicKeyFile + '\'' +
+				", privateKey='" + privateKey + '\'' +
 				", isDefault=" + isDefault +
 				", sshForward=" + sshForward +
 				'}';
