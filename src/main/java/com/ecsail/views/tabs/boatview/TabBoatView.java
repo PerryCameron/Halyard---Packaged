@@ -16,6 +16,7 @@ import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlBoatPhotos;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.dto.*;
+import com.itextpdf.commons.utils.JsonUtil;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -44,11 +45,12 @@ public class TabBoatView extends Tab {
     protected BoatListDTO boatListDTO;
     protected ArrayList<BoatPhotosDTO> images;
     protected BoatPhotosDTO selectedImage;
-    private String remotePath = "/home/ecsc/ecsc_files/boat_images/";
+
+    String user = BaseApplication.getModel().getCurrentLogon().getSshUser();
+    private String remotePath = "/home/"+user+"/ecsc_membership/boat_images/";
     private String localPath = System.getProperty("user.home") + "/.ecsc/boat_images/";
     private String[] extensionsAllowed = {"jpg","jpeg","png","bmp","gif"};
     // this is the group number for ecsc
-    private int groupId = 1006;
     private ImageView imageView;
     protected boolean fromList;
 
@@ -57,6 +59,7 @@ public class TabBoatView extends Tab {
         this.boatDTO = boat;
         this.fromList = false;
         this.boatSettings = (ArrayList<DbBoatSettingsDTO>) settingsRepository.getBoatSettings();
+        System.out.println("remote_path =" + remotePath);
         createBoatView();
     }
 
@@ -66,6 +69,7 @@ public class TabBoatView extends Tab {
         this.boatDTO = boatList;
         this.fromList = true;
         this.boatSettings = (ArrayList<DbBoatSettingsDTO>) settingsRepository.getBoatSettings();
+        System.out.println("remote_path =" + remotePath);
         createBoatView();
     }
 
@@ -335,7 +339,8 @@ public class TabBoatView extends Tab {
                     boatDTO.getBoatId(),"",fileName,fileNumber,isFirstPic());
             // send file to remote server and change its group
             scp.sendFile(srcPath,remotePath + boatPhotosDTO.getFilename());
-            scp.changeGroup(remotePath + boatPhotosDTO.getFilename(),groupId);
+            // no need to changeGroup as we moved this dir to the users home.
+//            scp.changeGroup(remotePath + boatPhotosDTO.getFilename(),groupId);
             // update SQL
             SqlInsert.addBoatImage(boatPhotosDTO);
             // move a copy to local HD

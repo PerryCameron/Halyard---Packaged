@@ -4,6 +4,7 @@ import com.ecsail.connection.ConnectDatabase;
 import com.ecsail.connection.PortForwardingL;
 import com.ecsail.dto.BoardPositionDTO;
 import com.ecsail.dto.MembershipListDTO;
+import com.ecsail.models.MainModel;
 import com.ecsail.plugin.FileDrop;
 import com.ecsail.plugin.LogFile;
 import com.ecsail.plugin.SearchToolBar;
@@ -56,7 +57,7 @@ public class BaseApplication extends Application implements Log {
     public static String user = "membership";
     public static Label statusLabel;
 
-
+    MainModel mainModel;
 
 
     public static void main(String[] args) {
@@ -133,6 +134,7 @@ public class BaseApplication extends Application implements Log {
         stage.toFront();
         stage.setAlwaysOnTop(false);
         connect = new ConnectDatabase(stage);
+        this.mainModel = connect.getMainModel();
         scene.getStylesheets().addAll(
                 "css/dark/dark.css",
                 "css/dark/tabpane.css",
@@ -161,4 +163,8 @@ public class BaseApplication extends Application implements Log {
     }
 
     public static com.ecsail.models.MainModel getModel() { return connect.getMainModel(); }
+
+    public MainModel getMainModel() {
+        return mainModel;
+    }
 }

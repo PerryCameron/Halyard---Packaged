@@ -21,7 +21,7 @@ public class PortForwardingL {
 
 //    public PortForwardingL(String host, String rhost, int lport, int rport, String user, String knownHosts, String key) {
     public PortForwardingL(LoginDTO login) {
-        System.out.println("Connecting with public key..");
+        BaseApplication.logger.info("Connecting with public key..");
         try {
             jsch.setKnownHosts(login.getKnownHostsFile());
             jsch.addIdentity(login.getPrivateKey());
@@ -36,21 +36,15 @@ public class PortForwardingL {
                 }
                 System.out.println("");
             }
-            System.out.println("session = jsch.getSession(login.getSshUser(), login.getHost(), login.getSshPort());");
             session = jsch.getSession(login.getSshUser(), login.getHost(), login.getSshPort());
-            System.out.println("UserInfo ui = new MyUserInfo();");
             UserInfo ui = new MyUserInfo();
-            System.out.println("session.setUserInfo(ui);");
             session.setUserInfo(ui);
             try {
-                System.out.println("session.connect();");
                 session.connect();
             } catch (JSchException e) {
                 System.out.println(e);
             }
 
-
-            System.out.println("int assingedPort = 0;");
             int assingedPort = 0;
             // this prevents exception from filling log if mysql is running locally for testing
             System.out.println("");

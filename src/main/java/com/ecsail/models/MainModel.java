@@ -199,17 +199,4 @@ public class MainModel {
                     System.getProperty("user.home") + "/.ssh/id_rsa", false, false));
         return loginDTOS;
     }
-//    	this.localSqlPort = localSqlPort;
-//		this.remoteSqlPort = remoteSqlPort;
-//		this.sshPort = sshPort;
-//		this.host = host;
-//		this.sqlUser = sqlUser;
-//		this.sqlPasswd = sqlPasswd;
-//		this.sshUser = sshUser;
-//		this.sshPass = sshPass;
-//		this.database = database;
-//		this.knownHostsFile = knownHostsFile;
-//		this.privateKey = privateKey;
-//		this.isDefault = isDefault;
-//		this.sshForward = sshForward;
 }
