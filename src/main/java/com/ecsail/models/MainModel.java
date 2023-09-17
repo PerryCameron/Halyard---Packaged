@@ -47,7 +47,7 @@ public class MainModel {
         } else {
             BaseApplication.logger.info("SSH connection is not being used");
         }
-        if(createConnection(user.get(), pass.get(), loopback, Integer.parseInt(localSqlPort.get()))) {
+        if(createConnection(user.get(), pass.get(), loopback, Integer.parseInt(localSqlPort.get()), currentLogon.getDatabase())) {
             BaseApplication.activeMemberships = SqlMembershipList.getRoster(BaseApplication.selectedYear, true);
             // gets a list of all the board positions to use throughout the application
             BaseApplication.boardPositions = Officer.getPositionList();
@@ -58,11 +58,11 @@ public class MainModel {
         return sshConnection.getSession().isConnected();
     };
 
-    protected Boolean createConnection(String user, String password, String ip, int port) {
+    protected Boolean createConnection(String user, String password, String ip, int port, String database) {
         boolean successful = false;
         try {
             this.appConfig = new AppConfig();
-            this.appConfig.createDataSource(ip,port,user,password,"ecsailor_ECSC_SQL");
+            this.appConfig.createDataSource(ip,port,user,password,database);
             setSqlConnection(appConfig.getDataSource().getConnection());
             successful = true;
             // Creating a Statement object
@@ -195,8 +195,21 @@ public class MainModel {
         else
             // we are starting application for the first time
             loginDTOS.add(new LoginDTO(3306,3306, 22, "", "", "", "",
-                    "", System.getProperty("user.home") + "/.ssh/known_hosts",
+                    "", "ECSC_SQL",System.getProperty("user.home") + "/.ssh/known_hosts",
                     System.getProperty("user.home") + "/.ssh/id_rsa", false, false));
         return loginDTOS;
     }
+//    	this.localSqlPort = localSqlPort;
+//		this.remoteSqlPort = remoteSqlPort;
+//		this.sshPort = sshPort;
+//		this.host = host;
+//		this.sqlUser = sqlUser;
+//		this.sqlPasswd = sqlPasswd;
+//		this.sshUser = sshUser;
+//		this.sshPass = sshPass;
+//		this.database = database;
+//		this.knownHostsFile = knownHostsFile;
+//		this.privateKey = privateKey;
+//		this.isDefault = isDefault;
+//		this.sshForward = sshForward;
 }
