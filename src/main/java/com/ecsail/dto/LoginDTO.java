@@ -134,4 +134,22 @@ public class LoginDTO implements Serializable {
 	public void setSshForward(boolean sshForward) {
 		this.sshForward = sshForward;
 	}
+
+	@Override
+	public String toString() {
+		return "LoginDTO{" +
+				"localSqlPort=" + localSqlPort +
+				", remoteSqlPort=" + remoteSqlPort +
+				", sshPort=" + sshPort +
+				", host='" + host + '\'' +
+				", user='" + user + '\'' +
+				", passwd='" + passwd + '\'' +
+				", sshUser='" + sshUser + '\'' +
+				", sshPass='" + sshPass + '\'' +
+				", knownHostsFile='" + knownHostsFile + '\'' +
+				", publicKeyFile='" + publicKeyFile + '\'' +
+				", isDefault=" + isDefault +
+				", sshForward=" + sshForward +
+				'}';
+	}
 }

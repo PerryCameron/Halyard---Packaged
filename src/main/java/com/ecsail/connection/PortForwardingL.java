@@ -36,14 +36,24 @@ public class PortForwardingL {
                 }
                 System.out.println("");
             }
-
+            System.out.println("session = jsch.getSession(login.getSshUser(), login.getHost(), login.getSshPort());");
             session = jsch.getSession(login.getSshUser(), login.getHost(), login.getSshPort());
+            System.out.println("UserInfo ui = new MyUserInfo();");
             UserInfo ui = new MyUserInfo();
+            System.out.println("session.setUserInfo(ui);");
             session.setUserInfo(ui);
-            session.connect();
+            try {
+                System.out.println("session.connect();");
+                session.connect();
+            } catch (JSchException e) {
+                System.out.println(e);
+            }
 
+
+            System.out.println("int assingedPort = 0;");
             int assingedPort = 0;
             // this prevents exception from filling log if mysql is running locally for testing
+            System.out.println("");
             try {
                 BaseApplication.logger.info("Attempting to bind SQL port");
                 assingedPort = session.setPortForwardingL(login.getLocalSqlPort(), "127.0.0.1", login.getRemoteSqlPort());

@@ -224,6 +224,7 @@ public class ConnectDatabase {
 		
 		// when host name combo box changes
 		hostName.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+			System.out.println(mainModel.getLogins().get(FileIO.getSelectedHost(options.getValue(),mainModel.getLogins())));
 			mainModel.setCurrentLogon(mainModel.getLogins().get(FileIO.getSelectedHost(options.getValue(),mainModel.getLogins())));
 			populateFields();
         });
@@ -308,10 +309,12 @@ public class ConnectDatabase {
 		// saves new login object
         saveButton1.setOnAction((event) -> {
             	mainModel.getLogins().add(new LoginDTO(Integer.parseInt(localSqlPortText.getText()),
-						3306,22, hostNameField.getText(), mainModel.getUser(),
+						3306,2233, hostNameField.getText(), mainModel.getUser(),
 						passWord.getText(), sshUser.getText(),knownHost.getText(),
 						System.getProperty("user.home") + "/.ssh/known_hosts" ,
-						System.getProperty("user.home") + "/.ssh/id_rsa",
+//						System.getProperty("user.home") + "/.ssh/id_rsa",
+						System.getProperty("user.home") + "/.ssh/membership",
+
 						defaultCheck.isSelected(), useSshTunnel.isSelected()));
             	FileIO.saveLoginObjects(mainModel.getLogins());
             	choices.add(hostNameField.getText());  // add new host name into combo box
