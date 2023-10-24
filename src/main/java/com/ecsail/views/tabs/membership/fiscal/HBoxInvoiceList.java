@@ -68,7 +68,7 @@ public class HBoxInvoiceList extends HBox {
 		Col4.setCellValueFactory(new PropertyValueFactory<>("paid"));
 		Col5.setCellValueFactory(new PropertyValueFactory<>("balance"));
 
-		Col2.setStyle( "-fx-alignment: CENTER;");
+
 		Col2.setStyle( "-fx-alignment: CENTER-RIGHT;");
 		Col3.setStyle( "-fx-alignment: CENTER-RIGHT;");
 		Col4.setStyle( "-fx-alignment: CENTER-RIGHT;");
@@ -180,7 +180,7 @@ public class HBoxInvoiceList extends HBox {
 	private static void createNonItemizedCategories(int invoiceId, Integer year, int msid, DbInvoiceDTO dbInvoiceDTO) {
 		InvoiceItemDTO item;
 		item = new InvoiceItemDTO(0, invoiceId, msid, year, dbInvoiceDTO.getFieldName()
-				, dbInvoiceDTO.isCredit(), "0.00", 0);
+				, dbInvoiceDTO.isCredit(), "0.00", 0, false);
 		SqlInsert.addInvoiceItemRecord(item);
 	}
 
@@ -189,7 +189,7 @@ public class HBoxInvoiceList extends HBox {
 		Set<FeeDTO> fees = SqlFee.getRelatedFeesAsInvoiceItems(dbInvoiceDTO);
 		fees.forEach(feeDTO -> {
 			InvoiceItemDTO item = new InvoiceItemDTO(0, invoiceId, msid, year, feeDTO.getDescription()
-					, dbInvoiceDTO.isCredit(), "0.00", 0);
+					, dbInvoiceDTO.isCredit(), "0.00", 0, false);
 //			System.out.println(item);
 			SqlInsert.addInvoiceItemRecord(item);
 		});
