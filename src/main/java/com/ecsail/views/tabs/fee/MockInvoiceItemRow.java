@@ -63,7 +63,8 @@ public class MockInvoiceItemRow extends HBox {
                 dbInvoiceDTO.getFieldName(),
                 dbInvoiceDTO.isCredit(),
                 "0.00",
-                0
+                0,
+                false
         );
         return invoiceItemDTO;
     }

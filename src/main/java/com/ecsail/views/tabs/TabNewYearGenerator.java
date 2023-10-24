@@ -84,7 +84,7 @@ public class TabNewYearGenerator extends Tab {
 	private static void createNonItemizedCategories(int invoiceId, Integer year, int msid, DbInvoiceDTO dbInvoiceDTO) {
 		InvoiceItemDTO item;
 		item = new InvoiceItemDTO(0, invoiceId, msid, year, dbInvoiceDTO.getFieldName()
-				, dbInvoiceDTO.isCredit(), "0.00", 0);
+				, dbInvoiceDTO.isCredit(), "0.00", 0, false);
 		updateItem(item);
 		SqlInsert.addInvoiceItemRecord(item);
 	}
@@ -94,7 +94,7 @@ public class TabNewYearGenerator extends Tab {
 		Set<FeeDTO> fees = SqlFee.getRelatedFeesAsInvoiceItems(dbInvoiceDTO);
 		fees.forEach(feeDTO -> {
 			InvoiceItemDTO item = new InvoiceItemDTO(0, invoiceId, msid, year, feeDTO.getDescription()
-					, dbInvoiceDTO.isCredit(), "0.00", 0);
+					, dbInvoiceDTO.isCredit(), "0.00", 0, false);
 			updateItem(item);
 			SqlInsert.addInvoiceItemRecord(item);
 		});
