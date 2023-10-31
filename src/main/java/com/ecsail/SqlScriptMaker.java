@@ -245,8 +245,7 @@ public class SqlScriptMaker {
 				+ getCorrectString(i.getFieldName()) + ","
 				+ i.isCredit()+ ","
 				+ i.getValue() + ","
-				+ i.getQty() + ","
-				+ i.isIsCategory() + ");\n";
+				+ i.getQty() + "," + ");\n";
 	}
 
 	private static String getInvoiceWidgetString(DbInvoiceDTO a) {

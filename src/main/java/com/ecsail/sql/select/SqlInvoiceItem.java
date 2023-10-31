@@ -27,8 +27,7 @@ public class SqlInvoiceItem {
                         rs.getString("FIELD_NAME"),
                         rs.getBoolean("IS_CREDIT"),
                         rs.getString("VALUE"),
-                        rs.getInt("QTY"),
-                        rs.getBoolean("IS_CATEGORY")));
+                        rs.getInt("QTY")));
             }
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {
@@ -53,8 +52,7 @@ public class SqlInvoiceItem {
                         rs.getString("FIELD_NAME"),
                         rs.getBoolean("IS_CREDIT"),
                         rs.getString("VALUE"),
-                        rs.getInt("QTY"),
-                        rs.getBoolean("IS_CATEGORY")));
+                        rs.getInt("QTY")));
             }
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {
@@ -79,8 +77,7 @@ public class SqlInvoiceItem {
                         rs.getString("FIELD_NAME"),
                         rs.getBoolean("IS_CREDIT"),
                         rs.getString("VALUE"),
-                        rs.getInt("QTY"),
-                        rs.getBoolean("IS_CATEGORY")));
+                        rs.getInt("QTY")));
             }
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {
@@ -103,8 +100,7 @@ public class SqlInvoiceItem {
                         rs.getString("FIELD_NAME"),
                         rs.getBoolean("IS_CREDIT"),
                         rs.getString("VALUE"),
-                        rs.getInt("QTY"),
-                        rs.getBoolean("IS_CATEGORY")));
+                        rs.getInt("QTY")));
             }
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {
@@ -133,8 +129,7 @@ public class SqlInvoiceItem {
                         type,
                         rs.getBoolean("IS_CREDIT"),
                         rs.getString("VALUE"),
-                        rs.getInt("QTY"),
-                        rs.getBoolean("IS_CATEGORY"));
+                        rs.getInt("QTY"));
             }
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {
@@ -159,8 +154,7 @@ public class SqlInvoiceItem {
                         rs.getString("FIELD_NAME"),
                         rs.getBoolean("IS_CREDIT"),
                         rs.getString("VALUE"),
-                        rs.getInt("QTY"),
-                        rs.getBoolean("IS_CATEGORY"));
+                        rs.getInt("QTY"));
             }
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {
@@ -184,8 +178,7 @@ public class SqlInvoiceItem {
                         rs.getString("FIELD_NAME"),
                         rs.getBoolean("IS_CREDIT"),
                         rs.getString("VALUE"),
-                        rs.getInt("QTY"),
-                        rs.getBoolean("IS_CATEGORY"));
+                        rs.getInt("QTY"));
             }
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {
