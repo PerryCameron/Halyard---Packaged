@@ -4,6 +4,8 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class MembershipListDTO extends MembershipDTO {
 
@@ -13,6 +15,11 @@ public class MembershipListDTO extends MembershipDTO {
 	private IntegerProperty subLeaser;
 	private IntegerProperty membershipId;
 	private StringProperty selectedYear;
+
+	private ObservableList<BoatDTO> boatDTOS = FXCollections.observableArrayList();
+//	private ObservableList<NotesDTO> notesDTOS = FXCollections.observableArrayList();
+	private ObservableList<MembershipIdDTO> membershipIdDTOS = FXCollections.observableArrayList();
+	private ObservableList<InvoiceDTO> invoiceDTOS = FXCollections.observableArrayList();
 	
 	public MembershipListDTO(Integer msid, Integer pid, Integer membershipId, String joinDate, String memType,
 							 String slip, String lastName, String firstName, Integer subLeaser, String address, String city, String state, String zip, String selectedYear) {
@@ -160,7 +167,37 @@ public class MembershipListDTO extends MembershipDTO {
 		this.selectedYearProperty().set(selectedYear);
 	}
 
+	public void setLastName(String lastName) {
+		this.lastName.set(lastName);
+	}
 
+	public void setFirstName(String firstName) {
+		this.firstName.set(firstName);
+	}
+
+	public ObservableList<BoatDTO> getBoatDTOS() {
+		return boatDTOS;
+	}
+
+	public void setBoatDTOS(ObservableList<BoatDTO> boatDTOS) {
+		this.boatDTOS = boatDTOS;
+	}
+
+	public ObservableList<MembershipIdDTO> getMembershipIdDTOS() {
+		return membershipIdDTOS;
+	}
+
+	public void setMembershipIdDTOS(ObservableList<MembershipIdDTO> membershipIdDTOS) {
+		this.membershipIdDTOS = membershipIdDTOS;
+	}
+
+	public ObservableList<InvoiceDTO> getInvoiceDTOS() {
+		return invoiceDTOS;
+	}
+
+	public void setInvoiceDTOS(ObservableList<InvoiceDTO> invoiceDTOS) {
+		this.invoiceDTOS = invoiceDTOS;
+	}
 
 	@Override
 	public String toString() {
