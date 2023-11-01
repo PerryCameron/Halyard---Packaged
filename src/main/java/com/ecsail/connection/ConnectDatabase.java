@@ -210,16 +210,21 @@ public class ConnectDatabase {
 		knownHost.setPrefWidth(200);
 		privateKey.setPrefWidth(200);
 
-
-
-//		buttonBox2.setSpacing(10);
 		addBox.setSpacing(15);
 
 		logonStage.setAlwaysOnTop(true);
 		newConnectText.setFill(Color.CORNFLOWERBLUE);
 		editConnectText.setFill(Color.CORNFLOWERBLUE);
-		
+
+
+
 		if(mainModel.getCurrentLogon() != null) {  // only true if starting for first time
+			mainModel.setCurrentLogon(
+					mainModel.getLogins().stream()
+							.filter(LoginDTO::isDefault)
+							.findFirst()
+							.orElse(null)
+			);
 			populateFields();
 		}
 		mainHBox.setId("box-pink");
@@ -341,9 +346,8 @@ public class ConnectDatabase {
 						dataBase.getText(),
 						System.getProperty("user.home") + "/.ssh/known_hosts" ,
 						privateKey.getText(),
-//						System.getProperty("user.home") + "/.ssh/membership",
-
-						defaultCheck.isSelected(), useSshTunnel.isSelected()));
+						defaultCheck.isSelected(),
+						useSshTunnel.isSelected()));
             	FileIO.saveLoginObjects(mainModel.getLogins());
             	choices.add(hostNameField.getText());  // add new host name into combo box
             	hostName.setValue(hostNameField.getText());  // set combo box default to new host name
@@ -356,6 +360,9 @@ public class ConnectDatabase {
         		// get element number
             	int element = FileIO.getSelectedHost(mainModel.getCurrentLogon().getHost(), mainModel.getLogins());
             	// save hostname for later
+				if(defaultCheck.isSelected()) {  // if default is selected, clear the entire list first
+					mainModel.getLogins().forEach(loginDTO -> loginDTO.setDefault(false));
+				}
             	String oldHost = mainModel.getCurrentLogon().getHost();
             	if(element >= 0) {  // the element exists, why wouldn't it exist
             		// change the specific login in the login list
@@ -373,6 +380,7 @@ public class ConnectDatabase {
             		FileIO.saveLoginObjects(mainModel.getLogins());
             		updateHostInComboBox(oldHost, hostNameField.getText());
             		hostName.setValue(hostNameField.getText());
+					mainModel.getLogins().forEach(System.out::println);
             		cancelButton2.fire(); // refresh login back to original
             	} else {
             		System.out.println("need to build error for non matching host here");

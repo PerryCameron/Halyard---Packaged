@@ -10,7 +10,6 @@ import java.util.List;
 
 public class MembershipRepositoryImpl implements MembershipRepository {
     private JdbcTemplate template;
-
     public MembershipRepositoryImpl() {
         this.template = new JdbcTemplate(BaseApplication.getDataSource());
     }
