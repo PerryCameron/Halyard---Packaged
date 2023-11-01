@@ -27,7 +27,6 @@ import java.util.concurrent.Executors;
 
 public class PDF_Directory {
 	private ObservableList<MembershipListDTO> rosters;
-	
 	static PDF_Object_Settings set;
 	TextArea textArea;
 	String message = "";
@@ -72,14 +71,14 @@ public class PDF_Directory {
 	    		doc.add(new PDF_Cover(1, set));
 	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 	    		textArea.appendText("Created Cover\n");
-	                
-	    		doc.add(new PDF_CommodoreMessage(1,set));
-	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-	    		textArea.appendText("Created Commodore Message\n");
-	    		
-	    		doc.add(new PDF_BoardOfDirectors(1,set));
-	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-	    		textArea.appendText("Created Board of Directors\n");
+
+				doc.add(new PDF_CommodoreMessage(1, set));
+				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+				textArea.appendText("Created Commodore Message\n");
+
+				doc.add(new PDF_BoardOfDirectors(1, set));
+				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+				textArea.appendText("Created Board of Directors\n");
 	    		
 	    		doc.add(new PDF_TableOfContents(1,set));
 	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
@@ -90,11 +89,12 @@ public class PDF_Directory {
 	    		textArea.appendText("Created Membership Information Chapter Page\n");
 	    		
 	    		createMemberInfoPages(doc);  // creates info pages
-//	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-				// this one below added in if book needs an extra page (should be even number of pages)
+	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+//				 this one below added in if book needs an extra page (should be even number of pages)
 //				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 
-	    		new PDF_MembersByNumber(set, doc, rosters);
+				new PDF_MembersByNumber(set, doc, rosters);
+
 
 	    		doc.add(new PDF_SlipPageL(2,set));
 	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
@@ -107,14 +107,14 @@ public class PDF_Directory {
 	    		doc.add(new PDF_SportsmanAward(2,set));
 	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 	    		textArea.appendText("Created sportsman award page\n");
-	    		
-	    		doc.add(new PDF_CommodoreList(2,set));
+
+				doc.add(new PDF_CommodoreList(2,set));
 	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 	    		textArea.appendText("Created directory page\n");
 	    		doc.close();
 	    		
-	    		System.out.println("destination=" + HalyardPaths.ECSCHOME + "_directory.pdf");
-	    		File file = new File(HalyardPaths.ECSCHOME + "_directory.pdf");
+	    		System.out.println("destination=" + HalyardPaths.DIRECTORIES + "/" + Year.now() + "_ECSC_directory.pdf");
+	    		File file = new File(HalyardPaths.DIRECTORIES + "/" + Year.now() + "_ECSC_directory.pdf");
 	    		Desktop desktop = Desktop.getDesktop(); // Gui_Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()
 
 	    		// Open the document

@@ -63,9 +63,9 @@ public class Xls_email_list {
             sheet.autoSizeColumn(i);
         }
         FileOutputStream fileOut = null;
-        HalyardPaths.checkPath(HalyardPaths.ECSCHOME);
+        HalyardPaths.checkPath(HalyardPaths.ECSC_HOME);
 		try {
-			fileOut = new FileOutputStream(HalyardPaths.ECSCHOME + "/Email_List.xlsx");
+			fileOut = new FileOutputStream(HalyardPaths.ECSC_HOME + "/Email_List.xlsx");
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

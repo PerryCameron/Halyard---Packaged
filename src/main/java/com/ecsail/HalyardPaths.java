@@ -14,7 +14,7 @@ public class HalyardPaths {
 	public static final String ROSTERS = System.getProperty("user.home") + "/Documents/ECSC/Rosters";
 
 	public static final String DIRECTORIES = System.getProperty("user.home") + "/Documents/ECSC/Directories";
-    public static final String ECSCHOME = System.getProperty("user.home") + "/Documents/ECSC";
+    public static final String ECSC_HOME = System.getProperty("user.home") + "/Documents/ECSC";
 	public static final String LOGO = "/ECSClogo4.png";
 	public static final String HOSTS = System.getProperty("user.home") + "/.ecsc/hosts.ecs";
 	public static final String TUPLECOUNTS = System.getProperty("user.home") + "/.ecsc/tuples.ecs";

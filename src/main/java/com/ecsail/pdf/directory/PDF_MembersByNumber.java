@@ -26,7 +26,7 @@ public class PDF_MembersByNumber {
 	public PDF_MembersByNumber(PDF_Object_Settings set, Document doc, ObservableList<MembershipListDTO> rosters) {
 		this.set = set;
 		this.rosters = rosters;
-		this.position = new ArrayList<Object_StoreMemberPosition>();
+		this.position = new ArrayList<>();
 		Collections.sort(this.rosters , Comparator.comparing(MembershipListDTO::getMembershipId));
 		
 		// used to know where we are in iterations
@@ -42,7 +42,7 @@ public class PDF_MembersByNumber {
 		// 5 columns make a page, so we are going to create the number of pages not including any straglers
 		int numberOfPdfPages = numberOfColumnTables / 5;
 		// if there are any straggler columns then we will create another page
-		if(numberOfColumnTables % 5 > 0) numberOfPdfPages++;
+//		if(numberOfColumnTables % 5 > 0) numberOfPdfPages++;  // commented this out because filled membership caused issue 10/31/2023
 		
 		
 		Table columnTable;
@@ -64,21 +64,23 @@ public class PDF_MembersByNumber {
 		Table table;
 		Cell cell;
 
-		for(int i = 0; i < numberOfPdfPages * 5; i+=5 ) {
-		doc.add(new Paragraph("\n\n"));
-		table = new Table(1);
-		cell = new Cell();
-		p = new Paragraph("Memberships " + position.get(i).getPersonStart() + " through " + position.get(i+4).getPersonEnd());
-		p.setFont(set.getColumnHead());
-		p.setFontColor(set.getMainColor());
-		p.setFontSize(set.getNormalFontSize() + 10);
-		cell.add(p);
-		cell.setBorder(Border.NO_BORDER);
-		table.addCell(cell);
-		table.setHorizontalAlignment(HorizontalAlignment.CENTER);
-		doc.add(table);
-		doc.add(createPage(i));
-		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+		for (int i = 0; i < numberOfPdfPages * 5; i += 5) {
+			doc.add(new Paragraph("\n\n"));
+			table = new Table(1);
+			cell = new Cell();
+			System.out.println(i + " position.size()=" + position.size());
+			System.out.println("Memberships " + position.get(i).getPersonStart() + " through " + position.get(i + 4).getPersonEnd());
+			p = new Paragraph("Memberships " + position.get(i).getPersonStart() + " through " + position.get(i + 4).getPersonEnd());
+			p.setFont(set.getColumnHead());
+			p.setFontColor(set.getMainColor());
+			p.setFontSize(set.getNormalFontSize() + 10);
+			cell.add(p);
+			cell.setBorder(Border.NO_BORDER);
+			table.addCell(cell);
+			table.setHorizontalAlignment(HorizontalAlignment.CENTER);
+			doc.add(table);
+			doc.add(createPage(i));
+			doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 		}
 	}
 	
