@@ -6,9 +6,9 @@ import javax.sql.DataSource;
 public class AppConfig {
     private DataSource dataSource;
     public void createDataSource(String ip, int port, String user, String pass, String database) throws ClassNotFoundException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
+        Class.forName("org.mariadb.jdbc.Driver");
         dataSource = new DriverManagerDataSource(
-                "jdbc:mysql://" + ip + ":" + port + "/"+database+"?autoReconnect=true&useSSL=false&serverTimezone=UTC",
+                "jdbc:mariadb://" + ip + ":" + port + "/"+database+"?autoReconnect=true&useSSL=false&serverTimezone=UTC",
                 user,
                 pass
         );
