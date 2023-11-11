@@ -34,9 +34,9 @@ public class StandardMenus implements Plugin {
 
         Menu file = new Menu("File");
         MenuItem createScript = Configure("Close Connection", x -> closeConnection(BaseApplication.stage), KeyCode.J);
-        MenuItem closeConnection = Configure("Back Up Database", (event) -> SqlScriptMaker.createSql(), KeyCode.B);
-
-        file.getItems().addAll(createScript, closeConnection);
+//        MenuItem closeConnection = Configure("Back Up Database", (event) -> SqlScriptMaker.createSql(), KeyCode.B);
+//        file.getItems().addAll(createScript, closeConnection);
+        file.getItems().addAll(createScript);
 
         if (!isMac()) {
             MenuItem quit = Configure("Quit", x -> Platform.exit(), KeyCode.Q);
@@ -51,9 +51,11 @@ public class StandardMenus implements Plugin {
         MenuItem boatReport = Configure("Boat Report", (event) -> Launcher.createBoatReport(), KeyCode.C);
         MenuItem membershipReport = Configure("Membership Report", (event) -> Launcher.createMembershipReport(), KeyCode.V);
         MenuItem emailListReport = Configure("Email List", (event) -> Xls_email_list.createSpreadSheet(), KeyCode.N);
-        MenuItem renewalForms = Configure("Renewal Forms", (event) -> Launcher.createRenewalForms(), KeyCode.M);
+//        MenuItem renewalForms = Configure("Renewal Forms", (event) -> Launcher.createRenewalForms(), KeyCode.M);
         MenuItem directory = Configure("Directory", (event) -> new Dialogue_DirectoryCreation(), KeyCode.Z);
-        subMenuCreate.getItems().addAll(boatReport,membershipReport,emailListReport,renewalForms,directory);
+        subMenuCreate.getItems().addAll(boatReport,membershipReport,emailListReport,directory);
+//        subMenuCreate.getItems().addAll(boatReport,membershipReport,emailListReport,renewalForms,directory);
+
         reports.getItems().add(subMenuCreate);
 
         Menu membership = new Menu("Membership");
@@ -74,8 +76,8 @@ public class StandardMenus implements Plugin {
         MenuItem jotform = Configure("Jotform", (event) -> Launcher.openJotFormTab(), null);
         MenuItem dataBase = Configure("DataBase", (event) -> Launcher.openTabDataBase(), null);
         MenuItem newYear = Configure("New Year Wizard", (event) -> Launcher.launchNewYearWizard(),null);
-        MenuItem tabStub = Configure("TabStub", (event) -> Launcher.launchTabStub(),null);
-        subMenuTabs.getItems().addAll(rosters,bod,people,boats,slips,deposits,fees,notes,jotform,dataBase,newYear,tabStub);
+//        MenuItem tabStub = Configure("TabStub", (event) -> Launcher.launchTabStub(),null);
+        subMenuTabs.getItems().addAll(rosters,bod,people,boats,slips,deposits,fees,notes,jotform,dataBase,newYear);
         membership.getItems().addAll(subMenuMembershipCreate, subMenuTabs);
         menuBar.getMenus().addAll(file, membership, reports);
     }
