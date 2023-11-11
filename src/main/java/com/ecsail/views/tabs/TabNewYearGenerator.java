@@ -33,7 +33,7 @@ public class TabNewYearGenerator extends Tab {
 		Text bod = new Text("Make sure that all officers and board members are in for the current year");
 		Text membership_ID = new Text("The membership ID entries need to be created, compact or keep?");
 		Text fees = new Text("The custom invoices need to be set up for current year");
-		this.fees.addAll(SqlFee.getFeesFromYear(2023));
+		this.fees.addAll(SqlFee.getFeesFromYear(2024));
 		Text invoices = new Text("Create a new invoice for each person");
 		Text credits = new Text("Add credit, wet slip data to invoices");
 		vboxBlue.setId("box-blue");
@@ -50,12 +50,12 @@ public class TabNewYearGenerator extends Tab {
 						String.valueOf(membershipListDTO.getMembershipId()), membershipListDTO.getMemType());
 				// create invoice for a specified year for this membership
 				SqlInsert.addMembershipId(newMembershipIdDTO);
-				var newInvoice = new InvoiceDTO(membershipListDTO.getMsId(), 2023);
+				var newInvoice = new InvoiceDTO(membershipListDTO.getMsId(), 2024);
 				// insert the new record into the SQL database
 				SqlInsert.addInvoiceRecord(newInvoice);
 				// insert items for the invoice
 				// TODO change dues for each record
-				createInvoiceItems(newInvoice.getId(), 2023, membershipListDTO.getMsId());
+				createInvoiceItems(newInvoice.getId(), 2024, membershipListDTO.getMsId());
 			});
 		});
 

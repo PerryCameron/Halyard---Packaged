@@ -372,11 +372,12 @@ public class ConnectDatabase {
 					mainModel.getLogins().get(element).setLocalSqlPort(Integer.parseInt(localSqlPortText.getText()));
 					mainModel.getLogins().get(element).setSshPort(Integer.parseInt(sshPortText.getText()));
 					mainModel.getLogins().get(element).setSshUser(sshUser.getText());
-					mainModel.getLogins().get(element).setSshPass(knownHost.getText());
 					mainModel.getLogins().get(element).setPrivateKey(privateKey.getText());
 					mainModel.getLogins().get(element).setDefault(defaultCheck.isSelected());
 					mainModel.getLogins().get(element).setSshForward(useSshTunnel.isSelected());
 					mainModel.getLogins().get(element).setDatabase(dataBase.getText());
+					mainModel.getLogins().get(element).setKnownHostsFile(knownHost.getText());
+					// save to hard disk
             		FileIO.saveLoginObjects(mainModel.getLogins());
             		updateHostInComboBox(oldHost, hostNameField.getText());
             		hostName.setValue(hostNameField.getText());
