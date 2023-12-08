@@ -1,0 +1,3 @@
+1.07
+- fixed bug where it would show membership dues on invoice when none existed
+- fixed bug where it would not completely delete a membership because the wait_list table was renamed in db
