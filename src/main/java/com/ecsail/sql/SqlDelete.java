@@ -249,7 +249,7 @@ public class SqlDelete {
 	}
 
 	public static void deleteWaitList(int ms_id) {
-		String query = "DELETE FROM waitlist WHERE ms_id=" + ms_id;
+		String query = "DELETE FROM wait_list WHERE ms_id=" + ms_id;
 		try {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {
