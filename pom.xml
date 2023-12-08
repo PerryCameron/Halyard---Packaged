@@ -23,7 +23,7 @@
          https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/text/SimpleDateFormat.html
          -->
 
-        <app.version>1.0.6</app.version>
+        <app.version>1.0.7</app.version>
 
         <!-- This property is used to specify the modules included in the (custom) JVM image. -->
         <!-- Reminder: javafx.web (the embedded browser component) is not included in this project by default due

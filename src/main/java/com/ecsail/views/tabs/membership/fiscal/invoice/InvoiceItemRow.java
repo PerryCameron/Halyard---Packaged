@@ -2,15 +2,13 @@ package com.ecsail.views.tabs.membership.fiscal.invoice;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.StringTools;
-import com.ecsail.sql.SqlInsert;
-import com.ecsail.sql.SqlUpdate;
-import com.ecsail.sql.select.SqlFee;
 import com.ecsail.dto.DbInvoiceDTO;
 import com.ecsail.dto.FeeDTO;
 import com.ecsail.dto.InvoiceDTO;
 import com.ecsail.dto.InvoiceItemDTO;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import com.ecsail.sql.SqlInsert;
+import com.ecsail.sql.SqlUpdate;
+import com.ecsail.sql.select.SqlFee;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -44,8 +42,6 @@ public class InvoiceItemRow extends HBox {
     InvoiceDTO invoice;
     Invoice parent;
 
-    private StringProperty thisValue = new SimpleStringProperty();
-
     public InvoiceItemRow(Invoice invoice, DbInvoiceDTO dbInvoiceDTO, InvoiceFooter footer) {
         this.parent = invoice;
         this.dbInvoiceDTO = dbInvoiceDTO;
@@ -53,8 +49,8 @@ public class InvoiceItemRow extends HBox {
         this.footer = footer;
         this.invoice = footer.getInvoice();
         this.invoiceItemDTO = setItem();
-        this.fee = getFee();    /// THIS is where dues fee is added I think
-        parent.invoiceItemMap.put(dbInvoiceDTO.getFieldName(),this);
+        this.fee = getFee();    /// THIS is where dues fee is added
+        parent.invoiceItemMap.put(dbInvoiceDTO.getFieldName(), this);
         System.out.println("Balance before addChildren=" + parent.invoice.getBalance());
         addChildren();
         System.out.println("Balance after addChildren=" + parent.invoice.getBalance());
@@ -73,15 +69,13 @@ public class InvoiceItemRow extends HBox {
         vBox4.setAlignment(Pos.CENTER_RIGHT);
         vBox4.getChildren().add(price);
         vBox5.setAlignment(Pos.CENTER_RIGHT);
-        if(!dbInvoiceDTO.isItemized()) // don't set this for itemized rows
+        if (!dbInvoiceDTO.isItemized()) // don't set this for itemized rows
             // caused too many problems
 //        rowTotal.textProperty().bind(invoiceItemDTO.valueProperty());
             // sets all initial values
-        rowTotal.textProperty().set(invoiceItemDTO.getValue());
-        invoiceItemDTO.valueProperty().addListener(observable -> {
             rowTotal.textProperty().set(invoiceItemDTO.getValue());
-        });
-        if(this.invoiceItemDTO.isCredit()) rowTotal.setId("invoice-text-credit");
+        invoiceItemDTO.valueProperty().addListener(observable -> rowTotal.textProperty().set(invoiceItemDTO.getValue()));
+        if (this.invoiceItemDTO.isCredit()) rowTotal.setId("invoice-text-credit");
         vBox5.getChildren().add(rowTotal);
     }
 
@@ -95,9 +89,9 @@ public class InvoiceItemRow extends HBox {
         vBox3.getChildren().add(setX(dbInvoiceDTO));
         vBox4.setPrefWidth(50);
         vBox5.setPrefWidth(70);
-        getChildren().addAll(vBox1,vBox2,vBox3,vBox4,vBox5);
+        getChildren().addAll(vBox1, vBox2, vBox3, vBox4, vBox5);
         // this row is not like the others - this needs changed here
-        if(dbInvoiceDTO.getWidgetType().equals("itemized")) {
+        if (dbInvoiceDTO.getWidgetType().equals("itemized")) {
             setForTitledPane();
         }
     }
@@ -119,7 +113,7 @@ public class InvoiceItemRow extends HBox {
 
     public void setCommitMode(boolean setCommit) {
         getChildren().clear();
-        if(setCommit)
+        if (setCommit)
             setCommit();
         else
             setEdit();
@@ -128,7 +122,7 @@ public class InvoiceItemRow extends HBox {
     private Text setX(DbInvoiceDTO i) {
         Text x = new Text("");
         x.setId("invoice-text-light");
-        if(i.isMultiplied()) {
+        if (i.isMultiplied()) {
             x.setText("X");
             return x;
         }
@@ -143,7 +137,7 @@ public class InvoiceItemRow extends HBox {
                 textField.setText(invoiceItemDTO.getValue());
                 setTextFieldListener();
                 // below if statement added because it needed to update dues.
-                if(!invoiceItemDTO.getValue().equals("0.00")) {
+                if (!invoiceItemDTO.getValue().equals("0.00")) {
                     invoiceItemDTO.setQty(1);
                     updateBalance();
                     checkIfNotCommittedAndUpdateSql();
@@ -173,7 +167,7 @@ public class InvoiceItemRow extends HBox {
             }
             case "itemized" -> { // more complex so layout and logic in different class
                 // setForTitledPane(); <- gets called in setEdit() in normal but here in mock
-                TitledPane titledPane = new TitledPane(fee.getFieldName(),new ItemizedCategory(this));
+                TitledPane titledPane = new TitledPane(fee.getFieldName(), new ItemizedCategory(this));
                 titledPane.setExpanded(false);
                 titledPane.getStyleClass().add("custom-titlepane");
                 return titledPane;
@@ -197,17 +191,16 @@ public class InvoiceItemRow extends HBox {
     //////////////////// THIS IS WHERE THE DUES FEE IS ADDED ////////////////
     private FeeDTO getFee() {
         FeeDTO duesFee;
-        if(getDbInvoiceDTO().isAutoPopulate()) {
+        if (getDbInvoiceDTO().isAutoPopulate()) {
             duesFee = SqlFee.getFeeByMembershipTypeForFiscalYear(invoice.getYear(), invoice.getMsId());
-            if(duesFee == null)
+            if (duesFee == null)
                 invoiceItemDTO.setValue("0.00");
             else if (invoice.isCommitted()) {
                 // do nothing, keep what was set
             } else
-            invoiceItemDTO.setValue(duesFee.getFieldValue());
+                invoiceItemDTO.setValue(duesFee.getFieldValue());
             return duesFee;
-        }
-        else
+        } else
             return dbInvoiceDTO.getFee();
     }
 
@@ -215,7 +208,7 @@ public class InvoiceItemRow extends HBox {
         // we will match this db_invoice to invoiceItem, if nothing found then create an invoice item
         InvoiceItemDTO currentInvoiceItem = parent.items.stream()
                 .filter(i -> i.getFieldName().equals(itemName)).findFirst().orElse(null);
-        if(currentInvoiceItem == null) return addNewInvoiceItem();
+        if (currentInvoiceItem == null) return addNewInvoiceItem();
         return currentInvoiceItem;
     }
 
@@ -224,7 +217,7 @@ public class InvoiceItemRow extends HBox {
      * after the invoice was created. It is a way to update them. In theory should never be needed.
      */
     private InvoiceItemDTO addNewInvoiceItem() { //
-        InvoiceItemDTO newInvoiceItem = new InvoiceItemDTO(invoice.getId(),invoice.getMsId(),invoice.getYear(),itemName);
+        InvoiceItemDTO newInvoiceItem = new InvoiceItemDTO(invoice.getId(), invoice.getMsId(), invoice.getYear(), itemName);
         parent.items.add(newInvoiceItem);
         SqlInsert.addInvoiceItemRecord(newInvoiceItem);
         return newInvoiceItem;
@@ -232,19 +225,19 @@ public class InvoiceItemRow extends HBox {
 
     private void setSpinnerListener() {
         SpinnerValueFactory<Integer> spinnerValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, dbInvoiceDTO.getMaxQty(), invoiceItemDTO.getQty());
-		spinner.setValueFactory(spinnerValueFactory);
-		spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
+        spinner.setValueFactory(spinnerValueFactory);
+        spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
             String calculatedTotal = String.valueOf(new BigDecimal(fee.getFieldValue()).multiply(BigDecimal.valueOf(newValue)));
-			rowTotal.setText(calculatedTotal);
+            rowTotal.setText(calculatedTotal);
             invoiceItemDTO.setValue(calculatedTotal);
             invoiceItemDTO.setQty(newValue);
             updateBalance();
-		});
+        });
 
         // no need to write to database everytime we click a spinner, lets write when done.
         spinner.focusedProperty().addListener((observable, oldValue, focused) -> {
-            if(!focused)
-            checkIfNotCommittedAndUpdateSql();
+            if (!focused)
+                checkIfNotCommittedAndUpdateSql();
         });
     }
 
@@ -281,33 +274,33 @@ public class InvoiceItemRow extends HBox {
     }
 
     private void setTextFieldListener() {
-        		textField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-	            //focus out
-	            if (oldValue) {  // we have focused and unfocused
-                    // fix it or set to 0 if can't
-	            	if(!StringTools.isBigDecimal(textField.getText())) textField.setText("0");
-	            	BigDecimal item = new BigDecimal(textField.getText());
-					textField.setText(String.valueOf(item.setScale(2, RoundingMode.HALF_UP)));
-                    invoiceItemDTO.setQty(1);
-                    invoiceItemDTO.setValue(textField.getText());
-                    updateBalance();
-                    checkIfNotCommittedAndUpdateSql();
-	            }
-	        });
+        textField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            //focus out
+            if (oldValue) {  // we have focused and unfocused
+                // fix it or set to 0 if can't
+                if (!StringTools.isBigDecimal(textField.getText())) textField.setText("0");
+                BigDecimal item = new BigDecimal(textField.getText());
+                textField.setText(String.valueOf(item.setScale(2, RoundingMode.HALF_UP)));
+                invoiceItemDTO.setQty(1);
+                invoiceItemDTO.setValue(textField.getText());
+                updateBalance();
+                checkIfNotCommittedAndUpdateSql();
+            }
+        });
     }
 
     private void checkIfNotCommittedAndUpdateSql() {
-        if(invoice.isCommitted()) BaseApplication.logger.info("Record is committed: database can not be updated");
+        if (invoice.isCommitted()) BaseApplication.logger.info("Record is committed: database can not be updated");
         else updateInvoiceItem(invoiceItemDTO);
     }
 
     protected void checkIfNotCommittedAndUpdateSql(InvoiceItemDTO invoiceItemDTO) {
-        if(invoice.isCommitted()) BaseApplication.logger.info("Record is committed: database can not be updated");
+        if (invoice.isCommitted()) BaseApplication.logger.info("Record is committed: database can not be updated");
         else updateInvoiceItem(invoiceItemDTO);
     }
 
     private void updateInvoiceItem(InvoiceItemDTO invoiceItemDTO) {
-        if(footer.getBoxInvoice().isUpdateAllowed())
+        if (footer.getBoxInvoice().isUpdateAllowed())
             SqlUpdate.updateInvoiceItem(invoiceItemDTO);
     }
 
@@ -315,7 +308,7 @@ public class InvoiceItemRow extends HBox {
         textField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             //focus out
             if (oldValue) {  // we have focused and unfocused
-                if(!StringTools.isBigDecimal(textField.getText())) {
+                if (!StringTools.isBigDecimal(textField.getText())) {
                     textField.setText("0.00");
                 }
                 BigDecimal calculatedValue = new BigDecimal(textField.getText());
