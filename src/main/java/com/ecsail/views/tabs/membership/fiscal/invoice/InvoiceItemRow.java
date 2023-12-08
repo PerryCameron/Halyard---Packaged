@@ -53,7 +53,7 @@ public class InvoiceItemRow extends HBox {
         this.footer = footer;
         this.invoice = footer.getInvoice();
         this.invoiceItemDTO = setItem();
-        this.fee = getFee();
+        this.fee = getFee();    /// THIS is where dues fee is added I think
         parent.invoiceItemMap.put(dbInvoiceDTO.getFieldName(),this);
         System.out.println("Balance before addChildren=" + parent.invoice.getBalance());
         addChildren();
@@ -194,13 +194,16 @@ public class InvoiceItemRow extends HBox {
         vBox2.setPrefWidth(330);
     }
 
+    //////////////////// THIS IS WHERE THE DUES FEE IS ADDED ////////////////
     private FeeDTO getFee() {
         FeeDTO duesFee;
         if(getDbInvoiceDTO().isAutoPopulate()) {
             duesFee = SqlFee.getFeeByMembershipTypeForFiscalYear(invoice.getYear(), invoice.getMsId());
             if(duesFee == null)
                 invoiceItemDTO.setValue("0.00");
-            else
+            else if (invoice.isCommitted()) {
+                // do nothing, keep what was set
+            } else
             invoiceItemDTO.setValue(duesFee.getFieldValue());
             return duesFee;
         }

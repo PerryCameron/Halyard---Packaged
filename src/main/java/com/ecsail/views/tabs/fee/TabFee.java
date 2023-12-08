@@ -135,32 +135,26 @@ public class TabFee extends Tab {
 
     private Button createCopyFeeButton() {  // TODO reintroduce functionality moving forward
         Button copyFeesBtn = new Button("Copy Fees");
-//        copyFeesBtn.setOnAction((event) -> copyPreviousYearsFees());
+        copyFeesBtn.setOnAction((event) -> copyPreviousYearsFees());
         return copyFeesBtn;
     }
 
     // this worked great for going back, I need to make it work going forward now
     private void copyPreviousYearsFees() {
-        for(FeeRow row: rows) {
-            String year = String.valueOf(Integer.parseInt(selectedYear) - 1);
-            DbInvoiceDTO dbInvoiceDTO = new DbInvoiceDTO(year, row.dbInvoiceDTO.getOrder());
-            dbInvoiceDTO.setFieldName(row.dbInvoiceDTO.getFieldName());
-            dbInvoiceDTO.setWidgetType(row.dbInvoiceDTO.getWidgetType());
-            dbInvoiceDTO.setMultiplied(row.dbInvoiceDTO.isMultiplied());
-            dbInvoiceDTO.setPrice_editable(row.dbInvoiceDTO.isPrice_editable());
-            dbInvoiceDTO.setIsCredit(row.dbInvoiceDTO.isCredit());
-            dbInvoiceDTO.setMaxQty(row.dbInvoiceDTO.getMaxQty());
-            dbInvoiceDTO.setAutoPopulate(row.dbInvoiceDTO.isAutoPopulate());
-//            System.out.println(dbInvoiceDTO);
-            SqlInsert.addNewDbInvoice(dbInvoiceDTO);
-            if(row.fees.size() > 0)
-                for(FeeDTO fee: row.fees) {
-                    FeeDTO newFee = new FeeDTO(fee.getFieldName(),fee.getFieldValue(),dbInvoiceDTO.getId(),Integer.parseInt(year),fee.getDescription());
-                    newFee.setFeeId(SqlSelect.getNextAvailablePrimaryKey("fee", "Fee_ID"));
-//                    System.out.println("    " + newFee);
-                    SqlInsert.addNewFee(newFee);
-                }
-        }
+        // previous years fees
+        ArrayList<FeeDTO> previousYearsFees = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear) - 1);
+        // previous years dbInvoices
+        ArrayList<DbInvoiceDTO> dbInvoiceDTOS = SqlDbInvoice.getDbInvoiceByYear(Integer.parseInt(selectedYear) - 1);
+
+        previousYearsFees.forEach(feeDTO -> feeDTO.setFeeYear(Integer.parseInt(selectedYear)));
+        feeDTOS.addAll(previousYearsFees);
+//        previousYearsFees.forEach(System.out::println);
+        dbInvoiceDTOS.forEach(dbInvoiceDTO -> {
+            dbInvoiceDTO.clone(new DbInvoiceDTO(selectedYear));
+            System.out.println(dbInvoiceDTO);
+        });
+
+
     }
 
     private void setNewYear(Object newValue) {
@@ -173,8 +167,10 @@ public class TabFee extends Tab {
         addControlBox();
         createFeeRows();
         addFeeRows();
+        if(rows.size() != 0)  // is it a new year with no rows yet?
         selectDesiredFeeRow(fieldName);
         okToWriteToDataBase = true;
+        System.out.println(selectedYear);
     }
     // when switching years this will keep it selected on correct one.
     private void selectDesiredFeeRow(String fieldName) {

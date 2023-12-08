@@ -58,6 +58,37 @@ public class DbInvoiceDTO {
         this.itemized = false;
     }
 
+    public DbInvoiceDTO(String fiscalYear) {  // for creation of new DTO
+        this.id = SqlSelect.getNextAvailablePrimaryKey("db_invoice", "ID");
+        this.fiscalYear = fiscalYear;
+        this.fieldName = "new entry";
+        this.widgetType = "none";
+        this.width = 65;
+        this.order = new SimpleIntegerProperty(0);
+        this.multiplied = false;
+        this.price_editable = false;
+        this.is_credit = false;
+        this.maxQty = 0;
+        this.autoPopulate = false;
+        this.itemized = false;
+    }
+
+    public DbInvoiceDTO clone(DbInvoiceDTO dbInvoiceDTO) {
+        System.out.println(dbInvoiceDTO.getFiscalYear());
+        dbInvoiceDTO.setFieldName(this.getFieldName());
+        dbInvoiceDTO.setWidgetType(this.getWidgetType());
+        dbInvoiceDTO.setWidth(this.getWidth());
+        dbInvoiceDTO.setOrder(this.getOrder());
+        dbInvoiceDTO.setMultiplied(this.isMultiplied());
+        dbInvoiceDTO.setPrice_editable(this.isPrice_editable());
+        dbInvoiceDTO.setIsCredit(this.isCredit());
+        dbInvoiceDTO.setMaxQty(this.getMaxQty());
+        dbInvoiceDTO.setAutoPopulate(this.isAutoPopulate());
+        dbInvoiceDTO.setItemized(this.isItemized());
+        return dbInvoiceDTO;
+    }
+
+
     public int getId() {
         return id;
     }
@@ -167,4 +198,22 @@ public class DbInvoiceDTO {
         this.itemized = itemized;
     }
 
+    @Override
+    public String toString() {
+        return "DbInvoiceDTO{" +
+                "id=" + id +
+                ", fiscalYear='" + fiscalYear + '\'' +
+                ", fieldName='" + fieldName + '\'' +
+                ", widgetType='" + widgetType + '\'' +
+                ", width=" + width +
+                ", order=" + order +
+                ", multiplied=" + multiplied +
+                ", price_editable=" + price_editable +
+                ", is_credit=" + is_credit +
+                ", maxQty=" + maxQty +
+                ", autoPopulate=" + autoPopulate +
+                ", itemized=" + itemized +
+                ", fee=" + fee +
+                '}';
+    }
 }
