@@ -3,6 +3,7 @@ package com.ecsail.sql.select;
 import com.ecsail.BaseApplication;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.dto.DbInvoiceDTO;
+import javafx.application.Platform;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -61,7 +62,7 @@ public class SqlDbInvoice {
             }
             BaseApplication.connect.closeResultSet(rs);
         } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
+            Platform.runLater(() -> new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details"));
         }
         return dbInvoiceDTOS;
     }

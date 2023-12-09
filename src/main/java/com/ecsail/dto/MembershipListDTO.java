@@ -32,6 +32,10 @@ public class MembershipListDTO extends MembershipDTO {
 		this.selectedYear = new SimpleStringProperty(selectedYear);
 	}
 
+	public String getFullName() {
+		return getFirstName() + " " + getLastName();
+	}
+
 	public String getMembershipInfo() {
 		return "Membership " + getMembershipId() + " (ms_id " + getMsId() + ") ";
 	}

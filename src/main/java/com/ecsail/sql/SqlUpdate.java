@@ -6,6 +6,7 @@ import com.ecsail.views.dialogues.Dialogue_CustomErrorMessage;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.dto.*;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
@@ -210,10 +211,12 @@ public class SqlUpdate {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {
 			//new Dialogue_ErrorSQL(e,"There was a problem with the Update","");
+			Platform.runLater(() -> {
 			alert.setTitle("Error Dialog");
 			alert.setHeaderText("Duplicate");
 			alert.setContentText("Duplicate entry!");
 			alert.showAndWait();
+			});
 		}
 	}
 
@@ -222,11 +225,12 @@ public class SqlUpdate {
 		try {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {
-			//new Dialogue_ErrorSQL(e,"There was a problem with the Update","");
+			Platform.runLater(() -> {
 			alert.setTitle("Error Dialog");
 			alert.setHeaderText("Duplicate");
 			alert.setContentText("Duplicate entry!");
 			alert.showAndWait();
+			});
 		}
 	}
 

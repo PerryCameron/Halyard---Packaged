@@ -6,6 +6,7 @@ import com.ecsail.SqlScriptMaker;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.dto.*;
+import javafx.application.Platform;
 
 import java.sql.SQLException;
 
@@ -174,7 +175,7 @@ public class SqlInsert {
 		try {
 			BaseApplication.connect.executeQuery(query);
 		 } catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to insert data into invoice row","See below for details");
+			Platform.runLater(() -> new Dialogue_ErrorSQL(e,"Unable to insert data into invoice row","See below for details"));
 		}
 	}
 
@@ -187,7 +188,7 @@ public class SqlInsert {
 		try {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to insert data into invoice row","See below for details");
+			Platform.runLater(() -> new Dialogue_ErrorSQL(e,"Unable to insert data into invoice row","See below for details"));
 		}
 	}
 
@@ -228,7 +229,7 @@ public class SqlInsert {
 		try {
 			BaseApplication.connect.executeQuery(query);
 		 } catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
+			Platform.runLater(() -> new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details"));
 		}
 	}
 
