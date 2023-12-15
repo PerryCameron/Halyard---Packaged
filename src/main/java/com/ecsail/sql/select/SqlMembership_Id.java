@@ -94,7 +94,7 @@ public class SqlMembership_Id {
         }
         return result;
     }
-
+    /// now in a repo
     public static int getMsidFromMembershipID(int membership_id)  {
         int result = 0;
         String query = "SELECT ms_id FROM membership_id WHERE fiscal_year='" + HalyardPaths.getYear() + "' AND membership_id=" + membership_id;

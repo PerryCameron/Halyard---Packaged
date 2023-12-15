@@ -162,7 +162,7 @@ public class SqlMembershipList {
         }
         return thisMembership;
     }
-
+    /// this exists in jdbcFormat now
     public static MembershipListDTO getMembershipFromList(int ms_id, String year) {
         MembershipListDTO thisMembership = null;
         String query = "SELECT m.ms_id,m.p_id,id.membership_id,id.fiscal_year,m.join_date,"

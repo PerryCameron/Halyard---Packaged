@@ -1,10 +1,15 @@
 package com.ecsail.pdf;
 
 import com.ecsail.HalyardPaths;
-import com.ecsail.sql.select.SqlMembershipList;
-import com.ecsail.sql.select.SqlMembership_Id;
 import com.ecsail.dto.MembershipIdDTO;
 import com.ecsail.dto.MembershipListDTO;
+import com.ecsail.repository.implementations.AppSettingsRepositoryImpl;
+import com.ecsail.repository.implementations.MembershipIdRepositoryImpl;
+import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.interfaces.AppSettingsRepository;
+import com.ecsail.repository.interfaces.MembershipIdRepository;
+import com.ecsail.repository.interfaces.MembershipRepository;
+import com.ecsail.sql.select.SqlMembership_Id;
 import com.itextpdf.io.font.FontProgramFactory;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.font.PdfFont;
@@ -25,25 +30,33 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class PDF_Envelope {
+
+	AppSettingsRepository appSettingsRepository;
+	MembershipRepository membershipRepository;
+	MembershipIdRepository membershipIdRepository;
 	Image ecscLogo = new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/EagleCreekLogoForPDF.png"))));
-	MembershipListDTO membership;
-	private String year;
-	private String current_membership_id;
+	MembershipListDTO membershipListDTO;
+	private int year;
+	private int current_membership_id;
 	private static int ms_id;
-	private List<MembershipIdDTO> ids = new ArrayList<MembershipIdDTO>();
+	private List<MembershipIdDTO> membershipIdDTOS = new ArrayList<MembershipIdDTO>();
 	PdfFont font;
 	private boolean isOneMembership;
 	
-	public PDF_Envelope(boolean iom, boolean size6x9, String membership_id) throws IOException {
-		this.year= HalyardPaths.getYear();
+	public PDF_Envelope(boolean iom, boolean size6x9, String membershipId) throws IOException {
+		this.year= LocalDate.now().getYear();
+		this.appSettingsRepository = new AppSettingsRepositoryImpl();
+		this.membershipRepository = new MembershipRepositoryImpl();
+		this.membershipIdRepository = new MembershipIdRepositoryImpl();
 		HalyardPaths.checkPath(HalyardPaths.ECSC_HOME);
-		this.current_membership_id = membership_id;
+		this.current_membership_id = Integer.parseInt(membershipId);
 		this.isOneMembership = iom;
 
 		if(System.getProperty("os.name").equals("Windows 10"))
@@ -92,19 +105,17 @@ public class PDF_Envelope {
 		doc.setTopMargin(0);
 		doc.setLeftMargin(0.25f);
 		if(isOneMembership) {
-			ms_id = SqlMembership_Id.getMsidFromMembershipID(Integer.parseInt(current_membership_id));
-			membership = SqlMembershipList.getMembershipFromList(ms_id, year);
+			System.out.println("current id= " + current_membership_id  + " " + " year used= " + year );
+			membershipListDTO = membershipRepository.getMembershipListByIdAndYear(current_membership_id, year);
 		doc.add(createReturnAddress());
 		doc.add(new Paragraph(new Text("\n\n\n\n\n")));
 		doc.add(createAddress());
 		} else {
-			ids = SqlMembership_Id.getAllMembershipIdsByYear(year);
-			Collections.sort(ids, Comparator.comparing(MembershipIdDTO::getMembership_id));
-
-			for(MembershipIdDTO id: ids) {
-				current_membership_id = id.getMembership_id();
-				ms_id = SqlMembership_Id.getMsidFromMembershipID(Integer.parseInt(current_membership_id));
-				membership = SqlMembershipList.getMembershipFromList(ms_id, year);
+			membershipIdDTOS = membershipIdRepository.getAllMembershipIdsByYear(year);
+			Collections.sort(membershipIdDTOS, Comparator.comparing(MembershipIdDTO::getMembership_id));
+			for(MembershipIdDTO id: membershipIdDTOS) {
+				current_membership_id = Integer.parseInt(id.getMembership_id());
+				membershipListDTO = membershipRepository.getMembershipListByIdAndYear(current_membership_id, year);
 				doc.add(createReturnAddress());
 				doc.add(new Paragraph(new Text("\n\n\n\n\n")));
 				doc.add(createAddress());
@@ -127,18 +138,19 @@ public class PDF_Envelope {
 		doc.setTopMargin(0);
 		doc.setLeftMargin(0.25f);
 		if(isOneMembership) {
-			ms_id = SqlMembership_Id.getMsidFromMembershipID(Integer.parseInt(current_membership_id));
-			membership = SqlMembershipList.getMembershipFromList(ms_id, year);
+			membershipListDTO = membershipRepository.getMembershipListByIdAndYear(current_membership_id, year);
+			System.out.println("got here-> ");
+			System.out.println(membershipListDTO);
 		doc.add(createReturnAddress());
 		doc.add(new Paragraph(new Text("\n\n\n\n\n\n\n\n\n")));
 		doc.add(createAddress());
 		} else {
-			ids = SqlMembership_Id.getAllMembershipIdsByYear(year);
-			Collections.sort(ids, Comparator.comparing(MembershipIdDTO::getMembership_id));
-			for(MembershipIdDTO id: ids) {
-				current_membership_id = id.getMembership_id();
-				ms_id = SqlMembership_Id.getMsidFromMembershipID(Integer.parseInt(current_membership_id));
-				membership = SqlMembershipList.getMembershipFromList(ms_id, year);
+			membershipIdDTOS = membershipIdRepository.getAllMembershipIdsByYear(year);
+			Collections.sort(membershipIdDTOS, Comparator.comparing(MembershipIdDTO::getMembership_id));
+			for(MembershipIdDTO id: membershipIdDTOS) {
+				current_membership_id = Integer.parseInt(id.getMembership_id());
+				membershipListDTO = membershipRepository.getMembershipListByIdAndYear(current_membership_id, year);
+				membershipListDTO = membershipRepository.getMembershipFromList(ms_id, year);
 				doc.add(createReturnAddress());
 				doc.add(new Paragraph(new Text("\n\n\n\n\n")));
 				doc.add(createAddress());
@@ -209,7 +221,7 @@ public class PDF_Envelope {
 
 		mainTable.addCell(cell);
 		
-		p = new Paragraph(membership.getFirstName() + " " + membership.getLastName() + " #" + current_membership_id);
+		p = new Paragraph(membershipListDTO.getFirstName() + " " + membershipListDTO.getLastName() + " #" + current_membership_id);
 		p.setFont(font);
 		p.setFontSize(16);
 		p.setFixedLeading(14);
@@ -218,7 +230,7 @@ public class PDF_Envelope {
 		cell.add(p);
 		mainTable.addCell(cell);
 		
-		p = new Paragraph(membership.getAddress());
+		p = new Paragraph(membershipListDTO.getAddress());
 		p.setFont(font);
 		p.setFontSize(16);
 		p.setFixedLeading(14);
@@ -227,7 +239,7 @@ public class PDF_Envelope {
 		cell.add(p);
 		mainTable.addCell(cell);
 		
-		p = new Paragraph(membership.getCity() + ", " + membership.getState() + " " + membership.getZip());
+		p = new Paragraph(membershipListDTO.getCity() + ", " + membershipListDTO.getState() + " " + membershipListDTO.getZip());
 		p.setFont(font);
 		p.setFontSize(16);
 		p.setFixedLeading(14);
