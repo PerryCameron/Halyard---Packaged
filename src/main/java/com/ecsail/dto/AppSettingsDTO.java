@@ -18,6 +18,10 @@ public class AppSettingsDTO {
         this.updatedAt = updatedAt;
     }
 
+    public AppSettingsDTO() {
+        super();
+    }
+
     public String getKey() {
         return key;
     }
