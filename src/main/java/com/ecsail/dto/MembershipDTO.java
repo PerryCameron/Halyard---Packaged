@@ -20,7 +20,6 @@ public class MembershipDTO {
 
 	public MembershipDTO(Integer msId, Integer pId, String joinDate, String memType
 			, String address, String city, String state, String zip) {
-
 		this.msId = new SimpleIntegerProperty(msId);
 		this.pId = new SimpleIntegerProperty(pId);
 		this.joinDate = new SimpleStringProperty(joinDate);
@@ -34,10 +33,12 @@ public class MembershipDTO {
 	
 
 	public MembershipDTO() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
-
+	public final String getCityStateZip() {
+		return getCity() + ", " + getState() + " " + getZip();
+	}
 
 	public final IntegerProperty msIdProperty() {
 		return this.msId;
@@ -50,9 +51,9 @@ public class MembershipDTO {
 	
 
 	public final void setMsId(final int msId) {
+		System.out.println("Setting property= " + msId);
 		this.msIdProperty().set(msId);
 	}
-	
 
 	public final IntegerProperty pIdProperty() {
 		return this.pId;
@@ -157,6 +158,9 @@ public class MembershipDTO {
 		this.zipProperty().set(zip);
 	}
 
+	public void setpId(int pId) {
+		this.pId.set(pId);
+	}
 
 	@Override
 	public String toString() {

@@ -10,17 +10,14 @@ public class MembershipRowMapper implements RowMapper<MembershipDTO> {
 
     @Override
     public MembershipDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-        MembershipDTO membership = new MembershipDTO();
-        membership.setMsId(rs.getInt("ms_id"));
-        membership.setPid(rs.getInt("p_id"));
-        membership.setJoinDate(rs.getString("join_date"));
-        membership.setMemType(rs.getString("mem_type"));
-        membership.setAddress(rs.getString("address"));
-        membership.setCity(rs.getString("city"));
-        membership.setState(rs.getString("state"));
-        membership.setZip(rs.getString("zip"));
-        return membership;
+        return new MembershipDTO(
+        rs.getInt("ms_id"),
+        rs.getInt("p_id"),
+        rs.getString("join_date"),
+        rs.getString("mem_type"),
+        rs.getString("address"),
+        rs.getString("city"),
+        rs.getString("state"),
+        rs.getString("zip"));
     }
-
-
 }

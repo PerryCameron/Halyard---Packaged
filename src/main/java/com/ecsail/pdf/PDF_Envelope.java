@@ -1,6 +1,7 @@
 package com.ecsail.pdf;
 
 import com.ecsail.HalyardPaths;
+import com.ecsail.dto.MembershipDTO;
 import com.ecsail.dto.MembershipIdDTO;
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.repository.implementations.AppSettingsRepositoryImpl;
@@ -9,7 +10,6 @@ import com.ecsail.repository.implementations.MembershipRepositoryImpl;
 import com.ecsail.repository.interfaces.AppSettingsRepository;
 import com.ecsail.repository.interfaces.MembershipIdRepository;
 import com.ecsail.repository.interfaces.MembershipRepository;
-import com.ecsail.sql.select.SqlMembership_Id;
 import com.itextpdf.io.font.FontProgramFactory;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.font.PdfFont;
@@ -31,9 +31,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
 
 public class PDF_Envelope {
@@ -41,11 +39,11 @@ public class PDF_Envelope {
 	AppSettingsRepository appSettingsRepository;
 	MembershipRepository membershipRepository;
 	MembershipIdRepository membershipIdRepository;
-	Image ecscLogo = new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(getClass().getResourceAsStream("/EagleCreekLogoForPDF.png"))));
+	Image ecscLogo = new Image(ImageDataFactory.create(PDF_DepositReport.toByteArray(Objects.requireNonNull(getClass().getResourceAsStream("/EagleCreekLogoForPDF.png")))));
 	MembershipListDTO membershipListDTO;
-	private int year;
+	MembershipDTO membershipChair;
+	private final int year;
 	private int current_membership_id;
-	private static int ms_id;
 	private List<MembershipIdDTO> membershipIdDTOS = new ArrayList<MembershipIdDTO>();
 	PdfFont font;
 	private boolean isOneMembership;
@@ -58,6 +56,7 @@ public class PDF_Envelope {
 		HalyardPaths.checkPath(HalyardPaths.ECSC_HOME);
 		this.current_membership_id = Integer.parseInt(membershipId);
 		this.isOneMembership = iom;
+		this.membershipChair = membershipRepository.getCurrentMembershipChair();
 
 		if(System.getProperty("os.name").equals("Windows 10"))
 		FontProgramFactory.registerFont("c:/windows/fonts/times.ttf", "times");
@@ -111,16 +110,7 @@ public class PDF_Envelope {
 		doc.add(new Paragraph(new Text("\n\n\n\n\n")));
 		doc.add(createAddress());
 		} else {
-			membershipIdDTOS = membershipIdRepository.getAllMembershipIdsByYear(year);
-			Collections.sort(membershipIdDTOS, Comparator.comparing(MembershipIdDTO::getMembership_id));
-			for(MembershipIdDTO id: membershipIdDTOS) {
-				current_membership_id = Integer.parseInt(id.getMembership_id());
-				membershipListDTO = membershipRepository.getMembershipListByIdAndYear(current_membership_id, year);
-				doc.add(createReturnAddress());
-				doc.add(new Paragraph(new Text("\n\n\n\n\n")));
-				doc.add(createAddress());
-				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-			}
+			buildAddress(doc);
 		}
 		doc.close();
 	}
@@ -139,27 +129,28 @@ public class PDF_Envelope {
 		doc.setLeftMargin(0.25f);
 		if(isOneMembership) {
 			membershipListDTO = membershipRepository.getMembershipListByIdAndYear(current_membership_id, year);
-			System.out.println("got here-> ");
-			System.out.println(membershipListDTO);
 		doc.add(createReturnAddress());
 		doc.add(new Paragraph(new Text("\n\n\n\n\n\n\n\n\n")));
 		doc.add(createAddress());
 		} else {
-			membershipIdDTOS = membershipIdRepository.getAllMembershipIdsByYear(year);
-			Collections.sort(membershipIdDTOS, Comparator.comparing(MembershipIdDTO::getMembership_id));
-			for(MembershipIdDTO id: membershipIdDTOS) {
-				current_membership_id = Integer.parseInt(id.getMembership_id());
-				membershipListDTO = membershipRepository.getMembershipListByIdAndYear(current_membership_id, year);
-				membershipListDTO = membershipRepository.getMembershipFromList(ms_id, year);
-				doc.add(createReturnAddress());
-				doc.add(new Paragraph(new Text("\n\n\n\n\n")));
-				doc.add(createAddress());
-				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-			}
+			buildAddress(doc);
 		}
 		doc.close();
 	}
-	
+
+	private void buildAddress(Document doc) {
+		membershipIdDTOS = membershipIdRepository.getAllMembershipIdsByYear(year);
+		Collections.sort(membershipIdDTOS, Comparator.comparing(MembershipIdDTO::getMembership_id));
+		for(MembershipIdDTO id: membershipIdDTOS) {
+			current_membership_id = Integer.parseInt(id.getMembership_id());
+			membershipListDTO = membershipRepository.getMembershipListByIdAndYear(current_membership_id, year);
+			doc.add(createReturnAddress());
+			doc.add(new Paragraph(new Text("\n\n\n\n\n")));
+			doc.add(createAddress());
+			doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+		}
+	}
+
 	public Table createReturnAddress() {
 		Table mainTable = new Table(2);
 		mainTable.setWidth(290);
@@ -185,7 +176,7 @@ public class PDF_Envelope {
 		cell.add(p);
 		mainTable.addCell(cell);
 		
-		p = new Paragraph("7078 Windridge Way");
+		p = new Paragraph(membershipChair.getAddress());
 		p.setFont(font);
 		p.setFontSize(10);
 		p.setFixedLeading(10);
@@ -194,7 +185,7 @@ public class PDF_Envelope {
 		cell.add(p);
 		mainTable.addCell(cell);
 		
-		p = new Paragraph("Brownsburg, IN 46112");
+		p = new Paragraph(membershipChair.getCityStateZip());
 		p.setFont(font);
 		p.setFontSize(10);
 		p.setFixedLeading(10);

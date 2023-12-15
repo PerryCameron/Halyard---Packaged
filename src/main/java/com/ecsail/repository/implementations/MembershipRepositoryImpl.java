@@ -1,9 +1,11 @@
 package com.ecsail.repository.implementations;
 
 import com.ecsail.BaseApplication;
+import com.ecsail.dto.MembershipDTO;
 import com.ecsail.repository.interfaces.MembershipRepository;
 import com.ecsail.repository.rowmappers.MembershipListRowMapper;
 import com.ecsail.dto.MembershipListDTO;
+import com.ecsail.repository.rowmappers.MembershipRowMapper;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -166,6 +168,16 @@ public class MembershipRepositoryImpl implements MembershipRepository {
                 "LIMIT 1";
         return template.queryForObject(sql, new MembershipListRowMapper(), year, year, membershipId);
     }
+    @Override
+    public MembershipDTO getCurrentMembershipChair() {
+        String sql = """
+                SELECT m.* FROM membership m 
+                JOIN app_settings a ON m.MS_ID = CAST(a.setting_value AS UNSIGNED) 
+                WHERE a.setting_key = 'current_membership_chair'
+                """;
+        return template.queryForObject(sql, new MembershipRowMapper());
+    }
+
 
 
 

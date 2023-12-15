@@ -1,5 +1,6 @@
 package com.ecsail.repository.interfaces;
 
+import com.ecsail.dto.MembershipDTO;
 import com.ecsail.dto.MembershipListDTO;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface MembershipRepository {
     List<MembershipListDTO> getSlipWaitList(String selectedYear);
     MembershipListDTO getMembershipFromList(int ms_id, int year);
     MembershipListDTO getMembershipListByIdAndYear(int year, int membershipId);
+
+    MembershipDTO getCurrentMembershipChair();
 }
