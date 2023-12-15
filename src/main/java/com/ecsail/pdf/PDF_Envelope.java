@@ -25,6 +25,8 @@ import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.properties.AreaBreakType;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.VerticalAlignment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
@@ -35,7 +37,7 @@ import java.util.*;
 import java.util.List;
 
 public class PDF_Envelope {
-
+	public static Logger logger = LoggerFactory.getLogger(PDF_Envelope.class);
 	AppSettingsRepository appSettingsRepository;
 	MembershipRepository membershipRepository;
 	MembershipIdRepository membershipIdRepository;
@@ -77,12 +79,9 @@ public class PDF_Envelope {
 		} else {
 			create4x9 ();
 		}
-		
-
-		System.out.println("destination=" + HalyardPaths.ECSC_HOME + "_envelopes.pdf");
+		logger.info("destination=" + HalyardPaths.ECSC_HOME + "_envelopes.pdf");
 		File file = new File(HalyardPaths.ECSC_HOME + "_envelopes.pdf");
 		Desktop desktop = Desktop.getDesktop(); // Gui_Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()
-
 		// Open the document
 		try {
 			desktop.open(file);
@@ -104,7 +103,6 @@ public class PDF_Envelope {
 		doc.setTopMargin(0);
 		doc.setLeftMargin(0.25f);
 		if(isOneMembership) {
-			System.out.println("current id= " + current_membership_id  + " " + " year used= " + year );
 			membershipListDTO = membershipRepository.getMembershipListByIdAndYear(current_membership_id, year);
 		doc.add(createReturnAddress());
 		doc.add(new Paragraph(new Text("\n\n\n\n\n")));
@@ -155,46 +153,29 @@ public class PDF_Envelope {
 		Table mainTable = new Table(2);
 		mainTable.setWidth(290);
 		ecscLogo.scale(0.25f, 0.25f);
-		
-		Cell cell;
-		Paragraph p;
-
-		cell = new Cell(3,1);
+		Cell cell = new Cell(3,1);
 		cell.setWidth(40);
 		cell.setBorder(Border.NO_BORDER);
 		cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
 		cell.setHorizontalAlignment(HorizontalAlignment.CENTER);
 		cell.add(ecscLogo);
 		mainTable.addCell(cell);
-		
-		p = new Paragraph("ECSC Membership");
-		p.setFont(font);
-		p.setFontSize(10);
-		p.setFixedLeading(10);
-		cell = new Cell();
-		cell.setBorder(Border.NO_BORDER);
-		cell.add(p);
-		mainTable.addCell(cell);
-		
-		p = new Paragraph(membershipChair.getAddress());
-		p.setFont(font);
-		p.setFontSize(10);
-		p.setFixedLeading(10);
-		cell = new Cell();
-		cell.setBorder(Border.NO_BORDER);
-		cell.add(p);
-		mainTable.addCell(cell);
-		
-		p = new Paragraph(membershipChair.getCityStateZip());
-		p.setFont(font);
-		p.setFontSize(10);
-		p.setFixedLeading(10);
-		cell = new Cell();
-		cell.setBorder(Border.NO_BORDER);
-		cell.add(p);
-		mainTable.addCell(cell);
-		
+		mainTable.addCell(newAddressCell(10,10,"ECSC Membership"));
+		mainTable.addCell(newAddressCell(10,10,membershipChair.getAddress()));
+		mainTable.addCell(newAddressCell(10,10,membershipChair.getCityStateZip()));
 		return mainTable;
+	}
+
+	private Cell newAddressCell(int fontSize, int fixedLeading, String paragraphContent) {
+		Paragraph p;
+		Cell cell = new Cell();
+		p = new Paragraph(paragraphContent);
+		p.setFont(font);
+		p.setFontSize(fontSize);
+		p.setFixedLeading(fixedLeading);
+		cell.setBorder(Border.NO_BORDER);
+		cell.add(p);
+		return cell;
 	}
 	
 	public Table createAddress() {
@@ -202,44 +183,15 @@ public class PDF_Envelope {
 		mainTable.setWidth(590);
 		ecscLogo.scale(0.25f, 0.25f);
 		
-		Cell cell;
-		Paragraph p;
-
-		cell = new Cell(3,1);
+		Cell cell = new Cell(3,1);
 		cell.setWidth(260);
 		cell.setBorder(Border.NO_BORDER);
-
-
 		mainTable.addCell(cell);
-		
-		p = new Paragraph(membershipListDTO.getFirstName() + " " + membershipListDTO.getLastName() + " #" + current_membership_id);
-		p.setFont(font);
-		p.setFontSize(16);
-		p.setFixedLeading(14);
-		cell = new Cell();
-		cell.setBorder(Border.NO_BORDER);
-		cell.add(p);
-		mainTable.addCell(cell);
-		
-		p = new Paragraph(membershipListDTO.getAddress());
-		p.setFont(font);
-		p.setFontSize(16);
-		p.setFixedLeading(14);
-		cell = new Cell();
-		cell.setBorder(Border.NO_BORDER);
-		cell.add(p);
-		mainTable.addCell(cell);
-		
-		p = new Paragraph(membershipListDTO.getCity() + ", " + membershipListDTO.getState() + " " + membershipListDTO.getZip());
-		p.setFont(font);
-		p.setFontSize(16);
-		p.setFixedLeading(14);
-		cell = new Cell();
-		cell.setBorder(Border.NO_BORDER);
-		cell.add(p);
-		mainTable.addCell(cell);
-		
+		mainTable.addCell(newAddressCell(16,14,membershipListDTO.getFirstName()
+				+ " " + membershipListDTO.getLastName() + " #" + current_membership_id));
+		mainTable.addCell(newAddressCell(16,14,membershipListDTO.getAddress()));
+		mainTable.addCell(newAddressCell(16,14,membershipListDTO.getCity() + ", "
+				+ membershipListDTO.getState() + " " + membershipListDTO.getZip()));
 		return mainTable;
 	}
-
 }
