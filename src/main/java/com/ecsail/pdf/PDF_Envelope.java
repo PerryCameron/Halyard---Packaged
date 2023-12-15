@@ -66,10 +66,6 @@ public class PDF_Envelope {
 			create4x9 ();
 		}
 		
-		//		p.setFontSize(10);
-		//  p.setFixedLeading(10);
-		
-		
 
 		System.out.println("destination=" + HalyardPaths.ECSC_HOME + "_envelopes.pdf");
 		File file = new File(HalyardPaths.ECSC_HOME + "_envelopes.pdf");

@@ -4,7 +4,7 @@ use ECSC_SQL;
 
 create table ECSC_SQL.boat
 (
-    BOAT_ID          INTEGER NOT NULL auto_increment primary key,
+    BOAT_ID          INTEGER                                                      NOT NULL auto_increment primary key,
     MANUFACTURER     varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
     MANUFACTURE_YEAR varchar(5),
     REGISTRATION_NUM varchar(30),
@@ -16,10 +16,10 @@ create table ECSC_SQL.boat
     WEIGHT           varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
     KEEL             varchar(4),
     PHRF             INTEGER,
-    DRAFT varchar(15) NULL,
-    BEAM varchar(20) NULL,
-    LWL varchar(20) NULL,
-    AUX TINYINT(1) DEFAULT 0 NOT NULL
+    DRAFT            varchar(15)                                                  NULL,
+    BEAM             varchar(20)                                                  NULL,
+    LWL              varchar(20)                                                  NULL,
+    AUX              TINYINT(1) DEFAULT 0                                         NOT NULL
 );
 
 create table ECSC_SQL.boat_memo
@@ -63,14 +63,14 @@ create table ECSC_SQL.membership
 
 create table ECSC_SQL.membership_id
 (
-    MID           INTEGER           NOT NULL auto_increment primary key,
-    FISCAL_YEAR   INTEGER NOT NULL,
-    MS_ID         INTEGER           NOT NULL,
+    MID           INTEGER    NOT NULL auto_increment primary key,
+    FISCAL_YEAR   INTEGER    NOT NULL,
+    MS_ID         INTEGER    NOT NULL,
     MEMBERSHIP_ID INTEGER,
     RENEW         boolean,
     MEM_TYPE      varchar(4),
     SELECTED      boolean,
-    LATE_RENEW tinyint(1) NULL,
+    LATE_RENEW    tinyint(1) NULL,
     foreign key (MS_ID) references membership (MS_ID),
     unique (FISCAL_YEAR, MS_ID),
     unique (FISCAL_YEAR, MEMBERSHIP_ID)
@@ -79,8 +79,8 @@ create table ECSC_SQL.membership_id
 
 create table ECSC_SQL.slip
 (
-    SLIP_ID      INTEGER               NOT NULL auto_increment primary key,
-    MS_ID        INTEGER unique        NULL,
+    SLIP_ID      INTEGER           NOT NULL auto_increment primary key,
+    MS_ID        INTEGER unique    NULL,
     SLIP_NUM     varchar(4) unique NOT NULL,
     SUBLEASED_TO INTEGER unique,
     ALT_TEXT     varchar(20),
@@ -89,13 +89,13 @@ create table ECSC_SQL.slip
 
 CREATE TABLE ECSC_SQL.fee
 (
-    FEE_ID        INTEGER                    NOT NULL auto_increment primary key,
+    FEE_ID        INTEGER     NOT NULL auto_increment primary key,
     FIELD_NAME    varchar(40),
     FIELD_VALUE   DECIMAL(10, 2),
-    DB_INVOICE_ID INTEGER                    NOT NULL,
-    FEE_YEAR      INTEGER                    NOT NULL,
-    Description   varchar(40)                NULL,
-    DEFAULT_FEE   boolean                    NOT NULL,
+    DB_INVOICE_ID INTEGER     NOT NULL,
+    FEE_YEAR      INTEGER     NOT NULL,
+    Description   varchar(40) NULL,
+    DEFAULT_FEE   boolean     NOT NULL,
     foreign key (DB_INVOICE_ID) references db_invoice (ID)
 );
 
@@ -124,7 +124,7 @@ create table ECSC_SQL.person
     IS_ACTIVE   boolean,
     PICTURE     blob,
     NICK_NAME   varchar(30) NULL,
-    OLD_MSID     INTEGER     NULL,
+    OLD_MSID    INTEGER     NULL,
     foreign key (MS_ID) references membership (MS_ID)
 );
 
@@ -192,19 +192,19 @@ create table ECSC_SQL.invoice_item
     INVOICE_ID  INTEGER        NOT NULL,
     MS_ID       INTEGER        NOT NULL,
     FISCAL_YEAR INTEGER        NULL,
-    FIELD_NAME   varchar(50)    NOT NULL,
+    FIELD_NAME  varchar(50)    NOT NULL,
     IS_CREDIT   boolean        NOT NULL,
     VALUE       DECIMAL(10, 2) NULL,
     QTY         INTEGER        NULL,
-    foreign key (INVOICE_ID) references invoice(ID),
+    foreign key (INVOICE_ID) references invoice (ID),
     foreign key (MS_ID) references membership (MS_ID)
 );
 
 create table ECSC_SQL.payment
 (
     PAY_ID       INTEGER        NOT NULL auto_increment primary key,
-    INVOICE_ID     INTEGER        NOT NULL,
-    CHECK_NUMBER  VARCHAR(20)    NULL,
+    INVOICE_ID   INTEGER        NOT NULL,
+    CHECK_NUMBER VARCHAR(20)    NULL,
     PAYMENT_TYPE varchar(4)     NOT NULL,
     PAYMENT_DATE date           NOT NULL,
     AMOUNT       DECIMAL(10, 2) NOT NULL,
@@ -259,12 +259,12 @@ CREATE TABLE ECSC_SQL.awards
 -- #one-to-one relation with membership
 create table ECSC_SQL.wait_list
 (
-    MS_ID          int NOT NULL primary key unique,
-    SLIP_WAIT       boolean,
+    MS_ID            int NOT NULL primary key unique,
+    SLIP_WAIT        boolean,
     KAYAK_RACK_WAIT  boolean,
-    SHED_WAIT       boolean,
-    WANT_SUBLEASE   boolean,
-    WANT_RELEASE    boolean,
+    SHED_WAIT        boolean,
+    WANT_SUBLEASE    boolean,
+    WANT_RELEASE     boolean,
     WANT_SLIP_CHANGE boolean,
     foreign key (MS_ID) references membership (MS_ID) on DELETE no action on UPDATE no action
 );
@@ -348,13 +348,13 @@ CREATE TABLE ECSC_SQL.users
 
 CREATE TABLE ECSC_SQL.board_positions
 (
-    id INTEGER NOT NULL primary key,
-    position varchar(50) unique not null,
-    identifier varchar(5) unique not null,
-    list_order INTEGER not null,
-    is_officer boolean not null,
-    is_chair boolean not null,
-    is_assistant_chair boolean not null
+    id                 INTEGER            NOT NULL primary key,
+    position           varchar(50) unique not null,
+    identifier         varchar(5) unique  not null,
+    list_order         INTEGER            not null,
+    is_officer         boolean            not null,
+    is_chair           boolean            not null,
+    is_assistant_chair boolean            not null
 );
 
 CREATE TABLE ECSC_SQL.db_updates
@@ -401,26 +401,26 @@ create table ECSC_SQL.db_boat
     control_type varchar(30) NOT NULL,
     data_type    varchar(30) NOT NULL,
     field_name   varchar(30) NOT NULL,
-    list_order        INTEGER NOT NULL
+    list_order   INTEGER     NOT NULL
 );
 
 create table ECSC_SQL.db_membership_list
 (
-    ID           INTEGER     NOT NULL auto_increment primary key,
-    name         varchar(30) NOT NULL,
-    pojo_name varchar(30) NOT NULL,
-    data_type    varchar(30) NOT NULL,
-    field_name   varchar(30) NOT NULL,
-    list_order        INTEGER NOT NULL
+    ID         INTEGER     NOT NULL auto_increment primary key,
+    name       varchar(30) NOT NULL,
+    pojo_name  varchar(30) NOT NULL,
+    data_type  varchar(30) NOT NULL,
+    field_name varchar(30) NOT NULL,
+    list_order INTEGER     NOT NULL
 );
 
 create table ECSC_SQL.db_membership_list_selection
 (
-    ID            INTEGER      NOT NULL auto_increment primary key,
-    LABEL         varchar(40)  NOT NULL,
-    SQL_QUERY     varchar(2000),
-    LIST_ORDER    INTEGER      NOT NULL,
-    LIST          INTEGER      NOT NULL
+    ID         INTEGER     NOT NULL auto_increment primary key,
+    LABEL      varchar(40) NOT NULL,
+    SQL_QUERY  varchar(2000),
+    LIST_ORDER INTEGER     NOT NULL,
+    LIST       INTEGER     NOT NULL
 );
 
 create table ECSC_SQL.boat_photos
@@ -436,10 +436,26 @@ create table ECSC_SQL.boat_photos
 
 create table ECSC_SQL.boat_selection
 (
-    ID            INTEGER      NOT NULL auto_increment primary key,
-    LABEL         varchar(40)  NOT NULL,
-    SQL_QUERY     varchar(2000),
-    LIST_ORDER    INTEGER      NOT NULL
-)
+    ID         INTEGER     NOT NULL auto_increment primary key,
+    LABEL      varchar(40) NOT NULL,
+    SQL_QUERY  varchar(2000),
+    LIST_ORDER INTEGER     NOT NULL
+);
+
+# added 12/15/2023
+CREATE TABLE ECSC_SQL.app_settings
+(
+    setting_key   VARCHAR(255) NOT NULL PRIMARY KEY,
+    setting_value VARCHAR(255) NOT NULL,
+    description   TEXT,
+    data_type     VARCHAR(50),
+    updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+# setting_key: A unique identifier for each setting.
+# setting_value: The value of the setting.
+# description: A description of what the setting is used for.
+# data_type: Optional, to specify what type of data the setting holds (e.g., 'string', 'integer', 'boolean'). This can be useful for parsing the value correctly in your application.
+# updated_at: A timestamp to track when the setting was last updated.
 
 
