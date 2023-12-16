@@ -50,7 +50,7 @@ public class PDF_Envelope {
 	PdfFont font;
 	private boolean isOneMembership;
 	
-	public PDF_Envelope(boolean iom, boolean size6x9, String membershipId) throws IOException {
+	public PDF_Envelope(boolean iom, boolean isCatalog, String membershipId) throws IOException {
 		this.year= LocalDate.now().getYear();
 		this.appSettingsRepository = new AppSettingsRepositoryImpl();
 		this.membershipRepository = new MembershipRepositoryImpl();
@@ -74,7 +74,7 @@ public class PDF_Envelope {
 		// 6 inch x 72 points = 432 points (the width)
 		// 3.5 inch x 72 points = 252 points (the height)
 		
-		if(size6x9) {
+		if(isCatalog) {
 			create6x9 ();
 		} else {
 			create4x9 ();

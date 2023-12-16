@@ -2,8 +2,11 @@ package com.ecsail.views.dialogues;
 
 
 import com.ecsail.pdf.PDF_Envelope;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -12,95 +15,134 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Builder;
 
 import java.io.IOException;
 import java.util.Objects;
 
-public class Dialogue_EnvelopePDF extends Stage {
+public class Dialogue_EnvelopePDF extends Stage implements Builder {
+
+	private boolean printOne = true;
+	private boolean printCatalogue = false;
+	private StringProperty membershipId = new SimpleStringProperty();
+
 	public Dialogue_EnvelopePDF() {
-		
-		Button createPDFbutton = new Button("Create Envelope PDF");
-		ToggleGroup tg1 = new ToggleGroup(); 
-		ToggleGroup tg2 = new ToggleGroup(); 
-		RadioButton t1r1 = new RadioButton("Print All Envelopes"); 
-        RadioButton t1r2 = new RadioButton("Print one Envelope");
-        RadioButton t2r1 = new RadioButton("#10 Envelope"); 
-        RadioButton t2r2 = new RadioButton("#1 Catalog");
-		HBox hboxGrey = new HBox(); // this is the vbox for organizing all the widgets
+		this.setScene((Scene) build());
+	}
+
+	@Override
+	public Object build() {
 		VBox vboxBlue = new VBox();
-		VBox vboxPink = new VBox(); // this creates a pink border around the table
-		VBox vboxColumn1 = new VBox();
-		VBox vboxColumn2 = new VBox();
-		VBox vboxNumberToPrint = new VBox();
-		VBox vBoxEnvelopeSize = new VBox();
-		HBox hboxMembershipID = new HBox();
-		//Horizontal separator
-		Separator separator1 = new Separator();
-
-		TextField memberidTextField = new TextField();
-		
-		Scene scene = new Scene(vboxBlue, 600, 300);
-		Image pdf = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pdf.png")));
-		ImageView pdfImage = new ImageView(pdf);
-		
-		/////////////////// ATTRIBUTES ///////////////////
-		t1r1.setToggleGroup(tg1); 
-        t1r2.setToggleGroup(tg1); 
-        t1r2.setSelected(true);
-        
-        t2r1.setToggleGroup(tg2); 
-        t2r2.setToggleGroup(tg2); 
-        t2r1.setSelected(true);
-
-		vBoxEnvelopeSize.setSpacing(5);
-		vboxColumn1.setPadding(new Insets(0,0,0,15));
-		vboxColumn2.setPadding(new Insets(35,0,0,35));
-		vBoxEnvelopeSize.setPadding(new Insets(20,0,0,0));
-		vboxNumberToPrint.setPadding(new Insets(20,0,15,0));
-		vboxNumberToPrint.setSpacing(5);
-		vboxColumn1.setSpacing(15);
-		hboxMembershipID.setSpacing(5);
-        //batchSpinner.setPadding(new Insets(0,0,0,10));
-        hboxGrey.setPadding(new Insets(5,0,0,5));
-        memberidTextField.setPrefWidth(50);
-        vboxColumn1.setSpacing(5);
-        vboxColumn2.setSpacing(15);
 		vboxBlue.setId("box-frame-dark");
 		vboxBlue.setPadding(new Insets(10, 10, 10, 10));
-		vboxPink.setPadding(new Insets(3, 3, 3, 3)); // spacing to make pink from around table
-//		vboxPink.setId("box-pink");
-		// vboxGrey.setId("slip-box");
-		hboxGrey.setPrefHeight(688);
+		Scene scene = new Scene(vboxBlue, 600, 300);
 		scene.getStylesheets().add("css/dark/custom_dialogue.css");
-		setTitle("Print to PDF");
-		hboxMembershipID.setAlignment(Pos.CENTER_LEFT);
-		vboxColumn1.setPrefWidth(300);
-		////////////  Check to see if batch exists first////////////
-		
-		
-  		/////////////// LISTENERS ///////////////////////
-  		
-  		
-		createPDFbutton.setOnAction(e -> {
+		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));
+		vboxBlue.getChildren().add(createContent());
+		this.getIcons().add(mainIcon);
+		this.setTitle("Print to PDF");
+		this.show();
+		return scene;
+	}
+
+	private Node createContent() {
+		VBox vBox = new VBox();
+		HBox hboxGrey = new HBox();
+		hboxGrey.setPadding(new Insets(5,0,0,5));
+		hboxGrey.setPrefHeight(688);
+		hboxGrey.getChildren().addAll(creatLeft(),createRight());
+		vBox.getChildren().add(hboxGrey);
+		vBox.setPadding(new Insets(3, 3, 3, 3));
+		return vBox;
+	}
+
+	private Node createRight() {
+		VBox vBox = new VBox();
+		Image pdf = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pdf.png")));
+		ImageView pdfImage = new ImageView(pdf);
+		vBox.setSpacing(15);
+		vBox.setPadding(new Insets(35,0,0,35));
+		vBox.getChildren().addAll(pdfImage,createPDFButton());
+		return vBox;
+	}
+
+
+	private Node createPDFButton() {
+		Button button = new Button("Create Envelope PDF");
+		button.setOnAction(e -> {
+			System.out.println("printOne=" + printOne + " printCatalogue" + printCatalogue);
 			try {
-				new PDF_Envelope(t1r2.isSelected(), t2r2.isSelected(), memberidTextField.getText());
+				new PDF_Envelope(printOne, printCatalogue, membershipId.get());
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 		});
-		
-		//////////////// ADD CONTENT ///////////////////
-		vBoxEnvelopeSize.getChildren().addAll(t2r1,t2r2);
-		vboxNumberToPrint.getChildren().addAll(t1r1,t1r2);
-		hboxMembershipID.getChildren().addAll(new Text("Membership ID"),memberidTextField);
-		vboxColumn1.getChildren().addAll(hboxMembershipID,vboxNumberToPrint,separator1,vBoxEnvelopeSize);
-		vboxColumn2.getChildren().addAll(pdfImage,createPDFbutton);
-		hboxGrey.getChildren().addAll(vboxColumn1,vboxColumn2);
-		vboxBlue.getChildren().add(vboxPink);
-		vboxPink.getChildren().add(hboxGrey);
-		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));
-		this.getIcons().add(mainIcon);
-		setScene(scene);
-		show();
+		return button;
 	}
+
+	private Node creatLeft() {
+		VBox vBox = new VBox();
+		Separator separator1 = new Separator();
+		vBox.setPrefWidth(300);
+		vBox.setSpacing(5);
+		vBox.setSpacing(15);
+		vBox.setPadding(new Insets(0,0,0,15));
+		vBox.getChildren().addAll(membershipIdText(),numberToPrint(),separator1,chooseEnvelopeSize());
+		return vBox;
+	}
+
+	private Node membershipIdText() {
+		HBox hBox = new HBox();
+		TextField textField = new TextField();
+		textField.setPrefWidth(50);
+		// Bind the membershipId StringProperty to the TextField's text property
+		membershipId.bind(textField.textProperty());
+		hBox.setSpacing(5);
+		hBox.setAlignment(Pos.CENTER_LEFT);
+		hBox.getChildren().addAll(new Text("Membership ID"),textField);
+		return hBox;
+	}
+
+	private Node numberToPrint() {
+		VBox vBox = new VBox();
+		vBox.setSpacing(5);
+		vBox.setPadding(new Insets(20,0,15,0));
+		ToggleGroup tg = new ToggleGroup();
+		RadioButton r1 = new RadioButton("Print All Envelopes");
+		RadioButton r2 = new RadioButton("Print one Envelope");
+		r1.setUserData(false); // Associate false with r1
+		r2.setUserData(true);  // Associate true with r2
+		r1.setToggleGroup(tg);
+		r2.setToggleGroup(tg);
+		r2.setSelected(true);
+		tg.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				printCatalogue = (boolean) newValue.getUserData();
+			}
+		});
+		vBox.getChildren().addAll(r1,r2);
+		return vBox;
+	}
+
+	private Node chooseEnvelopeSize() {
+		VBox vBox = new VBox();
+		vBox.setSpacing(5);
+		vBox.setPadding(new Insets(20, 0, 0, 0));
+		ToggleGroup tg = new ToggleGroup();
+		RadioButton r1 = new RadioButton("#10 Envelope");
+		RadioButton r2 = new RadioButton("#1 Catalog");
+		r1.setUserData(false); // Associate false with r1
+		r2.setUserData(true);  // Associate true with r2
+		r1.setToggleGroup(tg);
+		r2.setToggleGroup(tg);
+		r1.setSelected(true);
+		tg.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				printCatalogue = (boolean) newValue.getUserData();
+			}
+		});
+		vBox.getChildren().addAll(r1, r2);
+		return vBox;
+	}
+
 }
