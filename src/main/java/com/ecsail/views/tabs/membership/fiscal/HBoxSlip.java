@@ -378,7 +378,7 @@ public class HBoxSlip extends HBox {
         Label slipNumber = new Label(slip.getSlipNumber());
         slipNumber.setTextFill(Color.DARKCYAN);
         slipNumber.setStyle("-fx-font-weight: bold;");
-        Text subLease = new Text("" + membershipIdRepository.getMembershipIDfromMsid(slip.getMs_id())); // Converts to membership ID
+        Text subLease = new Text("" + membershipIdRepository.getMembershipIDFromMsid(slip.getMs_id())); // Converts to membership ID
         subLease.setStyle("-fx-font-weight: bold;");
         setMouseListener(subLease, slip.getMs_id()); // need to get msid from
         hbox1.getChildren().addAll(new Text("Slip Number:"), slipNumber);
@@ -400,7 +400,7 @@ public class HBoxSlip extends HBox {
     }
 
     private void displaySublease(Label slipNumber) {
-        Text subLease = new Text("" + membershipIdRepository.getMembershipIDfromMsid(slip.getSubleased_to()));
+        Text subLease = new Text("" + membershipIdRepository.getMembershipIDFromMsid(slip.getSubleased_to()));
         subLease.setStyle("-fx-font-weight: bold;");
         setMouseListener(subLease, parent.getModel().getMembership().getSubLeaser());
         hbox1.getChildren().addAll(new Text("Slip Number:"), slipNumber);  // member plus their slip number

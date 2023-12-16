@@ -2,14 +2,8 @@ package com.ecsail.pdf;
 
 import com.ecsail.HalyardPaths;
 import com.ecsail.enums.KeelType;
-import com.ecsail.repository.implementations.BoatRepositoryImpl;
-import com.ecsail.repository.implementations.MembershipIdRepositoryImpl;
-import com.ecsail.repository.implementations.MembershipRepositoryImpl;
-import com.ecsail.repository.interfaces.BoatRepository;
-import com.ecsail.repository.interfaces.MembershipIdRepository;
-import com.ecsail.repository.interfaces.MembershipRepository;
-import com.ecsail.sql.SqlExists;
-import com.ecsail.sql.select.*;
+import com.ecsail.repository.implementations.*;
+import com.ecsail.repository.interfaces.*;
 import com.ecsail.dto.*;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.DeviceCmyk;
@@ -36,6 +30,10 @@ import java.util.List;
 public class PDF_Renewal_Form {
 	protected BoatRepository boatRepository = new BoatRepositoryImpl();
 	protected MembershipIdRepository membershipIdRepository = new MembershipIdRepositoryImpl();
+	protected MembershipRepository membershipRepository = new MembershipRepositoryImpl();
+	protected PersonRepository personRepository = new PersonRepositoryImpl();
+	protected PhoneRepository phoneRepository = new PhoneRepositoryImpl();
+	protected EmailRepository emailRepository = new EmailRepositoryImpl();
 	private static String year;
 	private static String last_membership_id;
 	private static String current_membership_id;
@@ -57,7 +55,6 @@ public class PDF_Renewal_Form {
 	public PDF_Renewal_Form(String y, String membershipId, boolean isOneMembership, boolean emailCopies, boolean seperateFiles) throws IOException {
 		PDF_Renewal_Form.year = y;
 		PDF_Renewal_Form.current_membership_id = membershipId;
-//		this.definedFees = SqlDefinedFee.getDefinedFeeByYear(year);
 		// Check if our path exists, if not create it
 		HalyardPaths.checkPath(HalyardPaths.RENEWALFORM + "/" + year);
 
@@ -130,14 +127,12 @@ public class PDF_Renewal_Form {
 		
 		try {
 			writer = new PdfWriter(filename);
-			System.out.println("Created new writer");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// Initialize PDF document
 		PdfDocument pdf = new PdfDocument(writer);
-		System.out.println("created new PdfDocument");
 		// Initialize document
 		Document document = new Document(pdf);
 		document.setTopMargin(0);
@@ -185,24 +180,22 @@ public class PDF_Renewal_Form {
 	}
 	
 	private void gatherMembershipInformation() {
-		ms_id = SqlMembership_Id.getMsidFromMembershipID(Integer.parseInt(current_membership_id));
-		System.out.println("MSID=" + ms_id);
-		membership = SqlMembershipList.getMembershipFromList(ms_id,year);
-		System.out.println(membership.getMsId());
-		last_membership_id = SqlMembership_Id.getMembershipId((Integer.parseInt(year) -1) +"" , membership.getMsId());
+		ms_id = membershipIdRepository.getMsidFromMembershipID(Integer.parseInt(current_membership_id));
+		membership = membershipRepository.getMembershipFromList(ms_id,year);
+		last_membership_id = membershipIdRepository.getMembershipIdByYearAndMsId((Integer.parseInt(year) -1) +"" , membership.getMsId());
 	// TODO recode this when you get time, because money changed, and this is pretty cool feature(although mostly unused)
 //				dues = SqlMoney.getMoneyRecordByMsidAndYear(ms_id, year);
 		boats = boatRepository.getBoatsByMsId(ms_id);
 		boats.add(0, new BoatDTO(0, 0, "Manufacturer", "Year", "Registration", "Model", "Boat Name", "Sail #", true, "Length", "Header", "Keel Type", "PHRF", "Draft", "Beam", "LWL",false));
 		boats.add(new BoatDTO(0, 0, "", "", "", "", "", "", false, "", "Blank", "", "","","","",false));
-		dependants = SqlPerson.getDependants
+		dependants = personRepository.getDependants
 				(membership);
-		primary = SqlPerson.getPerson(ms_id, 1); // 1 = primary member
-		primaryPhone = SqlPhone.getPhoneByPerson(primary);
+		primary = personRepository.getPerson(ms_id, 1); // 1 = primary member
+		primaryPhone = (ArrayList<PhoneDTO>) phoneRepository.getPhoneByPerson(primary);
 		shortenDate(primary);
-			if(SqlExists.activePersonExists(ms_id, 2)) {
-			secondary = SqlPerson.getPerson(ms_id, 2);
-			secondaryPhone = SqlPhone.getPhoneByPerson(secondary);
+			if(personRepository.activePersonExists(ms_id, 2)) {
+			secondary = personRepository.getPerson(ms_id, 2);
+			secondaryPhone = (ArrayList<PhoneDTO>) phoneRepository.getPhoneByPerson(secondary);
 			shortenDate(secondary);
 			} else {
 				secondary = new PersonDTO(0, 0, 0, "", "", "", "", "", false,null,null);
@@ -264,8 +257,8 @@ public class PDF_Renewal_Form {
 	
 	public String getEmail(PersonDTO person) {
 		String email = "";
-		if(SqlExists.emailExists(person)) {
-			email = SqlEmail.getEmail(person);
+		if(emailRepository.emailExists(person)) {
+			email = emailRepository.getEmail(person);
 		}
 		return email;
 	}

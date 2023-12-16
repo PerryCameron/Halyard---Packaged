@@ -8,16 +8,11 @@ import java.util.List;
 public interface MembershipIdRepository {
     List<MembershipIdDTO> getIds();
     List<MembershipIdDTO> getIds(int ms_id);
-
     int getId(int ms_id);
-
     MembershipIdDTO getCurrentId(int ms_id);
-//    MembershipIdDTO getMembershipIdFromMsid(int msid);
-
-    int getMembershipIDfromMsid(int msid);
-
+    int getMembershipIDFromMsid(int msid);
     Integer getMsidFromMembershipID(int membership_id);
-    MembershipIdDTO getMembershipId(String year, int ms_id);
+//    String getMembershipId(String year, int ms_id);
     MembershipIdDTO getMembershipIdObject(int mid);
     MembershipIdDTO getHighestMembershipId(String year);
     boolean isRenewedByMsidAndYear(int ms_id, String year);
@@ -28,4 +23,5 @@ public interface MembershipIdRepository {
     int update(MembershipIdDTO o);
     int delete(MembershipIdDTO membershipIdDTO);
     int insert(MembershipIdDTO membershipIdDTO);
+    String getMembershipIdByYearAndMsId(String year, int msId);
 }

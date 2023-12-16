@@ -19,6 +19,13 @@ public class EmailDTO {
 		this.isListed = new SimpleBooleanProperty(isListed);
 	}
 
+	public boolean isIsPrimaryUse() {
+		return isPrimaryUse.get();
+	}
+
+	public void setIsPrimaryUse(boolean isPrimaryUse) {
+		this.isPrimaryUse.set(isPrimaryUse);
+	}
 
 	public final IntegerProperty email_idProperty() {
 		return this.email_id;

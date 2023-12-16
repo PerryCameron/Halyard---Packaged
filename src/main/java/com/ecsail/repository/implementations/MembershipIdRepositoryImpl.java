@@ -63,7 +63,7 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
     }
 
     @Override
-    public int getMembershipIDfromMsid(int msid) {
+    public int getMembershipIDFromMsid(int msid) {
         String sql = "SELECT membership_id FROM membership_id WHERE ms_id = ? AND fiscal_year = ?";
         try {
             return template.queryForObject(sql, Integer.class, msid, HalyardPaths.getYear());
@@ -88,11 +88,6 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
             new Dialogue_ErrorSQL(e, "Unable to retrieve information", "See below for details");
             return 0;
         }
-    }
-
-    @Override
-    public MembershipIdDTO getMembershipId(String year, int ms_id) {
-        return null;
     }
 
     @Override
@@ -170,4 +165,17 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
         membershipIdDTO.setMid(keyHolder.getKey().intValue());
         return affectedRows;
     }
+    @Override
+    public String getMembershipIdByYearAndMsId(String year, int msId) {
+        String sql = "SELECT membership_id FROM membership_id WHERE fiscal_year = ? AND ms_id = ?";
+        try {
+            return template.queryForObject(sql, new Object[]{year, msId}, String.class);
+        } catch (EmptyResultDataAccessException e) {
+            return "none";
+        } catch (DataAccessException e) {
+            new Dialogue_ErrorSQL(e, "Unable to retrieve information", "See below for details");
+            return "";
+        }
+    }
+
 }
