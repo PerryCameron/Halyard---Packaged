@@ -80,9 +80,9 @@ public class HBoxHistory extends HBox {
         HBox.setHgrow(this, Priority.ALWAYS);
         HBox.setHgrow(vboxGrey, Priority.ALWAYS);
 
-        parent.getModel().getId().sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year).reversed());
+        parent.getModel().getMembershipIdDTOS().sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year).reversed());
 
-        idTableView.setItems(parent.getModel().getId());
+        idTableView.setItems(parent.getModel().getMembershipIdDTOS());
         idTableView.setFixedCellSize(30);
         idTableView.setEditable(true);
         idTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -267,7 +267,7 @@ public class HBoxHistory extends HBox {
                 SqlDelete.deleteBlankMembershipIdRow();
             // see if another year=0 and memId=0 row exists in current tableView, bring it to top and edit
             if (blankTupleExistsInTableView()) {
-                parent.getModel().getId().sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year));
+                parent.getModel().getMembershipIdDTOS().sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year));
                 idTableView.edit(0, Col1);
                 // create an appropriate new object to place in list
             } else {
@@ -278,9 +278,9 @@ public class HBoxHistory extends HBox {
                 // add the information from the new object into SQL
                 SqlInsert.addMembershipId(newIdTuple);
                 // add the new tuple to the appropriate history tableView
-                parent.getModel().getId().add(newIdTuple);
+                parent.getModel().getMembershipIdDTOS().add(newIdTuple);
                 // sort so that new membership id entry is at the top
-                parent.getModel().getId().sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year));
+                parent.getModel().getMembershipIdDTOS().sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year));
                 // this line prevents strange buggy behaviour I found the solution here:
                 // https://stackoverflow.com/questions/49531071/insert-row-in-javafx-tableview-and-start-editing-is-not-working-correctly
                 idTableView.layout();
@@ -292,7 +292,7 @@ public class HBoxHistory extends HBox {
         idDelete.setOnAction((event) -> {
             int selectedIndex = idTableView.getSelectionModel().getSelectedIndex();
             if (selectedIndex >= 0) {
-                MembershipIdDTO membershipIdDTO = parent.getModel().getId().get(selectedIndex);
+                MembershipIdDTO membershipIdDTO = parent.getModel().getMembershipIdDTOS().get(selectedIndex);
                 Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
                 conformation.setTitle("Delete History Entry");
                 conformation.setHeaderText(membershipIdDTO.getFiscal_Year() + " Membership " + membershipIdDTO.getMembership_id());
@@ -323,7 +323,7 @@ public class HBoxHistory extends HBox {
 
     private boolean blankTupleExistsInTableView() {
         boolean tupleExists = false;
-        for (MembershipIdDTO i : parent.getModel().getId()) {
+        for (MembershipIdDTO i : parent.getModel().getMembershipIdDTOS()) {
             if (i.getFiscal_Year().equals("0") && i.getMembership_id().equals("0")) tupleExists = true;
         }
         return tupleExists;

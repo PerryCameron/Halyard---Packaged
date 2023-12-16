@@ -11,51 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SqlMembership_Id {
-    public static ObservableList<MembershipIdDTO> getIds() {
-        ObservableList<MembershipIdDTO> ids = FXCollections.observableArrayList();
-        String query = "SELECT * FROM membership_id";
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            while (rs.next()) {
-                ids.add(new MembershipIdDTO(
-                        rs.getInt("MID")
-                        , rs.getString("fiscal_year")
-                        , rs.getInt("ms_id")
-                        , rs.getString("membership_id")
-                        , rs.getBoolean("renew")
-                        , rs.getString("MEM_TYPE")
-                        , rs.getBoolean("SELECTED")
-                        , rs.getBoolean("LATE_RENEW")));
-            }
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
-        }
-        return ids;
-    }
-
-    public static ObservableList<MembershipIdDTO> getIds(int ms_id) {
-        ObservableList<MembershipIdDTO> ids = FXCollections.observableArrayList();
-        String query = "SELECT * FROM membership_id WHERE ms_id=" +ms_id;
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            while (rs.next()) {
-                ids.add(new MembershipIdDTO(
-                        rs.getInt("MID")
-                        , rs.getString("fiscal_year")
-                        , rs.getInt("ms_id")
-                        , rs.getString("membership_id")
-                        , rs.getBoolean("renew")
-                        , rs.getString("MEM_TYPE")
-                        , rs.getBoolean("SELECTED")
-                        , rs.getBoolean("LATE_RENEW")));
-            }
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
-        }
-        return ids;
-    }
 
     public static String getId(int ms_id) {
         MembershipIdDTO id = null;
@@ -81,19 +36,7 @@ public class SqlMembership_Id {
         return id.getMembership_id();
     }
 
-    public static int getMembershipIDfromMsid(int msid)  {
-        int result = 0;
-        String query = "SELECT membership_id FROM membership_id WHERE ms_id=" + msid + " AND fiscal_year=" + HalyardPaths.getYear();
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            rs.next();
-            result = rs.getInt("membership_id");
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
-        }
-        return result;
-    }
+
     /// now in a repo
     public static int getMsidFromMembershipID(int membership_id)  {
         int result = 0;
@@ -182,28 +125,6 @@ public class SqlMembership_Id {
 
     //////////  FOR CHARTS /////////////
 
-    public static ObservableList<MembershipIdDTO> getAllMembershipIdsByYear(String year) {
-		ObservableList<MembershipIdDTO> theseIds = FXCollections.observableArrayList();
-        String query = "SELECT * FROM membership_id WHERE fiscal_year=" + year + " ORDER BY membership_id";
-		try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-		while (rs.next()) {
-			theseIds.add(new MembershipIdDTO(
-					rs.getInt("MID"),
-					rs.getString("fiscal_year"),
-					rs.getInt("ms_id"),
-					rs.getString("membership_id"),
-					rs.getBoolean("renew"),
-					rs.getString("MEM_TYPE"),
-					rs.getBoolean("SELECTED"),
-				    rs.getBoolean("LATE_RENEW")));
-		}
-            BaseApplication.connect.closeResultSet(rs);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to retrieve information membership_id info for " + year,"See below for details");
-		}
-		return theseIds;
-	}
 
     public static ObservableList<MembershipIdDTO> getActiveMembershipIdsByYear(String year) {
         ObservableList<MembershipIdDTO> theseIds = FXCollections.observableArrayList();

@@ -1,15 +1,9 @@
 package com.ecsail.models;
 
 import com.ecsail.dto.*;
+import com.ecsail.repository.implementations.*;
+import com.ecsail.repository.interfaces.*;
 import com.ecsail.views.common.Note;
-import com.ecsail.repository.implementations.BoatRepositoryImpl;
-import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
-import com.ecsail.repository.implementations.MemoRepositoryImpl;
-import com.ecsail.repository.implementations.PersonRepositoryImpl;
-import com.ecsail.repository.interfaces.BoatRepository;
-import com.ecsail.repository.interfaces.InvoiceRepository;
-import com.ecsail.repository.interfaces.MemoRepository;
-import com.ecsail.repository.interfaces.PersonRepository;
 import com.ecsail.sql.select.SqlMembership_Id;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
@@ -18,6 +12,7 @@ import javafx.scene.control.TabPane;
 
 public class MembershipTabModel {
     private MembershipListDTO membership;
+    private MembershipIdRepository membershipIdRepository;
     private PersonRepository personRepository;
     private BoatRepository boatRepository;
     private MemoRepository memoRepository;
@@ -29,7 +24,7 @@ public class MembershipTabModel {
     private Note note;
     private MemLabelsDTO labels;
     private ObservableList<InvoiceDTO> invoices;
-    private ObservableList<MembershipIdDTO> id;
+    private ObservableList<MembershipIdDTO> membershipIdDTOS;
     private ObservableList<BoatDTO> boats;
 
     public MembershipTabModel(MembershipListDTO membershipListDTO) {
@@ -38,12 +33,13 @@ public class MembershipTabModel {
         this.boatRepository = new BoatRepositoryImpl();
         this.memoRepository  = new MemoRepositoryImpl();
         this.invoiceRepository  = new InvoiceRepositoryImpl();
+        this.membershipIdRepository = new MembershipIdRepositoryImpl();
         this.memos = FXCollections.observableArrayList(memoRepository.getMemosByMsId(membership.getMsId()));
         this.note = new Note(memos,membership.getMsId());
         this.people = FXCollections.observableList(personRepository.getActivePeopleByMsId(membership.getMsId()));
         this.invoices = FXCollections.observableArrayList(invoiceRepository.getInvoicesByMsid(membership.getMsId()));
-        this.id = FXCollections.observableArrayList(param -> new Observable[]{param.isRenewProperty()});
-        this.id.addAll(SqlMembership_Id.getIds(membership.getMsId()));
+        this.membershipIdDTOS = FXCollections.observableArrayList(param -> new Observable[]{param.isRenewProperty()});
+        this.membershipIdDTOS.addAll(membershipIdRepository.getIds(membership.getMsId()));
         this.boats = FXCollections.observableArrayList(boatRepository.getBoatsByMsId(membership.getMsId()));
         this.fiscalTabPane  = new TabPane();
         this.peopleTabPane = new TabPane();
@@ -141,12 +137,12 @@ public class MembershipTabModel {
         this.invoices = invoices;
     }
 
-    public ObservableList<MembershipIdDTO> getId() {
-        return id;
+    public ObservableList<MembershipIdDTO> getMembershipIdDTOS() {
+        return membershipIdDTOS;
     }
 
-    public void setId(ObservableList<MembershipIdDTO> id) {
-        this.id = id;
+    public void setMembershipIdDTOS(ObservableList<MembershipIdDTO> membershipIdDTOS) {
+        this.membershipIdDTOS = membershipIdDTOS;
     }
 
     public ObservableList<BoatDTO> getBoats() {

@@ -2,6 +2,8 @@ package com.ecsail.views.tabs.membership.fiscal;
 
 
 import com.ecsail.Launcher;
+import com.ecsail.repository.implementations.MembershipIdRepositoryImpl;
+import com.ecsail.repository.interfaces.MembershipIdRepository;
 import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlInsert;
@@ -39,6 +41,7 @@ public class HBoxSlip extends HBox {
     private final HBox hbox3 = new HBox();  // Holds button and textfield
     private final Button submitButton = new Button("Submit");
     private final ToggleGroup group = new ToggleGroup();
+    private final MembershipIdRepository membershipIdRepository = new MembershipIdRepositoryImpl();
 
     TabMembership parent;
 
@@ -374,7 +377,7 @@ public class HBoxSlip extends HBox {
         Label slipNumber = new Label(slip.getSlipNumber());
         slipNumber.setTextFill(Color.DARKCYAN);
         slipNumber.setStyle("-fx-font-weight: bold;");
-        Text subLease = new Text("" + SqlMembership_Id.getMembershipIDfromMsid(slip.getMs_id())); // Converts to membership ID
+        Text subLease = new Text("" + membershipIdRepository.getMembershipIDfromMsid(slip.getMs_id())); // Converts to membership ID
         subLease.setStyle("-fx-font-weight: bold;");
         setMouseListener(subLease, slip.getMs_id()); // need to get msid from
         hbox1.getChildren().addAll(new Text("Slip Number:"), slipNumber);
@@ -396,7 +399,7 @@ public class HBoxSlip extends HBox {
     }
 
     private void displaySublease(Label slipNumber) {
-        Text subLease = new Text("" + SqlMembership_Id.getMembershipIDfromMsid(slip.getSubleased_to()));
+        Text subLease = new Text("" + membershipIdRepository.getMembershipIDfromMsid(slip.getSubleased_to()));
         subLease.setStyle("-fx-font-weight: bold;");
         setMouseListener(subLease, parent.getModel().getMembership().getSubLeaser());
         hbox1.getChildren().addAll(new Text("Slip Number:"), slipNumber);  // member plus their slip number

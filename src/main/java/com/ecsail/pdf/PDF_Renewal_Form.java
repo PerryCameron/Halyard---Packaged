@@ -3,7 +3,11 @@ package com.ecsail.pdf;
 import com.ecsail.HalyardPaths;
 import com.ecsail.enums.KeelType;
 import com.ecsail.repository.implementations.BoatRepositoryImpl;
+import com.ecsail.repository.implementations.MembershipIdRepositoryImpl;
+import com.ecsail.repository.implementations.MembershipRepositoryImpl;
 import com.ecsail.repository.interfaces.BoatRepository;
+import com.ecsail.repository.interfaces.MembershipIdRepository;
+import com.ecsail.repository.interfaces.MembershipRepository;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.select.*;
 import com.ecsail.dto.*;
@@ -31,6 +35,7 @@ import java.util.List;
 
 public class PDF_Renewal_Form {
 	protected BoatRepository boatRepository = new BoatRepositoryImpl();
+	protected MembershipIdRepository membershipIdRepository = new MembershipIdRepositoryImpl();
 	private static String year;
 	private static String last_membership_id;
 	private static String current_membership_id;
@@ -38,8 +43,7 @@ public class PDF_Renewal_Form {
 	private static MembershipListDTO membership;
 	private static PersonDTO primary;
 	private static PersonDTO secondary;
-//	private static MoneyDTO dues;
-//	DefinedFeeDTO definedFees;
+
 	private int borderSize = 1;
 	private List<BoatDTO> boats = new ArrayList<BoatDTO>();
 	private List<MembershipIdDTO> ids = new ArrayList<MembershipIdDTO>();
@@ -82,11 +86,10 @@ public class PDF_Renewal_Form {
 	private void makeManyMembershipsIntoOnePDF() throws IOException {
 		filenm = HalyardPaths.RENEWALFORM + "/" + year + "/" + year + "_Renewal_Forms.pdf";
 		Document document = createDocument(filenm);
-		ids = SqlMembership_Id.getAllMembershipIdsByYear(year);
+		ids = membershipIdRepository.getAllMembershipIdsByYear(Integer.parseInt(year));
 		ids.sort(Comparator.comparing(MembershipIdDTO::getMembership_id));
 		for (MembershipIdDTO id : ids) {
 			current_membership_id = id.getMembership_id();
-			System.out.println("printing for membership " + id.getMembership_id());
 			makeRenewPdf(document);
 			document.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 			PDF_Renewal_Form_Back.Create_Back_Side(document);
@@ -97,7 +100,7 @@ public class PDF_Renewal_Form {
 	}
 	
 	private void makeManyMembershipsIntoManyPDF() throws IOException {
-		ids = SqlMembership_Id.getAllMembershipIdsByYear(year);
+		ids = membershipIdRepository.getAllMembershipIdsByYear(Integer.parseInt(year));
 		ids.sort(Comparator.comparing(MembershipIdDTO::getMembership_id));
 		for (MembershipIdDTO id : ids) {
 			current_membership_id = id.getMembership_id();

@@ -3,6 +3,8 @@ package com.ecsail.excel;
 import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.dto.DbRosterSettingsDTO;
+import com.ecsail.repository.implementations.MembershipIdRepositoryImpl;
+import com.ecsail.repository.interfaces.MembershipIdRepository;
 import com.ecsail.views.common.SaveFileChooser;
 import com.ecsail.sql.select.SqlEmail;
 import com.ecsail.sql.select.SqlMembership_Id;
@@ -129,13 +131,6 @@ public class Xls_roster {
 		return fileOut;
 	}
 
-	private String getFileName(String rosterType) {
-		HalyardPaths.checkPath(HalyardPaths.ROSTERS);
-		String fileName = rosterType;
-		System.out.println("Filename " + rosterType + " is selected");
-		return fileName += " Roster.xlsx";
-	}
-
 	private Object getField(MembershipListDTO m, DbRosterSettingsDTO dto) {
 		Object obj;
 		try {
@@ -179,47 +174,6 @@ public class Xls_roster {
 			}
 		}
 		return headers;
-	}
-
-	private String getPhone(int p_id) {
-		String phoneString = "";
-		ObservableList<PhoneDTO> phones = SqlPhone.getPhoneByPid(p_id);
-		if (phones != null) {
-			for (PhoneDTO p : phones) {
-				if (p.getPhoneType().equals("C")) {  // we prefer a cell phone
-					phoneString = p.getPhoneNumber();
-					break;
-				} else if (p.getPhoneType().contentEquals("H")) { // if home phone is all that is available we go with it
-					phoneString = p.getPhoneNumber();
-				}
-			}
-		}
-		return phoneString;
-	}
-
-	private String getEmail(int p_id) {
-		String emailString = "";
-		ObservableList<EmailDTO> email = SqlEmail.getEmail(p_id);
-		if (email != null) {
-			for (EmailDTO e: email) {
-				if(e.isPrimaryUse()) {
-					emailString = e.getEmail();
-					break;
-				} else {
-					emailString = e.getEmail();
-				}
-
-			}
-		}
-		return emailString;
-	}
-
-	private String getSubleaser(MembershipListDTO owner) {
-		String subleaseString = "";
-		if(owner.getSubLeaser() != 0) {
-			subleaseString = SqlMembership_Id.getId(owner.getSubLeaser());
-		}
-		return subleaseString;
 	}
 }
 

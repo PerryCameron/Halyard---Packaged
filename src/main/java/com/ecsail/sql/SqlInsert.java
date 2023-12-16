@@ -2,7 +2,6 @@ package com.ecsail.sql;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.DataBase;
-import com.ecsail.SqlScriptMaker;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.dto.*;
@@ -156,7 +155,7 @@ public class SqlInsert {
 	public static void addPersonRecord(PersonDTO person) {
 		String query = "INSERT INTO person () VALUES ("
 				+ person.getP_id() + "," + person.getMs_id() + "," + person.getMemberType() + ",'" + person.getFname()
-				+ "','" + person.getLname() + "'," + SqlScriptMaker.getCorrectString(person.getBirthday())
+				+ "','" + person.getLname() + "'," + getCorrectString(person.getBirthday())
 				+ ",'" + person.getOccupation() + "','" + person.getBusiness() +"',true,null,'"+person.getNname()+"',"+person.getOldMsid()+")";
 		try {
 
@@ -164,6 +163,16 @@ public class SqlInsert {
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
 		}
+	}
+
+	public static String getCorrectString(String example) {
+		String result;
+		if(example == null) {  // if actually null print null
+			result = "null";
+		}  else {
+			result = "\"" + example + "\""; // print "string"
+		}
+		return result;
 	}
 
 	public static void addInvoiceRecord(InvoiceDTO m) {
