@@ -131,15 +131,6 @@ public class SqlUpdate {
 		}
 	}
 
-//	public static void updateDeposit(String field, int deposit_id, LocalDate date) {
-//		String query = "UPDATE deposit SET " + field + "='" + date + "' WHERE deposit_id=" + deposit_id;
-//		try {
-//			BaseApplication.connect.executeQuery(query);
-//		} catch (SQLException e) {
-//			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-//		}
-//	}
-
 	public static void updateDeposit(DepositDTO depositDTO) {
 		String query = "UPDATE deposit SET DEPOSIT_DATE='" + depositDTO.getDepositDate()
 				+ "', FISCAL_YEAR=" + depositDTO.getFiscalYear()
@@ -169,14 +160,14 @@ public class SqlUpdate {
 		}
 	}
 
-	public static void updateWaitList(int ms_id, String field, Boolean attribute) {
-		String query = "UPDATE wait_list SET " + field + "=" + attribute + " WHERE ms_id=" + ms_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
+//	public static void updateWaitList(int ms_id, String field, Boolean attribute) {
+//		String query = "UPDATE wait_list SET " + field + "=" + attribute + " WHERE ms_id=" + ms_id;
+//		try {
+//			BaseApplication.connect.executeQuery(query);
+//		} catch (SQLException e) {
+//			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
+//		}
+//	}
 
 	public static void updatePhone(String field, int phone_id, String attribute) {
 		String query = "UPDATE phone SET " + field + "='" + attribute + "' WHERE phone_id=" + phone_id;
@@ -348,19 +339,6 @@ public class SqlUpdate {
 			BaseApplication.connect.executeQuery(query);
 			MembershipListDTO ownerMembership = SqlMembershipList.getMembershipFromList(subleasee, BaseApplication.selectedYear);
 			ownerMembership.setSubLeaser(0);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
-
-	public static void reAssignSlip(int ms_id, MembershipListDTO membership) {  // this reassignes the slip using the subleasee ms_id (came from text field)
-		String query = "UPDATE slip SET ms_id=" + ms_id + " where ms_id=" + membership.getMsId();
-		try {
-			BaseApplication.connect.executeQuery(query);
-			String slip = membership.getSlip();
-			membership.setSlip("0");
-			MembershipListDTO newSlipOwnerMembership = SqlMembershipList.getMembershipFromList(ms_id, BaseApplication.selectedYear);
-			newSlipOwnerMembership.setSlip(slip);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}

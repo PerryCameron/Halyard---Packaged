@@ -177,6 +177,12 @@ public class MembershipRepositoryImpl implements MembershipRepository {
                 """;
         return template.queryForObject(sql, new MembershipRowMapper());
     }
+    @Override
+    public boolean memberShipExists(int ms_id) {
+        String sql = "SELECT EXISTS(SELECT * FROM membership WHERE ms_id = ?)";
+        return template.queryForObject(sql, Boolean.class, ms_id);
+    }
+
 
 
 

@@ -17,4 +17,6 @@ public interface MembershipRepository {
     MembershipListDTO getMembershipListByIdAndYear(int year, int membershipId);
 
     MembershipDTO getCurrentMembershipChair();
+
+    boolean memberShipExists(int ms_id);
 }

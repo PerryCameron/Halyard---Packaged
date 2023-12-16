@@ -242,22 +242,6 @@ public class SqlInsert {
 		}
 	}
 
-	public static void addWaitList(WaitListDTO w) {
-		String query = "INSERT INTO wait_list () VALUES ("
-				+ w.getMs_id() + ","
-				+ w.isSlipWait() + ","
-				+ w.isKayakWait() + ","
-				+ w.isShedWait() + ","
-				+ w.isWantToSublease() + ","
-				+ w.isWantsRelease() + ","
-				+ w.isWantSlipChange() + ")";
-		try {
-			BaseApplication.connect.executeQuery(query);
-		 } catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
-		}
-	}
-
 	public static void addStatRecord(StatsDTO s) {
 		String query = "INSERT INTO stats () VALUES ("
 				+ null + "," // autoincrement

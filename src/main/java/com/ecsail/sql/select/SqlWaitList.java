@@ -32,26 +32,5 @@ public class SqlWaitList {
         return thisWaitList;
     }
 
-    public static ArrayList<WaitListDTO> getWaitLists() {
-        ArrayList<WaitListDTO> thisWaitList = new ArrayList<>();
-        String query = "SELECT * FROM wait_list";
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            while (rs.next()) {
-                thisWaitList.add(new WaitListDTO(
-                        rs.getInt("MS_ID"),
-                        rs.getBoolean("SLIP_WAIT"),
-                        rs.getBoolean("KAYAK_RACK_WAIT"),
-                        rs.getBoolean("SHED_WAIT"),
-                        rs.getBoolean("WANT_SUBLEASE"),
-                        rs.getBoolean("WANT_RELEASE"),
-                        rs.getBoolean("WANT_SLIP_CHANGE")
-                        ));
-            }
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
-        }
-        return thisWaitList;
-    }
+
 }

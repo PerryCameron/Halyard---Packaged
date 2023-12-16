@@ -96,20 +96,6 @@ public class SqlExists {
 		return answer;
 	}
 	
-	public static Boolean paymentsExistForMembership(int ms_id) {
-		boolean answer = false;
-		String query = "SELECT EXISTS(SELECT * FROM money WHERE ms_id=" + ms_id + ") AS payment_exists";
-		try {
-			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-			rs.next();
-		    answer = rs.getBoolean("payment_exists");
-		BaseApplication.connect.closeResultSet(rs); }
-		catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to check if money record EXISTS","See below for details");
-		}
-		return answer;
-	}
-	
 	public static Boolean memoExists(int invoice_id, String category) {
 		boolean answer = false;
 		String query = "SELECT EXISTS(SELECT * FROM memo WHERE CATEGORY='" + category + "' AND invoice_id=" + invoice_id + ") AS memoExists";
@@ -199,20 +185,7 @@ public class SqlExists {
 		return result;
 	}
 
-	public static boolean phoneOfTypeExists(String pid, String type) {
-		boolean result = false;
-		String query = "SELECT EXISTS(SELECT * FROM phone WHERE P_ID=" + pid + " AND PHONE_TYPE='" + type + "') AS phone_exists";
-		try {
-			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-			while(rs.next()) {
-				result = rs.getBoolean("phone_exists");
-			}
-		BaseApplication.connect.closeResultSet(rs); }
-		catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to check if EXISTS","See below for details");
-		}
-		return result;
-	}
+
 
 	//select exists(select * from person where MS_ID=229 and MEMBER_TYPE=2);
 	public static Boolean slipExists(int ms_id) {
@@ -294,38 +267,9 @@ public class SqlExists {
 		return result;
 	}
 	
-	public static Boolean waitListExists(int ms_id) {
-		boolean result = false;
-		String query = "SELECT EXISTS(SELECT * FROM wait_list WHERE ms_id="+ms_id+") AS wait_list_exists";
-		try {
-			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-			while (rs.next()) {
-				result = rs.getBoolean(
-						"wait_list_exists");
-			}
-		BaseApplication.connect.closeResultSet(rs);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to check if EXISTS","See below for details");
-		}
-		return result;
-	}
 
-	public static Boolean personExistsByType(String msid, String type) {
-		boolean result = false;
-		String query = "SELECT EXISTS(SELECT * FROM person WHERE ms_id=" + msid + " AND member_type=" + type + ") AS person_exist";
-		try {
-			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-			while (rs.next()) {
-				result = rs.getBoolean(
-						"person_exist");
-			}
-			BaseApplication.connect.closeResultSet(rs);
-		}
-		catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to check if EXISTS","See below for details");
-		}
-		return result;
-	}
+
+
 
 	public static Boolean depositIsUsed(int year, int batch) {
 		boolean result = false;
