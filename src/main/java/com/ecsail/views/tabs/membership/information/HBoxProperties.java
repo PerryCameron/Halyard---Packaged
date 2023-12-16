@@ -3,72 +3,106 @@ package com.ecsail.views.tabs.membership.information;
 import com.ecsail.BaseApplication;
 import com.ecsail.LabelPrinter;
 import com.ecsail.Launcher;
+import com.ecsail.pdf.PDF_Envelope;
 import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.select.SqlPerson;
 import com.ecsail.dto.LabelDTO;
 import com.ecsail.dto.PersonDTO;
+import com.itextpdf.io.exceptions.IOException;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.util.Builder;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 
 ///  this class is for the properties tab for the entire membership
-public class HBoxProperties extends HBox {
+public class HBoxProperties extends HBox implements Builder {
 
-    //private TextField duesText;
+    private final TabMembership parent;
+
     public HBoxProperties(TabMembership parent) {
         super();
+        this.parent = parent;
+        build();
+    }
 
-        //this.duesText = dt;
-        //////////// OBJECTS ///////////////
-        HBox hboxGrey = new HBox();  // this is the vbox for organizing all the widgets
-        VBox leftVBox = new VBox(); // contains viewable children
-        VBox rightVBox = new VBox();
-        HBox hbox1 = new HBox();  // holds membershipID, Type and Active
-        HBox hbox2 = new HBox();  // holds PersonVBoxes (2 instances require a generic HBox
-        HBox hbox3 = new HBox();  // holds address, city, state, zip
-        HBox hbox4 = new HBox();  // holds membership type
-        HBox hbox5 = new HBox();  // holds delete membership
-        Button removeMembershipButton = new Button("Delete");
-        Button printLabelsButton1 = new Button("Print Primary");
-        Button printLabelsButton2 = new Button("Print Secondary");
-//		HalyardAlert alert = new HalyardAlert(AlertType.INFORMATION);
-
-        /////////////  ATTRIBUTES /////////////
-
-        hbox1.setSpacing(5);  // membership HBox
-        hbox2.setSpacing(5);  // membership HBox
-        hbox4.setSpacing(5);  // membership HBox
-        hbox3.setSpacing(5);  // membership HBox
-        hbox5.setSpacing(5);  // membership HBox
-        leftVBox.setSpacing(10);
-        this.setSpacing(10);
-
-        hbox1.setAlignment(Pos.CENTER_LEFT);
-        hbox2.setAlignment(Pos.CENTER_LEFT);
-        hbox3.setAlignment(Pos.CENTER_LEFT);
-        hbox4.setAlignment(Pos.CENTER_LEFT);
-        hbox5.setAlignment(Pos.CENTER_LEFT);
-
-        hboxGrey.setPadding(new Insets(5, 5, 5, 10));
-        this.setPadding(new Insets(5, 5, 5, 5));  // creates space for blue frame
-
-        HBox.setHgrow(hboxGrey, Priority.ALWAYS);
-
+    @Override
+    public Object build() {
+        HBox hBox = new HBox();
+        hBox.setPadding(new Insets(15, 5, 5, 10));
+        HBox.setHgrow(hBox, Priority.ALWAYS);
+        hBox.setId("box-background-light");
+        hBox.getChildren().addAll(createLeftVBox(), createRightVBox());
+        this.setPadding(new Insets(5, 5, 5, 5));  // creates border
         this.setId("custom-tap-pane-frame");
-        hboxGrey.setId("box-background-light");
+        this.getChildren().add(hBox);
+        return this;
+    }
 
-        ///////////// LISTENERS ////////////
+    private Node createRightVBox() {
+        VBox vBox = new VBox();
+        return vBox;
+    }
 
-        removeMembershipButton.setOnAction(e -> {
+    private Node createLeftVBox() {
+        VBox leftVBox = new VBox();
+        leftVBox.setSpacing(20);
+        leftVBox.getChildren().addAll(printEnvelope(), printCardLabels(), delMembership());
+        return leftVBox;
+    }
+
+    private Node printEnvelope() {
+        HBox hBox = new HBox();
+        RadioButton r1 = new RadioButton("#10 Envelope");
+        RadioButton r2 = new RadioButton("#1 Catalog");
+        Button button = new Button("Create Envelope");
+        ToggleGroup tg = new ToggleGroup();
+        r1.setToggleGroup(tg);
+        r2.setToggleGroup(tg);
+        r1.setSelected(true);
+        hBox.setSpacing(5);
+        hBox.setAlignment(Pos.CENTER_LEFT);
+        hBox.getChildren().addAll(new Label("Print Envelope"), button,r1,r2);
+        button.setOnAction(e -> {
+            try {
+                new PDF_Envelope(true, r2.isSelected(), String.valueOf(parent.getModel().getMembership().getMembershipId()));
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            } catch (java.io.IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        return hBox;
+    }
+
+    private Node delMembership() {
+        HBox hBox = new HBox();
+        hBox.setSpacing(5);
+        hBox.setAlignment(Pos.CENTER_LEFT);
+        hBox.getChildren().addAll(new Label("Delete Membership"), removeMembershipButton());
+        return hBox;
+    }
+
+    private Node printCardLabels() {
+        HBox hBox = new HBox();
+        hBox.setSpacing(5);
+        hBox.setAlignment(Pos.CENTER_LEFT);
+        hBox.getChildren().addAll(new Label("Print Membership Card Labels"), printLabelsButton1(), printLabelsButton2());
+        return hBox;
+    }
+
+    private Node removeMembershipButton() {
+        Button button = new Button("Delete");
+        button.setOnAction(e -> {
             Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
             conformation.setTitle("Delete Membership");
             conformation.setHeaderText("Membership " + parent.getModel().getMembership().getMembershipId());
@@ -81,27 +115,14 @@ public class HBoxProperties extends HBox {
                 deleteMembership(parent.getModel().getMembership().getMsId());
             }
         });
+        return button;
+    }
 
-        printLabelsButton1.setOnAction((actionEvent -> {
+    private Node printLabelsButton2() {
+        Button button = new Button("Print Secondary");
+        button.setOnAction((actionEvent -> {
             ArrayList< LabelDTO> labels = new ArrayList<>();
-            LabelDTO label = null;
-            for(PersonDTO person: parent.getModel().getPeople()) {
-                if(person.getMemberType() == 1) {
-                    label = new LabelDTO();
-                    label.setCity("Indianapolis, Indiana");
-                    label.setNameAndMemId(person.getFullName() + " #" + String.valueOf(parent.getModel().getMembership().getMembershipId()));
-                    label.setExpires("Type "+parent.getModel().getMembership().getMemType()+", Expires: " + "03/01/" + getYear());
-                    label.setMember("Member: U.S. Sailing ILYA &YCA");
-                    labels.add(label);
-                    LabelPrinter.printMembershipLabel(label);
-                }
-
-            }
-        }));
-
-        printLabelsButton2.setOnAction((actionEvent -> {
-            ArrayList< LabelDTO> labels = new ArrayList<>();
-            LabelDTO label = null;
+            LabelDTO label;
             for(PersonDTO person: parent.getModel().getPeople()) {
                 if(person.getMemberType() == 2) {
                     label = new LabelDTO();
@@ -112,18 +133,31 @@ public class HBoxProperties extends HBox {
                     labels.add(label);
                     LabelPrinter.printMembershipLabel(label);
                 }
-
             }
         }));
-
-        ///////////// SET CONTENT ////////////////////
-        hbox3.getChildren().addAll(new Label("Print Membership Card Labels"), printLabelsButton1, printLabelsButton2);
-        hbox5.getChildren().addAll(new Label("Delete Membership"), removeMembershipButton);
-        leftVBox.getChildren().addAll(hbox2, hbox3, hbox5);
-        hboxGrey.getChildren().addAll(leftVBox, rightVBox);
-        getChildren().add(hboxGrey);
+        return button;
     }
-    
+
+    private Node printLabelsButton1() {
+        Button button = new Button("Print Primary");
+        button.setOnAction((actionEvent -> {
+            ArrayList< LabelDTO> labels = new ArrayList<>();
+            LabelDTO label;
+            for(PersonDTO person: parent.getModel().getPeople()) {
+                if(person.getMemberType() == 1) {
+                    label = new LabelDTO();
+                    label.setCity("Indianapolis, Indiana");
+                    label.setNameAndMemId(person.getFullName() + " #" + String.valueOf(parent.getModel().getMembership().getMembershipId()));
+                    label.setExpires("Type "+parent.getModel().getMembership().getMemType()+", Expires: " + "03/01/" + getYear());
+                    label.setMember("Member: U.S. Sailing ILYA &YCA");
+                    labels.add(label);
+                    LabelPrinter.printMembershipLabel(label);
+                }
+            }
+        }));
+        return button;
+    }
+
     private String getYear() {
         int current = Integer.parseInt(BaseApplication.selectedYear);
         return String.valueOf(current + 1);
