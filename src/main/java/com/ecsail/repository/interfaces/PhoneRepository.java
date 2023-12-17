@@ -14,6 +14,8 @@ public interface PhoneRepository {
     int update(PhoneDTO o);
     int delete(PhoneDTO o);
     int insert(PhoneDTO o);
-
     boolean listedPhoneOfTypeExists(PersonDTO p, String type);
+    PhoneDTO insertPhone(PhoneDTO phoneDTO);
+    boolean deletePhone(PhoneDTO phone);
+    void updatePhone(String field, int phone_id, Object attribute);
 }

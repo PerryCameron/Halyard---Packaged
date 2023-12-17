@@ -3,11 +3,8 @@ package com.ecsail.views.tabs.membership.people.person;
 import com.ecsail.BaseApplication;
 import com.ecsail.EditCell;
 import com.ecsail.enums.PhoneType;
-import com.ecsail.sql.SqlDelete;
-import com.ecsail.sql.SqlInsert;
-import com.ecsail.sql.SqlUpdate;
-import com.ecsail.sql.select.SqlPhone;
-import com.ecsail.sql.select.SqlSelect;
+import com.ecsail.repository.implementations.PhoneRepositoryImpl;
+import com.ecsail.repository.interfaces.PhoneRepository;
 import com.ecsail.dto.PersonDTO;
 import com.ecsail.dto.PhoneDTO;
 import javafx.beans.Observable;
@@ -39,13 +36,14 @@ public class HBoxPhone extends HBox {
     
     private final PersonDTO person;
     private final TableView<PhoneDTO> phoneTableView;
-    private final ObservableList<PhoneDTO> phone;
+    private final ObservableList<PhoneDTO> phoneDTOS;
     private TableColumn<PhoneDTO, String> Col1;
+    private PhoneRepository phoneRepository = new PhoneRepositoryImpl();
     
     public HBoxPhone(PersonDTO p) {
         this.person = p;  // the below callback is to allow commit when focus removed, overrides FX default behavior
-        this.phone = FXCollections.observableArrayList(param -> new Observable[] { param.isListedProperty() });
-        this.phone.addAll(SqlPhone.getPhoneByPid(person.getP_id()));
+        this.phoneDTOS = FXCollections.observableArrayList(param -> new Observable[] { param.isListedProperty() });
+        this.phoneDTOS.addAll(phoneRepository.getPhoneByPid(person.getP_id()));
         this.phoneTableView = createTableView();
         VBox vboxButtons = createButtonBox(); // holds phone buttons
         HBox hboxGrey = createOuterBox(vboxButtons); // this is here for the grey background to make nice appearance
@@ -71,7 +69,7 @@ public class HBoxPhone extends HBox {
         TableView<PhoneDTO> tableView = new TableView<>();
         VBox.setVgrow(tableView, Priority.ALWAYS);
         HBox.setHgrow(tableView, Priority.ALWAYS);
-        tableView.setItems(phone);
+        tableView.setItems(phoneDTOS);
         tableView.setFixedCellSize(30);
         tableView.setEditable(true);
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY );
@@ -86,8 +84,8 @@ public class HBoxPhone extends HBox {
                                 t.getTablePosition().getRow()).setPhoneNumber(t.getNewValue());
                         String processedNumber = processNumber(t.getNewValue());
                         int phone_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getPhone_ID();
-                        SqlUpdate.updatePhone("phone", phone_id, processedNumber);
-                        phone.stream()
+                        phoneRepository.updatePhone("phone", phone_id, processedNumber);
+                        phoneDTOS.stream()
                                 .filter(p -> p.getPhone_ID() == phone_id)
                                 .forEach(s -> s.setPhoneNumber(processedNumber));
                     }
@@ -145,7 +143,7 @@ public class HBoxPhone extends HBox {
             PhoneType newPhoneType = event.getNewValue();
             int row = pos.getRow();
             PhoneDTO thisPhone = event.getTableView().getItems().get(row);
-            SqlUpdate.updatePhone("phone_type", thisPhone.getPhone_ID(), newPhoneType.getCode());
+            phoneRepository.updatePhone("phone_type", thisPhone.getPhone_ID(), newPhoneType.getCode());
             thisPhone.setPhoneType(newPhoneType.getCode());
         });
 
@@ -159,7 +157,7 @@ public class HBoxPhone extends HBox {
             // When "isListed?" column change.
             booleanProp.addListener((observable, oldValue, newValue) -> {
                 phone.setIsListed(newValue);
-                SqlUpdate.updateListed("phone_listed",phone.getPhone_ID(), newValue);
+                phoneRepository.updatePhone("phone_listed",phone.getPhone_ID(), newValue);
             });
             return booleanProp;
         });
@@ -202,7 +200,7 @@ public class HBoxPhone extends HBox {
             Clipboard clipboard = Clipboard.getSystemClipboard();
             final ClipboardContent content = new ClipboardContent();
             if (selectedIndex >= 0) {// make sure something is selected
-                PhoneDTO phoneDTO = phone.get(selectedIndex);
+                PhoneDTO phoneDTO = phoneDTOS.get(selectedIndex);
                 content.putString(phoneDTO.getPhoneNumber());
                 clipboard.setContent(content);
             } else
@@ -226,7 +224,7 @@ public class HBoxPhone extends HBox {
         phoneDelete.setOnAction((event) -> {
             int selectedIndex = phoneTableView.getSelectionModel().getSelectedIndex();
             if (selectedIndex >= 0) { // make sure something is selected
-                PhoneDTO ph = phone.get(selectedIndex);
+                PhoneDTO ph = phoneDTOS.get(selectedIndex);
                 Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
                 conformation.setTitle("Delete Phone Entry");
                 conformation.setHeaderText(PhoneType.getByCode(ph.getPhoneType()) + " phone");
@@ -236,7 +234,7 @@ public class HBoxPhone extends HBox {
                 dialogPane.getStyleClass().add("dialog");
                 Optional<ButtonType> result = conformation.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
-                    if (SqlDelete.deletePhone(ph))  // if it is properly deleted in our database
+                    if (phoneRepository.deletePhone(ph))  // if it is properly deleted in our database
                         phoneTableView.getItems().remove(selectedIndex); // remove it from our GUI
                     BaseApplication.logger.info("Deleted " + PhoneType.getByCode(ph.getPhoneType())
                             + " phone number " + ph.getPhoneNumber()
@@ -250,14 +248,17 @@ public class HBoxPhone extends HBox {
     private void setAddButtonListener(Button phoneAdd) {
         phoneAdd.setOnAction((event) -> {
             BaseApplication.logger.info("Added new phone entry for " + person.getNameWithInfo());
-            // return next key id for phone table
-            int phone_id = SqlSelect.getNextAvailablePrimaryKey("phone", "phone_id");
             // attempt to add a new record and return if it is successful
-            if (SqlInsert.addPhoneRecord(phone_id, person.getP_id(), true, "new phone", ""))
-                // if successfully added to SQL then add a new row in the tableview
-                phone.add(new PhoneDTO(phone_id, person.getP_id(), true, "", ""));
+            PhoneDTO phoneDTO = phoneRepository.insertPhone(new PhoneDTO(
+                    0,
+                    person.getP_id(),
+                    true,
+                    "new phone",
+                    ""));
+                // add a new row in the tableview
+                phoneDTOS.add(phoneDTO);
             // Now we will sort it to the top
-            phone.sort(Comparator.comparing(PhoneDTO::getPhone_ID).reversed());
+            phoneDTOS.sort(Comparator.comparing(PhoneDTO::getPhone_ID).reversed());
             // this line prevents strange buggy behaviour
             phoneTableView.layout();
             phoneTableView.requestFocus();

@@ -34,47 +34,9 @@ public class SqlPhone {
         return thisPhone;
     }
 
-    public static ArrayList<PhoneDTO> getPhoneByPerson(PersonDTO p) {  // if p_id = 0 then select all
-        ArrayList<PhoneDTO> thisPhone = new ArrayList<>();
-        String query = "SELECT * FROM phone WHERE p_id=" + p.getP_id();
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            while (rs.next()) {
-                thisPhone.add(new PhoneDTO(rs.getInt("PHONE_ID"), rs.getInt("p_id"), rs.getBoolean("phone_listed"),
-                        rs.getString("PHONE"), rs.getString("phone_type")));
-            }
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
-        }
-        return thisPhone;
-    }
 
-    public static String getListedPhoneByType(PersonDTO p, String type) {  // if p_id = 0 then select all
-        String phone = "";
-        String query = "SELECT * FROM phone WHERE p_id=" + p.getP_id() + " AND phone_listed=true AND phone_type='" + type + "'";
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            rs.next();
-            phone = rs.getString("PHONE");
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
-        }
-        return phone;
-    }
 
-    public static String getPhoneByType(String pid, String type) {  // if p_id = 0 then select all
-        String phone = "";
-        String query = "SELECT * FROM phone WHERE p_id=" + pid + " AND phone_type='" + type + "'";
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            rs.next();
-            phone = rs.getString("PHONE");
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
-        }
-        return phone;
-    }
+
+
+
 }

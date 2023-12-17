@@ -6,6 +6,7 @@ import com.ecsail.dto.PersonDTO;
 import com.ecsail.dto.PhoneDTO;
 import com.ecsail.repository.interfaces.PhoneRepository;
 import com.ecsail.repository.rowmappers.PhoneRowMapper;
+import org.mariadb.jdbc.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -18,6 +19,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 
@@ -31,12 +33,6 @@ public class PhoneRepositoryImpl implements PhoneRepository {
     public PhoneRepositoryImpl() {
         this.template = new JdbcTemplate(BaseApplication.getDataSource());
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(BaseApplication.getDataSource());
-    }
-
-    @Override
-    public List<PhoneDTO> getPhoneByPid(int pId) {
-        String query = "SELECT * FROM phone Where P_ID = ?";
-        return template.query(query, new PhoneRowMapper(), pId);
     }
 
     @Override
@@ -107,6 +103,67 @@ public class PhoneRepositoryImpl implements PhoneRepository {
             return false;
         }
     }
+    @Override
+    public List<PhoneDTO> getPhoneByPid(int p_id) {
+        String sql = "SELECT * FROM phone";
+        if (p_id != 0) {
+            sql += " WHERE p_id = ?";
+            return template.query(sql, new PhoneRowMapper(), p_id);
+        } else {
+            return template.query(sql, new PhoneRowMapper());
+        }
+    }
+    @Override
+    public PhoneDTO insertPhone(PhoneDTO phoneDTO) {
+        final String sql = "INSERT INTO phone (P_ID, PHONE, PHONE_TYPE, PHONE_LISTED) VALUES (?, ?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        template.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, phoneDTO.getPid());
+            ps.setString(2, phoneDTO.getPhoneNumber());
+            ps.setString(3, phoneDTO.getPhoneType());
+            ps.setBoolean(4, phoneDTO.isIsListed());
+            return ps;
+        }, keyHolder);
+
+        phoneDTO.setPhone_ID(keyHolder.getKey().intValue());
+        return phoneDTO;
+    }
+    @Override
+    public boolean deletePhone(PhoneDTO phone) {
+        String sql = "DELETE FROM phone WHERE phone_id = ?";
+        try {
+            template.update(sql, phone.getPhone_ID());
+            return true;
+        } catch (DataAccessException e) {
+            logger.error("Unable to DELETE: " + e.getMessage());
+            return false;
+        }
+    }
+    @Override
+    public void updatePhone(String field, int phone_id, Object attribute) {
+        String sql = "UPDATE phone SET " + field + " = ? WHERE phone_id = ?";
+        try {
+            template.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql);
+                if (attribute instanceof String) {
+                    ps.setString(1, (String) attribute);
+                } else if (attribute instanceof Boolean) {
+                    ps.setBoolean(1, (Boolean) attribute);
+                } else {
+                    // Handle other types or throw an exception
+                    throw new IllegalArgumentException("Unsupported attribute type");
+                }
+                ps.setInt(2, phone_id);
+                return ps;
+            });
+        } catch (DataAccessException e) {
+            logger.error("There was a problem with the UPDATE: " + e.getMessage());
+        }
+}
+
+
 
 
 }
