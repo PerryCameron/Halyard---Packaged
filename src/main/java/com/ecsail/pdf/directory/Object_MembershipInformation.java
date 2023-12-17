@@ -1,20 +1,25 @@
 package com.ecsail.pdf.directory;
 
-import com.ecsail.repository.implementations.BoatRepositoryImpl;
-import com.ecsail.repository.interfaces.BoatRepository;
-import com.ecsail.sql.SqlExists;
-import com.ecsail.sql.select.SqlEmail;
-import com.ecsail.sql.select.SqlPerson;
-import com.ecsail.sql.select.SqlPhone;
 import com.ecsail.dto.BoatDTO;
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.dto.PersonDTO;
+import com.ecsail.repository.implementations.BoatRepositoryImpl;
+import com.ecsail.repository.implementations.EmailRepositoryImpl;
+import com.ecsail.repository.implementations.PersonRepositoryImpl;
+import com.ecsail.repository.implementations.PhoneRepositoryImpl;
+import com.ecsail.repository.interfaces.BoatRepository;
+import com.ecsail.repository.interfaces.EmailRepository;
+import com.ecsail.repository.interfaces.PersonRepository;
+import com.ecsail.repository.interfaces.PhoneRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Object_MembershipInformation {
 	protected BoatRepository boatRepository = new BoatRepositoryImpl();
+	protected EmailRepository emailRepository = new EmailRepositoryImpl();
+	protected PersonRepository personRepository = new PersonRepositoryImpl();
+	protected PhoneRepository phoneRepository = new PhoneRepositoryImpl();
 	PersonDTO primary;
 	PersonDTO secondary;
 	String primaryEmail;
@@ -28,7 +33,7 @@ public class Object_MembershipInformation {
 	String boats;
 	
 	public Object_MembershipInformation(MembershipListDTO m) {
-		this.primary = SqlPerson.getPersonByPid(m.getpId());
+		this.primary = personRepository.getPersonByPid(m.getpId());
 		this.secondary = getSecondaryPerson(m);
 		this.children = getChildrenString(m);
 		getSecondaryPhoneAndEmail();
@@ -41,7 +46,7 @@ public class Object_MembershipInformation {
 	private String getChildrenString(MembershipListDTO m) {
 		String children = "Children: ";
 		int count = 0;
-		ArrayList<PersonDTO> dependants = SqlPerson.getDependants(m);
+		ArrayList<PersonDTO> dependants = personRepository.getDependants(m);
 		for(PersonDTO d: dependants) {
 			children += d.getFname();
 			count++;
@@ -63,8 +68,8 @@ public class Object_MembershipInformation {
 	private PersonDTO getSecondaryPerson(MembershipListDTO m) {
 		PersonDTO s = new PersonDTO();
 		this.secondaryExists = false;
-		if (SqlExists.activePersonExists(m.getMsId(), 2)) {
-			s = SqlPerson.getPerson(m.getMsId(), 2);
+		if (personRepository.activePersonExists(m.getMsId(), 2)) {
+			s = personRepository.getPerson(m.getMsId(), 2);
 			this.secondaryExists = true;
 		}
 		return s;
@@ -74,31 +79,31 @@ public class Object_MembershipInformation {
 		this.secondaryEmail = "";
 		this.secondaryPhone = "";
 		if(secondaryExists) {
-			if (SqlExists.emailExists(secondary))
-				this.secondaryEmail = SqlEmail.getEmail(secondary);
-			if (SqlExists.listedPhoneOfTypeExists(secondary, "C"))
-				this.secondaryPhone = SqlPhone.getListedPhoneByType(secondary, "C") + " Cell";
+			if (emailRepository.emailExists(secondary))
+				this.secondaryEmail = emailRepository.getEmail(secondary);
+			if (phoneRepository.listedPhoneOfTypeExists(secondary, "C"))
+				this.secondaryPhone = phoneRepository.getListedPhoneByType(secondary, "C") + " Cell";
 		}
 	}
 	
 	private void getPrimaryPhoneAndEmail() {
 		this.primaryEmail = "";
 		this.primaryPhone = "";
-		if (SqlExists.emailExists(primary))
-			this.primaryEmail = SqlEmail.getEmail(primary);
-		if (SqlExists.listedPhoneOfTypeExists(primary, "C")) {
-			this.primaryPhone = SqlPhone.getListedPhoneByType(primary, "C") + " Cell";
+		if (emailRepository.emailExists(primary))
+			this.primaryEmail = emailRepository.getEmail(primary);
+		if (phoneRepository.listedPhoneOfTypeExists(primary, "C")) {
+			this.primaryPhone = phoneRepository.getListedPhoneByType(primary, "C") + " Cell";
 		} else {
-			if (SqlExists.listedPhoneOfTypeExists(primary, "H")) {
-				this.primaryPhone = SqlPhone.getListedPhoneByType(primary, "H") + " Home";
+			if (phoneRepository.listedPhoneOfTypeExists(primary, "H")) {
+				this.primaryPhone = phoneRepository.getListedPhoneByType(primary, "H") + " Home";
 			}
 		}
 	}
 	
 	private void getEmergencyPhoneString() {
 		this.emergencyPhone = "";
-		if (SqlExists.listedPhoneOfTypeExists(primary, "E"))
-			this.emergencyPhone = "Emergency: " + SqlPhone.getListedPhoneByType(primary, "E");
+		if (phoneRepository.listedPhoneOfTypeExists(primary, "E"))
+			this.emergencyPhone = "Emergency: " + phoneRepository.getListedPhoneByType(primary, "E");
 	}
 	
 	private String getBoatsString(MembershipListDTO m) {

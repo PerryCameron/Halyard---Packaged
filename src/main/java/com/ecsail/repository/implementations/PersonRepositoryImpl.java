@@ -63,7 +63,20 @@ public class PersonRepositoryImpl implements PersonRepository {
         String sql = "SELECT EXISTS(SELECT * FROM person WHERE ms_id = ? AND member_type = ? AND is_active = true)";
         return template.queryForObject(sql, Boolean.class, ms_id, member_type);
     }
-
+    @Override
+    public PersonDTO getPersonByPid(int pid) {
+        String sql = "SELECT * FROM person WHERE p_id = ?";
+        try {
+            return template.queryForObject(sql, new PersonRowMapper(), pid);
+        } catch (EmptyResultDataAccessException e) {
+            logger.error("There were no results for SqlPerson.getPersonByPid(int pid)");
+            return null;
+        } catch (DataAccessException e) {
+            logger.error(e.getMessage());
+            new Dialogue_ErrorSQL(e, "Unable to retrieve information", "See below for details");
+            return null;
+        }
+    }
 
 
 

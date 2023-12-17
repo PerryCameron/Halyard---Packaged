@@ -9,9 +9,11 @@ import java.util.List;
 public interface PhoneRepository {
     List<PhoneDTO> getPhoneByPid(int p_id);
     List<PhoneDTO> getPhoneByPerson(PersonDTO p);
-    PhoneDTO getListedPhoneByType(PersonDTO p, String type);
+    String getListedPhoneByType(PersonDTO p, String type);
     PhoneDTO getPhoneByPersonAndType(int pId, String type);
     int update(PhoneDTO o);
     int delete(PhoneDTO o);
     int insert(PhoneDTO o);
+
+    boolean listedPhoneOfTypeExists(PersonDTO p, String type);
 }

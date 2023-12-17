@@ -19,6 +19,8 @@ public interface PersonRepository {
     PersonDTO getPerson(int ms_id, int member_type);
 
     boolean activePersonExists(int ms_id, int member_type);
+
+    PersonDTO getPersonByPid(int pid);
 //    List<PersonDTO> getActiveAuxBoats();
 //    List<PersonDTO> getAllSailBoats();
 //    List<PersonDTO> getAllAuxBoats();

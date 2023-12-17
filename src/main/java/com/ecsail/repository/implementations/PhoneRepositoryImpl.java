@@ -6,6 +6,9 @@ import com.ecsail.dto.PersonDTO;
 import com.ecsail.dto.PhoneDTO;
 import com.ecsail.repository.interfaces.PhoneRepository;
 import com.ecsail.repository.rowmappers.PhoneRowMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -14,13 +17,13 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
-import javax.sql.DataSource;
-import java.util.ArrayList;
+
 import java.util.List;
 
 
 public class PhoneRepositoryImpl implements PhoneRepository {
 
+    public static Logger logger = LoggerFactory.getLogger(PhoneRepository.class);
     private final JdbcTemplate template;
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -43,12 +46,16 @@ public class PhoneRepositoryImpl implements PhoneRepository {
     }
 
     @Override
-    public PhoneDTO getListedPhoneByType(PersonDTO p, String phoneType) {
-        String query = "SELECT * FROM phone WHERE p_id = ? AND phone_listed = true AND phone_type = ? limit 1";
+    public String getListedPhoneByType(PersonDTO p, String type) {
+        String sql = "SELECT PHONE FROM phone WHERE p_id = ? AND phone_listed = true AND phone_type = ?";
         try {
-            return template.queryForObject(query, new PhoneRowMapper(), p.getP_id(), phoneType);
+            return template.queryForObject(sql, String.class, p.getP_id(), type);
         } catch (EmptyResultDataAccessException e) {
-            return null; // Return null if no phone is found
+            logger.error("No listed phone found for the specified type: " + e.getMessage());
+            return "";
+        } catch (DataAccessException e) {
+            logger.error("Unable to retrieve information: " + e.getMessage());
+            return "";
         }
     }
 
@@ -90,5 +97,16 @@ public class PhoneRepositoryImpl implements PhoneRepository {
         phoneDTO.setPhone_ID(keyHolder.getKey().intValue());
         return affectedRows;
     }
+    @Override
+    public boolean listedPhoneOfTypeExists(PersonDTO p, String type) {
+        String sql = "SELECT EXISTS(SELECT * FROM phone WHERE P_ID = ? AND PHONE_LISTED = true AND PHONE_TYPE = ?)";
+        try {
+            return template.queryForObject(sql, Boolean.class, p.getP_id(), type);
+        } catch (DataAccessException e) {
+            logger.error("Unable to check if EXISTS: " + e.getMessage());
+            return false;
+        }
+    }
+
 
 }
