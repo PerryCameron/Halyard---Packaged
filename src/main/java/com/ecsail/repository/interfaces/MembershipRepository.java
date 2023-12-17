@@ -13,14 +13,20 @@ public interface MembershipRepository {
     List<MembershipListDTO> getNewMemberRoster(String selectedYear);
     List<MembershipListDTO> getReturnMemberRoster(String selectedYear);
     List<MembershipListDTO> getSlipWaitList(String selectedYear);
-    MembershipListDTO getMembershipFromList(int ms_id, int year);
+    MembershipListDTO getMembershipByMsIdAndYear(int ms_id, int year);
     MembershipListDTO getMembershipListByIdAndYear(int year, int membershipId);
 
     MembershipDTO getCurrentMembershipChair();
 
     boolean memberShipExists(int ms_id);
 
-    MembershipListDTO getMembershipFromList(int ms_id, String year);
+    MembershipListDTO getMembershipByMsIdAndYear(int ms_id, String year);
 
     List<MembershipListDTO> getRoster(String year, boolean isActive);
+
+    List<MembershipListDTO> getRosterOfSlipOwners();
+
+    List<MembershipListDTO> getRosterOfSubleasedSlips();
+
+    MembershipListDTO getMembershipFromListWithoutMembershipId(int ms_id);
 }

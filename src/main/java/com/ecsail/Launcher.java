@@ -1,5 +1,7 @@
 package com.ecsail;
 
+import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.interfaces.MembershipRepository;
 import com.ecsail.views.tabs.boatlist.TabBoatList;
 import com.ecsail.views.tabs.boatview.TabBoatView;
 import com.ecsail.views.tabs.fee.TabFee;
@@ -32,6 +34,8 @@ public class Launcher extends VBox {
     public static void closeTabs() {
         tabPane.getTabs().clear();
     }
+
+    public static MembershipRepository membershipRepository = new MembershipRepositoryImpl();
 
     public Launcher() {
         tabPane = new TabPane();
@@ -111,7 +115,7 @@ public class Launcher extends VBox {
     }
 
     public static void createMembershipTabFromPeopleList(int msid) {
-        MembershipListDTO membership = SqlMembershipList.getMembershipFromListWithoutMembershipId(msid);
+        MembershipListDTO membership = membershipRepository.getMembershipFromListWithoutMembershipId(msid);
         Launcher.createInactiveMemberTab(membership);
     }
 
@@ -128,7 +132,7 @@ public class Launcher extends VBox {
         if (SqlMembership_Id.isRenewedByMsidAndYear(ms_id, HalyardPaths.getYear())) { // membership is active and in our object tree
             membership = getMembership(ms_id);
         } else { // membership is not active and needs to be pulled from the SQL Database
-            membership = SqlMembershipList.getMembershipFromList(ms_id, HalyardPaths.getYear());
+            membership = membershipRepository.getMembershipByMsIdAndYear(ms_id, HalyardPaths.getYear());
         }
         Tab membershipTab = new TabMembership(membership);
         tabPane.getTabs().add(membershipTab);
@@ -136,9 +140,9 @@ public class Launcher extends VBox {
     }
 
     // used for TabDeposits
-    public static void createTabForDeposits(int ms_id, String year) {  // overload
+    public static void createTabForDeposits(int msId, String year) {  // overload
         MembershipListDTO membership;
-        membership = SqlMembershipList.getMembershipFromList(ms_id, year);
+        membership = membershipRepository.getMembershipByMsIdAndYear(msId, year);
         createOrOpenTab(membership, "Membership");
     }
 
@@ -152,15 +156,15 @@ public class Launcher extends VBox {
         tabPane.getSelectionModel().select(getTabIndex("New Year Wizard"));
     }
 
-    public static void launchTabFromSlips(int ms_id) {
-        MembershipListDTO membership = SqlMembershipList.getMembershipList(ms_id, HalyardPaths.getYear());
+    public static void launchTabFromSlips(int msId) {
+        MembershipListDTO membership = membershipRepository.getMembershipByMsIdAndYear(msId, HalyardPaths.getYear());
         createOrOpenTab(membership, "Membership");
     }
 
     //	// fills incomplete object with latest information and opens tab.
-    public static void createActiveMembershipTab(MembershipListDTO membership) {
-        membership = SqlMembershipList.getMembershipFromList(membership.getMsId(), HalyardPaths.getYear());
-        createOrOpenTab(membership, "Membership");
+    public static void createActiveMembershipTab(MembershipListDTO membershipListDTO) {
+        membershipListDTO = membershipRepository.getMembershipByMsIdAndYear(membershipListDTO.getMsId(), HalyardPaths.getYear());
+        createOrOpenTab(membershipListDTO, "Membership");
     }
 
     //
@@ -169,7 +173,7 @@ public class Launcher extends VBox {
     }
 
     public static void createMembershipTabForBOD(int msid, String selectedYear) {
-        MembershipListDTO membership = SqlMembershipList.getMembershipList(msid, selectedYear);
+        MembershipListDTO membership = membershipRepository.getMembershipByMsIdAndYear(msid, selectedYear);
         createOrOpenTab(membership, "Membership");
     }
 

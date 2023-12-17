@@ -3,6 +3,8 @@ package com.ecsail.views.tabs.people;
 import com.ecsail.BaseApplication;
 import com.ecsail.Launcher;
 import com.ecsail.enums.MemberType;
+import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.interfaces.MembershipRepository;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlPerson;
 import com.ecsail.sql.select.SqlMembershipList;
@@ -44,10 +46,12 @@ public class TabPeople extends Tab {
 	static TableView<PersonDTO> personTableView;
 	static int pick = 1;
 
-	@SuppressWarnings("unchecked")
+	MembershipRepository membershipRepository;
+
 	public TabPeople(String text) {
 		super(text);
 		TabPeople.people = SqlPerson.getPeople();
+		this.membershipRepository = new MembershipRepositoryImpl();
 		
 		VBox vboxBlue = new VBox(); // main vbox
 		VBox vbox2 = new VBox(); // sepearates box search and box people
@@ -131,16 +135,14 @@ public class TabPeople extends Tab {
 	}
 	// creates array list of people objects populated from SQL database
 
-	private static void createPersonBox(PersonDTO person)  {
+	private void createPersonBox(PersonDTO person)  {
 		MembershipListDTO membership = null;
 		if(SqlExists.currentMembershipIdExists(person.getMs_id())) {
-		membership = SqlMembershipList.getMembershipFromList(person.getMs_id(), BaseApplication.selectedYear);
+		membership = membershipRepository.getMembershipByMsIdAndYear(person.getMs_id(), BaseApplication.selectedYear);
 		} else {
-		membership = SqlMembershipList.getMembershipFromListWithoutMembershipId(person.getMs_id());
+		membership = membershipRepository.getMembershipFromListWithoutMembershipId(person.getMs_id());
 		}
 		personHBox.getChildren().clear();  // remove if exists
-		//System.out.println("cleared the personHBox");
-//		personHBox.getChildren().add(new HBoxPerson(person, )); // null is for tabpane not being used here.
 	}
 
 	public PersonDTO getPersonByPid(int pid) {

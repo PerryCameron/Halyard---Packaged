@@ -135,7 +135,7 @@ public class MembershipRepositoryImpl implements MembershipRepository {
         return membershipListDTOS;
     }
     @Override
-    public MembershipListDTO getMembershipFromList(int msId, int year) {
+    public MembershipListDTO getMembershipByMsIdAndYear(int msId, int year) {
         String sql = """
                 SELECT m.ms_id, m.p_id, id.membership_id, id.fiscal_year, m.join_date, id.mem_type, s.SLIP_NUM, 
                 p.l_name, p.f_name, s.subleased_to, m.address, m.city, m.state, m.zip 
@@ -179,22 +179,22 @@ public class MembershipRepositoryImpl implements MembershipRepository {
         return template.queryForObject(sql, new MembershipRowMapper());
     }
     @Override
-    public boolean memberShipExists(int ms_id) {
+    public boolean memberShipExists(int msId) {
         String sql = "SELECT EXISTS(SELECT * FROM membership WHERE ms_id = ?)";
-        return template.queryForObject(sql, Boolean.class, ms_id);
+        return template.queryForObject(sql, Boolean.class, msId);
     }
     @Override
-    public MembershipListDTO getMembershipFromList(int ms_id, String year) {
+    public MembershipListDTO getMembershipByMsIdAndYear(int msId, String year) {
         String sql = """
                 SELECT m.ms_id, m.p_id, id.membership_id, id.fiscal_year, m.join_date,
                 id.mem_type, s.SLIP_NUM, p.l_name, p.f_name, s.subleased_to, m.address, m.city, m.state,
                 m.zip FROM slip s RIGHT JOIN membership m ON m.ms_id = s.ms_id
                 LEFT JOIN membership_id id ON m.ms_id = id.ms_id
-                LEFT JOIN person p ON p.ms_id = m.ms_id WHERE id.fiscal_year = ?
-                AND p.member_type = 1 AND m.ms_id = ?
+                LEFT JOIN person p ON p.ms_id = m.ms_id 
+                WHERE id.fiscal_year = ? AND p.member_type = 1 AND m.ms_id = ?
                 """;
         try {
-            return template.queryForObject(sql, new MembershipListRowMapper(), year, ms_id);
+            return template.queryForObject(sql, new MembershipListRowMapper(), year, msId);
         } catch (EmptyResultDataAccessException e) {
             logger.error(e.getMessage());
             return null; // or handle appropriately
@@ -204,6 +204,7 @@ public class MembershipRepositoryImpl implements MembershipRepository {
             return null; // or handle appropriately
         }
     }
+
     @Override
     public List<MembershipListDTO> getRoster(String year, boolean isActive) {
         String sql = """
@@ -223,6 +224,66 @@ public class MembershipRepositoryImpl implements MembershipRepository {
             return new ArrayList<>();
         }
     }
+    @Override
+    public List<MembershipListDTO> getRosterOfSlipOwners() {
+        String sql = """
+                 SELECT m.ms_id, m.p_id, id.membership_id, id.fiscal_year, m.join_date, id.mem_type, s.SLIP_NUM, 
+                 p.l_name, p.f_name, s.subleased_to, m.address, m.city, m.state, m.zip 
+                 FROM slip s 
+                 INNER JOIN membership m ON s.ms_id = m.ms_id 
+                 LEFT JOIN membership_id id ON m.ms_id = id.ms_id 
+                 LEFT JOIN person p ON p.ms_id = m.ms_id 
+                 WHERE p.member_type = 1 AND id.fiscal_year = YEAR(NOW())
+                 """;
+        try {
+            return template.query(sql, new MembershipListRowMapper());
+        } catch (DataAccessException e) {
+            logger.error("Unable to SELECT roster: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+    @Override
+    public List<MembershipListDTO> getRosterOfSubleasedSlips() {
+        String sql = """
+                 SELECT m.ms_id, m.p_id, id.membership_id, id.fiscal_year, m.join_date, id.mem_type, 
+                 s.SLIP_NUM, p.l_name, p.f_name, s.subleased_to, m.address, m.city, m.state, m.zip 
+                 FROM slip s 
+                 INNER JOIN membership m ON s.ms_id = m.ms_id 
+                 LEFT JOIN membership_id id ON m.ms_id = id.ms_id 
+                 LEFT JOIN person p ON p.ms_id = s.subleased_to 
+                 WHERE subleased_to IS NOT NULL AND p.member_type = 1 AND id.fiscal_year = YEAR(NOW())
+                 """;
+        try {
+            return template.query(sql, new MembershipListRowMapper());
+        } catch (DataAccessException e) {
+            logger.error("Unable to SELECT roster: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+    @Override
+    public MembershipListDTO getMembershipFromListWithoutMembershipId(int ms_id) {
+        String sql = """
+                 SELECT m.ms_id, m.p_id, m.join_date, s.SLIP_NUM, p.l_name,
+                 p.f_name, s.subleased_to, m.address, m.city, m.state, m.zip 
+                 FROM slip s 
+                 RIGHT JOIN membership m ON m.ms_id = s.ms_id 
+                 LEFT JOIN person p ON p.ms_id = m.ms_id 
+                 WHERE m.ms_id = ?
+                 """;
+        try {
+            return template.queryForObject(sql, new MembershipListRowMapper(), ms_id);
+        } catch (EmptyResultDataAccessException e) {
+            logger.error("Unable to SELECT roster: " + e.getMessage());
+            return null;
+        } catch (DataAccessException e) {
+            logger.error("Data Access Exception: " + e.getMessage());
+            return null;
+        }
+    }
+
+
+
+
 
 
 

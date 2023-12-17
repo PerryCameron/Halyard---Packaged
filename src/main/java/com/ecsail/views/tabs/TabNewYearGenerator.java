@@ -1,12 +1,12 @@
 package com.ecsail.views.tabs;
 
+import com.ecsail.dto.*;
+import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.interfaces.MembershipRepository;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.select.SqlDbInvoice;
 import com.ecsail.sql.select.SqlFee;
-import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.sql.select.SqlSlip;
-import com.ecsail.dto.*;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
@@ -22,6 +22,9 @@ import java.util.Set;
 public class TabNewYearGenerator extends Tab {
     private static final ArrayList<SlipDTO> slips = new ArrayList<>();
     private static final ArrayList<FeeDTO> fees = new ArrayList<>();
+
+    private MembershipRepository membershipRepository = new MembershipRepositoryImpl();
+
     public static Logger logger = LoggerFactory.getLogger(TabNewYearGenerator.class);
     int yearToAdd = 2024;
 
@@ -59,7 +62,7 @@ public class TabNewYearGenerator extends Tab {
     }
 
     private void createInvoices() {
-        ObservableList<MembershipListDTO> rosters =  SqlMembershipList.getRoster(String.valueOf(yearToAdd - 1), true);
+        ArrayList<MembershipListDTO> rosters = (ArrayList<MembershipListDTO>) membershipRepository.getRoster(String.valueOf(yearToAdd - 1), true);
         rosters.forEach(membershipListDTO -> {
 						var newInvoice = new InvoiceDTO(membershipListDTO.getMsId(), yearToAdd);
 						// insert the new record into the SQL database
@@ -74,7 +77,7 @@ public class TabNewYearGenerator extends Tab {
 
     private void createIds() {
         logger.info("Starting invoice creation");
-                ObservableList<MembershipListDTO> rosters =  SqlMembershipList.getRoster(String.valueOf(yearToAdd - 1), true);
+                ArrayList<MembershipListDTO> rosters = (ArrayList<MembershipListDTO>) membershipRepository.getRoster(String.valueOf(yearToAdd - 1), true);
                 rosters.forEach(membershipListDTO -> {
                     // TODO Add ability to compact records
                     // create a new membershipID for user

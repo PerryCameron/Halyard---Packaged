@@ -16,68 +16,12 @@ public class SqlMembershipList {
 
 
 
-    public static ObservableList<MembershipListDTO> getRoster(String year, boolean isActive) {
-        ObservableList<MembershipListDTO> rosters = FXCollections.observableArrayList();
-        String query = "SELECT m.ms_id,m.p_id,id.membership_id,id.fiscal_year,id.fiscal_year,m.join_date,id.mem_type,s.SLIP_NUM,p.l_name,p.f_name,s.subleased_to,m.address,m.city,m.state,m.zip "
-                + "FROM slip s "
-                + "RIGHT JOIN membership m ON m.ms_id=s.ms_id "
-                + "LEFT JOIN membership_id id ON m.ms_id=id.ms_id "
-                + "LEFT JOIN person p ON p.ms_id=m.ms_id "
-                + "WHERE id.fiscal_year='" + year + "' AND p.member_type=1 AND id.renew=" + isActive + " ORDER BY membership_id";
-        try {
-
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            queryToArrayList(rosters, rs);
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-//            new Dialogue_ErrorSQL(e,"Unable to SELECT roster","See below for details");
-        }
-        BaseApplication.logger.info("Selecting Active Roster list for " + year + "...");
-        return rosters;
-    }
 
 
-    public static ObservableList<MembershipListDTO> getRosterOfSlipOwners(String year) {
-        ObservableList<MembershipListDTO> rosters = FXCollections.observableArrayList();
-        String query = "SELECT m.ms_id,m.p_id,id.membership_id,id.fiscal_year,m.join_date,id.mem_type,s.SLIP_NUM,p.l_name,p.f_name,s.subleased_to,m.address,m.city,m.state,m.zip "
-                + "FROM slip s "
-                + "INNER JOIN membership m ON s.ms_id=m.ms_id "
-                + "LEFT JOIN membership_id id ON m.ms_id=id.ms_id "
-                + "LEFT JOIN person p ON p.ms_id=m.ms_id "
-                + "WHERE p.member_type=1 AND fiscal_year="+ HalyardPaths.getYear();
-        try {
-
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            queryToArrayList(rosters, rs);
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to SELECT roster","See below for details");
-        }
-        BaseApplication.logger.info("Creating Roster list of slip owners for " + year + "...");
-        return rosters;
-    }
-
-    public static ObservableList<MembershipListDTO> getRosterOfSubleasedSlips() {
-        ObservableList<MembershipListDTO> rosters = FXCollections.observableArrayList();
-        String query = "SELECT m.ms_id,m.p_id,id.membership_id,id.fiscal_year,m.join_date,id.mem_type,s.SLIP_NUM,p.l_name,p.f_name,s.subleased_to,m.address,m.city,m.state,m.zip FROM slip s "
-                + "INNER JOIN membership m ON s.ms_id=m.ms_id "
-                + "LEFT JOIN membership_id id ON m.ms_id=id.ms_id "
-                + "LEFT JOIN person p ON p.ms_id=s.subleased_to "
-                + "WHERE subleased_to IS NOT NULL AND p.member_type=1 AND fiscal_year="+ HalyardPaths.getYear();
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            queryToArrayList(rosters, rs);
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to SELECT roster","See below for details");
-        }
-
-        return rosters;
-    }
 
     // I added the p.MEMBER_TYPE=1 into the query because it was causing subleases to have the wrong first name
     // if you are here looking for problems, keep this in mind. (this may be redundant to getRoster)
-    public static MembershipListDTO getMembershipList(int ms_id, String year) {
+    public static MembershipListDTO getMembershipByMsIdAndYear(int ms_id, String year) {
         MembershipListDTO thisMembership = null;
         String query = "SELECT m.ms_id,m.p_id,id.membership_id,id.fiscal_year,m.join_date,"
                 + "id.mem_type,s.SLIP_NUM,p.l_name,p.f_name,s.subleased_to,m.address,m.city,m.state,"
@@ -143,38 +87,6 @@ public class SqlMembershipList {
         return thisMembership;
     }
 
-    public static MembershipListDTO getMembershipFromListWithoutMembershipId(int ms_id) {
-        MembershipListDTO thisMembership = null;
-        String query = "SELECT m.ms_id,m.p_id,m.join_date,s.SLIP_NUM,p.l_name,"
-                + "p.f_name,s.subleased_to,m.address,m.city,m.state,m.zip FROM slip s RIGHT JOIN "
-                + "membership m ON m.ms_id=s.ms_id LEFT JOIN person p ON p.ms_id=m.ms_id WHERE m.ms_id=" + ms_id;
-        try {
-
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            while (rs.next()) {
-                thisMembership = new MembershipListDTO(
-                        rs.getInt("ms_id"),
-                        rs.getInt("p_id"),
-                        0,
-                        rs.getString("join_date"),
-                        null,
-                        rs.getString("SLIP_NUM"),
-                        rs.getString("l_name"),
-                        rs.getString("f_name"),
-                        rs.getInt("subleased_to"),
-                        rs.getString("address"),
-                        rs.getString("city"),
-                        rs.getString("state"),
-                        rs.getString("zip"),
-                        "No Year"
-                        );
-                }
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to SELECT roster","See below for details");
-        }
-        return thisMembership;
-    }
-
     public static ObservableList<MembershipListDTO> getSlipRoster(String year) {
         ObservableList<MembershipListDTO> rosters = FXCollections.observableArrayList();
         String query = "SELECT m.ms_id,m.p_id,id.membership_id,id.fiscal_year,m.join_date,id.mem_type,s.SLIP_NUM,p.l_name,p.f_name,s.subleased_to,m.address,m.city,m.state,m.zip "
@@ -188,29 +100,6 @@ public class SqlMembershipList {
         } catch (SQLException e) {
             new Dialogue_ErrorSQL(e,"Unable to SELECT roster","See below for details");
         }
-        return rosters;
-    }
-
-
-
-    public static ObservableList<MembershipListDTO> getWaitListRoster(String waitlist) {
-        ObservableList<MembershipListDTO> rosters = FXCollections.observableArrayList();
-        String query = "SELECT m.ms_id,m.p_id,id.membership_id,id.fiscal_year,m.join_date,id.mem_type,s.SLIP_NUM,p.l_name,p.f_name,s.subleased_to,m.address,m.city,m.state,m.zip "
-                + "FROM waitlist w "
-                + "INNER JOIN membership m ON w.ms_id=m.ms_id "
-                + "LEFT JOIN membership_id id ON m.ms_id=id.ms_id "
-                + "LEFT JOIN person p ON p.ms_id=m.ms_id "
-                + "LEFT JOIN slip s ON s.ms_id=m.ms_id "
-                + "WHERE " + waitlist + "=true AND id.fiscal_year='" + HalyardPaths.getYear() + "' AND p.member_type=1";
-        try {
-
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            queryToArrayList(rosters, rs);
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to SELECT roster","See below for details");
-        }
-        BaseApplication.logger.info("Creating Roster list for slip wait list");
         return rosters;
     }
 
