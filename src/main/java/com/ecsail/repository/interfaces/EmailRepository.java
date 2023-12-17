@@ -13,19 +13,12 @@ public interface EmailRepository {
     EmailDTO getPrimaryEmail(PersonDTO person);
     int update(EmailDTO o);
     int insert(EmailDTO emailDTO);
-    int delete(EmailDTO o);
-
+    void deleteEmail(int p_id);
     boolean emailFromActiveMembershipExists(String email, int year);
-
     boolean emailExists(PersonDTO p);
-
     String getEmail(PersonDTO person);
-
     boolean deleteEmail(EmailDTO email);
-
     void updateEmail(int email_id, String email);
-
     void updateEmail(String field, int email_id, Boolean attribute);
-
     EmailDTO insertEmail(EmailDTO emailDTO);
 }

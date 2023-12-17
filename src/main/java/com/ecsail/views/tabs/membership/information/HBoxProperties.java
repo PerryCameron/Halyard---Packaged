@@ -3,22 +3,15 @@ package com.ecsail.views.tabs.membership.information;
 import com.ecsail.BaseApplication;
 import com.ecsail.LabelPrinter;
 import com.ecsail.Launcher;
-import com.ecsail.pdf.PDF_Envelope;
-import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
-import com.ecsail.repository.implementations.MembershipIdRepositoryImpl;
-import com.ecsail.repository.implementations.MembershipRepositoryImpl;
-import com.ecsail.repository.implementations.PersonRepositoryImpl;
-import com.ecsail.repository.interfaces.InvoiceRepository;
-import com.ecsail.repository.interfaces.MembershipIdRepository;
-import com.ecsail.repository.interfaces.MembershipRepository;
-import com.ecsail.repository.interfaces.PersonRepository;
-import com.ecsail.views.tabs.membership.TabMembership;
-import com.ecsail.sql.SqlDelete;
-import com.ecsail.sql.select.SqlPerson;
+import com.ecsail.dto.BoatDTO;
 import com.ecsail.dto.LabelDTO;
 import com.ecsail.dto.PersonDTO;
+import com.ecsail.pdf.PDF_Envelope;
+import com.ecsail.repository.implementations.*;
+import com.ecsail.repository.interfaces.*;
+import com.ecsail.sql.SqlDelete;
+import com.ecsail.views.tabs.membership.TabMembership;
 import com.itextpdf.io.exceptions.IOException;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -31,6 +24,7 @@ import javafx.util.Builder;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.List;
 
 
 ///  this class is for the properties tab for the entire membership
@@ -42,6 +36,12 @@ public class HBoxProperties extends HBox implements Builder {
     private final MembershipRepository membershipRepository = new MembershipRepositoryImpl();
     private final MembershipIdRepository membershipIdRepository = new MembershipIdRepositoryImpl();
     private final InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
+    private final PhoneRepository phoneRepository = new PhoneRepositoryImpl();
+    private final EmailRepository emailRepository = new EmailRepositoryImpl();
+    private final OfficerRepository officerRepository = new OfficerRepositoryImpl();
+    private final BoatRepository boatRepository = new BoatRepositoryImpl();
+    private final MemoRepository memoRepository = new MemoRepositoryImpl();
+    private final SlipRepository slipRepository = new SlipRepositoryImpl();
 
     public HBoxProperties(TabMembership parent) {
         super();
@@ -178,16 +178,17 @@ public class HBoxProperties extends HBox implements Builder {
     }
 
     private void deleteMembership(int msId) {
-        SqlDelete.deleteBoatOwner(msId);
-        SqlDelete.deleteMemos(msId);
+        boatRepository.deleteBoatOwner(msId);
+        memoRepository.deleteMemos(msId);
         invoiceRepository.deleteAllPaymentsAndInvoicesByMsId(msId);
-        SqlDelete.deleteWaitList(msId);
+        slipRepository.deleteWaitList(msId);  // What if member has a slip???
+        membershipRepository.deleteFormMsIdHash(msId);
         membershipIdRepository.deleteMembershipId(msId); // removes all entries
-        ObservableList<PersonDTO> people = SqlPerson.getPeople(msId);
+        List<PersonDTO> people = personRepository.getPeople(msId);
         for (PersonDTO p : people) {
-            SqlDelete.deletePhones(p.getP_id());
-            SqlDelete.deleteEmail(p.getP_id());
-            SqlDelete.deleteOfficer(p.getP_id());
+            phoneRepository.deletePhones(p.getP_id());
+            emailRepository.deleteEmail(p.getP_id());
+            officerRepository.deleteOfficer(p.getP_id());
             personRepository.deletePerson(p.getP_id());
         }
         membershipRepository.deleteMembership(msId);

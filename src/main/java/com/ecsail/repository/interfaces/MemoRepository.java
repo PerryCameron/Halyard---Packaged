@@ -13,4 +13,7 @@ public interface MemoRepository {
     MemoDTO getMemoByInvoiceIdAndCategory(InvoiceWithMemberInfoDTO invoice, String category);
     List<Memo2DTO> getAllMemosForTabNotes(String year, String category);
 
+    void deleteMemo(MemoDTO memo);
+
+    void deleteMemos(int msId);
 }

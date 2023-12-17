@@ -87,6 +87,16 @@ public class PersonRepositoryImpl implements PersonRepository {
             // Handle or rethrow the exception as per your application's requirements
         }
     }
+    @Override
+    public List<PersonDTO> getPeople(int ms_id) {
+        String sql = "SELECT * FROM person WHERE ms_id = ? AND IS_ACTIVE = true";
+        try {
+            return template.query(sql, new PersonRowMapper(), ms_id);
+        } catch (DataAccessException e) {
+            logger.error("Unable to retrieve information: " + e.getMessage());
+            return new ArrayList<>(); // Return an empty list in case of an exception
+        }
+    }
 
 
 }

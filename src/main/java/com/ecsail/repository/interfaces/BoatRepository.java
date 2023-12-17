@@ -25,4 +25,6 @@ public interface BoatRepository {
     void updateBoat(BoatDTO boat);
     BoatDTO insertBoat(BoatDTO boat);
     int insertBoatOwner(int msId, int boatId);
+
+    void deleteBoatOwner(int msId);
 }

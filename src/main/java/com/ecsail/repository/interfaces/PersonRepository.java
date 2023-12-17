@@ -23,6 +23,8 @@ public interface PersonRepository {
     PersonDTO getPersonByPid(int pid);
 
     void deletePerson(int p_id);
+
+    List<PersonDTO> getPeople(int ms_id);
 //    List<PersonDTO> getActiveAuxBoats();
 //    List<PersonDTO> getAllSailBoats();
 //    List<PersonDTO> getAllAuxBoats();

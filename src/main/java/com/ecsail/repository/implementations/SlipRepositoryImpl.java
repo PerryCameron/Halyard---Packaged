@@ -22,16 +22,19 @@ public class SlipRepositoryImpl implements SlipRepository {
     public SlipRepositoryImpl() {
         this.template = new JdbcTemplate(BaseApplication.getDataSource());
     }
+
     @Override
     public void updateWaitList(int ms_id, String field, Boolean attribute) {
         String sql = "UPDATE wait_list SET " + field + " = ? WHERE ms_id = ?";
         template.update(sql, attribute, ms_id);
     }
+
     @Override
     public Boolean waitListExists(int ms_id) {
         String sql = "SELECT EXISTS(SELECT * FROM wait_list WHERE ms_id = ?) AS wait_list_exists";
         return template.queryForObject(sql, Boolean.class, ms_id);
     }
+
     @Override
     public WaitListDTO getWaitList(int ms_id) {
         String sql = "SELECT * FROM wait_list WHERE ms_id = ?";
@@ -46,6 +49,7 @@ public class SlipRepositoryImpl implements SlipRepository {
             return null;
         }
     }
+
     @Override
     public void insertWaitList(WaitListDTO w) {
         String sql = "INSERT INTO wait_list (MS_ID, SLIP_WAIT, KAYAK_RACK_WAIT, SHED_WAIT, WANT_SUBLEASE, WANT_RELEASE, WANT_SLIP_CHANGE) " +
@@ -59,12 +63,14 @@ public class SlipRepositoryImpl implements SlipRepository {
                 w.isWantsRelease(),
                 w.isWantSlipChange());
     }
+
     @Override
     public void releaseSlip(MembershipListDTO membership) {
         String sql = "UPDATE slip SET subleased_to = null WHERE ms_id = ?";
         template.update(sql, membership.getMsId());
         membership.setSubLeaser(0);
     }
+
     @Override
     public void reAssignSlip(int msId, MembershipListDTO membership) {
         String sql = "UPDATE slip SET ms_id = ? WHERE ms_id = ?";
@@ -72,22 +78,26 @@ public class SlipRepositoryImpl implements SlipRepository {
         String slip = membership.getSlip();
         membership.setSlip("0");
     }
+
     @Override
     public void subleaserReleaseSlip(int subleasee) {
         String sql = "UPDATE slip SET subleased_to = null WHERE subleased_to = ?";
         template.update(sql, subleasee);
     }
+
     @Override
     public Boolean slipRentExists(int subMsid) {
         String sql = "SELECT EXISTS(SELECT * FROM slip WHERE subleased_to = ?)";
         return template.queryForObject(sql, Boolean.class, subMsid);
     }
+
     @Override
     public void updateSlip(int ms_id, MembershipListDTO membership) {
         String sql = "UPDATE slip SET subleased_to = ? WHERE ms_id = ?";
         template.update(sql, ms_id, membership.getMsId());
         membership.setSubLeaser(ms_id);
     }
+
     @Override
     public SlipDTO getSlip(int ms_id) {
         String sql = "SELECT * FROM slip WHERE ms_id = ?";
@@ -108,30 +118,31 @@ public class SlipRepositoryImpl implements SlipRepository {
         String sql = "SELECT EXISTS(SELECT * FROM slip WHERE ms_id = ?)";
         return template.queryForObject(sql, Boolean.class, ms_id);
     }
+
     @Override
     public SlipDTO getSubleasedSlip(int ms_id) {
         String sql = "SELECT * FROM slip WHERE subleased_to = ?";
         try {
             return template.queryForObject(sql, new SlipRowMapper(), ms_id);
         } catch (EmptyResultDataAccessException e) {
-            // Handle case when no result is found
+            logger.error(e.getMessage());
             return null;
         } catch (DataAccessException e) {
             new Dialogue_ErrorSQL(e, "Unable to retrieve information", "See below for details");
+            logger.error(e.getMessage());
             return null;
         }
     }
 
-
-
-
-
-
-
-
-
-
-
+    @Override
+    public void deleteWaitList(int msId) {
+        String sql = "DELETE FROM wait_list WHERE ms_id = ?";
+        try {
+            template.update(sql, msId);
+        } catch (DataAccessException e) {
+            logger.error("Unable to DELETE wait list entry: " + e.getMessage());
+        }
+    }
 
 
 }

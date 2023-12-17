@@ -37,4 +37,6 @@ public interface MembershipRepository {
     List<MembershipListDTO> getBoatOwnerRoster(int boat_id);
 
     void deleteMembership(int ms_id);
+
+    void deleteFormMsIdHash(int ms_id);
 }

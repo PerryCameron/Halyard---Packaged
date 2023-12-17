@@ -77,12 +77,30 @@ public class EmailRepositoryImpl implements EmailRepository {
         emailDTO.setEmail_id(keyHolder.getKey().intValue());
         return affectedRows;
     }
+    @Override
+    public void deleteEmail(int p_id) {
+        String sql = "DELETE FROM email WHERE p_id = ?";
+        try {
+            template.update(sql, p_id);
+        } catch (DataAccessException e) {
+            logger.error("Unable to DELETE email: " + e.getMessage());
+            // Handle or rethrow the exception as per your application's requirements
+        }
+    }
 
     @Override
-    public int delete(EmailDTO emailDTO) {
-        String deleteSql = "DELETE FROM email WHERE EMAIL_ID = ?";
-        return template.update(deleteSql, emailDTO.getEmail_id());
+    public boolean deleteEmail(EmailDTO email) {
+        String sql = "DELETE FROM email WHERE email_id = ?";
+        try {
+            template.update(sql, email.getEmail_id());
+            return true;
+        } catch (DataAccessException e) {
+            logger.error(e.getMessage());
+            new Dialogue_ErrorSQL(e, "Unable to DELETE", "See below for details");
+            return false;
+        }
     }
+
     @Override
     public boolean emailFromActiveMembershipExists(String email, int year) {
         if (email == null || email.isEmpty()) {
@@ -131,18 +149,7 @@ public class EmailRepositoryImpl implements EmailRepository {
 
         return template.query(sql, new EmailInformationRowMapper(), String.valueOf(Year.now().getValue()));
     }
-    @Override
-    public boolean deleteEmail(EmailDTO email) {
-        String sql = "DELETE FROM email WHERE email_id = ?";
-        try {
-            template.update(sql, email.getEmail_id());
-            return true;
-        } catch (DataAccessException e) {
-            logger.error(e.getMessage());
-            new Dialogue_ErrorSQL(e, "Unable to DELETE", "See below for details");
-            return false;
-        }
-    }
+
     @Override
     public void updateEmail(int email_id, String email) {
         String sql = "UPDATE email SET email = ? WHERE email_id = ?";

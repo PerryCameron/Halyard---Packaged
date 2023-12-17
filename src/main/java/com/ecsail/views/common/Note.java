@@ -1,5 +1,7 @@
 package com.ecsail.views.common;
 
+import com.ecsail.repository.implementations.MemoRepositoryImpl;
+import com.ecsail.repository.interfaces.MemoRepository;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
@@ -13,6 +15,7 @@ import java.util.Comparator;
 public class Note {
 	private ObservableList<MemoDTO> memos;
 	private int msid;
+	private final MemoRepository memoRepository = new MemoRepositoryImpl();
 	
 	public Note(ObservableList<MemoDTO> memos, int m) {
 		super();
@@ -45,7 +48,7 @@ public class Note {
 	}
 	
 	public void removeMemo(int index) {
-		SqlDelete.deleteMemo(memos.get(index));
+		memoRepository.deleteMemo(memos.get(index));
 	}
 
 	public ObservableList<MemoDTO> getMemos() {

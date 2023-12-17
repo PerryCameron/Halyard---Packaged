@@ -142,6 +142,17 @@ public class PhoneRepositoryImpl implements PhoneRepository {
         }
     }
     @Override
+    public void deletePhones(int p_id) {
+        String sql = "DELETE FROM phone WHERE p_id = ?";
+        try {
+            template.update(sql, p_id);
+        } catch (DataAccessException e) {
+            logger.error("Unable to DELETE phones: " + e.getMessage());
+            // Handle or rethrow the exception as per your application's requirements
+        }
+    }
+
+    @Override
     public void updatePhone(String field, int phone_id, Object attribute) {
         String sql = "UPDATE phone SET " + field + " = ? WHERE phone_id = ?";
         try {

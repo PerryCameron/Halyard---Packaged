@@ -107,79 +107,8 @@ public class SqlDelete {
 		return noError;
 	}
 
-	public static void deleteBoatOwner(int ms_id) {
-		String query = "DELETE FROM boat_owner WHERE ms_id=" + ms_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-		}
-	}
-
-	public static void deleteMemo(MemoDTO memo) {
-		String query = "DELETE FROM memo WHERE memo_id=" + memo.getMemo_id();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-		}
-	}
-
-	public static void deleteMemos(int ms_id) {
-		String query = "DELETE FROM memo WHERE ms_id=" + ms_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-		}
-	}
 
 
-	public static void deletePhones(int p_id) {
-		String query = "DELETE FROM phone WHERE p_id=" + p_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-		}
-	}
-
-	public static void deleteEmail(int p_id) {
-		String query = "DELETE FROM email WHERE p_id=" + p_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-		}
-	}
-
-	public static void deleteOfficer(int p_id) {
-		String query = "DELETE FROM officer WHERE p_id=" + p_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-		}
-	}
-
-
-	public static void deleteWaitList(int ms_id) {
-		String query = "DELETE FROM wait_list WHERE ms_id=" + ms_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-		}
-	}
-
-	public static void deleteMembershipId(int ms_id) {
-		String query = "DELETE FROM membership_id WHERE ms_id=" + ms_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-		}
-	}
 
 
 

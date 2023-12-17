@@ -25,6 +25,7 @@ public class BoatRepositoryImpl implements BoatRepository {
 
     public static Logger logger = LoggerFactory.getLogger(BoatRepositoryImpl.class);
     private final JdbcTemplate template;
+
     public BoatRepositoryImpl() {
         this.template = new JdbcTemplate(BaseApplication.getDataSource());
     }
@@ -137,6 +138,7 @@ public class BoatRepositoryImpl implements BoatRepository {
         String query = "SELECT * FROM boat_owner";
         return template.query(query, new BoatOwnerRowMapper());
     }
+
     @Override
     public void deleteBoatPhoto(BoatPhotosDTO bp) {
         String sql = "DELETE FROM boat_photos WHERE ID = ?";
@@ -146,6 +148,7 @@ public class BoatRepositoryImpl implements BoatRepository {
             logger.error("Unable to DELETE: " + e.getMessage());
         }
     }
+
     @Override
     public int deleteBoatOwner(int boat_id, int ms_id) {
         String sql = "DELETE FROM boat_owner WHERE boat_id = ? AND ms_id = ?";
@@ -156,6 +159,7 @@ public class BoatRepositoryImpl implements BoatRepository {
             return 0;
         }
     }
+
     @Override
     public BoatPhotosDTO insertBoatImage(BoatPhotosDTO bp) {
         final String sql = "INSERT INTO boat_photos (BOAT_ID, upload_date, filename, file_number, default_image) VALUES (?, ?, ?, ?, ?)";
@@ -180,6 +184,7 @@ public class BoatRepositoryImpl implements BoatRepository {
             return null; // or handle this case as per your application's requirements
         }
     }
+
     @Override
     public void updateBoatImages(BoatPhotosDTO bp) {
         String sql = "UPDATE boat_photos SET default_image = ? WHERE ID = ?";
@@ -189,15 +194,16 @@ public class BoatRepositoryImpl implements BoatRepository {
             logger.error("There was a problem with the UPDATE: " + e.getMessage());
         }
     }
+
     @Override
     public void updateBoat(BoatDTO boat) {
         String sql = """
-        UPDATE boat 
-        SET MANUFACTURER = ?, MANUFACTURE_YEAR = ?, REGISTRATION_NUM = ?, MODEL = ?, 
-        BOAT_NAME = ?, SAIL_NUMBER = ?, HAS_TRAILER = ?, LENGTH = ?, WEIGHT = ?, 
-        KEEL = ?, PHRF = ?, DRAFT = ?, BEAM = ?, LWL = ?, AUX = ? 
-        WHERE BOAT_ID = ?
-        """;
+                UPDATE boat 
+                SET MANUFACTURER = ?, MANUFACTURE_YEAR = ?, REGISTRATION_NUM = ?, MODEL = ?, 
+                BOAT_NAME = ?, SAIL_NUMBER = ?, HAS_TRAILER = ?, LENGTH = ?, WEIGHT = ?, 
+                KEEL = ?, PHRF = ?, DRAFT = ?, BEAM = ?, LWL = ?, AUX = ? 
+                WHERE BOAT_ID = ?
+                """;
         try {
             template.update(sql,
                     boat.getManufacturer(),
@@ -220,14 +226,15 @@ public class BoatRepositoryImpl implements BoatRepository {
             logger.error("Error updating boat: " + e.getMessage());
         }
     }
+
     @Override
     public BoatDTO insertBoat(BoatDTO boat) {
         final String sql = """
-        INSERT INTO boat (MANUFACTURER, MANUFACTURE_YEAR, REGISTRATION_NUM, MODEL, 
-                          BOAT_NAME, SAIL_NUMBER, HAS_TRAILER, LENGTH, WEIGHT, KEEL, 
-                          PHRF, DRAFT, BEAM, LWL, AUX) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """;
+                INSERT INTO boat (MANUFACTURER, MANUFACTURE_YEAR, REGISTRATION_NUM, MODEL, 
+                                  BOAT_NAME, SAIL_NUMBER, HAS_TRAILER, LENGTH, WEIGHT, KEEL, 
+                                  PHRF, DRAFT, BEAM, LWL, AUX) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """;
         KeyHolder keyHolder = new GeneratedKeyHolder();
         try {
             template.update(connection -> {
@@ -257,6 +264,7 @@ public class BoatRepositoryImpl implements BoatRepository {
             return null; // or handle this case as per your application's requirements
         }
     }
+
     @Override
     public int insertBoatOwner(int msId, int boatId) {
         final String sql = "INSERT INTO boat_owner (MS_ID, BOAT_ID) VALUES (?, ?)";
@@ -264,8 +272,18 @@ public class BoatRepositoryImpl implements BoatRepository {
             return template.update(sql, msId, boatId);
         } catch (DataAccessException e) {
             logger.error("Error inserting boat owner: " + e.getMessage());
-            // Optionally rethrow the exception or handle it as needed
             return 0; // Indicating that the insertion failed
         }
-}
+    }
+    @Override
+    public void deleteBoatOwner(int msId) {
+        String sql = "DELETE FROM boat_owner WHERE MS_ID = ?";
+        try {
+            template.update(sql, msId);
+        } catch (DataAccessException e) {
+            logger.error("Unable to DELETE boat owner: " + e.getMessage());
+        }
+    }
+
+
 }

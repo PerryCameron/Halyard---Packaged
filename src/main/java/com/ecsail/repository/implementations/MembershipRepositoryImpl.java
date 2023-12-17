@@ -363,5 +363,15 @@ public class MembershipRepositoryImpl implements MembershipRepository {
         }
     }
 
+    @Override
+    public void deleteFormMsIdHash(int ms_id) {
+        String sql = "DELETE FROM form_msid_hash WHERE ms_id = ?";
+        try {
+            template.update(sql, ms_id);
+        } catch (DataAccessException e) {
+            logger.error("Unable to DELETE form_msid_hash row: " + e.getMessage());
+        }
+    }
+
 
 }
