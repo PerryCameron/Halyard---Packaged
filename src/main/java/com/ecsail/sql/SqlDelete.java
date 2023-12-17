@@ -276,15 +276,5 @@ public class SqlDelete {
 		}
 	}
 
-	public static boolean deleteBoatOwner(int boat_id, int ms_id) {
-		boolean noError = false;
-		String query = "DELETE FROM boat_owner WHERE boat_id=" + boat_id + " AND ms_id=" + ms_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-			noError = true;
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE Boat Owner","See below for details");
-		}
-		return noError;
-	}
+
 }

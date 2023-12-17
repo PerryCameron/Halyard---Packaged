@@ -18,14 +18,11 @@ public interface BoatRepository {
     List<BoatDTO> getBoatsByMsId(int msId);
     List<BoatDTO> getOnlySailboatsByMsId(int msId);
     List<BoatOwnerDTO> getBoatOwners();
-
     void deleteBoatPhoto(BoatPhotosDTO bp);
     int deleteBoatOwner(int boat_id, int ms_id);
     BoatPhotosDTO insertBoatImage(BoatPhotosDTO bp);
-
     void updateBoatImages(BoatPhotosDTO bp);
-
     void updateBoat(BoatDTO boat);
-
     BoatDTO insertBoat(BoatDTO boat);
+    int insertBoatOwner(int msId, int boatId);
 }

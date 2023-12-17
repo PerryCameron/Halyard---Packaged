@@ -33,7 +33,6 @@ public class HBoxBoat extends HBox {
     private final TableView<BoatDTO> boatTableView;
 
     protected TabMembership parent;
-
     private BoatRepository boatRepository = new BoatRepositoryImpl();
 
     //@SuppressWarnings("unchecked")
@@ -229,8 +228,11 @@ public class HBoxBoat extends HBox {
         /////////////// LISTENERS ////////////////////
 
         boatAdd.setOnAction((event) -> {
+            int msId = parent.getModel().getMembership().getMsId();
             // create boat object
-            BoatDTO boatDTO = boatRepository.insertBoat(new BoatDTO(parent.getModel().getMembership().getMsId()));
+            BoatDTO boatDTO = boatRepository.insertBoat(new BoatDTO(msId));
+            // this will return a 1 on success but logic not needed here
+            boatRepository.insertBoatOwner(msId, boatDTO.getBoatId());
             parent.getModel().getBoats().add(boatDTO);
             // Now we will sort it to the top
             parent.getModel().getBoats().sort(Comparator.comparing(BoatDTO::getBoatId).reversed());

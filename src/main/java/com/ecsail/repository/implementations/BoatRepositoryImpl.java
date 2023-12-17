@@ -257,4 +257,15 @@ public class BoatRepositoryImpl implements BoatRepository {
             return null; // or handle this case as per your application's requirements
         }
     }
+    @Override
+    public int insertBoatOwner(int msId, int boatId) {
+        final String sql = "INSERT INTO boat_owner (MS_ID, BOAT_ID) VALUES (?, ?)";
+        try {
+            return template.update(sql, msId, boatId);
+        } catch (DataAccessException e) {
+            logger.error("Error inserting boat owner: " + e.getMessage());
+            // Optionally rethrow the exception or handle it as needed
+            return 0; // Indicating that the insertion failed
+        }
+}
 }
