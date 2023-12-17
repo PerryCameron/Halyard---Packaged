@@ -18,12 +18,12 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class PDF_MembersByNumber {
-	ObservableList<MembershipListDTO> rosters;
+	ArrayList<MembershipListDTO> rosters;
 	PDF_Object_Settings set;
 	ArrayList<Table> tables = new ArrayList<Table>(); // Stores the column tables
 	ArrayList<Object_StoreMemberPosition> position;
 	
-	public PDF_MembersByNumber(PDF_Object_Settings set, Document doc, ObservableList<MembershipListDTO> rosters) {
+	public PDF_MembersByNumber(PDF_Object_Settings set, Document doc, ArrayList<MembershipListDTO> rosters) {
 		this.set = set;
 		this.rosters = rosters;
 		this.position = new ArrayList<>();

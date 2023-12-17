@@ -2,7 +2,8 @@ package com.ecsail.pdf.directory;
 
 
 import com.ecsail.HalyardPaths;
-import com.ecsail.sql.select.SqlMembershipList;
+import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.interfaces.MembershipRepository;
 import com.ecsail.dto.MembershipListDTO;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -11,7 +12,6 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.properties.AreaBreakType;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.scene.control.TextArea;
 
@@ -20,24 +20,26 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class PDF_Directory {
-	private ObservableList<MembershipListDTO> rosters;
+	private ArrayList<MembershipListDTO> rosters;
 	static PDF_Object_Settings set;
 	TextArea textArea;
 	String message = "";
 	static Document doc;
+	private MembershipRepository membershipRepository = new MembershipRepositoryImpl();
 	
 	public PDF_Directory(String year, TextArea textArea) {
 		PDF_Directory.set = new PDF_Object_Settings(year);
 		this.textArea = textArea;
 		this.message = new String();
 
-		this.rosters = SqlMembershipList.getRoster(year, true);
+		this.rosters = (ArrayList<MembershipListDTO>) membershipRepository.getRoster(year, true);
 		HalyardPaths.checkPath(HalyardPaths.DIRECTORIES);
 		textArea.setText("Creating " + year + " directory");
 		
