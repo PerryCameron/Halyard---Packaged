@@ -261,17 +261,30 @@ public class MembershipRepositoryImpl implements MembershipRepository {
         }
     }
     @Override
-    public MembershipListDTO getMembershipFromListWithoutMembershipId(int ms_id) {
+    public MembershipListDTO getMembershipFromListWithoutMembershipId(int msId) {
         String sql = """
-                 SELECT m.ms_id, m.p_id, m.join_date, s.SLIP_NUM, p.l_name,
-                 p.f_name, s.subleased_to, m.address, m.city, m.state, m.zip 
-                 FROM slip s 
-                 RIGHT JOIN membership m ON m.ms_id = s.ms_id 
-                 LEFT JOIN person p ON p.ms_id = m.ms_id 
-                 WHERE m.ms_id = ?
+            SELECT m.MS_ID, m.P_ID, id.MEMBERSHIP_ID, id.FISCAL_YEAR, m.JOIN_DATE, 
+                   id.MEM_TYPE, s.SLIP_NUM, p.L_NAME, p.F_NAME, s.SUBLEASED_TO, 
+                   m.address, m.city, m.state, m.zip 
+            FROM slip s 
+            RIGHT JOIN membership m ON m.MS_ID = s.MS_ID 
+            LEFT JOIN membership_id id ON m.MS_ID = id.MS_ID 
+            LEFT JOIN person p ON p.MS_ID = m.MS_ID 
+            WHERE p.MEMBER_TYPE = 1 
+            AND id.fiscal_year = (
+                CASE 
+                    WHEN EXISTS (
+                        SELECT 1 FROM membership_id 
+                        WHERE FISCAL_YEAR = YEAR(NOW()) AND MS_ID = ?
+                    )
+                    THEN ?
+                    ELSE (SELECT MAX(FISCAL_YEAR) FROM membership_id WHERE MS_ID = ?)
+                END
+            )
+            AND m.MS_ID = ?
                  """;
         try {
-            return template.queryForObject(sql, new MembershipListRowMapper(), ms_id);
+            return template.queryForObject(sql, new MembershipListRowMapper(), msId, msId, msId,msId);
         } catch (EmptyResultDataAccessException e) {
             logger.error("Unable to SELECT roster: " + e.getMessage());
             return null;
@@ -280,6 +293,7 @@ public class MembershipRepositoryImpl implements MembershipRepository {
             return null;
         }
     }
+
 
 
 

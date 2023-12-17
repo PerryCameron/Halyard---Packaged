@@ -94,17 +94,17 @@ public class TabPeople extends Tab {
 	        }
 	    });
 			
-		Col4 = new TableColumn<PersonDTO, String>("First Name");
-		Col4.setCellValueFactory(new PropertyValueFactory<PersonDTO, String>("fname"));
+		Col4 = new TableColumn<>("First Name");
+		Col4.setCellValueFactory(new PropertyValueFactory<>("fname"));
 		
-		Col5 = new TableColumn<PersonDTO, String>("Last Name");
-		Col5.setCellValueFactory(new PropertyValueFactory<PersonDTO, String>("lname"));
+		Col5 = new TableColumn<>("Last Name");
+		Col5.setCellValueFactory(new PropertyValueFactory<>("lname"));
 
-		Col6 = new TableColumn<PersonDTO, String>("Occupation");
-		Col6.setCellValueFactory(new PropertyValueFactory<PersonDTO, String>("occupation"));
+		Col6 = new TableColumn<>("Occupation");
+		Col6.setCellValueFactory(new PropertyValueFactory<>("occupation"));
 		
-		Col8 = new TableColumn<PersonDTO, String>("Active");
-		Col8.setCellValueFactory(new PropertyValueFactory<PersonDTO, String>("active"));
+		Col8 = new TableColumn<>("Active");
+		Col8.setCellValueFactory(new PropertyValueFactory<>("active"));
 		
 		personTableView.getColumns().addAll(Col1, Col2, Col3, Col4, Col5, Col6, Col8);
 		
@@ -115,13 +115,11 @@ public class TabPeople extends Tab {
 	                 && event.getClickCount() == 2) {
 	                PersonDTO clickedRow = row.getItem();
 					Launcher.createMembershipTabFromPeopleList(clickedRow.getMs_id());
-					//System.out.println("clickedrow= " + clickedRow.getMs_id());
 	            }
 	            if (! row.isEmpty() && event.getButton()==MouseButton.PRIMARY 
 		                 && event.getClickCount() == 1) {
 		                PersonDTO clickedRow = row.getItem();
 		                createPersonBox(clickedRow);
-						//System.out.println("clickedrow= " + clickedRow.getP_id());
 		        }
 	        });
 	        return row ;
