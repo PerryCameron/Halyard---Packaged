@@ -3,11 +3,9 @@ package com.ecsail.views.tabs.membership.information;
 import com.ecsail.EditCell;
 import com.ecsail.Launcher;
 import com.ecsail.enums.KeelType;
+import com.ecsail.repository.implementations.BoatRepositoryImpl;
+import com.ecsail.repository.interfaces.BoatRepository;
 import com.ecsail.views.tabs.membership.TabMembership;
-import com.ecsail.sql.SqlDelete;
-import com.ecsail.sql.SqlInsert;
-import com.ecsail.sql.SqlUpdate;
-import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.dto.BoatDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -34,13 +32,17 @@ public class HBoxBoat extends HBox {
 
     private final TableView<BoatDTO> boatTableView;
 
-    TabMembership parent;
+    protected TabMembership parent;
+
+    private BoatRepository boatRepository = new BoatRepositoryImpl();
 
     //@SuppressWarnings("unchecked")
     public HBoxBoat(TabMembership parent) {
         this.parent = parent;
 
         this.boatTableView = new TableView<>();
+
+
         ///////////	 OBJECTS ///////////////
 
         var hboxGrey = new HBox();  // this is the vbox for organizing all the widgets
@@ -87,8 +89,8 @@ public class HBoxBoat extends HBox {
                 t -> {
                     t.getTableView().getItems().get(
                             t.getTablePosition().getRow()).setBoatName(t.getNewValue());
-                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
-                    SqlUpdate.updateBoat("boat_name", boat_id, t.getNewValue());
+                    BoatDTO boatDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    boatRepository.updateBoat(boatDTO );
                 }
         );
 
@@ -97,8 +99,8 @@ public class HBoxBoat extends HBox {
                 t -> {
                     t.getTableView().getItems().get(
                             t.getTablePosition().getRow()).setManufacturer(t.getNewValue());
-                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
-                    SqlUpdate.updateBoat("manufacturer", boat_id, t.getNewValue());
+                    BoatDTO boatDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    boatRepository.updateBoat(boatDTO );
                 }
         );
 
@@ -107,8 +109,8 @@ public class HBoxBoat extends HBox {
                 t -> {
                     t.getTableView().getItems().get(
                             t.getTablePosition().getRow()).setManufactureYear(t.getNewValue());
-                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
-                    SqlUpdate.updateBoat("manufacture_year", boat_id, t.getNewValue());
+                    BoatDTO boatDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    boatRepository.updateBoat(boatDTO );
                 }
         );
 
@@ -117,8 +119,8 @@ public class HBoxBoat extends HBox {
                 t -> {
                     t.getTableView().getItems().get(
                             t.getTablePosition().getRow()).setModel(t.getNewValue());
-                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
-                    SqlUpdate.updateBoat("model", boat_id, t.getNewValue());
+                    BoatDTO boatDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    boatRepository.updateBoat(boatDTO );
                 }
         );
 
@@ -127,8 +129,8 @@ public class HBoxBoat extends HBox {
                 t -> {
                     t.getTableView().getItems().get(
                             t.getTablePosition().getRow()).setRegistrationNum(t.getNewValue());
-                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
-                    SqlUpdate.updateBoat("registration_num", boat_id, t.getNewValue());
+                    BoatDTO boatDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    boatRepository.updateBoat(boatDTO );
                 }
         );
 
@@ -137,8 +139,8 @@ public class HBoxBoat extends HBox {
                 t -> {
                     t.getTableView().getItems().get(
                             t.getTablePosition().getRow()).setSailNumber(t.getNewValue());
-                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
-                    SqlUpdate.updateBoat("sail_number", boat_id, t.getNewValue());
+                    BoatDTO boatDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    boatRepository.updateBoat(boatDTO );
                 }
         );
 
@@ -147,8 +149,8 @@ public class HBoxBoat extends HBox {
                 t -> {
                     t.getTableView().getItems().get(
                             t.getTablePosition().getRow()).setPhrf(t.getNewValue());
-                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
-                    SqlUpdate.updateBoat("phrf", boat_id, t.getNewValue());
+                    BoatDTO boatDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    boatRepository.updateBoat(boatDTO );
                 }
         );
 
@@ -157,8 +159,8 @@ public class HBoxBoat extends HBox {
                 t -> {
                     t.getTableView().getItems().get(
                             t.getTablePosition().getRow()).setLoa(t.getNewValue());
-                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
-                    SqlUpdate.updateBoat("length", boat_id, t.getNewValue());
+                    BoatDTO boatDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    boatRepository.updateBoat(boatDTO );
                 }
         );
 
@@ -167,28 +169,24 @@ public class HBoxBoat extends HBox {
                 t -> {
                     t.getTableView().getItems().get(
                             t.getTablePosition().getRow()).setDisplacement(t.getNewValue());
-                    var boat_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getBoatId();
-                    SqlUpdate.updateBoat("weight", boat_id, t.getNewValue());
+                    BoatDTO boatDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    boatRepository.updateBoat(boatDTO );
                 }
         );
 
         // example for this column found at https://o7planning.org/en/11079/javafx-tableview-tutorial
         final TableColumn<BoatDTO, Boolean> col10 = new TableColumn<>("Trailer");
         col10.setCellValueFactory(param -> {
-            BoatDTO boat = param.getValue();
-            SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(boat.hasTrailer());
-            // Note: singleCol.setOnEditCommit(): Not work for
-            // CheckBoxTableCell.
-
-            // When "has trailer?" column change.
+            BoatDTO boatDTO = param.getValue();
+            SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(boatDTO.hasTrailer());
             booleanProp.addListener((observable, oldValue, newValue) -> {
-                boat.setHasTrailer(newValue);
-                SqlUpdate.updateBoat(boat.getBoatId(), "HAS_TRAILER", newValue);
+                boatDTO.setHasTrailer(newValue);
+                boatRepository.updateBoat(boatDTO);
             });
             return booleanProp;
         });
 
-        //
+
         col10.setCellFactory(p -> {
             CheckBoxTableCell<BoatDTO, Boolean> cell = new CheckBoxTableCell<>();
             cell.setAlignment(Pos.CENTER);
@@ -211,9 +209,9 @@ public class HBoxBoat extends HBox {
             var pos = event.getTablePosition();
             var newKeel = event.getNewValue();
             var row = pos.getRow();
-            var boat = event.getTableView().getItems().get(row);
-            SqlUpdate.updateBoat(boat.getBoatId(), newKeel.getCode());
-            boat.setKeel(newKeel.getCode());
+            BoatDTO boatDTO = event.getTableView().getItems().get(row);
+            boatDTO.setKeel(newKeel.getCode());
+            boatRepository.updateBoat(boatDTO);
         });
 
         /// sets width of columns by percentage
@@ -231,14 +229,9 @@ public class HBoxBoat extends HBox {
         /////////////// LISTENERS ////////////////////
 
         boatAdd.setOnAction((event) -> {
-            // get next available primary key for boat table
-            int boat_id = SqlSelect.getNextAvailablePrimaryKey("boat", "boat_id");
             // create boat object
-            BoatDTO b = new BoatDTO(boat_id, parent.getModel().getMembership().getMsId(), "", "", "", "", "", "", true, "", "", "", "", "", "", "", false);
-            // insert data from new boat object into SQL table boat, return true if successful
-            if (SqlInsert.addBoatRecord(b, parent.getModel().getMembership().getMsId()))
-                // insert row into tableView to match SQL record
-                parent.getModel().getBoats().add(b);
+            BoatDTO boatDTO = boatRepository.insertBoat(new BoatDTO(parent.getModel().getMembership().getMsId()));
+            parent.getModel().getBoats().add(boatDTO);
             // Now we will sort it to the top
             parent.getModel().getBoats().sort(Comparator.comparing(BoatDTO::getBoatId).reversed());
             // this line prevents strange buggy behaviour
@@ -262,7 +255,7 @@ public class HBoxBoat extends HBox {
                 Optional<ButtonType> result = conformation.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
                     // delete boat from database
-                    SqlDelete.deleteBoatOwner(boatDTO.getBoatId(), parent.getModel().getMembership().getMsId());
+                    boatRepository.deleteBoatOwner(boatDTO.getBoatId(), parent.getModel().getMembership().getMsId());
                     // remove from GUI
                     boatTableView.getItems().remove(selectedIndex);
                 }

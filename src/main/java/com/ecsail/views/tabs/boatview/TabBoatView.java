@@ -253,7 +253,7 @@ public class TabBoatView extends Tab {
         boatOwnerDelete.setOnAction((event) -> {
             int selectedIndex = boatOwnerTableView.getSelectionModel().getSelectedIndex();
             if (selectedIndex >= 0)
-                if (boatRepository.deleteBoatOwner(boatDTO.getBoatId(), boatOwners.get(selectedIndex).getMsId())) // if it is																						// our database
+                if (boatRepository.deleteBoatOwner(boatDTO.getBoatId(), boatOwners.get(selectedIndex).getMsId()) > 0) // if it is																						// our database
                     boatOwnerTableView.getItems().remove(selectedIndex); // remove it from our GUI
         });
 

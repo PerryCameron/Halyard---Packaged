@@ -20,10 +20,12 @@ public interface BoatRepository {
     List<BoatOwnerDTO> getBoatOwners();
 
     void deleteBoatPhoto(BoatPhotosDTO bp);
-
-    boolean deleteBoatOwner(int boat_id, int ms_id);
-
+    int deleteBoatOwner(int boat_id, int ms_id);
     BoatPhotosDTO insertBoatImage(BoatPhotosDTO bp);
 
     void updateBoatImages(BoatPhotosDTO bp);
+
+    void updateBoat(BoatDTO boat);
+
+    BoatDTO insertBoat(BoatDTO boat);
 }

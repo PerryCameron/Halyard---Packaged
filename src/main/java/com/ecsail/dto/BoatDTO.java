@@ -62,6 +62,28 @@ public class BoatDTO {
 		this.aux = new SimpleBooleanProperty(aux);
 	}
 
+	public BoatDTO(Integer msId) {
+		this.boatId = new SimpleIntegerProperty(0);
+		this.msId = new SimpleIntegerProperty(msId);
+		this.manufacturer = new SimpleStringProperty("");
+		this.manufactureYear = new SimpleStringProperty("");
+		this.registrationNum = new SimpleStringProperty("");
+		this.model = new SimpleStringProperty("");
+		this.boatName = new SimpleStringProperty("");
+		this.sailNumber = new SimpleStringProperty("");
+		this.hasTrailer = new SimpleBooleanProperty(false);
+		this.loa = new SimpleStringProperty("");
+		this.displacement = new SimpleStringProperty("");
+		this.keel = new SimpleStringProperty("");
+		this.phrf = new SimpleStringProperty("");
+		this.draft = new SimpleStringProperty("");
+		this.beam = new SimpleStringProperty("");
+		this.lwl = new SimpleStringProperty("");
+		this.aux = new SimpleBooleanProperty(false);
+	}
+
+
+
 	public BoatDTO() {
 		// TODO Auto-generated constructor stub
 	}

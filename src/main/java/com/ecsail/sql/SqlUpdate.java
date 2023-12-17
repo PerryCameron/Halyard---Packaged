@@ -1,7 +1,6 @@
 package com.ecsail.sql;
 
 import com.ecsail.BaseApplication;
-import com.ecsail.DataBase;
 import com.ecsail.views.dialogues.Dialogue_CustomErrorMessage;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.dto.*;
@@ -17,21 +16,7 @@ public class SqlUpdate {
 	
 	static Alert alert = new Alert(AlertType.ERROR);
 
-	public static void updateDbTableChanges(DbTableChangesDTO u)  {
-		String query = "UPDATE db_table_changes SET " +
-				"table_changed='" + u.getTableChanged() + "'," +
-				"table_insert=" + u.getTableInsert() + "," +
-				"table_delete=" + u.getTableDelete() + "," +
-				"table_update=" + u.getTableUpdate() + "," +
-				"change_date='" + DataBase.getTimeStamp() + "'," +
-				"changed_by='" + BaseApplication.user + "' WHERE id="
-				+ u.getId();
-		try {
-				BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
+
 	public static void updateBoat(String field, int boat_id, String attribute)  {
 		String query = "UPDATE boat SET " + field + "=null WHERE boat_id=" + boat_id;
 		String query1 = "UPDATE boat SET " + field + "=\"" + attribute + "\" WHERE boat_id=" + boat_id;
@@ -54,14 +39,7 @@ public class SqlUpdate {
 		}
 	}
 
-	public static void updateBoatImages(BoatPhotosDTO bp) {
-		String query = "UPDATE boat_photos SET default_image=" + bp.isDefault() + " WHERE ID=" + bp.getId();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
+
 
 	public static void removePersonFromMembership(PersonDTO p) {
 		String query = "UPDATE person SET MS_ID=null, OLD_MSID="+p.getMs_id()+" where P_ID=" + p.getP_id();
@@ -159,23 +137,6 @@ public class SqlUpdate {
 		}
 	}
 
-//	public static void updateWaitList(int ms_id, String field, Boolean attribute) {
-//		String query = "UPDATE wait_list SET " + field + "=" + attribute + " WHERE ms_id=" + ms_id;
-//		try {
-//			BaseApplication.connect.executeQuery(query);
-//		} catch (SQLException e) {
-//			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-//		}
-//	}
-
-	public static void updatePhone(String field, int phone_id, String attribute) {
-		String query = "UPDATE phone SET " + field + "='" + attribute + "' WHERE phone_id=" + phone_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
 
 	public static void updateEmail(String field, int email_id, Boolean attribute) {  // overload so compact
 		String query = "UPDATE email SET " + field + "=" + attribute + " WHERE email_id=" + email_id;
@@ -186,14 +147,6 @@ public class SqlUpdate {
 		}
 	}
 
-	public static void updateEmail(int email_id, String email) {
-		String query = "UPDATE email SET email='" + email + "' WHERE email_id=" + email_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
 
 	public static void updateOfficer(String field, int officer_id, String attribute) {
 		String query = "UPDATE officer SET " + field + "='" + attribute + "' WHERE o_id=" + officer_id;

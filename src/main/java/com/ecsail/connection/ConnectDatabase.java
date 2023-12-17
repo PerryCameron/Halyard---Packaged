@@ -1,7 +1,6 @@
 package com.ecsail.connection;
 
 import com.ecsail.BaseApplication;
-import com.ecsail.DataBase;
 import com.ecsail.FileIO;
 import com.ecsail.dto.LoginDTO;
 import com.ecsail.models.MainModel;
@@ -578,7 +577,6 @@ public class ConnectDatabase {
 		}
 		stmt.execute(query);
 		stmt.close();
-		DataBase.recordChange(query);
 	}
 
 	public void closeResultSet(ResultSet rs) throws SQLException {

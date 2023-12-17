@@ -1,7 +1,6 @@
 package com.ecsail.sql;
 
 import com.ecsail.BaseApplication;
-import com.ecsail.DataBase;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.dto.*;
@@ -32,54 +31,8 @@ public class SqlInsert {
 			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
 		}
 	}
-	public static void addNewDbTableChanges(String tableName, int mainRecordId) {
-		int primaryKey = SqlSelect.getNextAvailablePrimaryKey("db_table_changes","ID");
-		String query = "INSERT INTO db_table_changes () VALUES (" + primaryKey + ","
-				+mainRecordId+",'"+tableName+"',0,0,0,'"+ DataBase.getTimeStamp() +"','"+BaseApplication.user+"')";
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
-		}
-	}
-	public static void addNewDbUpdateRecord() {
-		int primaryKey = SqlSelect.getNextAvailablePrimaryKey("db_updates","ID");
-		String query = "INSERT INTO db_updates () VALUES (" + primaryKey + ",null,0,0,0)";
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
-		}
-	}
 
-	// add phone record
-	public static boolean addPhoneRecord(int phone_id, int pid , Boolean listed, String phone, String type) {
-		boolean noError = false;
-		String query = "INSERT INTO phone () VALUES (" + phone_id + "," + pid + ",'" + phone + "','" + type + "'," + listed + ")";
-		try {
-			BaseApplication.connect.executeQuery(query);
-			noError = true;
 
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
-		}
-		return noError;  // return true if insert performed without error
-	}
-
-	// add email record
-	public static boolean addEmailRecord(int email_id, int pid, Boolean primary, String email, Boolean listed) {
-		boolean noError = false;
-		String query = "INSERT INTO email () VALUES (" + email_id + "," + pid + ","
-				+ primary + ",'" + email + "'," + listed + ")";
-		try {
-			BaseApplication.connect.executeQuery(query);
-			noError = true;
-		 }
-		catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
-		}
-		return noError;  // return true if insert performed without error
-	}
 
 	public static boolean addOfficerRecord(int officer_id, int pid , String board_year, String officer, int year) {
 		boolean noError = false;
@@ -119,23 +72,6 @@ public class SqlInsert {
 		}
 	}
 
-	public static void addBoatImage(BoatPhotosDTO bp) {
-		int id = SqlSelect.getNextAvailablePrimaryKey("boat_photos","id");
-		String query = "INSERT INTO boat_photos () VALUES ("
-				+ id + ","
-				+ bp.getBoat_id()
-				+ ",'" + DataBase.getTimeStamp()
-				+ "','" + bp.getFilename()
-				+ "'," + bp.getFileNumber()
-				+ "," + bp.isDefault()
-				+ ")";
-		try {
-			BaseApplication.connect.executeQuery(query);
-		}
-		catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
-		}
-	}
 
 	public static boolean addBoatRecord(BoatDTO b, int msid) {
 		boolean noError = false;

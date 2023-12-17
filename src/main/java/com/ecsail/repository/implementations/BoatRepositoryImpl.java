@@ -147,14 +147,13 @@ public class BoatRepositoryImpl implements BoatRepository {
         }
     }
     @Override
-    public boolean deleteBoatOwner(int boat_id, int ms_id) {
+    public int deleteBoatOwner(int boat_id, int ms_id) {
         String sql = "DELETE FROM boat_owner WHERE boat_id = ? AND ms_id = ?";
         try {
-            template.update(sql, boat_id, ms_id);
-            return true;
+            return template.update(sql, boat_id, ms_id);
         } catch (DataAccessException e) {
             logger.error("Unable to DELETE Boat Owner: " + e.getMessage());
-            return false;
+            return 0;
         }
     }
     @Override
@@ -188,6 +187,74 @@ public class BoatRepositoryImpl implements BoatRepository {
             template.update(sql, bp.isDefault(), bp.getId());
         } catch (DataAccessException e) {
             logger.error("There was a problem with the UPDATE: " + e.getMessage());
+        }
+    }
+    @Override
+    public void updateBoat(BoatDTO boat) {
+        String sql = """
+        UPDATE boat 
+        SET MANUFACTURER = ?, MANUFACTURE_YEAR = ?, REGISTRATION_NUM = ?, MODEL = ?, 
+        BOAT_NAME = ?, SAIL_NUMBER = ?, HAS_TRAILER = ?, LENGTH = ?, WEIGHT = ?, 
+        KEEL = ?, PHRF = ?, DRAFT = ?, BEAM = ?, LWL = ?, AUX = ? 
+        WHERE BOAT_ID = ?
+        """;
+        try {
+            template.update(sql,
+                    boat.getManufacturer(),
+                    boat.getManufactureYear(),
+                    boat.getRegistrationNum(),
+                    boat.getModel(),
+                    boat.getBoatName(),
+                    boat.getSailNumber(),
+                    boat.hasTrailer(),
+                    boat.getLoa(),
+                    boat.getDisplacement(),
+                    boat.getKeel(),
+                    boat.getPhrf(),
+                    boat.getDraft(),
+                    boat.getBeam(),
+                    boat.getLwl(),
+                    boat.isAux(),
+                    boat.getBoatId());
+        } catch (DataAccessException e) {
+            logger.error("Error updating boat: " + e.getMessage());
+        }
+    }
+    @Override
+    public BoatDTO insertBoat(BoatDTO boat) {
+        final String sql = """
+        INSERT INTO boat (MANUFACTURER, MANUFACTURE_YEAR, REGISTRATION_NUM, MODEL, 
+                          BOAT_NAME, SAIL_NUMBER, HAS_TRAILER, LENGTH, WEIGHT, KEEL, 
+                          PHRF, DRAFT, BEAM, LWL, AUX) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        try {
+            template.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, boat.getManufacturer());
+                ps.setString(2, boat.getManufactureYear());
+                ps.setString(3, boat.getRegistrationNum());
+                ps.setString(4, boat.getModel());
+                ps.setString(5, boat.getBoatName());
+                ps.setString(6, boat.getSailNumber());
+                ps.setBoolean(7, boat.hasTrailer());
+                ps.setString(8, boat.getLoa());
+                ps.setString(9, boat.getDisplacement());
+                ps.setString(10, boat.getKeel());
+                ps.setString(11, boat.getPhrf());
+                ps.setString(12, boat.getDraft());
+                ps.setString(13, boat.getBeam());
+                ps.setString(14, boat.getLwl());
+                ps.setBoolean(15, boat.isAux());
+                return ps;
+            }, keyHolder);
+            // Update the BoatDTO with the generated boat ID
+            boat.setBoatId(keyHolder.getKey().intValue());
+            return boat;
+        } catch (DataAccessException e) {
+            logger.error("Error inserting boat: " + e.getMessage());
+            return null; // or handle this case as per your application's requirements
         }
     }
 }
