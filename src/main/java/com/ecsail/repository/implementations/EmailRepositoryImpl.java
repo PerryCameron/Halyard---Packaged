@@ -6,6 +6,7 @@ import com.ecsail.dto.EmailDTO;
 import com.ecsail.dto.Email_InformationDTO;
 import com.ecsail.dto.PersonDTO;
 import com.ecsail.repository.interfaces.EmailRepository;
+import com.ecsail.repository.rowmappers.EmailInformationRowMapper;
 import com.ecsail.repository.rowmappers.EmailRowMapper;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 
@@ -32,11 +34,6 @@ public class EmailRepositoryImpl implements EmailRepository {
     public EmailRepositoryImpl() {
         this.template = new JdbcTemplate(BaseApplication.getDataSource());
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(BaseApplication.getDataSource());
-    }
-
-    @Override
-    public List<Email_InformationDTO> getEmailInfo() {
-        return null;
     }
 
     @Override
@@ -121,6 +118,64 @@ public class EmailRepositoryImpl implements EmailRepository {
             return "";
         }
     }
+    @Override
+    public List<Email_InformationDTO> getEmailInfo() {
+        String sql = "SELECT id.membership_id, m.join_date, p.l_name, p.f_name, email, primary_use " +
+                "FROM email e " +
+                "INNER JOIN person p ON p.p_id = e.p_id " +
+                "INNER JOIN membership m ON m.ms_id = p.ms_id " +
+                "INNER JOIN membership_id id ON id.ms_id = m.ms_id " +
+                "WHERE id.fiscal_year = ? AND id.renew = true " +
+                "ORDER BY id.membership_id";
+
+        return template.query(sql, new EmailInformationRowMapper(), BaseApplication.selectedYear);
+    }
+    @Override
+    public boolean deleteEmail(EmailDTO email) {
+        String sql = "DELETE FROM email WHERE email_id = ?";
+        try {
+            template.update(sql, email.getEmail_id());
+            return true;
+        } catch (DataAccessException e) {
+            logger.error(e.getMessage());
+            new Dialogue_ErrorSQL(e, "Unable to DELETE", "See below for details");
+            return false;
+        }
+    }
+    @Override
+    public void updateEmail(int email_id, String email) {
+        String sql = "UPDATE email SET email = ? WHERE email_id = ?";
+        template.update(sql, email, email_id);
+    }
+    @Override
+    public void updateEmail(String field, int email_id, Boolean attribute) {
+        String sql = "UPDATE email SET " + field + " = ? WHERE email_id = ?";
+        template.update(sql, attribute, email_id);
+    }
+    @Override
+    public EmailDTO insertEmail(EmailDTO emailDTO) {
+        final String sql = "INSERT INTO email (P_ID, PRIMARY_USE, EMAIL, EMAIL_LISTED) VALUES (?, ?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        template.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, new String[] {"EMAIL_ID"});
+            ps.setInt(1, emailDTO.getPid());
+            ps.setBoolean(2, emailDTO.isPrimaryUse());
+            ps.setString(3, emailDTO.getEmail());
+            ps.setBoolean(4, emailDTO.isIsListed());
+            return ps;
+        }, keyHolder);
+
+        emailDTO.setEmail_id(keyHolder.getKey().intValue());
+        return emailDTO;
+    }
+
+
+
+
+
+
+
 
 
 

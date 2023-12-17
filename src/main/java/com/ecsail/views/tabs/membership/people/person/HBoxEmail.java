@@ -4,11 +4,8 @@ package com.ecsail.views.tabs.membership.people.person;
 import com.ecsail.BaseApplication;
 import com.ecsail.EditCell;
 import com.ecsail.connection.Mail;
-import com.ecsail.sql.SqlDelete;
-import com.ecsail.sql.SqlInsert;
-import com.ecsail.sql.SqlUpdate;
-import com.ecsail.sql.select.SqlEmail;
-import com.ecsail.sql.select.SqlSelect;
+import com.ecsail.repository.implementations.EmailRepositoryImpl;
+import com.ecsail.repository.interfaces.EmailRepository;
 import com.ecsail.dto.EmailDTO;
 import com.ecsail.dto.PersonDTO;
 import javafx.beans.Observable;
@@ -38,14 +35,15 @@ import java.util.regex.Pattern;
 public class HBoxEmail extends HBox {
 
     private final PersonDTO person;
-    private final ObservableList<EmailDTO> email;
+    private final ObservableList<EmailDTO> emailDTOS;
     private final TableView<EmailDTO> emailTableView;
     private TableColumn<EmailDTO, String> Col1;
+    private EmailRepository emailRepository = new EmailRepositoryImpl();
 
     public HBoxEmail(PersonDTO p) {
         this.person = p;
-        this.email = FXCollections.observableArrayList(param -> new Observable[]{param.isPrimaryUseProperty()});
-        this.email.addAll(SqlEmail.getEmail(person.getP_id()));
+        this.emailDTOS = FXCollections.observableArrayList(param -> new Observable[]{param.isPrimaryUseProperty()});
+        this.emailDTOS.addAll(emailRepository.getEmail(person.getP_id()));
         this.emailTableView = createTableView();
         VBox vboxButtons = makeButtonBox();
         var hboxGrey = new HBox(); // this is here for the grey background to make nice appearance
@@ -74,7 +72,7 @@ public class HBoxEmail extends HBox {
 
     private TableView<EmailDTO> createTableView() {
         TableView<EmailDTO> tableView = new TableView<>();
-        tableView.setItems(email);
+        tableView.setItems(emailDTOS);
         tableView.setFixedCellSize(30);
         tableView.setEditable(true);
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -85,9 +83,9 @@ public class HBoxEmail extends HBox {
             int email_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getEmail_id();
             if(isValidEmail(t.getNewValue())) {
                 t.getTableView().getItems().get(t.getTablePosition().getRow()).setEmail(t.getNewValue());
-                SqlUpdate.updateEmail(email_id, t.getNewValue());
+                emailRepository.updateEmail(email_id, t.getNewValue());
             } else {
-                email.stream()
+                emailDTOS.stream()
                         .filter(q -> q.getEmail_id() == email_id)
                         .forEach(s -> s.setEmail("Bad Email"));
             }
@@ -111,7 +109,7 @@ public class HBoxEmail extends HBox {
             // When "Listed?" column change.
             booleanProp.addListener((observable, oldValue, newValue) -> {
                 email.setIsListed(newValue);
-                SqlUpdate.updateEmail("email_listed", email.getEmail_id(), newValue);
+                emailRepository.updateEmail("email_listed", email.getEmail_id(), newValue);
             });
             return booleanProp;
         });
@@ -153,7 +151,7 @@ public class HBoxEmail extends HBox {
         emailEmail.setOnAction((event) -> {
             int selectedIndex = emailTableView.getSelectionModel().getSelectedIndex();
             if (selectedIndex >= 0) {// make sure something is selected
-                EmailDTO emailDTO = email.get(selectedIndex);
+                EmailDTO emailDTO = emailDTOS.get(selectedIndex);
                 Mail.composeEmail(emailDTO.getEmail(), "ECSC", "");
             } else
                 alertToSelectRow();
@@ -166,7 +164,7 @@ public class HBoxEmail extends HBox {
             Clipboard clipboard = Clipboard.getSystemClipboard();
             final ClipboardContent content = new ClipboardContent();
             if (selectedIndex >= 0) {// make sure something is selected
-                EmailDTO emailDTO = email.get(selectedIndex);
+                EmailDTO emailDTO = emailDTOS.get(selectedIndex);
                 content.putString(emailDTO.getEmail());
                 clipboard.setContent(content);
             } else
@@ -178,7 +176,7 @@ public class HBoxEmail extends HBox {
         emailDelete.setOnAction((event) -> {
             int selectedIndex = emailTableView.getSelectionModel().getSelectedIndex();
             if (selectedIndex >= 0) {// make sure something is selected
-                EmailDTO emailDTO = email.get(selectedIndex);
+                EmailDTO emailDTO = emailDTOS.get(selectedIndex);
                 Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
                 conformation.setTitle("Delete Email Entry");
                 conformation.setHeaderText(emailDTO.getEmail());
@@ -188,7 +186,7 @@ public class HBoxEmail extends HBox {
                 dialogPane.getStyleClass().add("dialog");
                 Optional<ButtonType> result = conformation.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
-                    if (SqlDelete.deleteEmail(emailDTO)) {  // if deleted in database
+                    if (emailRepository.deleteEmail(emailDTO)) {  // if deleted in database
                         emailTableView.getItems().remove(selectedIndex); // remove from GUI
                         BaseApplication.logger.info("Deleted "
                                 + emailDTO.getEmail() + " from "
@@ -215,14 +213,15 @@ public class HBoxEmail extends HBox {
     private void setAddButtonListener(Button emailAdd) {
         emailAdd.setOnAction((event) -> {
             BaseApplication.logger.info("Added new email entry for " + person.getNameWithInfo());
-            // get the next available primary key for table email
-            int email_id = SqlSelect.getNextAvailablePrimaryKey("email", "email_id"); // gets last memo_id number
-            // add record to SQL and return success or not
-            if (SqlInsert.addEmailRecord(email_id, person.getP_id(), true, "new email", true))
-                // if we have added it to SQL we need to create a new row in tableview to match
-                email.add(new EmailDTO(email_id, person.getP_id(), true, "", true));
+            EmailDTO emailDTO = emailRepository.insertEmail(new EmailDTO(
+                    0,
+                    person.getP_id(),
+                    true,
+                    "new email",
+                    true));
+            emailDTOS.add(emailDTO);
             // Now we will sort it to the top
-            email.sort(Comparator.comparing(EmailDTO::getEmail_id).reversed());
+            emailDTOS.sort(Comparator.comparing(EmailDTO::getEmail_id).reversed());
             // this line prevents strange buggy behaviour
             emailTableView.layout();
             // edit the phone number cell after creating
@@ -234,7 +233,7 @@ public class HBoxEmail extends HBox {
     }
 
     private EmailDTO getOriginalEmailDTO() {
-        return email.stream().filter(EmailDTO::isPrimaryUse).findFirst().orElse(null);
+        return emailDTOS.stream().filter(EmailDTO::isPrimaryUse).findFirst().orElse(null);
     }
 
     ///////////////// CLASS METHODS /////////////////

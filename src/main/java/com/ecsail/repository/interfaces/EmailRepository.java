@@ -20,4 +20,12 @@ public interface EmailRepository {
     boolean emailExists(PersonDTO p);
 
     String getEmail(PersonDTO person);
+
+    boolean deleteEmail(EmailDTO email);
+
+    void updateEmail(int email_id, String email);
+
+    void updateEmail(String field, int email_id, Boolean attribute);
+
+    EmailDTO insertEmail(EmailDTO emailDTO);
 }
