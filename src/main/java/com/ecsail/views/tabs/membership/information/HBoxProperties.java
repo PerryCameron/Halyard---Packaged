@@ -3,15 +3,16 @@ package com.ecsail.views.tabs.membership.information;
 import com.ecsail.BaseApplication;
 import com.ecsail.LabelPrinter;
 import com.ecsail.Launcher;
-import com.ecsail.dto.BoatDTO;
 import com.ecsail.dto.LabelDTO;
 import com.ecsail.dto.PersonDTO;
 import com.ecsail.pdf.PDF_Envelope;
 import com.ecsail.repository.implementations.*;
 import com.ecsail.repository.interfaces.*;
-import com.ecsail.sql.SqlDelete;
+import com.ecsail.views.dialogues.Dialogue_CustomErrorMessage;
 import com.ecsail.views.tabs.membership.TabMembership;
 import com.itextpdf.io.exceptions.IOException;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -85,7 +86,7 @@ public class HBoxProperties extends HBox implements Builder {
         r1.setSelected(true);
         hBox.setSpacing(5);
         hBox.setAlignment(Pos.CENTER_LEFT);
-        hBox.getChildren().addAll(new Label("Print Envelope"), button,r1,r2);
+        hBox.getChildren().addAll(new Label("Print Envelope"), button, r1, r2);
         button.setOnAction(e -> {
             try {
                 new PDF_Envelope(true, r2.isSelected(), String.valueOf(parent.getModel().getMembership().getMembershipId()));
@@ -135,14 +136,14 @@ public class HBoxProperties extends HBox implements Builder {
     private Node printLabelsButton2() {
         Button button = new Button("Print Secondary");
         button.setOnAction((actionEvent -> {
-            ArrayList< LabelDTO> labels = new ArrayList<>();
+            ArrayList<LabelDTO> labels = new ArrayList<>();
             LabelDTO label;
-            for(PersonDTO person: parent.getModel().getPeople()) {
-                if(person.getMemberType() == 2) {
+            for (PersonDTO person : parent.getModel().getPeople()) {
+                if (person.getMemberType() == 2) {
                     label = new LabelDTO();
                     label.setCity("Indianapolis, Indiana");
                     label.setNameAndMemId(person.getFullName() + " #" + parent.getModel().getMembership().getMembershipId());
-                    label.setExpires("Type "+parent.getModel().getMembership().getMemType()+", Expires: " + "03/01/" + getYear());
+                    label.setExpires("Type " + parent.getModel().getMembership().getMemType() + ", Expires: " + "03/01/" + getYear());
                     label.setMember("Member: U.S. Sailing ILYA &YCA");
                     labels.add(label);
                     LabelPrinter.printMembershipLabel(label);
@@ -155,14 +156,14 @@ public class HBoxProperties extends HBox implements Builder {
     private Node printLabelsButton1() {
         Button button = new Button("Print Primary");
         button.setOnAction((actionEvent -> {
-            ArrayList< LabelDTO> labels = new ArrayList<>();
+            ArrayList<LabelDTO> labels = new ArrayList<>();
             LabelDTO label;
-            for(PersonDTO person: parent.getModel().getPeople()) {
-                if(person.getMemberType() == 1) {
+            for (PersonDTO person : parent.getModel().getPeople()) {
+                if (person.getMemberType() == 1) {
                     label = new LabelDTO();
                     label.setCity("Indianapolis, Indiana");
                     label.setNameAndMemId(person.getFullName() + " #" + String.valueOf(parent.getModel().getMembership().getMembershipId()));
-                    label.setExpires("Type "+parent.getModel().getMembership().getMemType()+", Expires: " + "03/01/" + getYear());
+                    label.setExpires("Type " + parent.getModel().getMembership().getMemType() + ", Expires: " + "03/01/" + getYear());
                     label.setMember("Member: U.S. Sailing ILYA &YCA");
                     labels.add(label);
                     LabelPrinter.printMembershipLabel(label);
@@ -178,22 +179,59 @@ public class HBoxProperties extends HBox implements Builder {
     }
 
     private void deleteMembership(int msId) {
-        boatRepository.deleteBoatOwner(msId);
-        memoRepository.deleteMemos(msId);
-        invoiceRepository.deleteAllPaymentsAndInvoicesByMsId(msId);
-        slipRepository.deleteWaitList(msId);  // What if member has a slip???
-        membershipRepository.deleteFormMsIdHash(msId);
-        membershipIdRepository.deleteMembershipId(msId); // removes all entries
-        List<PersonDTO> people = personRepository.getPeople(msId);
-        for (PersonDTO p : people) {
-            phoneRepository.deletePhones(p.getP_id());
-            emailRepository.deleteEmail(p.getP_id());
-            officerRepository.deleteOfficer(p.getP_id());
-            personRepository.deletePerson(p.getP_id());
+        Dialogue_CustomErrorMessage dialogue = new Dialogue_CustomErrorMessage();
+        if (slipRepository.existsSlipWithMsId(msId)) {
+            dialogue.setTitle("Looks like we have a problem");
+            dialogue.setText("You must re-assign their slip before deleting this membership");
+            return;
+        } else {
+            dialogue.setTitle("Deleting Membership MSID:" + msId);
         }
-        membershipRepository.deleteMembership(msId);
-        Launcher.removeMembershipRow(msId);
-        Launcher.closeActiveTab();
-        BaseApplication.logger.info("Deleted membership msid: " + msId);
+        Task<Object> task = new Task<>() {
+            @Override
+            protected Object call() throws Exception {
+                setMessage("Deleting boats", dialogue);
+                boatRepository.deleteBoatOwner(msId);
+                setMessage("Deleting notes", dialogue);
+                memoRepository.deleteMemos(msId);
+                setMessage("Deleting Invoices and Payments", dialogue);
+                invoiceRepository.deleteAllPaymentsAndInvoicesByMsId(msId);
+                setMessage("Deleting wait_list entries", dialogue);
+                slipRepository.deleteWaitList(msId);
+                setMessage("Deleting membership hash", dialogue);
+                membershipRepository.deleteFormMsIdHash(msId);
+                setMessage("Deleting history",dialogue);
+                membershipIdRepository.deleteMembershipId(msId);
+                List<PersonDTO> people = personRepository.getPeople(msId);
+                setMessage("Deleting membership", dialogue);
+                membershipRepository.deleteMembership(msId);
+                setMessage("Deleting people", dialogue);
+                for (PersonDTO p : people) {
+                    phoneRepository.deletePhones(p.getP_id());
+                    emailRepository.deleteEmail(p.getP_id());
+                    officerRepository.deleteOfficer(p.getP_id());
+                    personRepository.deletePerson(p.getP_id());
+                }
+
+                return null;
+            }
+        };
+        task.setOnSucceeded(succeed -> {
+                    Launcher.removeMembershipRow(msId);
+                    Launcher.closeActiveTab();
+                    BaseApplication.logger.info("Deleted membership msid: " + msId);
+                    dialogue.setText("Sucessfully deleted membership MSID: " + msId);
+                }
+        );
+        new Thread(task).start();
+
+
+
     }
+    private void setMessage(String message, Dialogue_CustomErrorMessage dialogue) {
+        Platform.runLater(() -> {
+            dialogue.setText(message);
+        });
+    }
+
 }

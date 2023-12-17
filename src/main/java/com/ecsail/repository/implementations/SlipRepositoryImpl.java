@@ -143,6 +143,27 @@ public class SlipRepositoryImpl implements SlipRepository {
             logger.error("Unable to DELETE wait list entry: " + e.getMessage());
         }
     }
+    @Override
+    public void updateSlipMsIdToZero(int msId) {
+        String sql = "UPDATE slip SET MS_ID = 0 WHERE MS_ID = ?";
+        try {
+            int rowsAffected = template.update(sql, msId);
+            logger.info(rowsAffected + " rows were updated in the slip table.");
+        } catch (DataAccessException e) {
+            logger.error("Unable to update slip MS_ID: " + e.getMessage());
+        }
+    }
+    @Override
+    public boolean existsSlipWithMsId(int msId) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM slip WHERE MS_ID = ?)";
+        try {
+            Integer count = template.queryForObject(sql, new Object[]{msId}, Integer.class);
+            return count != null && count > 0;
+        } catch (DataAccessException e) {
+            logger.error("Error while checking existence of slip with MS_ID: " + e.getMessage());
+            return false; // Or rethrow the exception as per your application's requirements
+        }
+    }
 
 
 }

@@ -30,4 +30,8 @@ public interface SlipRepository {
     SlipDTO getSubleasedSlip(int ms_id);
 
     void deleteWaitList(int msId);
+
+    void updateSlipMsIdToZero(int msId);
+
+    boolean existsSlipWithMsId(int msId);
 }

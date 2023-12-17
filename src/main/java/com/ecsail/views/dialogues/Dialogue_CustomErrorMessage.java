@@ -2,6 +2,8 @@ package com.ecsail.views.dialogues;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
@@ -10,49 +12,71 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Builder;
 
 import java.util.Objects;
 
-public class Dialogue_CustomErrorMessage extends Stage {
+public class Dialogue_CustomErrorMessage extends Stage implements Builder {
+	TextArea textArea;
 
-	public Dialogue_CustomErrorMessage(String message, String title) {
-
-		VBox vboxGrey = new VBox(); // this is the vbox for organizing all the widgets
-		VBox vboxBlue = new VBox();
-		VBox vboxPink = new VBox(); // this creates a pink border around the table
-		Scene scene = new Scene(vboxBlue, 600, 300);
-		Button closeButton = new Button("Close");
-		TextArea textArea = new TextArea();
-		
-		/////////////////// ATTRIBUTES ///////////////////
-		vboxBlue.setId("box-frame-dark");
-		vboxBlue.setPadding(new Insets(10, 10, 10, 10));
-		vboxPink.setPadding(new Insets(3, 3, 3, 3)); // spacing to make pink from around table
-//		vboxPink.setId("box-pink");
-		// vboxGrey.setId("slip-box");
-		vboxGrey.setSpacing(15);
-		vboxGrey.setPadding(new Insets(5,5,0,5));
-		vboxGrey.setAlignment(Pos.CENTER);
-		textArea.setText(message);
-		textArea.setEditable(false);
-		VBox.setVgrow(vboxGrey, Priority.ALWAYS);
-		VBox.setVgrow(vboxPink, Priority.ALWAYS);
-		HBox.setHgrow(vboxPink, Priority.ALWAYS);
-		scene.getStylesheets().add("css/dark/custom_dialogue.css");
-		vboxGrey.getChildren().addAll(textArea, closeButton);
-		vboxBlue.getChildren().add(vboxPink);
-		vboxPink.getChildren().add(vboxGrey);
+	public Dialogue_CustomErrorMessage(String title, String message) {
+		setText(message);
 		setTitle(title);
+		setScene();
+	}
 
-		//////////////// LISTENERS ////////////////
+	public Dialogue_CustomErrorMessage() {
+		super();
+		setScene();
+	}
 
-		closeButton.setOnAction((event) -> this.close());
-		
-		//////////////// ADD CONTENT ///////////////////
-
+	private void setScene() {
+		Scene scene = new Scene(build(), 600, 300);
+		scene.getStylesheets().add("css/dark/custom_dialogue.css");
 		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));
 		this.getIcons().add(mainIcon);
 		setScene(scene);
+		System.out.println("Getting here");
 		show();
+	}
+
+	public void setText(String message) {
+		this.textArea.appendText(message + "\n");
+	}
+
+	@Override
+	public Parent build() {
+		VBox vBox = new VBox();
+		vBox.setId("box-frame-dark");
+		vBox.setPadding(new Insets(10, 10, 10, 10));
+		vBox.getChildren().add(createInnerBox());
+		return vBox;
+	}
+
+	private Node createInnerBox() {
+		VBox vBox = new VBox(); // this creates a pink border around the table
+		VBox.setVgrow(vBox, Priority.ALWAYS);
+		HBox.setHgrow(vBox, Priority.ALWAYS);
+		vBox.setPadding(new Insets(3, 3, 3, 3)); // spacing to make pink from around table
+		vBox.getChildren().add(createContentBox());
+		return vBox;
+	}
+
+	private Node createContentBox() {
+		VBox vBox = new VBox(); // this is the vbox for organizing all the widgets
+		this.textArea = new TextArea();
+		textArea.setEditable(false);
+		vBox.setSpacing(15);
+		vBox.setPadding(new Insets(5,5,0,5));
+		vBox.setAlignment(Pos.CENTER);
+		VBox.setVgrow(vBox, Priority.ALWAYS);
+		vBox.getChildren().addAll(textArea, createButton());
+		return vBox;
+	}
+
+	private Node createButton() {
+		Button closeButton = new Button("Close");
+		closeButton.setOnAction((event) -> this.close());
+		return closeButton;
 	}
 }
