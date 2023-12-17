@@ -4,6 +4,8 @@ package com.ecsail.views.tabs;
 import com.ecsail.BaseApplication;
 import com.ecsail.Launcher;
 import com.ecsail.pdf.PDF_SlipChart;
+import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.interfaces.MembershipRepository;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.sql.select.SqlSlip;
 import com.ecsail.dto.MembershipListDTO;
@@ -33,8 +35,7 @@ public class TabSlips extends Tab {
 	//private ObservableList<Object_Slip> slips;
 	private final ObservableList<MembershipListDTO> slipmemberships;
 	private final ObservableList<MembershipListDTO> subleaserMemberships;
-//	private final MembershipListDTO blankObject = new MembershipListDTO(0,0,0,"","","","Racing","",0,"","","","","");
-	// a list of all the slips
+	private final MembershipRepository membershipRepository = new MembershipRepositoryImpl();
 	private final ArrayList<SlipDTO> slips;
 	private final HashMap<String,Text> slipsHash = new HashMap<>();
 
@@ -44,7 +45,7 @@ public class TabSlips extends Tab {
 
 	public TabSlips(String text) {
 		super(text);
-		this.slipmemberships = SqlMembershipList.getSlipRoster(BaseApplication.selectedYear);
+		this.slipmemberships = FXCollections.observableArrayList(membershipRepository.getSlipRoster(BaseApplication.selectedYear));
 		this.subleaserMemberships = FXCollections.observableArrayList();
 		// gets all slips
 		this.slips = SqlSlip.getSlips();

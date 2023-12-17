@@ -293,16 +293,66 @@ public class MembershipRepositoryImpl implements MembershipRepository {
             return null;
         }
     }
-
-
-
-
-
-
-
-
-
-
+    @Override
+    public List<MembershipListDTO> getSlipRoster(String year) {
+        String sql = """
+                 SELECT m.ms_id, m.p_id, id.membership_id, id.fiscal_year, m.join_date, id.mem_type, 
+                 s.SLIP_NUM, p.l_name, p.f_name, s.subleased_to, m.address, m.city, m.state, m.zip 
+                 FROM slip s 
+                 INNER JOIN membership m ON s.ms_id = m.ms_id 
+                 INNER JOIN membership_id id ON id.ms_id = m.ms_id 
+                 INNER JOIN person p ON p.p_id = m.p_id 
+                 WHERE id.fiscal_year = ?
+                 """;
+        try {
+            return template.query(sql, new MembershipListRowMapper(), year);
+        } catch (DataAccessException e) {
+            logger.error("Unable to SELECT roster: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+    @Override
+    public MembershipListDTO getMembershipByMembershipId(String membership_id) {
+        String sql = """
+                 SELECT m.ms_id, m.p_id, id.membership_id, id.fiscal_year, m.join_date, 
+                 id.mem_type, COALESCE(s.SLIP_NUM, '') as SLIP_NUM, p.l_name, p.f_name, 
+                 COALESCE(s.subleased_to, 0) as subleased_to, m.address, m.city, m.state, m.zip 
+                 FROM membership m 
+                 LEFT JOIN person p ON m.p_id = p.p_id 
+                 LEFT JOIN membership_id id ON m.ms_id = id.ms_id 
+                 LEFT JOIN slip s ON m.ms_id = s.ms_id 
+                 WHERE id.fiscal_year = Year(Now()) AND id.membership_id = ?
+                 """;
+        try {
+            return template.queryForObject(sql, new MembershipListRowMapper(), membership_id);
+        } catch (EmptyResultDataAccessException e) {
+            logger.error("Unable to SELECT roster: " + e.getMessage());
+            return null;
+        } catch (DataAccessException e) {
+            logger.error("Data Access Exception: " + e.getMessage());
+            return null;
+        }
+    }
+    @Override
+    public List<MembershipListDTO> getBoatOwnerRoster(int boat_id) {
+        String sql = """
+                 SELECT m.ms_id, m.p_id, id.membership_id, id.fiscal_year, m.join_date, 
+                 id.mem_type, COALESCE(s.SLIP_NUM, '') as SLIP_NUM, p.l_name, p.f_name, 
+                 COALESCE(s.subleased_to, 0) as subleased_to, m.address, m.city, m.state, m.zip 
+                 FROM boat_owner bo 
+                 LEFT JOIN membership m ON bo.ms_id = m.ms_id 
+                 LEFT JOIN membership_id id ON m.ms_id = id.ms_id 
+                 LEFT JOIN person p ON m.p_id = p.p_id 
+                 LEFT JOIN slip s ON m.ms_id = s.ms_id 
+                 WHERE bo.BOAT_ID = ? AND id.fiscal_year = Year(Now())
+                 """;
+        try {
+            return template.query(sql, new MembershipListRowMapper(), boat_id);
+        } catch (DataAccessException e) {
+            logger.error("Unable to SELECT boat owner roster: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
 
 
 }

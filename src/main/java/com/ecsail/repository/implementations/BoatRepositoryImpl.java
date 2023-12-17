@@ -4,17 +4,27 @@ import com.ecsail.BaseApplication;
 import com.ecsail.dto.BoatDTO;
 import com.ecsail.dto.BoatListDTO;
 import com.ecsail.dto.BoatOwnerDTO;
+import com.ecsail.dto.BoatPhotosDTO;
 import com.ecsail.repository.interfaces.BoatRepository;
 import com.ecsail.repository.rowmappers.BoatListRowMapper;
 import com.ecsail.repository.rowmappers.BoatOwnerRowMapper;
 import com.ecsail.repository.rowmappers.BoatRowMapper;
+import org.mariadb.jdbc.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class BoatRepositoryImpl implements BoatRepository {
-    private final JdbcTemplate template;
 
+    public static Logger logger = LoggerFactory.getLogger(BoatRepositoryImpl.class);
+    private final JdbcTemplate template;
     public BoatRepositoryImpl() {
         this.template = new JdbcTemplate(BaseApplication.getDataSource());
     }
@@ -126,5 +136,58 @@ public class BoatRepositoryImpl implements BoatRepository {
     public List<BoatOwnerDTO> getBoatOwners() {
         String query = "SELECT * FROM boat_owner";
         return template.query(query, new BoatOwnerRowMapper());
+    }
+    @Override
+    public void deleteBoatPhoto(BoatPhotosDTO bp) {
+        String sql = "DELETE FROM boat_photos WHERE ID = ?";
+        try {
+            template.update(sql, bp.getId());
+        } catch (DataAccessException e) {
+            logger.error("Unable to DELETE: " + e.getMessage());
+        }
+    }
+    @Override
+    public boolean deleteBoatOwner(int boat_id, int ms_id) {
+        String sql = "DELETE FROM boat_owner WHERE boat_id = ? AND ms_id = ?";
+        try {
+            template.update(sql, boat_id, ms_id);
+            return true;
+        } catch (DataAccessException e) {
+            logger.error("Unable to DELETE Boat Owner: " + e.getMessage());
+            return false;
+        }
+    }
+    @Override
+    public BoatPhotosDTO insertBoatImage(BoatPhotosDTO bp) {
+        final String sql = "INSERT INTO boat_photos (BOAT_ID, upload_date, filename, file_number, default_image) VALUES (?, ?, ?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        try {
+            template.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setInt(1, bp.getBoat_id());
+                ps.setTimestamp(2, new Timestamp(System.currentTimeMillis())); // Assuming DataBase.getTimeStamp() returns a current timestamp
+                ps.setString(3, bp.getFilename());
+                ps.setInt(4, bp.getFileNumber());
+                ps.setBoolean(5, bp.isDefault());
+                return ps;
+            }, keyHolder);
+            // Update the BoatPhotosDTO with the generated ID
+            if (keyHolder.getKey() != null) {
+                bp.setId(keyHolder.getKey().intValue());
+            }
+            return bp;
+        } catch (DataAccessException e) {
+            logger.error("Unable to create new row: " + e.getMessage());
+            return null; // or handle this case as per your application's requirements
+        }
+    }
+    @Override
+    public void updateBoatImages(BoatPhotosDTO bp) {
+        String sql = "UPDATE boat_photos SET default_image = ? WHERE ID = ?";
+        try {
+            template.update(sql, bp.isDefault(), bp.getId());
+        } catch (DataAccessException e) {
+            logger.error("There was a problem with the UPDATE: " + e.getMessage());
+        }
     }
 }

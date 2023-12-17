@@ -1,8 +1,9 @@
 package com.ecsail.views.dialogues;
 
-import com.ecsail.sql.SqlInsert;
-import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.dto.MembershipListDTO;
+import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.interfaces.MembershipRepository;
+import com.ecsail.sql.SqlInsert;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -20,13 +21,11 @@ import javafx.stage.Stage;
 import java.util.Objects;
 
 public class Dialogue_ChooseMember extends Stage {
-	//private ObservableList<Object_MembershipList> boatOwners;
 	private MembershipListDTO newOwner;
-	private String boat_id;
+	private MembershipRepository membershipRepository = new MembershipRepositoryImpl();
 	
 	public Dialogue_ChooseMember(ObservableList<MembershipListDTO> boatOwners, int boat_id) {
 		
-		//this.boatOwners=boatOwners;
 		//////////////// ADD OBJECTS ///////////////////
 		VBox vboxGrey = new VBox(); // this is the vbox for organizing all the widgets
 		VBox vboxBlue = new VBox();
@@ -67,25 +66,22 @@ public class Dialogue_ChooseMember extends Stage {
         
         buttonHBox.setAlignment(Pos.CENTER);
         
-//		vboxBlue.setId("box-blue");
 		vboxGrey.setPadding(new Insets(20, 20, 20, 20));
 		vboxBlue.setPadding(new Insets(10, 10, 10, 10));
 		vboxPink.setPadding(new Insets(3, 3, 3, 3)); // spacing to make pink from around table
-//		vboxPink.setId("box-pink");
 		VBox.setVgrow(vboxGrey, Priority.ALWAYS);
 		VBox.setVgrow(vboxPink, Priority.ALWAYS);
 		HBox.setHgrow(vboxPink, Priority.ALWAYS);
 		scene.getStylesheets().add("css/dark/custom_dialogue.css");
 
 		this.setTitle("Choose Member");
-//		Image mainIcon = new Image(getClass().getResourceAsStream("/logo_24.png"));
-		
+
 		//////////////// LISTENERS   ///////////////////
 		
 		memIdTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             //focus out
             if (oldValue) {  // we have focused and unfocused
-            	newOwner = SqlMembershipList.getMembershipByMembershipId(memIdTextField.getText());
+            	newOwner = membershipRepository.getMembershipByMembershipId(memIdTextField.getText());
         		fnameTextField.setText(newOwner.getFirstName());
                 lnameTextField.setText(newOwner.getLastName());
             }

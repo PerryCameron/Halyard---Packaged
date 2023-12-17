@@ -29,4 +29,10 @@ public interface MembershipRepository {
     List<MembershipListDTO> getRosterOfSubleasedSlips();
 
     MembershipListDTO getMembershipFromListWithoutMembershipId(int ms_id);
+
+    List<MembershipListDTO> getSlipRoster(String year);
+
+    MembershipListDTO getMembershipByMembershipId(String membership_id);
+
+    List<MembershipListDTO> getBoatOwnerRoster(int boat_id);
 }

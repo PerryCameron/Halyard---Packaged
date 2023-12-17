@@ -1,5 +1,7 @@
 package com.ecsail.pdf.directory;
 
+import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.interfaces.MembershipRepository;
 import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.sql.select.SqlSlip;
 import com.ecsail.dto.MembershipListDTO;
@@ -26,6 +28,8 @@ public class PDF_Dock extends Table {
     String dock;
     float dockWidth;
     boolean inColor;
+
+    MembershipRepository membershipRepository = new MembershipRepositoryImpl();
 
     public PDF_Dock(int numColumns, String dock, int lDocks, int rDocks, PDF_Object_Settings set, boolean inColor) {
         super(numColumns);
@@ -225,7 +229,7 @@ public class PDF_Dock extends Table {
         /// find out if this is a sublease and put their name in if they are.
         if (slips.get(element + offset).getSubleaseMsID() != 0) {
             MembershipListDTO subleaser;
-            subleaser = SqlMembershipList.getMembershipByMsIdAndYear(slips.get(element + offset).getSubleaseMsID(), set.getSelectedYear());
+            subleaser = membershipRepository.getMembershipByMsIdAndYear(slips.get(element + offset).getSubleaseMsID(), set.getSelectedYear());
             name = subleaser.getLastName() + " " + returnInitial(subleaser.getFirstName());
             isSublease = true;
         }

@@ -4,19 +4,19 @@ package com.ecsail.views.tabs.boatview;
 import com.ecsail.BaseApplication;
 import com.ecsail.FileIO;
 import com.ecsail.HalyardPaths;
-import com.ecsail.views.common.ImageViewPane;
 import com.ecsail.connection.Sftp;
-import com.ecsail.views.common.HBoxNotes;
-import com.ecsail.views.dialogues.Dialogue_ChooseMember;
-import com.ecsail.repository.implementations.SettingsRepositoryImpl;
-import com.ecsail.repository.interfaces.SettingsRepository;
-import com.ecsail.sql.SqlDelete;
-import com.ecsail.sql.SqlInsert;
-import com.ecsail.sql.SqlUpdate;
-import com.ecsail.sql.select.SqlBoatPhotos;
-import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.dto.*;
-import com.itextpdf.commons.utils.JsonUtil;
+import com.ecsail.repository.implementations.BoatRepositoryImpl;
+import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.implementations.SettingsRepositoryImpl;
+import com.ecsail.repository.interfaces.BoatRepository;
+import com.ecsail.repository.interfaces.MembershipRepository;
+import com.ecsail.repository.interfaces.SettingsRepository;
+import com.ecsail.sql.select.SqlBoatPhotos;
+import com.ecsail.views.common.HBoxNotes;
+import com.ecsail.views.common.ImageViewPane;
+import com.ecsail.views.dialogues.Dialogue_ChooseMember;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -29,8 +29,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-
-import java.io.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -39,18 +38,18 @@ import java.util.Objects;
 public class TabBoatView extends Tab {
     private ObservableList<MembershipListDTO> boatOwners;
     protected SettingsRepository settingsRepository = new SettingsRepositoryImpl();
+    private MembershipRepository membershipRepository = new MembershipRepositoryImpl();
+    private BoatRepository boatRepository = new BoatRepositoryImpl();
     private Sftp scp;
     protected ArrayList<DbBoatSettingsDTO> boatSettings;
     protected BoatDTO boatDTO;
     protected BoatListDTO boatListDTO;
     protected ArrayList<BoatPhotosDTO> images;
     protected BoatPhotosDTO selectedImage;
-
-    String user = BaseApplication.getModel().getCurrentLogon().getSshUser();
+    private String user = BaseApplication.getModel().getCurrentLogon().getSshUser();
     private String remotePath = "/home/"+user+"/ecsc_membership/boat_images/";
     private String localPath = System.getProperty("user.home") + "/.ecsc/boat_images/";
     private String[] extensionsAllowed = {"jpg","jpeg","png","bmp","gif"};
-    // this is the group number for ecsc
     private ImageView imageView;
     protected boolean fromList;
 
@@ -59,7 +58,6 @@ public class TabBoatView extends Tab {
         this.boatDTO = boat;
         this.fromList = false;
         this.boatSettings = (ArrayList<DbBoatSettingsDTO>) settingsRepository.getBoatSettings();
-        System.out.println("remote_path =" + remotePath);
         createBoatView();
     }
 
@@ -74,7 +72,7 @@ public class TabBoatView extends Tab {
     }
 
     private void createBoatView() {
-        this.boatOwners = SqlMembershipList.getBoatOwnerRoster(boatDTO.getBoatId());
+        this.boatOwners = FXCollections.observableArrayList(membershipRepository.getBoatOwnerRoster(boatDTO.getBoatId()));
         this.scp = BaseApplication.connect.getScp();
         this.images = SqlBoatPhotos.getImagesByBoatId(boatDTO.getBoatId());
         this.imageView = new ImageView();
@@ -133,9 +131,6 @@ public class TabBoatView extends Tab {
         vboxInformationBackgroundColor.setId("box-grey");
         vboxTableFrame.setId("box-pink");
 
-        // imageView.maxWidth(630);
-        // imageView.setFitWidth(700);
-
         imageView.setSmooth(true);
         imageView.setPreserveRatio(true);
         imageView.setCache(true);
@@ -150,10 +145,6 @@ public class TabBoatView extends Tab {
         HBox.setHgrow(vboxPicture, Priority.ALWAYS);
         VBox.setVgrow(vboxPicture, Priority.ALWAYS);
 
-        // vboxPicture.setStyle("-fx-background-color: #e83115;");
-        // hboxPictureControls.setStyle("-fx-background-color: #201ac9;"); // blue
-
-        // spacer.setPrefHeight(50);
         vboxLeftContainer.setSpacing(10);
         vboxButtons.setSpacing(5); // spacing between buttons
         vboxGrey.setSpacing(10);
@@ -222,13 +213,13 @@ public class TabBoatView extends Tab {
             // delete local
             FileIO.deleteFile(localPath + selectedImage.getFilename());
             // remove database entry
-            SqlDelete.deleteBoatPhoto(selectedImage);
+            boatRepository.deleteBoatPhoto(selectedImage);
             // move to next image
             moveToNextImage(true); // this will also update selectedImage
             // if old image was default set the new one as default
             if(imageIsDefault) {
                 selectedImage.setDefault(true);
-                SqlUpdate.updateBoatImages(selectedImage);
+                boatRepository.updateBoatImages(selectedImage);
             }
             BoatPhotosDTO boatPhotosDTO = getBoatPhotoDTOById(id);
             // remove old BoatPhotosDTO arraylist
@@ -243,7 +234,7 @@ public class TabBoatView extends Tab {
             for(BoatPhotosDTO photo: images) {
                 if(photo.getId() == selectedImage.getId()) photo.setDefault(true);
                 else photo.setDefault(false);
-                SqlUpdate.updateBoatImages(photo);
+                boatRepository.updateBoatImages(photo);
             }
         });
 
@@ -257,13 +248,12 @@ public class TabBoatView extends Tab {
 
         boatOwnerAdd.setOnAction((event) -> {
             new Dialogue_ChooseMember(boatOwners, boatDTO.getBoatId());
-            // boatOwners.add(new Object_MembershipList());
         });
 
         boatOwnerDelete.setOnAction((event) -> {
             int selectedIndex = boatOwnerTableView.getSelectionModel().getSelectedIndex();
             if (selectedIndex >= 0)
-                if (SqlDelete.deleteBoatOwner(boatDTO.getBoatId(), boatOwners.get(selectedIndex).getMsId())) // if it is																						// our database
+                if (boatRepository.deleteBoatOwner(boatDTO.getBoatId(), boatOwners.get(selectedIndex).getMsId())) // if it is																						// our database
                     boatOwnerTableView.getItems().remove(selectedIndex); // remove it from our GUI
         });
 
@@ -335,14 +325,15 @@ public class TabBoatView extends Tab {
             // create filename
             String fileName = boatDTO.getBoatId() + "_" + fileNumber + "." + FileIO.getFileExtension(srcPath);
             // create new POJO
-            BoatPhotosDTO boatPhotosDTO = new BoatPhotosDTO(0,
-                    boatDTO.getBoatId(),"",fileName,fileNumber,isFirstPic());
+            BoatPhotosDTO boatPhotosDTO =
+            boatRepository.insertBoatImage(new BoatPhotosDTO(0,
+                    boatDTO.getBoatId(),"",fileName,fileNumber,isFirstPic()));
             // send file to remote server and change its group
             scp.sendFile(srcPath,remotePath + boatPhotosDTO.getFilename());
             // no need to changeGroup as we moved this dir to the users home.
 //            scp.changeGroup(remotePath + boatPhotosDTO.getFilename(),groupId);
             // update SQL
-            SqlInsert.addBoatImage(boatPhotosDTO);
+
             // move a copy to local HD
             FileIO.copyFile(new File(srcPath),new File(localPath + fileName));
             // resets everything to work correctly in GUI

@@ -74,25 +74,21 @@ public class TabPeople extends Tab {
 		personTableView.setFixedCellSize(30);
 		personTableView.setPrefHeight(680);
 		
-		Col1 = new TableColumn<PersonDTO, Integer>("P ID");
-		Col1.setCellValueFactory(new PropertyValueFactory<PersonDTO, Integer>("p_id"));
+		Col1 = new TableColumn<>("P ID");
+		Col1.setCellValueFactory(new PropertyValueFactory<>("p_id"));
 		
-		Col2 = new TableColumn<PersonDTO, Integer>("MSID");
-		Col2.setCellValueFactory(new PropertyValueFactory<PersonDTO, Integer>("ms_id"));
+		Col2 = new TableColumn<>("MSID");
+		Col2.setCellValueFactory(new PropertyValueFactory<>("ms_id"));
 		
-		Col3 = new TableColumn<PersonDTO, MemberType>("Member Type");
+		Col3 = new TableColumn<>("Member Type");
 		Col3.setPrefWidth(120);
 		Col3.setEditable(false);
-		Col3.setCellValueFactory(new Callback<CellDataFeatures<PersonDTO, MemberType>, ObservableValue<MemberType>>() {
-			 
-	        @Override
-	        public ObservableValue<MemberType> call(CellDataFeatures<PersonDTO, MemberType> param) {
-	        	PersonDTO person = param.getValue();
-	            int memberCode = person.getMemberType();
-	            MemberType keel = MemberType.getByCode(memberCode);
-	            return new SimpleObjectProperty<MemberType>(keel);
-	        }
-	    });
+		Col3.setCellValueFactory(param -> {
+			PersonDTO person = param.getValue();
+			int memberCode = person.getMemberType();
+			MemberType keel = MemberType.getByCode(memberCode);
+			return new SimpleObjectProperty<MemberType>(keel);
+		});
 			
 		Col4 = new TableColumn<>("First Name");
 		Col4.setCellValueFactory(new PropertyValueFactory<>("fname"));
@@ -186,15 +182,10 @@ public class TabPeople extends Tab {
 		count++;
 			  //System.out.println(Col5.getCellData(o));
 		}
-		Platform.runLater(new Runnable()
-		{
-		    @Override
-		    public void run()
-		    {
-		    	personTableView.requestFocus();
-		    	personTableView.getSelectionModel().select(pick);
-		    	personTableView.scrollTo(pick);
-		    }
+		Platform.runLater(() -> {
+			personTableView.requestFocus();
+			personTableView.getSelectionModel().select(pick);
+			personTableView.scrollTo(pick);
 		});
 	}
 }
