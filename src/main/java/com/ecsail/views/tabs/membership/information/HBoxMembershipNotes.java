@@ -90,12 +90,9 @@ public class HBoxMembershipNotes extends HBox {
         
         add.setOnAction(e -> {
 			String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
-			// add a memo and return its id
-			parent.getModel().getNote().addMemoAndReturnId("new memo", date,0,"N",0);
-			// this line prevents strange behaviour I found the solution here:
-			// https://stackoverflow.com/questions/49531071/insert-row-in-javafx-tableview-and-start-editing-is-not-working-correctly
+			int msId = parent.getModel().getMembership().getMsId();
+			parent.getModel().getNote().addMemoAndReturnId(new MemoDTO(msId,"new memo", date,"N"));
 			memoTableView.layout();
-			// open memo for editing
 			memoTableView.edit(0,Col3);
 		});
         

@@ -1,5 +1,6 @@
 package com.ecsail.views.tabs.membership.fiscal.invoice;
 
+import com.ecsail.dto.MemoDTO;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.sql.SqlDelete;
@@ -79,7 +80,8 @@ public class InvoiceFooter extends VBox {
 			updateTotals();
 		});
 
-        buttonAddNote.setOnAction(e -> parent.getNote().addMemoAndReturnId("Invoice Note: ",date,parent.invoice.getId(),"I",0));
+        buttonAddNote.setOnAction(e -> parent.getNote()
+                .addMemoAndReturnId(new MemoDTO("Invoice Note: ",date,parent.invoice.getId(),"I")));
 
         buttonAdd.setPrefWidth(60);
         buttonDelete.setPrefWidth(60);

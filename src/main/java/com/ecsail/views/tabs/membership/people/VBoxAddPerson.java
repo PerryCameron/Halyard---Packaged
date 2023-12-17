@@ -2,6 +2,7 @@ package com.ecsail.views.tabs.membership.people;
 ///////////BUG///////  adding a person as secondary changes the pid in the membership to the secondary
 
 import com.ecsail.BaseApplication;
+import com.ecsail.dto.MemoDTO;
 import com.ecsail.enums.MemberType;
 import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.sql.SqlExists;
@@ -137,7 +138,8 @@ public class VBoxAddPerson extends VBox {
 			// if adding member succeeds, clear the form
 			if (!setNewMember(person)) {
 				String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
-				parent.getModel().getNote().addMemoAndReturnId("New person: " + person.getNameWithInfo() + " added as " + memberType.getValue().toString() + ".", date, 0, "N",0);
+				String memoToSave = "New person: " + person.getNameWithInfo() + " added as " + memberType.getValue().toString() + ".";
+				parent.getModel().getNote().addMemoAndReturnId(new MemoDTO(person.getMs_id(),memoToSave, date,"N"));
 				firstNameTextField.setText("");
 				lastNameTextField.setText("");
 				businessTextField.setText("");

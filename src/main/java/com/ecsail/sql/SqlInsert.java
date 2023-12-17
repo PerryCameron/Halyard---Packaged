@@ -73,20 +73,6 @@ public class SqlInsert {
 	}
 
 
-	public static boolean addBoatRecord(BoatDTO b, int msid) {
-		boolean noError = false;
-		String query = "INSERT INTO boat () VALUES (" + b.getBoatId() + ",null,null,null,null,null,null,true,null,null,null,null,null,null,null,false)";
-		String query1 = "INSERT INTO boat_owner () VALUES (" + msid + "," + b.getBoatId() + ")";
-		try {
-			BaseApplication.connect.executeQuery(query);
-			BaseApplication.connect.executeQuery(query1);
-			noError = true;
-		 }
-		catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
-		}
-		return noError;  // return true if insert performed without error
-	}
 
 	public static void addPersonRecord(PersonDTO person) {
 		String query = "INSERT INTO person () VALUES ("
@@ -149,15 +135,6 @@ public class SqlInsert {
 		return updateIsSucessful;
 	}
 
-	public static void addMemo(MemoDTO m) {
-		String query = "INSERT INTO memo () VALUES (" + m.getMemo_id() + "," + m.getMsid() + ",'" + m.getMemo_date() + "','" + m.getMemo() + "',"
-				+ m.getInvoice_id() + ",'" + m.getCategory() + "'," +m.getBoat_id()+ ");";
-		try {
-			BaseApplication.connect.executeQuery(query);
-		 } catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
-		}
-	}
 
 	public static void addDeposit(DepositDTO d) {
 		String query = "INSERT INTO deposit () VALUES (" + d.getDeposit_id() + ",'" + d.getDepositDate() + "','" + d.getFiscalYear() + "'," + d.getBatch() + ");";

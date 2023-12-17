@@ -95,17 +95,6 @@ public class HBoxNotes extends HBox {
 		Col2.setMaxWidth( 1f * Integer.MAX_VALUE * 85 );   // Note
 		tableView.getColumns().addAll(Arrays.asList(Col1, Col2));
 
-//		tableView.setRowFactory(tv -> {
-//			TableRow<MemoDTO> row = new TableRow<>();
-//			row.setOnMouseClicked(event -> {
-//				MemoDTO memoDTO = row.getItem();
-//				if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-//					// TODO
-//				}
-//			});
-//			return row;
-//		});
-
 		memoTableView = tableView;
 	}
 
@@ -136,7 +125,7 @@ public class HBoxNotes extends HBox {
 	private void setAddButtonListener(Button add) {
 		add.setOnAction(e -> {
 			String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
-			int boat_memo_id = note.addMemoAndReturnId("new memo", date,0,"B",selectedBoat.getBoatId());
+			note.addMemoAndReturnId(new MemoDTO(date,"B",selectedBoat.getBoatId()));
 			memoTableView.layout();
 			// open memo for editing
 			memoTableView.requestFocus();

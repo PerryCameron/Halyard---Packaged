@@ -75,7 +75,6 @@ public class SlipRepositoryImpl implements SlipRepository {
     public void reAssignSlip(int msId, MembershipListDTO membership) {
         String sql = "UPDATE slip SET ms_id = ? WHERE ms_id = ?";
         template.update(sql, msId, membership.getMsId());
-        String slip = membership.getSlip();
         membership.setSlip("0");
     }
 
@@ -164,6 +163,4 @@ public class SlipRepositoryImpl implements SlipRepository {
             return false; // Or rethrow the exception as per your application's requirements
         }
     }
-
-
 }

@@ -16,4 +16,8 @@ public interface MemoRepository {
     void deleteMemo(MemoDTO memo);
 
     void deleteMemos(int msId);
+
+    MemoDTO insertMemo(MemoDTO m);
+
+    void updateMemo(int memoId, String field, String attribute);
 }

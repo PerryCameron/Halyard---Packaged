@@ -27,6 +27,41 @@ public class MemoDTO {
 		this.category = new SimpleStringProperty(category);
 		this.boat_id = new SimpleIntegerProperty(boat_id);
 	}
+	// for boat memos
+	public MemoDTO(String memo_date, String category, int boat_id) {
+		super();
+		this.memo_id = new SimpleIntegerProperty(0);
+		this.msid = new SimpleIntegerProperty(0);
+		this.memo_date = new SimpleStringProperty(memo_date);
+		this.memo = new SimpleStringProperty("");
+		this.invoice_id = new SimpleIntegerProperty(0);
+		this.category = new SimpleStringProperty(category);
+		this.boat_id = new SimpleIntegerProperty(boat_id);
+	}
+	// for invoice memos
+	public MemoDTO(String memo, String memo_date, Integer invoice_id, String category) {
+		super();
+		this.memo_id = new SimpleIntegerProperty(0);
+		this.msid = new SimpleIntegerProperty(0);
+		this.memo_date = new SimpleStringProperty(memo_date);
+		this.memo = new SimpleStringProperty(memo);
+		this.invoice_id = new SimpleIntegerProperty(invoice_id);
+		this.category = new SimpleStringProperty(category);
+		this.boat_id = new SimpleIntegerProperty(0);
+	}
+	// for membership memos
+	public MemoDTO(Integer msid, String memo, String memo_date, String category) {
+		super();
+		this.memo_id = new SimpleIntegerProperty(0);
+		this.msid = new SimpleIntegerProperty(msid);
+		this.memo_date = new SimpleStringProperty(memo_date);
+		this.memo = new SimpleStringProperty(memo);
+		this.invoice_id = new SimpleIntegerProperty(0);
+		this.category = new SimpleStringProperty(category);
+		this.boat_id = new SimpleIntegerProperty(0);
+	}
+
+
 
 	public final IntegerProperty memo_idProperty() {
 		return this.memo_id;
@@ -84,9 +119,7 @@ public class MemoDTO {
 	
 
 	public final void setMemo(final String memo) {
-		System.out.println("making single quote replacement");
-		String fixed = memo.replace("'","''");
-		this.memoProperty().set(fixed);
+		this.memoProperty().set(memo);
 	}
 	
 

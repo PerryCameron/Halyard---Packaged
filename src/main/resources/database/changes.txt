@@ -2,11 +2,8 @@
 - fixed bug where it would show membership dues on invoice when none existed
 - fixed bug where it would not completely delete a membership because the wait_list table was renamed in db
 
-
-
-// when running an sql script created my mysqldumb, I got the following error:
-
-ERROR 1227 (42000) at line 1228: Access denied; you need (at least one of) the SUPER, SET USER privilege(s) for this operation
-
-The line in question is this:
-/*!50001 CREATE ALGORITHM=UNDEFINED */
+1.1.2
+- moved entire sql subsystem to jdbcTemplate*
+- added ability to control membership return address from database settings
+- added ability to make envelopes from membership
+- added dialogue in deleting membership, also added more robust deletion process
