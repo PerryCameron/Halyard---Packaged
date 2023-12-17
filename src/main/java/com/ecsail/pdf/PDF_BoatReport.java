@@ -4,9 +4,11 @@ package com.ecsail.pdf;
 import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.repository.implementations.BoatRepositoryImpl;
+import com.ecsail.repository.implementations.MembershipIdRepositoryImpl;
+import com.ecsail.repository.implementations.MembershipRepositoryImpl;
 import com.ecsail.repository.interfaces.BoatRepository;
-import com.ecsail.sql.select.SqlMembershipList;
-import com.ecsail.sql.select.SqlMembership_Id;
+import com.ecsail.repository.interfaces.MembershipIdRepository;
+import com.ecsail.repository.interfaces.MembershipRepository;
 import com.ecsail.dto.BoatDTO;
 import com.ecsail.dto.MembershipListDTO;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -21,6 +23,7 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.awt.*;
@@ -30,9 +33,12 @@ import java.util.List;
 public class PDF_BoatReport {
     private ObservableList<MembershipListDTO> membershipLists;
     protected BoatRepository boatRepository = new BoatRepositoryImpl();
+    protected MembershipRepository membershipRepository = new MembershipRepositoryImpl();
+    protected MembershipIdRepository membershipIdRepository = new MembershipIdRepositoryImpl();
 
     public PDF_BoatReport() {
-        this.membershipLists = SqlMembershipList.getRoster(BaseApplication.selectedYear, true);
+        this.membershipLists =
+                FXCollections.observableArrayList(membershipRepository.getRoster(BaseApplication.selectedYear, true));
 
         // Initialize PDF writer
         PdfWriter writer = null;
@@ -83,7 +89,7 @@ public class PDF_BoatReport {
             cell.setBackgroundColor(new DeviceCmyk(.12f, .05f, 0, 0.02f));
             cell.setBorderTop(new SolidBorder(ColorConstants.BLACK, 1));
             cell.setWidth(50);
-            cell.add(new Paragraph(SqlMembership_Id.getMembershipId(HalyardPaths.getYear(), ml.getMsId()) + "" + "")).setFontSize(10);
+            cell.add(new Paragraph(membershipIdRepository.getMembershipIdByYearAndMsId(HalyardPaths.getYear(), ml.getMsId()) + "" + "")).setFontSize(10);
             detailTable.addCell(cell);
 
 

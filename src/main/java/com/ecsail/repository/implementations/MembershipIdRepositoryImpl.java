@@ -173,6 +173,7 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
         } catch (EmptyResultDataAccessException e) {
             return "none";
         } catch (DataAccessException e) {
+            logger.error("Unable to retrieve information: " + e.getMessage());
             new Dialogue_ErrorSQL(e, "Unable to retrieve information", "See below for details");
             return "";
         }

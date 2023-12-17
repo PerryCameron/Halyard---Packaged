@@ -14,47 +14,7 @@ import java.sql.SQLException;
 public class SqlMembershipList {
 
 
-    public static ObservableList<MembershipListDTO> getRosterOfKayakRackOwners(String year) {
-        ObservableList<MembershipListDTO> rosters = FXCollections.observableArrayList();
-        String query = "SELECT m.ms_id,m.p_id,id.membership_id,id.fiscal_year,id.fiscal_year,m.join_date,id.mem_type,s.SLIP_NUM,p.l_name,p.f_name,s.subleased_to,m.address,m.city,m.state,m.zip \n"
-                + "FROM slip s \n"
-                + "RIGHT JOIN membership m ON m.ms_id=s.ms_id \n"
-                + "LEFT JOIN membership_id id ON m.ms_id=id.ms_id\n"
-                + "LEFT JOIN money mo ON m.ms_id=mo.ms_id \n"
-                + "LEFT JOIN person p ON p.ms_id=m.ms_id \n"
-                + "WHERE mo.fiscal_year='"+year+"' AND id.fiscal_year='"+year+"' AND id.renew=1 AND kayak_rack=1 AND p.member_type=1 ORDER BY membership_id";
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            queryToArrayList(rosters, rs);
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to SELECT roster","See below for details");
-        }
-        BaseApplication.logger.info("Creating Roster list kayak rack spaces for " + year + "...");
-        return rosters;
-    }
 
-
-    public static ObservableList<MembershipListDTO> getRosterOfKayakShedOwners(String year) {
-        ObservableList<MembershipListDTO> rosters = FXCollections.observableArrayList();
-        String query ="SELECT m.ms_id,m.p_id,id.membership_id,id.fiscal_year,id.fiscal_year,m.join_date,id.mem_type,s.SLIP_NUM,p.l_name,p.f_name,s.subleased_to,m.address,m.city,m.state,m.zip "
-                + "FROM slip s "
-                + "RIGHT JOIN membership m ON m.ms_id=s.ms_id "
-                + "LEFT JOIN membership_id id ON m.ms_id=id.ms_id "
-                + "LEFT JOIN money mo ON m.ms_id=mo.ms_id "
-                + "LEFT JOIN person p ON p.ms_id=m.ms_id "
-                + "WHERE mo.fiscal_year='"+year+"' AND id.fiscal_year='"+year+"' AND id.renew=1 AND kayak_shed=1 AND p.member_type=1 ORDER BY membership_id" ;
-        try {
-
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            queryToArrayList(rosters, rs);
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to SELECT roster","See below for details");
-        }
-        BaseApplication.logger.info("Creating Roster list Kayak Shed Spaces for " + year + "...");
-        return rosters;
-    }
 
     public static ObservableList<MembershipListDTO> getRoster(String year, boolean isActive) {
         ObservableList<MembershipListDTO> rosters = FXCollections.observableArrayList();
