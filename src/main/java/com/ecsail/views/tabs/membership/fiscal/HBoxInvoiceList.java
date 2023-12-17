@@ -3,6 +3,8 @@ package com.ecsail.views.tabs.membership.fiscal;
 
 import com.ecsail.BaseApplication;
 
+import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
+import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.views.tabs.membership.fiscal.invoice.Invoice;
 import com.ecsail.sql.SqlDelete;
@@ -33,6 +35,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class HBoxInvoiceList extends HBox {
 	String currentYear;
 	TabMembership parent;
+
+	private final InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
 	public HBoxInvoiceList(TabMembership parent) {
 		super();
 		this.parent = parent;
@@ -138,10 +142,10 @@ public class HBoxInvoiceList extends HBox {
 			var result = conformation.showAndWait();
 			if (result.isPresent() && result.get() == ButtonType.OK){
 				BaseApplication.logger.info("deleting fiscal record " + selectedIndex);
-				SqlDelete.deletePaymentByInvoiceID(parent.getModel().getInvoices().get(selectedIndex).getId());
+				invoiceRepository.deletePaymentByInvoiceID(parent.getModel().getInvoices().get(selectedIndex).getId());
 				// TODO get rid of this when I get rid of work credit table
-				SqlDelete.deleteInvoiceItemByInvoiceID(parent.getModel().getInvoices().get(selectedIndex).getId());
-				SqlDelete.deleteInvoiceByID(parent.getModel().getInvoices().get(selectedIndex).getId());
+				invoiceRepository.deleteInvoiceItemByInvoiceID(parent.getModel().getInvoices().get(selectedIndex).getId());
+				invoiceRepository.deleteInvoiceByID(parent.getModel().getInvoices().get(selectedIndex).getId());
 				parent.getModel().getInvoices().remove(selectedIndex);
 			}
 		});

@@ -22,15 +22,6 @@ public class SqlDelete {
 //			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
 		}
 	}
-
-	public static void deleteBoatPhoto(BoatPhotosDTO bp) {
-		String query = "DELETE FROM boat_photos WHERE ID=" + bp.getId();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-		}
-	}
 	
 	public static void deletePerson(PersonDTO p) {
 		String query = "DELETE FROM person WHERE p_id=" + p.getP_id();
@@ -70,17 +61,6 @@ public class SqlDelete {
 		}
 	}
 
-	public static boolean deletePhone(PhoneDTO phone) {
-	    boolean noError = false;
-		String query = "DELETE FROM phone WHERE phone_id=" + phone.getPhone_ID();
-			try {
-				BaseApplication.connect.executeQuery(query);
-				noError = true;
-			} catch (SQLException e) {
-				new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-			}
-	    return noError;
-	}
 
 	public static void deleteBlankMembershipIdRow() {
 		String query = "DELETE FROM membership_id WHERE fiscal_year=0 AND membership_id=0";
@@ -89,18 +69,6 @@ public class SqlDelete {
 			} catch (SQLException e) {
 				new Dialogue_ErrorSQL(e,"Unable to DELETE Blank Membership ID Row","See below for details");
 			}
-	}
-
-	public static boolean deleteEmail(EmailDTO email) {
-		boolean noError = false;
-		String query = "DELETE FROM email WHERE email_id=" + email.getEmail_id();
-			try {
-				BaseApplication.connect.executeQuery(query);
-				noError = true;
-			} catch (SQLException e) {
-				new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-			}
-	    return noError;
 	}
 
 	public static boolean deleteMembershipId(MembershipIdDTO mid) {
@@ -166,42 +134,6 @@ public class SqlDelete {
 		}
 	}
 
-	public static void deleteInvoiceByID(int id) {
-		String query = "DELETE FROM invoice WHERE id=" + id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-		}
-	}
-
-	public static void deleteAllPaymentsAndInvoicesByMsId(int msId) {
-		InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
-		List<InvoiceDTO> invoices = invoiceRepository.getInvoicesByMsid(msId);
-		invoices.forEach(invoiceDTO -> {
-			deletePaymentByInvoiceID(invoiceDTO.getId());
-			deleteInvoiceItemByInvoiceID(invoiceDTO.getId());
-			deleteInvoiceByID(invoiceDTO.getId());
-		});
-	}
-
-	public static void deleteInvoiceItemByInvoiceID(int id) {
-		String query = "DELETE FROM invoice_item WHERE invoice_id=" + id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-		}
-	}
-
-	public static void deletePaymentByInvoiceID(int invoice_id) {
-		String query = "DELETE FROM payment WHERE invoice_id=" + invoice_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-		}
-	}
 
 	public static void deletePhones(int p_id) {
 		String query = "DELETE FROM phone WHERE p_id=" + p_id;
@@ -230,23 +162,6 @@ public class SqlDelete {
 		}
 	}
 
-	public static void deletePerson(int p_id) {
-		String query = "DELETE FROM person WHERE p_id=" + p_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-		}
-	}
-
-	public static void deleteMembership(int ms_id) {
-		String query = "DELETE FROM membership WHERE ms_id=" + ms_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-		}
-	}
 
 	public static void deleteWaitList(int ms_id) {
 		String query = "DELETE FROM wait_list WHERE ms_id=" + ms_id;
@@ -267,14 +182,7 @@ public class SqlDelete {
 	}
 
 
-	public static void deletePayment(PaymentDTO p) {
-		String query = "DELETE FROM payment WHERE pay_id=" + p.getPay_id();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE Payment","See below for details");
-		}
-	}
+
 
 
 }

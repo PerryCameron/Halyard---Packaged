@@ -22,6 +22,9 @@ public interface MembershipIdRepository {
     int getMsidFromYearAndMembershipId(int year, String membershipId);
     int update(MembershipIdDTO o);
     int delete(MembershipIdDTO membershipIdDTO);
+
+    void deleteMembershipId(int ms_id);
+
     int insert(MembershipIdDTO membershipIdDTO);
     String getMembershipIdByYearAndMsId(String year, int msId);
 }

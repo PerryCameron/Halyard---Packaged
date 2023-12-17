@@ -33,9 +33,8 @@ public class HBoxBoat extends HBox {
     private final TableView<BoatDTO> boatTableView;
 
     protected TabMembership parent;
-    private BoatRepository boatRepository = new BoatRepositoryImpl();
+    private final BoatRepository boatRepository = new BoatRepositoryImpl();
 
-    //@SuppressWarnings("unchecked")
     public HBoxBoat(TabMembership parent) {
         this.parent = parent;
 

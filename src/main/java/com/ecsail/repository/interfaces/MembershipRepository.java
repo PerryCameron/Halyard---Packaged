@@ -35,4 +35,6 @@ public interface MembershipRepository {
     MembershipListDTO getMembershipByMembershipId(String membership_id);
 
     List<MembershipListDTO> getBoatOwnerRoster(int boat_id);
+
+    void deleteMembership(int ms_id);
 }

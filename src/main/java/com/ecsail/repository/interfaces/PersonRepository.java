@@ -21,6 +21,8 @@ public interface PersonRepository {
     boolean activePersonExists(int ms_id, int member_type);
 
     PersonDTO getPersonByPid(int pid);
+
+    void deletePerson(int p_id);
 //    List<PersonDTO> getActiveAuxBoats();
 //    List<PersonDTO> getAllSailBoats();
 //    List<PersonDTO> getAllAuxBoats();

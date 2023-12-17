@@ -77,9 +77,16 @@ public class PersonRepositoryImpl implements PersonRepository {
             return null;
         }
     }
-
-
-
+    @Override
+    public void deletePerson(int p_id) {
+        String sql = "DELETE FROM person WHERE p_id = ?";
+        try {
+            template.update(sql, p_id);
+        } catch (DataAccessException e) {
+            logger.error("Unable to DELETE person: " + e.getMessage());
+            // Handle or rethrow the exception as per your application's requirements
+        }
+    }
 
 
 }

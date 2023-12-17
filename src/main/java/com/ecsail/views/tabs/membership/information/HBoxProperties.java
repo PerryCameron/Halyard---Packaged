@@ -4,6 +4,14 @@ import com.ecsail.BaseApplication;
 import com.ecsail.LabelPrinter;
 import com.ecsail.Launcher;
 import com.ecsail.pdf.PDF_Envelope;
+import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
+import com.ecsail.repository.implementations.MembershipIdRepositoryImpl;
+import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.implementations.PersonRepositoryImpl;
+import com.ecsail.repository.interfaces.InvoiceRepository;
+import com.ecsail.repository.interfaces.MembershipIdRepository;
+import com.ecsail.repository.interfaces.MembershipRepository;
+import com.ecsail.repository.interfaces.PersonRepository;
 import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.select.SqlPerson;
@@ -29,6 +37,11 @@ import java.util.Optional;
 public class HBoxProperties extends HBox implements Builder {
 
     private final TabMembership parent;
+
+    private final PersonRepository personRepository = new PersonRepositoryImpl();
+    private final MembershipRepository membershipRepository = new MembershipRepositoryImpl();
+    private final MembershipIdRepository membershipIdRepository = new MembershipIdRepositoryImpl();
+    private final InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
 
     public HBoxProperties(TabMembership parent) {
         super();
@@ -167,17 +180,17 @@ public class HBoxProperties extends HBox implements Builder {
     private void deleteMembership(int msId) {
         SqlDelete.deleteBoatOwner(msId);
         SqlDelete.deleteMemos(msId);
-        SqlDelete.deleteAllPaymentsAndInvoicesByMsId(msId);
+        invoiceRepository.deleteAllPaymentsAndInvoicesByMsId(msId);
         SqlDelete.deleteWaitList(msId);
-        SqlDelete.deleteMembershipId(msId); // removes all entries
+        membershipIdRepository.deleteMembershipId(msId); // removes all entries
         ObservableList<PersonDTO> people = SqlPerson.getPeople(msId);
         for (PersonDTO p : people) {
             SqlDelete.deletePhones(p.getP_id());
             SqlDelete.deleteEmail(p.getP_id());
             SqlDelete.deleteOfficer(p.getP_id());
-            SqlDelete.deletePerson(p.getP_id());
+            personRepository.deletePerson(p.getP_id());
         }
-        SqlDelete.deleteMembership(msId);
+        membershipRepository.deleteMembership(msId);
         Launcher.removeMembershipRow(msId);
         Launcher.closeActiveTab();
         BaseApplication.logger.info("Deleted membership msid: " + msId);

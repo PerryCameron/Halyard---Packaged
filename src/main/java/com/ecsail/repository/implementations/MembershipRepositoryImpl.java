@@ -353,6 +353,15 @@ public class MembershipRepositoryImpl implements MembershipRepository {
             return new ArrayList<>();
         }
     }
+    @Override
+    public void deleteMembership(int ms_id) {
+        String sql = "DELETE FROM membership WHERE ms_id = ?";
+        try {
+            template.update(sql, ms_id);
+        } catch (DataAccessException e) {
+            logger.error("Unable to DELETE membership: " + e.getMessage());
+        }
+    }
 
 
 }

@@ -1,5 +1,7 @@
 package com.ecsail.views.tabs.membership.fiscal.invoice;
 
+import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
+import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.select.SqlPayment;
@@ -36,6 +38,8 @@ public class InvoiceFooter extends VBox {
 
     protected final Invoice parent;
 
+    private final InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
+
     public InvoiceFooter(Invoice hboxInvoice) {
         this.parent = hboxInvoice;
         parent.totalFeesText.setText(parent.invoice.getTotal());
@@ -67,7 +71,7 @@ public class InvoiceFooter extends VBox {
 		buttonDelete.setOnAction(e -> {
 			int selectedIndex = paymentTableView.getSelectionModel().getSelectedIndex();
 			if (selectedIndex >= 0) // is something selected?
-				SqlDelete.deletePayment(parent.payments.get(selectedIndex));
+				invoiceRepository.deletePayment(parent.payments.get(selectedIndex));
 			paymentTableView.getItems().remove(selectedIndex); // remove it from our GUI
 			BigDecimal totalPaidAmount = new BigDecimal(SqlPayment.getTotalAmount(parent.invoice.getId()));
             parent.totalPaymentText.setText(String.valueOf(totalPaidAmount.setScale(2)));

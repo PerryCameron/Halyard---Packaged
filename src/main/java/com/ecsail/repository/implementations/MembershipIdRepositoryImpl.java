@@ -2,7 +2,6 @@ package com.ecsail.repository.implementations;
 
 
 import com.ecsail.BaseApplication;
-import com.ecsail.HalyardPaths;
 import com.ecsail.dto.MembershipIdDTO;
 import com.ecsail.repository.interfaces.MembershipIdRepository;
 import com.ecsail.repository.rowmappers.MembershipIdRowMapper;
@@ -154,6 +153,15 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
     public int delete(MembershipIdDTO membershipIdDTO) {
         String deleteSql = "DELETE FROM membership_id WHERE MID = ?";
         return template.update(deleteSql, membershipIdDTO.getMid());
+    }
+    @Override
+    public void deleteMembershipId(int ms_id) {
+        String sql = "DELETE FROM membership_id WHERE ms_id = ?";
+        try {
+            template.update(sql, ms_id);
+        } catch (DataAccessException e) {
+            logger.error("Unable to DELETE membership_id: " + e.getMessage());
+        }
     }
 
     @Override
