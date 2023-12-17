@@ -1,11 +1,15 @@
 package com.ecsail.excel;
 
 import com.ecsail.HalyardPaths;
-import com.ecsail.sql.select.SqlEmail;
+import com.ecsail.repository.implementations.EmailRepositoryImpl;
+import com.ecsail.repository.interfaces.EmailRepository;
 import com.ecsail.dto.Email_InformationDTO;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,10 +17,15 @@ import java.io.IOException;
 
 
 public class Xls_email_list {
-	private static ObservableList<Email_InformationDTO> email = SqlEmail.getEmailInfo();
-	
-	public static void createSpreadSheet() {
-		System.out.println("Creating email list..");
+
+    private static EmailRepository emailRepository = new EmailRepositoryImpl();
+	private static ObservableList<Email_InformationDTO> emailInformationDTOS =
+            FXCollections.observableArrayList(emailRepository.getEmailInfo());
+    private static final Logger logger = LoggerFactory.getLogger(Xls_email_list.class);
+
+
+    public static void createSpreadSheet() {
+		logger.info("Creating email list..");
 		String[] columns = {"Membership ID", "Join Date", "Last Name", "First Name", "Email","Primary Email"};
 
         // Create a Workbook
@@ -50,7 +59,7 @@ public class Xls_email_list {
         }
         
         int rowNum = 1;
-        for(Email_InformationDTO e: email) {
+        for(Email_InformationDTO e: emailInformationDTOS) {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(e.getMembershipId());
             row.createCell(1).setCellValue(e.getJoinDate());
@@ -62,33 +71,18 @@ public class Xls_email_list {
         for(int i = 0; i < columns.length; i++) {
             sheet.autoSizeColumn(i);
         }
-        FileOutputStream fileOut = null;
         HalyardPaths.checkPath(HalyardPaths.ECSC_HOME);
-		try {
-			fileOut = new FileOutputStream(HalyardPaths.ECSC_HOME + "/Email_List.xlsx");
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-        try {
-			workbook.write(fileOut);
-		} catch (IOException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-        try {
-			fileOut.close();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-        
-        try {
-			workbook.close();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
+        try (
+                FileOutputStream fileOut = new FileOutputStream(HalyardPaths.ECSC_HOME + "/Email_List.xlsx");
+        ) {
+            workbook.write(fileOut);
+            logger.info("Email list successfully written to " + HalyardPaths.ECSC_HOME  +"/Email_List.xlsx");
+        } catch (FileNotFoundException e) {
+            logger.error("File not found: " + e.getMessage());
+            e.printStackTrace();
+        } catch (IOException e) {
+            logger.error("IO Exception: " + e.getMessage());
+            e.printStackTrace();
+        }
 	}
 }
