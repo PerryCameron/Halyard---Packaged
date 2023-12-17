@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.time.Year;
 import java.util.Objects;
 
 public class Dialogue_DirectoryCreation extends Stage {
@@ -39,7 +40,7 @@ public class Dialogue_DirectoryCreation extends Stage {
 
 		
 		//////////////// LISTENERS ////////////////
-		createDirectory.setOnAction((event) -> new PDF_Directory(BaseApplication.selectedYear,textArea));
+		createDirectory.setOnAction((event) -> new PDF_Directory(String.valueOf(Year.now().getValue()),textArea));
 		
 		//////////////// ADD CONTENT ///////////////////
 		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));

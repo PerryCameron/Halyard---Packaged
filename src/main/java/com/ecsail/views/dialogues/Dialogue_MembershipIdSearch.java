@@ -14,6 +14,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.time.Year;
 import java.util.Objects;
 
 public class Dialogue_MembershipIdSearch extends Stage {
@@ -34,7 +35,7 @@ public class Dialogue_MembershipIdSearch extends Stage {
 		TextField msidTextField = new TextField();
 		Button submitButton = new Button("Submit");
 		ComboBox<Integer> comboBox = new ComboBox<>();
-		for(int i = Integer.parseInt(BaseApplication.selectedYear) + 1; i > 1969; i--) {
+		for(int i = Integer.parseInt(String.valueOf(Year.now().getValue())) + 1; i > 1969; i--) {
 			comboBox.getItems().add(i);
 		}
 		comboBox.getSelectionModel().select(1);

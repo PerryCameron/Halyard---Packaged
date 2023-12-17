@@ -2,6 +2,7 @@ package com.ecsail;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -70,8 +71,8 @@ public class HalyardPaths {
 	}
 
 	
-	public static String getYear() {
-		return new SimpleDateFormat("yyyy").format(new Date());
+	public static int getYear() {
+		return Year.now().getValue();
 	}
 	
 	public static String getDate() {

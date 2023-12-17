@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.time.Year;
 import java.util.List;
 
 public class TabDeposits extends Tab {
@@ -24,7 +25,7 @@ public class TabDeposits extends Tab {
 
 	public TabDeposits(String text) {
 		super(text);
-		this.selectedYear = BaseApplication.selectedYear;
+		this.selectedYear = String.valueOf(Year.now().getValue());
 		this.invoices = FXCollections.observableArrayList(getInvoiceItems(selectedYear));
 		// controls on the right hand side of the screen
 		this.vboxControls = new VboxDepositControls(this);

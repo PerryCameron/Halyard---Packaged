@@ -2,7 +2,6 @@ package com.ecsail.pdf.directory;
 
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
 import com.ecsail.repository.interfaces.MembershipRepository;
-import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.sql.select.SqlSlip;
 import com.ecsail.dto.MembershipListDTO;
 import com.itextpdf.kernel.colors.ColorConstants;

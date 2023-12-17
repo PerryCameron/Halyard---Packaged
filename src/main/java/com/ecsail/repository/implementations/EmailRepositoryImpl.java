@@ -21,6 +21,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.sql.PreparedStatement;
+import java.time.Year;
 import java.util.List;
 
 
@@ -128,7 +129,7 @@ public class EmailRepositoryImpl implements EmailRepository {
                 "WHERE id.fiscal_year = ? AND id.renew = true " +
                 "ORDER BY id.membership_id";
 
-        return template.query(sql, new EmailInformationRowMapper(), BaseApplication.selectedYear);
+        return template.query(sql, new EmailInformationRowMapper(), String.valueOf(Year.now().getValue()));
     }
     @Override
     public boolean deleteEmail(EmailDTO email) {

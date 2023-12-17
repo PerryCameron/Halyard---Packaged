@@ -23,6 +23,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -35,7 +36,7 @@ public class HBoxInvoiceList extends HBox {
 	public HBoxInvoiceList(TabMembership parent) {
 		super();
 		this.parent = parent;
-		this.currentYear = BaseApplication.selectedYear;
+		this.currentYear = String.valueOf(Year.now().getValue());
 
 		////////////////////////  OBJECTS   ///////////////////////////////
 		var vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
@@ -199,7 +200,7 @@ public class HBoxInvoiceList extends HBox {
 	private void populateComboBox(ComboBox<Integer> comboBox) {
 		int selectedElement = 0;
 		// fill up combo box
-		for (int i = Integer.parseInt(BaseApplication.selectedYear) + 1; i > 1969; i--) {
+		for (int i = Integer.parseInt(String.valueOf(Year.now().getValue())) + 1; i > 1969; i--) {
 			// If we do not have a specific year
 			if (!parent.getModel().getLabels().getSelectedYear().getText().equals("No Year")) // do we have a current year?
 				if (i == Integer.parseInt(parent.getModel().getLabels().getSelectedYear().getText())) selectedElement = i;

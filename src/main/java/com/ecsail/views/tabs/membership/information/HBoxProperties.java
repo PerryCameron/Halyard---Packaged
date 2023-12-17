@@ -20,6 +20,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.Builder;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -159,7 +160,7 @@ public class HBoxProperties extends HBox implements Builder {
     }
 
     private String getYear() {
-        int current = Integer.parseInt(BaseApplication.selectedYear);
+        int current = Integer.parseInt(String.valueOf(Year.now().getValue()));
         return String.valueOf(current + 1);
     }
 

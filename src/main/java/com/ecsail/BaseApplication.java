@@ -64,7 +64,6 @@ public class BaseApplication extends Application implements Log {
         setUpForFirstTime();
 //        startFileLogger();
         logger.info("Starting application...");
-        BaseApplication.selectedYear = HalyardPaths.getYear();
         launch(args);
     }
 

@@ -2,6 +2,8 @@ package com.ecsail.dto;
 
 import com.ecsail.BaseApplication;
 
+import java.time.Year;
+
 public class DepositDTO {
 	private Integer deposit_id;
 	private String depositDate;
@@ -18,7 +20,7 @@ public class DepositDTO {
 
 	public DepositDTO() {
 		this.batch = 1;
-		this.fiscalYear = BaseApplication.selectedYear;
+		this.fiscalYear = String.valueOf(Year.now().getValue());
 	}
 
 	public Integer getDeposit_id() {

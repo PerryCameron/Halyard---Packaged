@@ -4,7 +4,6 @@ import com.ecsail.BaseApplication;
 import com.ecsail.DataBase;
 import com.ecsail.views.dialogues.Dialogue_CustomErrorMessage;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
-import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.dto.*;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -328,17 +327,6 @@ public class SqlUpdate {
 		try {
 			BaseApplication.connect.executeQuery(query);
 			membership.setSubLeaser(0);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
-
-	public static void subleaserReleaseSlip(int subleasee) {  // this releases the slip using the subleasee ms_id
-		String query = "UPDATE slip SET subleased_to=null where subleased_to=" + subleasee;
-		try {
-			BaseApplication.connect.executeQuery(query);
-			MembershipListDTO ownerMembership = SqlMembershipList.getMembershipFromList(subleasee, BaseApplication.selectedYear);
-			ownerMembership.setSubLeaser(0);
 		} catch (SQLException e) {
 			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
 		}

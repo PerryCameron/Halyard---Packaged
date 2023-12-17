@@ -15,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Optional;
@@ -34,7 +35,7 @@ public class TabFee extends Tab {
 
     public TabFee(String text) {
         super(text);
-        this.selectedYear = BaseApplication.selectedYear;
+        this.selectedYear = String.valueOf(Year.now().getValue());
         this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
         this.radioGroup = new ToggleGroup();
         this.comboBox = addComboBox();
@@ -220,7 +221,7 @@ public class TabFee extends Tab {
     private ComboBox<Integer> addComboBox() {
         ComboBox<Integer> comboBox = new ComboBox<>();
         // creates a combo box with a list of years
-        for (int i = Integer.parseInt(BaseApplication.selectedYear) + 1; i > 1969; i--) {
+        for (int i = Integer.parseInt(String.valueOf(Year.now().getValue())) + 1; i > 1969; i--) {
             comboBox.getItems().add(i);
         }
         comboBox.getSelectionModel().select(1);

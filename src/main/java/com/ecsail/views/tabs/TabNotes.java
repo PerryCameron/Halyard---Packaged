@@ -15,6 +15,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
+import java.time.Year;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -31,9 +32,9 @@ public class TabNotes extends Tab {
 	public TabNotes(String text) {
 		super(text);
 		MemoRepository memoRepository = new MemoRepositoryImpl();
-		this.selectedYear = BaseApplication.selectedYear;
-//		this.memos = SqlMemos.getAllMemosForTabNotes(BaseApplication.selectedYear,setOptions());
-		this.memos = FXCollections.observableArrayList(memoRepository.getAllMemosForTabNotes(BaseApplication.selectedYear,setOptions()));
+		this.selectedYear = String.valueOf(Year.now().getValue());
+//		this.memos = SqlMemos.getAllMemosForTabNotes(String.valueOf(Year.now().getValue()),setOptions());
+		this.memos = FXCollections.observableArrayList(memoRepository.getAllMemosForTabNotes(String.valueOf(Year.now().getValue()),setOptions()));
 		VBox vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
 		VBox vboxBlue = new VBox();
 		VBox vboxPink = new VBox(); // this creates a pink border around the table

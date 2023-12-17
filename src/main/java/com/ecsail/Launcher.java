@@ -17,7 +17,6 @@ import com.ecsail.views.tabs.roster.TabRoster;
 import com.ecsail.views.tabs.welcome.TabWelcome;
 import com.ecsail.jotform.TabJotForm;
 import com.ecsail.pdf.PDF_BoatReport;
-import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.sql.select.SqlMembership_Id;
 import com.ecsail.dto.BoatDTO;
 import com.ecsail.dto.BoatListDTO;
@@ -25,6 +24,7 @@ import com.ecsail.dto.MembershipListDTO;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
+import java.time.Year;
 
 import static com.ecsail.BaseApplication.tabPane;
 
@@ -81,7 +81,7 @@ public class Launcher extends VBox {
 
     public static void openRosterTab() {
         if (!tabOpen("Roster")) // is the tab already open??
-            tabPane.getTabs().add(new TabRoster(BaseApplication.activeMemberships, BaseApplication.selectedYear));
+            tabPane.getTabs().add(new TabRoster(BaseApplication.activeMemberships, String.valueOf(Year.now().getValue())));
         tabPane.getSelectionModel().select(getTabIndex("Roster"));
     }
 
@@ -92,7 +92,6 @@ public class Launcher extends VBox {
     }
 
     public static void openBoatViewTab(BoatListDTO b) {
-        System.out.println("From launcher " + b);
         if (!tabOpen("Boat"))
             tabPane.getTabs().add(new TabBoatView("Boat " + b.getBoatId(), b));
         tabPane.getSelectionModel().select(getTabIndex("Boat " + b.getBoatId()));
@@ -129,10 +128,10 @@ public class Launcher extends VBox {
     // used in BoxSlip
     public static void createTabForBoxSlip(int ms_id) {
         MembershipListDTO membership;
-        if (SqlMembership_Id.isRenewedByMsidAndYear(ms_id, HalyardPaths.getYear())) { // membership is active and in our object tree
+        if (SqlMembership_Id.isRenewedByMsidAndYear(ms_id, String.valueOf(Year.now().getValue()))) { // membership is active and in our object tree
             membership = getMembership(ms_id);
         } else { // membership is not active and needs to be pulled from the SQL Database
-            membership = membershipRepository.getMembershipByMsIdAndYear(ms_id, HalyardPaths.getYear());
+            membership = membershipRepository.getMembershipByMsIdAndYear(ms_id, String.valueOf(Year.now().getValue()));
         }
         Tab membershipTab = new TabMembership(membership);
         tabPane.getTabs().add(membershipTab);
@@ -157,13 +156,13 @@ public class Launcher extends VBox {
     }
 
     public static void launchTabFromSlips(int msId) {
-        MembershipListDTO membership = membershipRepository.getMembershipByMsIdAndYear(msId, HalyardPaths.getYear());
+        MembershipListDTO membership = membershipRepository.getMembershipByMsIdAndYear(msId, String.valueOf(Year.now().getValue()));
         createOrOpenTab(membership, "Membership");
     }
 
     //	// fills incomplete object with latest information and opens tab.
     public static void createActiveMembershipTab(MembershipListDTO membershipListDTO) {
-        membershipListDTO = membershipRepository.getMembershipByMsIdAndYear(membershipListDTO.getMsId(), HalyardPaths.getYear());
+        membershipListDTO = membershipRepository.getMembershipByMsIdAndYear(membershipListDTO.getMsId(), String.valueOf(Year.now().getValue()));
         createOrOpenTab(membershipListDTO, "Membership");
     }
 

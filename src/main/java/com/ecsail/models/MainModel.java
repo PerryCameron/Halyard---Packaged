@@ -16,6 +16,7 @@ import javafx.collections.FXCollections;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class MainModel {
         if(createConnection(user.get(), pass.get(), loopback, Integer.parseInt(localSqlPort.get()), currentLogon.getDatabase())) {
             this.membershipRepository = new MembershipRepositoryImpl();
             BaseApplication.activeMemberships =
-                    FXCollections.observableArrayList(membershipRepository.getRoster(BaseApplication.selectedYear, true));
+                    FXCollections.observableArrayList(membershipRepository.getRoster(String.valueOf(Year.now().getValue()), true));
             // gets a list of all the board positions to use throughout the application
             BaseApplication.boardPositions = Officer.getPositionList();
             this.scp = new Sftp();

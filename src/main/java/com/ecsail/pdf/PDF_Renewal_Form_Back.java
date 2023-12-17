@@ -11,12 +11,13 @@ import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.VerticalAlignment;
 
 import java.io.IOException;
+import java.time.Year;
 
 
 public class PDF_Renewal_Form_Back {
 	
 	public static void Create_Back_Side(Document document) throws IOException {
-		int year = Integer.parseInt(HalyardPaths.getYear());
+		int year = Integer.parseInt(String.valueOf(Year.now().getValue()));
 		int nextYear = year + 1;
 		//PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
 		

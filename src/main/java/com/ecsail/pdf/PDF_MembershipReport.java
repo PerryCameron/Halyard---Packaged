@@ -17,6 +17,7 @@ import com.itextpdf.layout.element.Table;
 
 import java.awt.*;
 import java.io.*;
+import java.time.Year;
 import java.util.ArrayList;
 
 //        The default value of a page in iText, if you create a Document object without any parameters,
@@ -39,7 +40,7 @@ public class PDF_MembershipReport {
     int cellHeight = 1;
 
     public PDF_MembershipReport() {
-        this.currentYear = Integer.parseInt(BaseApplication.selectedYear);
+        this.currentYear = Year.now().getValue();
         this.defaultStartYear = currentYear - 20;
         this.stats = SqlStats.getStatistics(defaultStartYear, defaultStartYear + defaultNumbOfYears);
         this.tableHeight = getTableHeight(getLargestStat());
@@ -48,7 +49,7 @@ public class PDF_MembershipReport {
         // Initialize PDF writer
         PdfWriter writer = null;
         // Check to make sure directory exists and if not create it
-        HalyardPaths.checkPath(HalyardPaths.BOATLISTS + "/" + HalyardPaths.getYear());
+        HalyardPaths.checkPath(HalyardPaths.BOATLISTS + "/" + String.valueOf(Year.now().getValue()));
         String dest = HalyardPaths.ECSC_HOME + "/MembershipReport_" + HalyardPaths.getDate() + ".pdf";
 
         try {
@@ -208,7 +209,7 @@ public class PDF_MembershipReport {
 //            cell.setBackgroundColor(new DeviceCmyk(.12f, .05f, 0, 0.02f));
 //            cell.setBorderTop(new SolidBorder(ColorConstants.BLACK, 1));
 //            cell.setWidth(50);
-//            cell.add(new Paragraph(SqlMembership_Id.getMembershipId(HalyardPaths.getYear(), ml.getMsid()) + "" + "")).setFontSize(10);
+//            cell.add(new Paragraph(SqlMembership_Id.getMembershipId(String.valueOf(Year.now().getValue()), ml.getMsid()) + "" + "")).setFontSize(10);
 //            detailTable.addCell(cell);
 //
 //            cell = new Cell();

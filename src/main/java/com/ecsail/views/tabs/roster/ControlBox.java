@@ -20,6 +20,7 @@ import javafx.util.Duration;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -98,7 +99,7 @@ public class ControlBox extends VBox {
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(0,10,0,0));
         ComboBox<Integer> comboBox = new ComboBox<>();
-        for(int i = Integer.parseInt(BaseApplication.selectedYear) + 1; i > 1969; i--) {
+        for(int i = Year.now().getValue() + 1; i > 1969; i--) {
             comboBox.getItems().add(i);
         }
         comboBox.getSelectionModel().select(1);

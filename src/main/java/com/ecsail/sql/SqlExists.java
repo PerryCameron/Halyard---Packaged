@@ -8,6 +8,7 @@ import com.ecsail.dto.PersonDTO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Year;
 
 public class SqlExists {
 
@@ -253,12 +254,12 @@ public class SqlExists {
 
 	public static Boolean currentMembershipIdExists(int ms_id) {
 		boolean result = false;
-		String query = "SELECT EXISTS(SELECT * FROM membership_id WHERE fiscal_year=" + BaseApplication.selectedYear + " AND ms_id=" + ms_id + ")";
+		String query = "SELECT EXISTS(SELECT * FROM membership_id WHERE fiscal_year=" + Year.now().getValue() + " AND ms_id=" + ms_id + ")";
 		try {
 			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
 			while (rs.next()) {
 				result = rs.getBoolean(
-						"EXISTS(SELECT * FROM membership_id WHERE fiscal_year=" + BaseApplication.selectedYear + " AND ms_id=" + ms_id + ")");
+						"EXISTS(SELECT * FROM membership_id WHERE fiscal_year=" + Year.now().getValue() + " AND ms_id=" + ms_id + ")");
 			}
 		BaseApplication.connect.closeResultSet(rs);
 		} catch (SQLException e) {

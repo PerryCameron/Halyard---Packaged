@@ -28,6 +28,7 @@ import javafx.collections.ObservableList;
 
 import java.awt.*;
 import java.io.*;
+import java.time.Year;
 import java.util.List;
 
 public class PDF_BoatReport {
@@ -38,13 +39,13 @@ public class PDF_BoatReport {
 
     public PDF_BoatReport() {
         this.membershipLists =
-                FXCollections.observableArrayList(membershipRepository.getRoster(BaseApplication.selectedYear, true));
+                FXCollections.observableArrayList(membershipRepository.getRoster(String.valueOf(Year.now().getValue()), true));
 
         // Initialize PDF writer
         PdfWriter writer = null;
         // Check to make sure directory exists and if not create it
-        HalyardPaths.checkPath(HalyardPaths.BOATLISTS + "/" + HalyardPaths.getYear());
-        String dest = HalyardPaths.BOATLISTS+ "/" + HalyardPaths.getYear() + "/BoatList_" + HalyardPaths.getDate() + ".pdf";
+        HalyardPaths.checkPath(HalyardPaths.BOATLISTS + "/" + String.valueOf(Year.now().getValue()));
+        String dest = HalyardPaths.BOATLISTS+ "/" + Year.now().getValue() + "/BoatList_" + HalyardPaths.getDate() + ".pdf";
 
         try {
             writer = new PdfWriter(dest);
@@ -89,7 +90,7 @@ public class PDF_BoatReport {
             cell.setBackgroundColor(new DeviceCmyk(.12f, .05f, 0, 0.02f));
             cell.setBorderTop(new SolidBorder(ColorConstants.BLACK, 1));
             cell.setWidth(50);
-            cell.add(new Paragraph(membershipIdRepository.getMembershipIdByYearAndMsId(HalyardPaths.getYear(), ml.getMsId()) + "" + "")).setFontSize(10);
+            cell.add(new Paragraph(membershipIdRepository.getMembershipIdByYearAndMsId(String.valueOf(Year.now().getValue()), ml.getMsId()) + "" + "")).setFontSize(10);
             detailTable.addCell(cell);
 
 

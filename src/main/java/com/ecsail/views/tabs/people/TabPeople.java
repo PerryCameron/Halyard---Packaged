@@ -7,18 +7,15 @@ import com.ecsail.repository.implementations.MembershipRepositoryImpl;
 import com.ecsail.repository.interfaces.MembershipRepository;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlPerson;
-import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.dto.PersonDTO;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -28,6 +25,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
+import java.time.Year;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -132,7 +130,7 @@ public class TabPeople extends Tab {
 	private void createPersonBox(PersonDTO person)  {
 		MembershipListDTO membership = null;
 		if(SqlExists.currentMembershipIdExists(person.getMs_id())) {
-		membership = membershipRepository.getMembershipByMsIdAndYear(person.getMs_id(), BaseApplication.selectedYear);
+		membership = membershipRepository.getMembershipByMsIdAndYear(person.getMs_id(), String.valueOf(Year.now().getValue()));
 		} else {
 		membership = membershipRepository.getMembershipFromListWithoutMembershipId(person.getMs_id());
 		}

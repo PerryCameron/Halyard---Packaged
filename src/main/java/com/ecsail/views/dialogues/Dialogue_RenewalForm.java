@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.Year;
 import java.util.Objects;
 
 public class Dialogue_RenewalForm extends Stage {
@@ -19,7 +20,7 @@ public class Dialogue_RenewalForm extends Stage {
 	private String selectedYear;
 	
 	public Dialogue_RenewalForm() {
-		this.selectedYear= BaseApplication.selectedYear;
+		this.selectedYear= String.valueOf(Year.now().getValue());
 		
 		Button createPDFbutton = new Button("Create PDF");
 		ToggleGroup tg1 = new ToggleGroup();  

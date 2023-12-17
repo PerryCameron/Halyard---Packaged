@@ -14,8 +14,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import static com.ecsail.sql.select.SqlMembershipList.getMembershipFromList;
-
 public class SlipRepositoryImpl implements SlipRepository {
 
     public static Logger logger = LoggerFactory.getLogger(SlipRepositoryImpl.class);
@@ -68,20 +66,16 @@ public class SlipRepositoryImpl implements SlipRepository {
         membership.setSubLeaser(0);
     }
     @Override
-    public void reAssignSlip(int ms_id, MembershipListDTO membership) {
+    public void reAssignSlip(int msId, MembershipListDTO membership) {
         String sql = "UPDATE slip SET ms_id = ? WHERE ms_id = ?";
-        template.update(sql, ms_id, membership.getMsId());
+        template.update(sql, msId, membership.getMsId());
         String slip = membership.getSlip();
         membership.setSlip("0");
-        MembershipListDTO newSlipOwnerMembership = getMembershipFromList(ms_id, BaseApplication.selectedYear);
-        newSlipOwnerMembership.setSlip(slip);
     }
     @Override
     public void subleaserReleaseSlip(int subleasee) {
         String sql = "UPDATE slip SET subleased_to = null WHERE subleased_to = ?";
         template.update(sql, subleasee);
-        MembershipListDTO ownerMembership = getMembershipFromList(subleasee, BaseApplication.selectedYear);
-        ownerMembership.setSubLeaser(0);
     }
     @Override
     public Boolean slipRentExists(int subMsid) {

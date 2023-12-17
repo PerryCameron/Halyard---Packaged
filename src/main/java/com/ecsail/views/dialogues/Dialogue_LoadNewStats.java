@@ -16,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.time.Year;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -29,7 +30,7 @@ public class Dialogue_LoadNewStats extends Stage {
 
 	public Dialogue_LoadNewStats(BooleanProperty dataBaseStatisticsRefreshed) {
 		this.dataBaseStatisticsRefreshed = dataBaseStatisticsRefreshed;
-		stopYear=Integer.parseInt(HalyardPaths.getYear());
+		stopYear= Year.now().getValue();
 		startYear=1970;
 		
 		VBox vboxGrey = new VBox(); // this is the vbox for organizing all the widgets

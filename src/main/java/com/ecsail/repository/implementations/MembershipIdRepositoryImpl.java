@@ -18,6 +18,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +67,7 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
     public int getMembershipIDFromMsid(int msid) {
         String sql = "SELECT membership_id FROM membership_id WHERE ms_id = ? AND fiscal_year = ?";
         try {
-            return template.queryForObject(sql, Integer.class, msid, HalyardPaths.getYear());
+            return template.queryForObject(sql, Integer.class, msid, String.valueOf(Year.now().getValue()));
         } catch (DataAccessException e) {
             logger.error(e.getMessage());
             new Dialogue_ErrorSQL(e, "Unable to retrieve information", "See below for details");
@@ -79,7 +80,7 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
     public Integer getMsidFromMembershipID(int membership_id) {
         String sql = "SELECT ms_id FROM membership_id WHERE fiscal_year = ? AND membership_id = ?";
         try {
-            return template.queryForObject(sql, Integer.class, HalyardPaths.getYear(), membership_id);
+            return template.queryForObject(sql, Integer.class, String.valueOf(Year.now().getValue()), membership_id);
         } catch (EmptyResultDataAccessException e) {
             logger.error(e.getMessage());
             return 0;

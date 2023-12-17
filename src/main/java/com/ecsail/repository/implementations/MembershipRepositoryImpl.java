@@ -277,14 +277,14 @@ public class MembershipRepositoryImpl implements MembershipRepository {
                         SELECT 1 FROM membership_id 
                         WHERE FISCAL_YEAR = YEAR(NOW()) AND MS_ID = ?
                     )
-                    THEN ?
+                    THEN YEAR(NOW())
                     ELSE (SELECT MAX(FISCAL_YEAR) FROM membership_id WHERE MS_ID = ?)
                 END
             )
             AND m.MS_ID = ?
                  """;
         try {
-            return template.queryForObject(sql, new MembershipListRowMapper(), msId, msId, msId,msId);
+            return template.queryForObject(sql, new MembershipListRowMapper(), msId, msId, msId);
         } catch (EmptyResultDataAccessException e) {
             logger.error("Unable to SELECT roster: " + e.getMessage());
             return null;

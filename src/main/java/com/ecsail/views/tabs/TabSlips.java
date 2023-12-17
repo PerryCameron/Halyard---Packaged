@@ -6,7 +6,6 @@ import com.ecsail.Launcher;
 import com.ecsail.pdf.PDF_SlipChart;
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
 import com.ecsail.repository.interfaces.MembershipRepository;
-import com.ecsail.sql.select.SqlMembershipList;
 import com.ecsail.sql.select.SqlSlip;
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.dto.SlipDTO;
@@ -27,6 +26,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 
+import java.time.LocalDate;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -45,7 +46,7 @@ public class TabSlips extends Tab {
 
 	public TabSlips(String text) {
 		super(text);
-		this.slipmemberships = FXCollections.observableArrayList(membershipRepository.getSlipRoster(BaseApplication.selectedYear));
+		this.slipmemberships = FXCollections.observableArrayList(membershipRepository.getSlipRoster(String.valueOf(Year.now().getValue())));
 		this.subleaserMemberships = FXCollections.observableArrayList();
 		// gets all slips
 		this.slips = SqlSlip.getSlips();
@@ -65,7 +66,7 @@ public class TabSlips extends Tab {
 		    }
 		});
 		
-		createPdfButton.setOnAction((event) -> new PDF_SlipChart(BaseApplication.selectedYear));
+		createPdfButton.setOnAction((event) -> new PDF_SlipChart(String.valueOf(Year.now().getValue())));
 				
 		///////////////// ATTRIBUTES /////////////////
 		
@@ -429,7 +430,7 @@ public class TabSlips extends Tab {
 
 	private void addNameToSlip(MembershipListDTO m) {
 		if(m.getSubLeaser() != 0) {  /// this slip is subleased
-			subleaserMemberships.add(SqlMembershipList.getMembershipFromList(m.getSubLeaser(), BaseApplication.selectedYear));
+			subleaserMemberships.add(membershipRepository.getMembershipByMsIdAndYear(m.getSubLeaser(), Year.now().getValue()));
 			slipsHash.get(m.getSlip()).setText(m.getSlip() + " " + subleaserMemberships.get(subleaserMemberships.size() - 1).getLastName() + " " + subleaserMemberships.get(subleaserMemberships.size() - 1).getFirstName().charAt(0) + ".");
 			slipsHash.get(m.getSlip()).setFill(Color.CORNFLOWERBLUE);
 		} else { // this slip is owned

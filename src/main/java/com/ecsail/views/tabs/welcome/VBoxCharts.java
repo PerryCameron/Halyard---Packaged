@@ -14,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.stream.IntStream;
@@ -31,7 +32,7 @@ public class VBoxCharts extends VBox {
     BooleanProperty dataBaseStatisticsRefreshed = new SimpleBooleanProperty(false);
 
     public VBoxCharts() {
-        this.currentYear = Integer.parseInt(HalyardPaths.getYear());
+        this.currentYear = Year.now().getValue();
         this.defaultStartYear = currentYear - 20;
         // todo I think this needs to be changed to reload stats
         this.stats = SqlStats.getStatistics(defaultStartYear, defaultStartYear + defaultNumbOfYears);
