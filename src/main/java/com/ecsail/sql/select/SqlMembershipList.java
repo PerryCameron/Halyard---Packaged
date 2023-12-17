@@ -1,9 +1,7 @@
 package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
-//import com.ecsail.gui.dialogues.Dialogue_ErrorSQL;
-//import com.ecsail.main.Halyard;
-//import com.ecsail.main.HalyardPaths;
+
 import com.ecsail.HalyardPaths;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.dto.MembershipListDTO;
@@ -15,17 +13,6 @@ import java.sql.SQLException;
 
 public class SqlMembershipList {
 
-    public static ObservableList<MembershipListDTO> getRoster(String query) {
-        ObservableList<MembershipListDTO> rosters = FXCollections.observableArrayList();
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            queryToArrayList(rosters, rs);
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            BaseApplication.logger.error(e.getMessage());
-        }
-        return rosters;
-    }
 
     public static ObservableList<MembershipListDTO> getRosterOfKayakRackOwners(String year) {
         ObservableList<MembershipListDTO> rosters = FXCollections.observableArrayList();

@@ -13,6 +13,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MembershipRepositoryImpl implements MembershipRepository {
@@ -184,12 +185,14 @@ public class MembershipRepositoryImpl implements MembershipRepository {
     }
     @Override
     public MembershipListDTO getMembershipFromList(int ms_id, String year) {
-        String sql = "SELECT m.ms_id, m.p_id, id.membership_id, id.fiscal_year, m.join_date, " +
-                "id.mem_type, s.SLIP_NUM, p.l_name, p.f_name, s.subleased_to, m.address, m.city, m.state, " +
-                "m.zip FROM slip s RIGHT JOIN membership m ON m.ms_id = s.ms_id " +
-                "LEFT JOIN membership_id id ON m.ms_id = id.ms_id " +
-                "LEFT JOIN person p ON p.ms_id = m.ms_id WHERE id.fiscal_year = ? " +
-                "AND p.member_type = 1 AND m.ms_id = ?";
+        String sql = """
+                SELECT m.ms_id, m.p_id, id.membership_id, id.fiscal_year, m.join_date,
+                id.mem_type, s.SLIP_NUM, p.l_name, p.f_name, s.subleased_to, m.address, m.city, m.state,
+                m.zip FROM slip s RIGHT JOIN membership m ON m.ms_id = s.ms_id
+                LEFT JOIN membership_id id ON m.ms_id = id.ms_id
+                LEFT JOIN person p ON p.ms_id = m.ms_id WHERE id.fiscal_year = ?
+                AND p.member_type = 1 AND m.ms_id = ?
+                """;
         try {
             return template.queryForObject(sql, new MembershipListRowMapper(), year, ms_id);
         } catch (EmptyResultDataAccessException e) {
@@ -201,6 +204,26 @@ public class MembershipRepositoryImpl implements MembershipRepository {
             return null; // or handle appropriately
         }
     }
+    @Override
+    public List<MembershipListDTO> getRoster(String year, boolean isActive) {
+        String sql = """
+                SELECT m.ms_id, m.p_id, id.membership_id, id.fiscal_year, m.join_date, id.mem_type, 
+                s.SLIP_NUM, p.l_name, p.f_name, s.subleased_to, m.address, m.city, m.state, m.zip 
+                FROM slip s
+                RIGHT JOIN membership m ON m.ms_id = s.ms_id 
+                LEFT JOIN membership_id id ON m.ms_id = id.ms_id
+                LEFT JOIN person p ON p.ms_id = m.ms_id
+                WHERE id.fiscal_year = ? AND p.member_type = 1 AND id.renew = ?
+                ORDER BY id.membership_id
+                """;
+        try {
+            return template.query(sql, new MembershipListRowMapper(), year, isActive);
+        } catch (DataAccessException e) {
+            logger.error("Unable to SELECT roster: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
 
 
 

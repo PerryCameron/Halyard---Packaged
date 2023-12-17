@@ -7,10 +7,12 @@ import com.ecsail.connection.PortForwardingL;
 import com.ecsail.connection.Sftp;
 import com.ecsail.dto.LoginDTO;
 import com.ecsail.enums.Officer;
-import com.ecsail.sql.select.SqlMembershipList;
+import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.interfaces.MembershipRepository;
 import com.jcraft.jsch.JSchException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -28,6 +30,7 @@ public class MainModel {
     private StringProperty host = new SimpleStringProperty();
     private StringProperty localSqlPort = new SimpleStringProperty();
     private AppConfig appConfig;
+    private MembershipRepository membershipRepository;
 
     public MainModel() {
         this.logins = setLogins();
@@ -48,7 +51,9 @@ public class MainModel {
             BaseApplication.logger.info("SSH connection is not being used");
         }
         if(createConnection(user.get(), pass.get(), loopback, Integer.parseInt(localSqlPort.get()), currentLogon.getDatabase())) {
-            BaseApplication.activeMemberships = SqlMembershipList.getRoster(BaseApplication.selectedYear, true);
+            this.membershipRepository = new MembershipRepositoryImpl();
+            BaseApplication.activeMemberships =
+                    FXCollections.observableArrayList(membershipRepository.getRoster(BaseApplication.selectedYear, true));
             // gets a list of all the board positions to use throughout the application
             BaseApplication.boardPositions = Officer.getPositionList();
             this.scp = new Sftp();
