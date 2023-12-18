@@ -177,74 +177,18 @@ public class SqlUpdate {
 		}
 	}
 
-	public static void updateBirthday(LocalDate date, PersonDTO person) {
-		String query = "UPDATE person SET birthday='" + date
-				+ "' WHERE p_id=" + person.getP_id();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
 
-	public static void updateNickName(String nName, PersonDTO person) {
-		String query = "UPDATE person SET NICK_NAME='" + nName
-				+ "' WHERE p_id=" + person.getP_id();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to save nickname","");
-		}
-	}
 
-	public static void updateBusiness(String business, PersonDTO person ) {
-		String query = "UPDATE person SET business='" + business
-				+ "' WHERE p_id=" + person.getP_id();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
 
-	public static void updateOccupation(String occupation, PersonDTO person) {
-		String query = "UPDATE person SET occupation='" + occupation
-				+ "' WHERE p_id=" + person.getP_id();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
 
-	public static void updateLastName(String lname, PersonDTO person)  { // Business
-		String query = "UPDATE person SET l_name='" + lname
-				+ "' WHERE p_id=" + person.getP_id();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
 
-	public static void updateFirstName(String fName, PersonDTO person) {
-		String query = "UPDATE person SET f_name='" + fName
-				+ "' WHERE p_id=" + person.getP_id();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
 
-	public static void updatePersonField(String field, int p_id, Boolean attribute) { // updates active/inactive
-		String query = "UPDATE person SET " + field + "=" + attribute + " WHERE p_id=" + p_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
+
+
+
+
+
+
 
 
 

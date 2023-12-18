@@ -260,7 +260,7 @@ public class VBoxPersonMove extends VBox {
     // will select PersonDTO attached to tab
     private PersonDTO getPerson(Tab tab) {
         HBoxPerson hBoxPerson = (HBoxPerson) tab.getContent();
-        return hBoxPerson.getPerson();
+        return hBoxPerson.getPersonDTO();
     }
 
     // sets the combo box values for person on other tab

@@ -4,10 +4,11 @@ import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.Launcher;
 import com.ecsail.dto.PersonDTO;
+import com.ecsail.repository.implementations.PersonRepositoryImpl;
+import com.ecsail.repository.interfaces.PersonRepository;
 import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.views.tabs.membership.people.person.*;
 import com.ecsail.views.tabs.people.TabPeople;
-import com.ecsail.sql.SqlUpdate;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -29,15 +30,16 @@ import java.util.Objects;
 // TODO need to add ability to switch primary and secondary
 
 public class HBoxPerson extends HBox {
-    private final PersonDTO person;
+    private final PersonDTO personDTO;
     public TabMembership parent;
     private final ObservableList<PersonDTO> people;  // this is only for updating people list when in people list mode
     TabPersonProperties propertiesTab; // this is here for a getter, so I can get to combobox
+    private final PersonRepository personRepository = new PersonRepositoryImpl();
 
 
     public HBoxPerson(PersonDTO p, TabMembership parent) {
         this.parent = parent;
-        this.person = p;
+        this.personDTO = p;
 
 
         if (Launcher.tabOpen("People List")) {
@@ -78,10 +80,10 @@ public class HBoxPerson extends HBox {
         VBox vbBusinessBox = new VBox();
         VBox vbBirthdayBox = new VBox();
 
-        HBox hboxPhone = new HBoxPhone(person); // Phone
-        HBox hboxEmail = new HBoxEmail(person); // Email
-        HBox hboxOfficer = new HBoxOfficer(person); // Officer
-        HBox hboxAward = new HBoxAward(person);
+        HBox hboxPhone = new HBoxPhone(personDTO); // Phone
+        HBox hboxEmail = new HBoxEmail(personDTO); // Email
+        HBox hboxOfficer = new HBoxOfficer(personDTO); // Officer
+        HBox hboxAward = new HBoxAward(personDTO);
 
         Label fnameLabel = new Label("First Name");
         Label lnameLabel = new Label("Last Name");
@@ -172,51 +174,37 @@ public class HBoxPerson extends HBox {
 
 
         fnameTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            //focus out
             if (oldValue) {  // we have focused and unfocused
-                SqlUpdate.updateFirstName(fnameTextField.getText(), person);
-                if (person.getMemberType() == 1)  // only update table if this is the primary member
-                    parent.getModel().getMembership().setFname(fnameTextField.getText());
-                if (people != null)  // this updates the people list if in people mode
-                    people.get(TabPeople.getIndexByPid(person.getP_id())).setFname(fnameTextField.getText());
+                personDTO.setFname(fnameTextField.getText());
+                personRepository.updatePerson(personDTO);
             }
         });
 
         lnameTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            //focus out
             if (oldValue) {  // we have focused and unfocused
-                SqlUpdate.updateLastName(lnameTextField.getText(), person);
-                if (person.getMemberType() == 1)  // only update table if this is the primary member
-                    parent.getModel().getMembership().setLname(lnameTextField.getText());
-                if (people != null)  // this updates the people list if in people mode
-                    people.get(TabPeople.getIndexByPid(person.getP_id())).setLname(lnameTextField.getText());
+                personDTO.setLname(lnameTextField.getText());
+                personRepository.updatePerson(personDTO);
             }
         });
 
         occupationTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            //focus out
             if (oldValue) {  // we have focused and unfocused
-                SqlUpdate.updateOccupation(occupationTextField.getText(), person);
-                if (people != null)  // this updates the people list if in people mode
-                    people.get(TabPeople.getIndexByPid(person.getP_id())).setOccupation(occupationTextField.getText());
+                personDTO.setOccupation(occupationTextField.getText());
+                personRepository.updatePerson(personDTO);
             }
         });
 
         businessTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            //focus out
             if (oldValue) {  // we have focused and unfocused
-                SqlUpdate.updateBusiness(businessTextField.getText(), person);
-                if (people != null)  // this updates the people list if in people mode
-                    people.get(TabPeople.getIndexByPid(person.getP_id())).setBusiness(businessTextField.getText());
+                personDTO.setBusiness(businessTextField.getText());
+                personRepository.updatePerson(personDTO);
             }
         });
 
         nnameTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            //focus out
             if (oldValue) {  // we have focused and unfocused
-                SqlUpdate.updateNickName(nnameTextField.getText(), person);
-                if (people != null)  // this updates the people list if in people mode
-                    people.get(TabPeople.getIndexByPid(person.getP_id())).setBusiness(businessTextField.getText());
+                personDTO.setNname(nnameTextField.getText());
+                personRepository.updatePerson(personDTO);
             }
         });
         
@@ -226,9 +214,9 @@ public class HBoxPerson extends HBox {
         photo.setOnMouseEntered(en -> hboxPictureFrame.setStyle("-fx-background-color: #201ac9;"));
 
 
-        if (person.getBirthday() != null) {
+        if (personDTO.getBirthday() != null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDate date = LocalDate.parse(person.getBirthday(), formatter);
+            LocalDate date = LocalDate.parse(personDTO.getBirthday(), formatter);
             birthdayDatePicker.setValue(date);
         }
         // This is a hack I got from here
@@ -266,8 +254,9 @@ public class HBoxPerson extends HBox {
                 } catch (DateTimeParseException e) {
                     birthdayDatePicker.getEditor().setText(birthdayDatePicker.getConverter().toString(birthdayDatePicker.getValue()));
                 }
-                LocalDate i = birthdayDatePicker.getValue();
-                SqlUpdate.updateBirthday(i, person);
+                LocalDate localDate = birthdayDatePicker.getValue();
+                personDTO.setBirthday(localDate.toString());
+                personRepository.updatePerson(personDTO);
             }
         });
 
@@ -277,11 +266,11 @@ public class HBoxPerson extends HBox {
         hboxMemberInfoAndPicture.getChildren().addAll(vboxMemberInfo, vboxPicture);
         hboxPictureFrame.getChildren().add(photo);
         vboxPicture.getChildren().add(hboxPictureFrame);
-        fnameTextField.setText(person.getFname());
-        lnameTextField.setText(person.getLname());
-        businessTextField.setText(person.getBusiness());
-        occupationTextField.setText(person.getOccupation());
-        nnameTextField.setText(person.getNname());
+        fnameTextField.setText(personDTO.getFname());
+        lnameTextField.setText(personDTO.getLname());
+        businessTextField.setText(personDTO.getBusiness());
+        occupationTextField.setText(personDTO.getOccupation());
+        nnameTextField.setText(personDTO.getNname());
         infoTabPane.getTabs().add(propertiesTab);
         infoTabPane.getTabs().add(new Tab("Phone", hboxPhone));
         infoTabPane.getTabs().add(new Tab("Email", hboxEmail));
@@ -316,8 +305,8 @@ public class HBoxPerson extends HBox {
         return new ImageView(memberPhoto);
     }
 
-    public PersonDTO getPerson() {
-        return person;
+    public PersonDTO getPersonDTO() {
+        return personDTO;
     }
 
     public TabPersonProperties getPropertiesTab() {
