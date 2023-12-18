@@ -117,6 +117,15 @@ public class PersonRepositoryImpl implements PersonRepository {
             logger.error("There was a problem with the UPDATE: " + e.getMessage());
         }
     }
+    @Override
+    public void removePersonFromMembership(PersonDTO p) {
+        String sql = "UPDATE person SET MS_ID = null, OLD_MSID = ? WHERE P_ID = ?";
+        try {
+            template.update(sql, p.getMs_id(), p.getP_id());
+        } catch (DataAccessException e) {
+            logger.error("There was a problem with the UPDATE: " + e.getMessage());
+        }
+    }
 
 
 }

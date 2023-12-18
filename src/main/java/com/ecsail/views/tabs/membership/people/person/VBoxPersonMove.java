@@ -9,8 +9,6 @@ import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.views.tabs.membership.people.HBoxPerson;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlExists;
-import com.ecsail.sql.SqlPerson;
-import com.ecsail.sql.SqlUpdate;
 import com.ecsail.dto.PersonDTO;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -23,11 +21,8 @@ import java.util.Optional;
 // This class is for the options in the properties box inside the person tab
 public class VBoxPersonMove extends VBox {
     private final PersonDTO person;
-
     final ComboBox<String> combo_box = new ComboBox<>();
-
     boolean calledFromMembershipTab = false;
-
     PersonRepository personRepository = new PersonRepositoryImpl();
 
     public VBoxPersonMove(PersonDTO person, TabPane personTabPane) {
@@ -92,7 +87,7 @@ public class VBoxPersonMove extends VBox {
                 changeMembershipType(personTabPane, combo_box.getValue());
             }
             if (rb1.isSelected()) {
-                List<PersonDTO> people = SqlPerson.getPeople(person.getMs_id());
+                List<PersonDTO> people = personRepository.getPeople(person.getMs_id());
                 // makes sure there is a secondary to take a primaries place
                 if(checkIfCanRemovePerson(person,people)) {
                     Optional<ButtonType> result = createConformation(
@@ -105,7 +100,7 @@ public class VBoxPersonMove extends VBox {
                     );
                     if (result.isPresent() && result.get() == ButtonType.OK) {
                         // TODO set the secondary to primary if this person is a primary user
-                        SqlUpdate.removePersonFromMembership(person);
+                        personRepository.removePersonFromMembership(person);
                         removeThisTab(personTabPane);
                     }
                 } else
@@ -119,7 +114,7 @@ public class VBoxPersonMove extends VBox {
                                 + " from the database",
                         "Are you sure you want to delete " + person.getFullName() + " from this database?");
                 if (result.isPresent() && result.get() == ButtonType.OK) {
-                    SqlDelete.deletePerson(person);
+                    personRepository.deletePerson(person);
                     // TODO error check to make sure we are in membership view
                     removeThisTab(personTabPane);
                 }
@@ -202,14 +197,16 @@ public class VBoxPersonMove extends VBox {
             Tab secondaryTab = getTab(personTabPane, "Secondary");
             assert secondaryTab != null;
             PersonDTO secondary = getPerson(secondaryTab);
+            secondary.setMemberType(person.getMemberType());
             // change the existing secondary to new value, probably primary
-            SqlUpdate.updatePersonChangeMemberType(secondary, person.getMemberType());
+            personRepository.updatePerson(secondary);
             // sets combobox values for the other member being switched
             setOtherComboBoxValues(secondaryTab, 1);
             secondaryTab.setText("Primary");
         }
         // update person to secondary
-        SqlUpdate.updatePersonChangeMemberType(person, MemberType.SECONDARY.getCode());
+        person.setMemberType(MemberType.SECONDARY.getCode());
+        personRepository.updatePerson(person);
         // create a variable to use
         Tab thisTab = personTabPane.getSelectionModel().getSelectedItem();
         thisTab.setText("Secondary");
@@ -229,13 +226,15 @@ public class VBoxPersonMove extends VBox {
             assert primaryTab != null;
             PersonDTO primary = getPerson(primaryTab);
             // change the existing primary to new value, probably secondary
-            SqlUpdate.updatePersonChangeMemberType(primary, person.getMemberType());
+            primary.setMemberType(person.getMemberType());
+            personRepository.updatePerson(primary);
             // sets combobox values for the other member being switched removing option (a primary shouldn't have a primary listing)
             setOtherComboBoxValues(primaryTab, 2);
             primaryTab.setText("Secondary");
         }
         // update person to primary
-        SqlUpdate.updatePersonChangeMemberType(person, MemberType.PRIMARY.getCode());
+        person.setMemberType(MemberType.PRIMARY.getCode());
+        personRepository.updatePerson(person);
         // create a variable to use
         Tab thisTab = personTabPane.getSelectionModel().getSelectedItem();
         thisTab.setText("Primary");

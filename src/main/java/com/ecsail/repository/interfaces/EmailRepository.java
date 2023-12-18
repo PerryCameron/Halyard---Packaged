@@ -11,7 +11,7 @@ public interface EmailRepository {
     List<Email_InformationDTO> getEmailInfo();
     List<EmailDTO> getEmail(int p_id);
     EmailDTO getPrimaryEmail(PersonDTO person);
-    int update(EmailDTO o);
+    int updateEmail(EmailDTO emailDTO);
     int insert(EmailDTO emailDTO);
     void deleteEmail(int p_id);
     boolean emailFromActiveMembershipExists(String email, int year);

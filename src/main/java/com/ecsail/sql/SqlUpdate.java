@@ -138,15 +138,6 @@ public class SqlUpdate {
 	}
 
 
-	public static void updateEmail(String field, int email_id, Boolean attribute) {  // overload so compact
-		String query = "UPDATE email SET " + field + "=" + attribute + " WHERE email_id=" + email_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
-
 
 	public static void updateOfficer(String field, int officer_id, String attribute) {
 		String query = "UPDATE officer SET " + field + "='" + attribute + "' WHERE o_id=" + officer_id;

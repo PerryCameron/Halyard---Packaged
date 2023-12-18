@@ -1,5 +1,7 @@
 package com.ecsail.views.tabs.membership.people.person;
 
+import com.ecsail.repository.implementations.EmailRepositoryImpl;
+import com.ecsail.repository.interfaces.EmailRepository;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.dto.EmailDTO;
 import javafx.beans.property.ObjectProperty;
@@ -9,6 +11,7 @@ import javafx.scene.control.TableCell;
 public class RadioButtonCell extends TableCell<EmailDTO, Boolean> {
 
     private final ObjectProperty<EmailDTO> emailDTOObjectProperty;
+    private final EmailRepository emailRepository = new EmailRepositoryImpl();
 
     public RadioButtonCell(ObjectProperty<EmailDTO> emailDTOObjectProperty) {
         this.emailDTOObjectProperty = emailDTOObjectProperty;
@@ -30,11 +33,11 @@ public class RadioButtonCell extends TableCell<EmailDTO, Boolean> {
                             EmailDTO emailDTO = getTableRow().getItem();
                             if (emailDTOObjectProperty.get() != null) {
                                 emailDTOObjectProperty.get().setPrimaryUse(false);
-                                SqlUpdate.updateEmail("primary_use", emailDTOObjectProperty.get().getEmail_id(), false);
+                                emailRepository.updateEmail(emailDTO);
                             }
 
                             emailDTO.setPrimaryUse(true);
-                            SqlUpdate.updateEmail("primary_use", emailDTO.getEmail_id(), true);
+                            emailRepository.updateEmail(emailDTO);
                             emailDTOObjectProperty.set(emailDTO);
                         }
                     });
