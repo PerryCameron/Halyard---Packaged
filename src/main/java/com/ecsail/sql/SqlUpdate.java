@@ -246,53 +246,13 @@ public class SqlUpdate {
 		}
 	}
 
-	public static void updatePerson(PersonDTO p) { // updates active/inactive
-		String query = "UPDATE person SET MEMBER_TYPE=" + p.getMemberType()
-				+ ", MS_ID=" + p.getMs_id()
-				+ ", F_NAME='" + p.getFname()
-				+ "', L_NAME='" +p.getLname()
-//					+ "', BIRTHDAY='" + p.getBirthday()
-				+ "', OCCUPATION='" + p.getOccupation()
-				+ "', BUSINESS='" + p.getBusiness()
-				+ "', IS_ACTIVE=" + p.isActive()
-				+ ", NICK_NAME='" + p.getNname()
-				+ "' ,OLD_MSID=" +  p.getOldMsid()
-				+ " WHERE p_id=" + p.getP_id();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
 
-	public static void updateSlip(int ms_id, MembershipListDTO membership) {  // ms_id in this case came from the text field and is converted from membership_id
-		String query = "UPDATE slip SET subleased_to=" + ms_id + " where ms_id=" + membership.getMsId();
-		try {
-			BaseApplication.connect.executeQuery(query);
-			membership.setSubLeaser(ms_id);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
 
-	public static void releaseSlip(MembershipListDTO membership) {  // this releases the slip using the slip owners ms_id
-		String query = "UPDATE slip SET subleased_to=null where ms_id=" + membership.getMsId();
-		try {
-			BaseApplication.connect.executeQuery(query);
-			membership.setSubLeaser(0);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
 
-	public static void updateMemo(int memo_id, String field, String attribute)  {
-		String query = "UPDATE memo SET " + field + "='" + attribute + "' WHERE memo_id=" + memo_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
+
+
+
+
 
 	public static void updatePayment(int pay_id, String field, String attribute) {
 		String query = "UPDATE payment SET " + field + "='" + attribute + "' WHERE pay_id=" + pay_id;

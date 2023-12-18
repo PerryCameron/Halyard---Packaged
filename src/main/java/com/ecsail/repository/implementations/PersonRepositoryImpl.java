@@ -97,6 +97,26 @@ public class PersonRepositoryImpl implements PersonRepository {
             return new ArrayList<>(); // Return an empty list in case of an exception
         }
     }
+    @Override
+    public void updatePerson(PersonDTO p) {
+        String sql = """
+        UPDATE person 
+        SET MEMBER_TYPE = ?, MS_ID = ?, F_NAME = ?, L_NAME = ?, 
+            BIRTHDAY = ?, OCCUPATION = ?, BUSINESS = ?, 
+            IS_ACTIVE = ?, NICK_NAME = ?, OLD_MSID = ? 
+        WHERE p_id = ?
+        """;
+
+        try {
+            template.update(sql,
+                    p.getMemberType(), p.getMs_id(), p.getFname(), p.getLname(),
+                    p.getBirthday(), p.getOccupation(), p.getBusiness(),
+                    p.isActive() ? 1 : 0, p.getNname(), p.getOldMsid(),
+                    p.getP_id());
+        } catch (DataAccessException e) {
+            logger.error("There was a problem with the UPDATE: " + e.getMessage());
+        }
+    }
 
 
 }

@@ -3,6 +3,8 @@ package com.ecsail.views.tabs.membership.people.person;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.enums.MemberType;
+import com.ecsail.repository.implementations.PersonRepositoryImpl;
+import com.ecsail.repository.interfaces.PersonRepository;
 import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.views.tabs.membership.people.HBoxPerson;
 import com.ecsail.sql.SqlDelete;
@@ -25,6 +27,8 @@ public class VBoxPersonMove extends VBox {
     final ComboBox<String> combo_box = new ComboBox<>();
 
     boolean calledFromMembershipTab = false;
+
+    PersonRepository personRepository = new PersonRepositoryImpl();
 
     public VBoxPersonMove(PersonDTO person, TabPane personTabPane) {
         this.person = person;
@@ -128,7 +132,7 @@ public class VBoxPersonMove extends VBox {
                 person.setOldMsid(oldMsid);
                 // TODO make sure it is an integer and that this membership exists
                 person.setMs_id(Integer.parseInt(msidTextField.getText()));
-                SqlUpdate.updatePerson(person);
+                personRepository.updatePerson(person);
                 // TODO error check to make sure we are in membership view
                 removeThisTab(personTabPane);
             }

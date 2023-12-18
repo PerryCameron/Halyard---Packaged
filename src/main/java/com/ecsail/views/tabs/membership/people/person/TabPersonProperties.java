@@ -1,5 +1,7 @@
 package com.ecsail.views.tabs.membership.people.person;
 
+import com.ecsail.repository.implementations.PersonRepositoryImpl;
+import com.ecsail.repository.interfaces.PersonRepository;
 import com.ecsail.views.tabs.membership.people.HBoxPerson;
 import com.ecsail.views.tabs.people.TabPeople;
 import com.ecsail.sql.SqlPerson;
@@ -17,12 +19,12 @@ import javafx.scene.layout.VBox;
 public class TabPersonProperties extends Tab {
 	private final PersonDTO person;  // this is the person we are focused on.
 	private final VBoxPersonMove personMove;
+	private final PersonRepository personRepository = new PersonRepositoryImpl();
 	HBoxPerson parent;
 	public TabPersonProperties(PersonDTO p, HBoxPerson parent) {
 		super("Properties");
 		this.parent = parent;
 		this.person = p;
-//		this.people = pe;
 		this.personMove = new VBoxPersonMove(person, parent.parent.getModel().getPeopleTabPane());
 		int age = SqlPerson.getPersonAge(person);
 
@@ -32,12 +34,9 @@ public class TabPersonProperties extends Tab {
 		var vBoxRight = new VBox();
 		var hboxGrey = new HBox(); // this is here for the grey background to make nice appearance
 		var hboxMemberType = new HBox();
-		var activeCheckBox = new CheckBox("Is Active");
-		
+
 		/////////////////  ATTRIBUTES  /////////////////////
-		
-        activeCheckBox.setSelected(person.isActive());
-		
+
         HBox.setHgrow(hboxGrey, Priority.ALWAYS);
 		hboxMain.setId("custom-tap-pane-frame");
 		hboxGrey.setId("box-background-light");
@@ -55,13 +54,6 @@ public class TabPersonProperties extends Tab {
 
 		vBoxLeft.setPadding(new Insets(5,5,5,5));
 		//////////  LISTENERS /////
-         
-        activeCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-		   //activeCheckBox.setSelected(!newValue);
-			SqlUpdate.updatePersonField("IS_ACTIVE",person.getP_id(),newValue);
-			if(parent.parent.getModel().getPeople() != null)  // this updates the people list if in people mode
-				parent.parent.getModel().getPeople().get(TabPeople.getIndexByPid(person.getP_id())).setActive(newValue);
-		});
 
 		//////////////// SET  CONTENT ////////////////
 		vBoxLeft.getChildren().addAll(
