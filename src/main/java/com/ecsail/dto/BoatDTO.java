@@ -82,6 +82,26 @@ public class BoatDTO {
 		this.aux = new SimpleBooleanProperty(false);
 	}
 
+	public BoatDTO(BoatListDTO boatListDTO) {
+		this.boatId = new SimpleIntegerProperty(boatListDTO.getBoatId());
+		this.msId = new SimpleIntegerProperty(boatListDTO.getMsId());
+		this.manufacturer = new SimpleStringProperty(boatListDTO.getManufacturer());
+		this.manufactureYear = new SimpleStringProperty(boatListDTO.getManufactureYear());
+		this.registrationNum = new SimpleStringProperty(boatListDTO.getRegistrationNum());
+		this.model = new SimpleStringProperty(boatListDTO.getModel());
+		this.boatName = new SimpleStringProperty(boatListDTO.getBoatName());
+		this.sailNumber = new SimpleStringProperty(boatListDTO.getSailNumber());
+		this.hasTrailer = new SimpleBooleanProperty(boatListDTO.hasTrailer());
+		this.loa = new SimpleStringProperty(boatListDTO.getLoa());
+		this.displacement = new SimpleStringProperty(boatListDTO.getDisplacement());
+		this.keel = new SimpleStringProperty(boatListDTO.getKeel());
+		this.phrf = new SimpleStringProperty(boatListDTO.getPhrf());
+		this.draft = new SimpleStringProperty(boatListDTO.getDraft());
+		this.beam = new SimpleStringProperty(boatListDTO.getBeam());
+		this.lwl = new SimpleStringProperty(boatListDTO.getLwl());
+		this.aux = new SimpleBooleanProperty(boatListDTO.isAux());
+	}
+
 
 
 	public BoatDTO() {

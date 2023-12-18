@@ -91,12 +91,6 @@ public class Launcher extends VBox {
         tabPane.getSelectionModel().select(getTabIndex("Boat " + b.getBoatId()));
     }
 
-    public static void openBoatViewTab(BoatListDTO b) {
-        if (!tabOpen("Boat"))
-            tabPane.getTabs().add(new TabBoatView("Boat " + b.getBoatId(), b));
-        tabPane.getSelectionModel().select(getTabIndex("Boat " + b.getBoatId()));
-    }
-
     public static void openWelcomeTab(HBoxWelcome boxWelcome) {
         tabPane.getTabs().add(new TabWelcome(boxWelcome));
     }

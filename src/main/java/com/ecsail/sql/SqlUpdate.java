@@ -41,15 +41,6 @@ public class SqlUpdate {
 
 
 
-	public static void removePersonFromMembership(PersonDTO p) {
-		String query = "UPDATE person SET MS_ID=null, OLD_MSID="+p.getMs_id()+" where P_ID=" + p.getP_id();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
-
 	public static void updateBoat(int boat_id, String keel) {
 		String query = "UPDATE boat SET keel='" + keel + "' WHERE boat_id=" + boat_id;
 		try {

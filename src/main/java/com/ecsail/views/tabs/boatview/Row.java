@@ -1,8 +1,10 @@
 package com.ecsail.views.tabs.boatview;
 
-import com.ecsail.enums.KeelType;
-import com.ecsail.sql.SqlUpdate;
+import com.ecsail.dto.BoatDTO;
 import com.ecsail.dto.DbBoatSettingsDTO;
+import com.ecsail.enums.KeelType;
+import com.ecsail.repository.interfaces.BoatRepository;
+import com.ecsail.sql.SqlUpdate;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,9 +19,14 @@ import javafx.scene.text.Text;
 public class Row extends HBox {
     TabBoatView parent;
     DbBoatSettingsDTO dbBoatSettingsDTO;
+    private final BoatRepository boatRepository;
+    private final BoatDTO boatDTO;
     public Row(TabBoatView tabBoatView, DbBoatSettingsDTO dbBoatSettingsDTO) {
         this.parent = tabBoatView;
         this.dbBoatSettingsDTO = dbBoatSettingsDTO;
+        this.boatRepository = parent.getBoatRepository();
+        this.boatDTO = parent.getBoatDTO();
+
         if(dbBoatSettingsDTO.isVisible()) {
             VBox labelBox = new VBox();
             VBox dataBox = new VBox();
@@ -37,49 +44,60 @@ public class Row extends HBox {
                 .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                     // focus out
                     if (oldValue) { // we have focused and unfocused
-                        SqlUpdate.updateBoat(dbBoatSettingsDTO.getFieldName(), parent.boatDTO.getBoatId(), textField.getText());
-                        if(parent.fromList)
                         setPojo(dbBoatSettingsDTO.getFieldName(), textField.getText());
+                        boatRepository.updateBoat(boatDTO);
                     }
                 });
     }
 
     private void setCheckBoxListener(CheckBox checkBox) {
-        checkBox.selectedProperty().addListener((obs, wasPreviouslySelected, isNowSelected) ->
-                SqlUpdate.updateBoat(parent.boatDTO.getBoatId(), dbBoatSettingsDTO.getFieldName(), isNowSelected));
-//                setPojo(dbBoatDTO.getFieldName(), isNowSelected);
+        checkBox.selectedProperty().addListener((obs, wasPreviouslySelected, isNowSelected) -> {
+                    switch (dbBoatSettingsDTO.getFieldName()) {
+                        case "HAS_TRAILER":
+                            boatDTO.setHasTrailer(isNowSelected);
+                            break;
+                        case "AUX":
+                            boatDTO.setAux(isNowSelected);
+                            break;
+                        // You can add more cases as needed
+                    }
+                    boatRepository.updateBoat(boatDTO);
+        });
     }
 
     private void setComboBoxListener(ComboBox<KeelType> comboBox) {
         comboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-            SqlUpdate.updateBoat(parent.boatDTO.getBoatId(), newValue.getCode());
-            if(parent.fromList)
-            setPojo(dbBoatSettingsDTO.getFieldName(), newValue.getCode());
+                setPojo(dbBoatSettingsDTO.getFieldName(), newValue.getCode());
+            boatRepository.updateBoat(boatDTO);
         });
     }
 
     private Node getDataBoxContent(DbBoatSettingsDTO dbBoatDTO) {
-        if(dbBoatDTO.getControlType().equals("Text")) {
-            Text text = new Text(setStringValue(dbBoatDTO.getFieldName()));
-            return text;
-        } else if(dbBoatDTO.getControlType().equals("TextField")) {
-            TextField textField = new TextField(setStringValue(dbBoatDTO.getFieldName()));
-            textField.setPrefSize(150, 10);
-            setTextFieldListener(textField);
-            return textField;
-        } else if (dbBoatDTO.getControlType().equals("CheckBox")) {
-            CheckBox checkBox = new CheckBox();
-            checkBox.setPrefHeight(10);
-            checkBox.setSelected(setBooleanValue(dbBoatDTO.getFieldName()));
-            setCheckBoxListener(checkBox);
-            return checkBox;
-        } else if (dbBoatDTO.getControlType().equals("ComboBox")) {
-            ComboBox<KeelType> comboBox = new ComboBox<KeelType>();
-            comboBox.getItems().setAll(KeelType.values());
-            comboBox.setValue(KeelType.getByCode(parent.boatDTO.getKeel()));
-            comboBox.setPrefSize(150,10);
-            setComboBoxListener(comboBox);
-            return comboBox;
+        switch (dbBoatDTO.getControlType()) {
+            case "Text" -> {
+                return new Text(setStringValue(dbBoatDTO.getFieldName()));
+            }
+            case "TextField" -> {
+                TextField textField = new TextField(setStringValue(dbBoatDTO.getFieldName()));
+                textField.setPrefSize(150, 10);
+                setTextFieldListener(textField);
+                return textField;
+            }
+            case "CheckBox" -> {
+                CheckBox checkBox = new CheckBox();
+                checkBox.setPrefHeight(10);
+                checkBox.setSelected(setBooleanValue(dbBoatDTO.getFieldName()));
+                setCheckBoxListener(checkBox);
+                return checkBox;
+            }
+            case "ComboBox" -> {
+                ComboBox<KeelType> comboBox = new ComboBox<>();
+                comboBox.getItems().setAll(KeelType.values());
+                comboBox.setValue(KeelType.getByCode(parent.boatDTO.getKeel()));
+                comboBox.setPrefSize(150, 10);
+                setComboBoxListener(comboBox);
+                return comboBox;
+            }
         }
         return new Text("undefined");
     }
@@ -91,44 +109,41 @@ public class Row extends HBox {
     }
 
     private String setStringValue(String fieldName) {
-        if(fieldName.equals("BOAT_ID")) return String.valueOf(parent.boatDTO.getBoatId());
-        else if(fieldName.equals("BOAT_NAME")) return parent.boatDTO.getBoatName();
-        else if(fieldName.equals("MANUFACTURER")) return parent.boatDTO.getManufacturer();
-        else if(fieldName.equals("MANUFACTURE_YEAR")) return parent.boatDTO.getManufactureYear();
-        else if(fieldName.equals("REGISTRATION_NUM")) return parent.boatDTO.getRegistrationNum();
-        else if(fieldName.equals("MODEL")) return parent.boatDTO.getModel();
-        else if(fieldName.equals("PHRF")) return parent.boatDTO.getPhrf();
-        else if(fieldName.equals("BOAT_NAME")) return parent.boatDTO.getBoatName();
-        else if(fieldName.equals("SAIL_NUMBER")) return parent.boatDTO.getSailNumber();
-        else if(fieldName.equals("LENGTH")) return parent.boatDTO.getLoa();
-        else if(fieldName.equals("WEIGHT")) return parent.boatDTO.getDisplacement();
-        else if(fieldName.equals("KEEL")) return parent.boatDTO.getKeel();
-        else if(fieldName.equals("DRAFT")) return parent.boatDTO.getDraft();
-        else if(fieldName.equals("BEAM")) return parent.boatDTO.getBeam();
-        else if(fieldName.equals("LWL")) return parent.boatDTO.getLwl();
-        else
-            return "";
+        return switch (fieldName) {
+            case "BOAT_ID" -> String.valueOf(parent.boatDTO.getBoatId());
+            case "BOAT_NAME" -> parent.boatDTO.getBoatName();
+            case "MANUFACTURER" -> parent.boatDTO.getManufacturer();
+            case "MANUFACTURE_YEAR" -> parent.boatDTO.getManufactureYear();
+            case "REGISTRATION_NUM" -> parent.boatDTO.getRegistrationNum();
+            case "MODEL" -> parent.boatDTO.getModel();
+            case "PHRF" -> parent.boatDTO.getPhrf();
+            case "SAIL_NUMBER" -> parent.boatDTO.getSailNumber();
+            case "LENGTH" -> parent.boatDTO.getLoa();
+            case "WEIGHT" -> parent.boatDTO.getDisplacement();
+            case "KEEL" -> parent.boatDTO.getKeel();
+            case "DRAFT" -> parent.boatDTO.getDraft();
+            case "BEAM" -> parent.boatDTO.getBeam();
+            case "LWL" -> parent.boatDTO.getLwl();
+            default -> "";
+        };
     }
 
-    private String setPojo(String fieldName, String value) {
-        if (parent.fromList) {
-            if (fieldName.equals("BOAT_ID")) parent.boatListDTO.setBoatId(Integer.parseInt(value));
-            else if (fieldName.equals("BOAT_NAME")) parent.boatListDTO.setBoatName(value);
-            else if (fieldName.equals("MANUFACTURER")) parent.boatListDTO.setManufacturer(value);
-            else if (fieldName.equals("MANUFACTURE_YEAR")) parent.boatListDTO.setManufactureYear(value);
-            else if (fieldName.equals("REGISTRATION_NUM")) parent.boatListDTO.setRegistrationNum(value);
-            else if (fieldName.equals("MODEL")) parent.boatListDTO.setModel(value);
-            else if (fieldName.equals("PHRF")) parent.boatListDTO.setPhrf(value);
-            else if (fieldName.equals("BOAT_NAME")) parent.boatListDTO.setBoatName(value);
-            else if (fieldName.equals("SAIL_NUMBER")) parent.boatListDTO.setSailNumber(value);
-            else if (fieldName.equals("LENGTH")) parent.boatListDTO.setLoa(value);
-            else if (fieldName.equals("WEIGHT")) parent.boatListDTO.setDisplacement(value);
-            else if (fieldName.equals("KEEL")) parent.boatListDTO.setKeel(value);
-            else if (fieldName.equals("DRAFT")) parent.boatListDTO.setDraft(value);
-            else if (fieldName.equals("BEAM")) parent.boatListDTO.setBeam(value);
-            else if (fieldName.equals("LWL")) parent.boatListDTO.setLwl(value);
-        }
-        return "";
+    private void setPojo(String fieldName, String value) {
+            switch (fieldName) {
+                case "BOAT_ID" -> boatDTO.setBoatId(Integer.parseInt(value));
+                case "BOAT_NAME" -> boatDTO.setBoatName(value);
+                case "MANUFACTURER" -> boatDTO.setManufacturer(value);
+                case "MANUFACTURE_YEAR" -> boatDTO.setManufactureYear(value);
+                case "REGISTRATION_NUM" -> boatDTO.setRegistrationNum(value);
+                case "MODEL" -> boatDTO.setModel(value);
+                case "PHRF" -> boatDTO.setPhrf(value);
+                case "SAIL_NUMBER" -> boatDTO.setSailNumber(value);
+                case "LENGTH" -> boatDTO.setLoa(value);
+                case "WEIGHT" -> boatDTO.setDisplacement(value);
+                case "KEEL" -> boatDTO.setKeel(value);
+                case "DRAFT" -> boatDTO.setDraft(value);
+                case "BEAM" -> boatDTO.setBeam(value);
+                case "LWL" -> boatDTO.setLwl(value);
+            }
     }
-
 }

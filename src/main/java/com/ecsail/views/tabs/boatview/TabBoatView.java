@@ -51,23 +51,11 @@ public class TabBoatView extends Tab {
     private String localPath = System.getProperty("user.home") + "/.ecsc/boat_images/";
     private String[] extensionsAllowed = {"jpg","jpeg","png","bmp","gif"};
     private ImageView imageView;
-    protected boolean fromList;
 
     public TabBoatView(String text, BoatDTO boat) {
         super(text);
         this.boatDTO = boat;
-        this.fromList = false;
         this.boatSettings = (ArrayList<DbBoatSettingsDTO>) settingsRepository.getBoatSettings();
-        createBoatView();
-    }
-
-    public TabBoatView(String text, BoatListDTO boatList) {
-        super(text);
-        this.boatListDTO = boatList;
-        this.boatDTO = boatList;
-        this.fromList = true;
-        this.boatSettings = (ArrayList<DbBoatSettingsDTO>) settingsRepository.getBoatSettings();
-        System.out.println("remote_path =" + remotePath);
         createBoatView();
     }
 
@@ -392,5 +380,13 @@ public class TabBoatView extends Tab {
                 .filter(boatPhotosDTO1 -> boatPhotosDTO1.getId() == id)
                 .findFirst().orElse(null);
         return boatPhotosDTO;
+    }
+
+    public BoatRepository getBoatRepository() {
+        return boatRepository;
+    }
+
+    public BoatDTO getBoatDTO() {
+        return boatDTO;
     }
 }

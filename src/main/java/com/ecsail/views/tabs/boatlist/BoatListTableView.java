@@ -1,6 +1,7 @@
 package com.ecsail.views.tabs.boatlist;
 
 import com.ecsail.Launcher;
+import com.ecsail.dto.BoatDTO;
 import com.ecsail.dto.BoatListDTO;
 import com.ecsail.sql.SqlUpdate;
 import javafx.application.Platform;
@@ -109,7 +110,7 @@ public class BoatListTableView extends TableView<BoatListDTO> {
                 parent.selectedBoat = row.getItem();
                 parent.controlBox.refreshCurrentBoatDetails();
                 if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                    Launcher.openBoatViewTab(parent.selectedBoat);
+                    Launcher.openBoatViewTab(new BoatDTO(parent.selectedBoat));
                 }
             });
             return row;

@@ -3,6 +3,7 @@ package com.ecsail.views.tabs.boatlist;
 import com.ecsail.Launcher;
 import com.ecsail.StringTools;
 import com.ecsail.annotation.ColumnName;
+import com.ecsail.dto.BoatDTO;
 import com.ecsail.dto.BoatListDTO;
 import com.ecsail.dto.DbBoatSettingsDTO;
 import javafx.animation.PauseTransition;
@@ -78,7 +79,7 @@ public class ControlBox extends VBox {
         hBox.setPadding(new Insets(15,0,0,0));
         Button viewBoat = new Button("View Boat");
         hBox.getChildren().add(viewBoat);
-        viewBoat.setOnAction(event -> Launcher.openBoatViewTab(parent.selectedBoat));
+        viewBoat.setOnAction(event -> Launcher.openBoatViewTab(new BoatDTO(parent.selectedBoat)));
         return hBox;
     }
 
