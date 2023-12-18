@@ -96,11 +96,6 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
     }
 
     @Override
-    public MembershipIdDTO getHighestMembershipId(String year) {
-        return null;
-    }
-
-    @Override
     public boolean isRenewedByMsidAndYear(int ms_id, String year) {
         return false;
     }
@@ -165,14 +160,14 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
     }
 
     @Override
-    public int insert(MembershipIdDTO membershipIdDTO) {
+    public MembershipIdDTO insert(MembershipIdDTO membershipIdDTO) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         String query = "INSERT INTO membership_id (FISCAL_YEAR, MS_ID, MEMBERSHIP_ID, RENEW, MEM_TYPE, SELECTED, LATE_RENEW) " +
                 "VALUES (:fiscalYear, :msId, :membershipId, :renew, :memType, :selected, :lateRenew)";
         SqlParameterSource namedParameters = new BeanPropertySqlParameterSource(membershipIdDTO);
         int affectedRows = namedParameterJdbcTemplate.update(query, namedParameters, keyHolder);
         membershipIdDTO.setMid(keyHolder.getKey().intValue());
-        return affectedRows;
+        return membershipIdDTO;
     }
     @Override
     public String getMembershipIdByYearAndMsId(String year, int msId) {
@@ -185,6 +180,18 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
             logger.error("Unable to retrieve information: " + e.getMessage());
             new Dialogue_ErrorSQL(e, "Unable to retrieve information", "See below for details");
             return "";
+        }
+    }
+    @Override
+    public int getMembershipIdForNewestMembership(int year) {
+        String sql = "SELECT MAX(membership_id) FROM membership_id WHERE fiscal_year = ? AND membership_id < 500";
+        try {
+            Integer result = template.queryForObject(sql, new Object[]{year}, Integer.class);
+            return (result != null) ? result : 0;
+        } catch (DataAccessException e) {
+            logger.error("Unable to retrieve highest membership ID: " + e.getMessage());
+            // Handle or rethrow the exception as per your application's requirements
+            return 0;
         }
     }
 

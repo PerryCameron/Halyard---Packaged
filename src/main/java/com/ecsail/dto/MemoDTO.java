@@ -60,6 +60,7 @@ public class MemoDTO {
 		this.category = new SimpleStringProperty(category);
 		this.boat_id = new SimpleIntegerProperty(0);
 	}
+//(0, membershipListDTO.getMsId(), date, "Created new membership record", 0, "N",0)
 
 
 

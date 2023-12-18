@@ -6,12 +6,16 @@ import com.ecsail.dto.PersonDTO;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.repository.interfaces.PersonRepository;
 import com.ecsail.repository.rowmappers.PersonRowMapper;
+import org.mariadb.jdbc.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -125,6 +129,45 @@ public class PersonRepositoryImpl implements PersonRepository {
         } catch (DataAccessException e) {
             logger.error("There was a problem with the UPDATE: " + e.getMessage());
         }
+    }
+    @Override
+    public PersonDTO insertPerson(PersonDTO person) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        String sql = """
+        INSERT INTO person (MS_ID, MEMBER_TYPE, F_NAME, L_NAME, BIRTHDAY, OCCUPATION, BUSINESS, IS_ACTIVE, NICK_NAME, OLD_MSID)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """;
+
+        try {
+            template.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setInt(1, person.getMs_id());
+                ps.setInt(2, person.getMemberType());
+                ps.setString(3, person.getFname());
+                ps.setString(4, person.getLname());
+                // Handle birthday conversion with the correctly formatted date string
+                if (person.getBirthday() != null && !person.getBirthday().isEmpty()) {
+                    ps.setDate(5, java.sql.Date.valueOf(person.getBirthday()));
+                } else {
+                    ps.setDate(5, null); // Set null if the birthday is null or empty
+                }
+                ps.setString(6, person.getOccupation());
+                ps.setString(7, person.getBusiness());
+                ps.setBoolean(8, person.isActive());
+                ps.setString(9, person.getNname());
+                ps.setInt(10, person.getOldMsid());
+                return ps;
+            }, keyHolder);
+
+            Number key = keyHolder.getKey();
+            if (key != null) {
+                person.setP_id(key.intValue()); // Update the DTO with the generated key
+            }
+        } catch (DataAccessException e) {
+            logger.error("Unable to insert into person: " + e.getMessage());
+            // Handle or rethrow the exception as per your application's requirements
+        }
+        return person; // Return the updated DTO
     }
 
 

@@ -553,7 +553,6 @@ public class ConnectDatabase {
 	}
 
 	public ResultSet executeSelectQuery(String query) throws SQLException {
-//		BaseApplication.logger.info(query);
 		Statement stmt = mainModel.getSqlConnection().createStatement();
 		if (mainModel.getCurrentLogon().isSshForward()) {
 			if (!mainModel.getSshConnection().getSession().isConnected()) {
@@ -567,7 +566,6 @@ public class ConnectDatabase {
 	public void executeQuery(String query) throws SQLException {
 		if(!query.startsWith("UPDATE db_table_changes")) // lets remove noise
 		System.out.println(query);
-//		BaseApplication.logger.info(query);
 		Statement stmt = mainModel.getSqlConnection().createStatement();
 		if (mainModel.getCurrentLogon().isSshForward()) {
 			if (!mainModel.getSshConnection().getSession().isConnected()) {

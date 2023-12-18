@@ -31,6 +31,20 @@ public class PersonDTO {
 		this.oldMsid = new SimpleIntegerProperty(oldMsid);
 	}
 
+	public PersonDTO(Integer ms_id, Integer memberType, Boolean isActive) {
+		this.p_id = new SimpleIntegerProperty(0);
+		this.ms_id = new SimpleIntegerProperty(ms_id);
+		this.memberType = new SimpleIntegerProperty(memberType);
+		this.fname = new SimpleStringProperty("");
+		this.lname = new SimpleStringProperty("");
+		this.birthday = new SimpleStringProperty("");
+		this.occupation = new SimpleStringProperty("");
+		this.business = new SimpleStringProperty("");
+		this.active = new SimpleBooleanProperty(isActive);
+		this.nname = new SimpleStringProperty("");
+		this.oldMsid = new SimpleIntegerProperty(0);
+	}
+
 	public PersonDTO() { // default constructor
 
 	}

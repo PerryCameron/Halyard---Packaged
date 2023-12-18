@@ -1,5 +1,7 @@
 package com.ecsail;
 
+import com.ecsail.repository.implementations.*;
+import com.ecsail.repository.interfaces.*;
 import com.ecsail.views.common.Note;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.select.SqlMembership_Id;
@@ -9,44 +11,41 @@ import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.dto.MemoDTO;
 import com.ecsail.dto.PersonDTO;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
 
 public class CreateMembership {
+	private static final PersonRepository personRepository = new PersonRepositoryImpl();
+	private static final MembershipRepository membershipRepository = new MembershipRepositoryImpl();
+	private static final MembershipIdRepository membershipIdRepository = new MembershipIdRepositoryImpl();
+	private static final InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
+	private static final PhoneRepository phoneRepository = new PhoneRepositoryImpl();
+	private static final EmailRepository emailRepository = new EmailRepositoryImpl();
+	private static final OfficerRepository officerRepository = new OfficerRepositoryImpl();
+	private static final BoatRepository boatRepository = new BoatRepositoryImpl();
+	private static final MemoRepository memoRepository = new MemoRepositoryImpl();
+	private static final SlipRepository slipRepository = new SlipRepositoryImpl();
 
 	public static void Create() { // create a membership
-		// makes sure we don't have a New Membership tab open
 		if (!Launcher.tabOpen("New Membership")) {
-			// get next available ms_id
-			int ms_id = SqlSelect.getNextAvailablePrimaryKey("membership", "ms_id");
-			// get next available membership_id in a roster for a given year (last person on list)
-			int membership_id = SqlMembership_Id.getHighestMembershipId(String.valueOf(Year.now().getValue())) + 1;
-			// get the next available primary key for a new membership_id tuple
-			int mid = SqlSelect.getNextAvailablePrimaryKey("membership_id", "mid");
-			// Do we really need to create a person? yes
-			int pid = SqlSelect.getNextAvailablePrimaryKey("person","p_id");
-			// creates a note object
 			Note newMemNote = new Note();
-			// gets next available primary key to make a new memo tuple
-			int note_id = SqlSelect.getNextAvailablePrimaryKey("memo","memo_id");
-			// primary user creation is done in TabMembership();
-			// Create a time stamp
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			LocalDateTime now = LocalDateTime.now();
-			String date = dtf.format(now);
+			int membership_id = membershipIdRepository.getMembershipIdForNewestMembership(Year.now().getValue()) + 1;
+			String date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			MembershipListDTO membershipListDTO = membershipRepository.insertMembership(
+					new MembershipListDTO(date, "FM", String.valueOf(Year.now().getValue())));
+			System.out.println("msid= " + membershipListDTO.getMsId());
+			personRepository.insertPerson(
+					new PersonDTO(membershipListDTO.getMsId(),1,true));
+			newMemNote.addMemo(
+					new MemoDTO(membershipListDTO.getMsId(), "Created new membership record", date,"N"));
+			BaseApplication.activeMemberships.add(membershipListDTO);
+			System.out.println(membershipListDTO.getMsId());
+			membershipIdRepository.insert(
+					new MembershipIdDTO(String.valueOf(Year.now().getValue()), membershipListDTO.getMsId(), membership_id + ""));
+				Launcher.createMembershipTabForRoster(membershipListDTO.getMembershipId(), membershipListDTO.getMsId());
 
-			MembershipListDTO newMembership = new MembershipListDTO(ms_id, pid, membership_id, date, "FM", "",
-					"", "", 0, "", "", "", "", String.valueOf(Year.now().getValue()));
-			PersonDTO newPrimary = new PersonDTO(pid,ms_id,1,"","",null,"","",true,"",0);
-			if (SqlInsert.addMembershipIsSucessful(newMembership)) {
-				newMemNote.addMemo(new MemoDTO(note_id, ms_id, date, "Created new membership record", 0, "N",0));
-				BaseApplication.activeMemberships.add(newMembership);
-				SqlInsert.addPersonRecord(newPrimary);
-				SqlInsert.addMembershipId(new MembershipIdDTO(mid, String.valueOf(Year.now().getValue()), ms_id, membership_id + "", true,
-						"RM", false, false));
-				Launcher.createMembershipTabForRoster(newMembership.getMembershipId(), newMembership.getMsId());
-			}
 		} else {
 			BaseApplication.tabPane.getSelectionModel().select(Launcher.getTabIndex("New Membership"));
 		}

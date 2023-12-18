@@ -7,6 +7,8 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.time.Year;
+
 public class MembershipListDTO extends MembershipDTO {
 
 	private StringProperty lastName;
@@ -17,7 +19,6 @@ public class MembershipListDTO extends MembershipDTO {
 	private StringProperty selectedYear;
 
 	private ObservableList<BoatDTO> boatDTOS = FXCollections.observableArrayList();
-//	private ObservableList<NotesDTO> notesDTOS = FXCollections.observableArrayList();
 	private ObservableList<MembershipIdDTO> membershipIdDTOS = FXCollections.observableArrayList();
 	private ObservableList<InvoiceDTO> invoiceDTOS = FXCollections.observableArrayList();
 	
@@ -31,6 +32,19 @@ public class MembershipListDTO extends MembershipDTO {
 		this.membershipId = new SimpleIntegerProperty(membershipId);
 		this.selectedYear = new SimpleStringProperty(selectedYear);
 	}
+
+	public MembershipListDTO(String joinDate, String memType, String selectedYear) {
+		super(joinDate, memType);
+		this.lastName = new SimpleStringProperty("");
+		this.firstName = new SimpleStringProperty("");
+		this.slip = new SimpleStringProperty("");
+		this.subLeaser = new SimpleIntegerProperty(0);
+		this.membershipId = new SimpleIntegerProperty(0);
+		this.selectedYear = new SimpleStringProperty(selectedYear);
+	}
+
+
+
 
 	public String getFullName() {
 		return getFirstName() + " " + getLastName();

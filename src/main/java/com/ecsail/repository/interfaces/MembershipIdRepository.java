@@ -12,9 +12,7 @@ public interface MembershipIdRepository {
     MembershipIdDTO getCurrentId(int ms_id);
     int getMembershipIDFromMsid(int msid);
     Integer getMsidFromMembershipID(int membership_id);
-//    String getMembershipId(String year, int ms_id);
     MembershipIdDTO getMembershipIdObject(int mid);
-    MembershipIdDTO getHighestMembershipId(String year);
     boolean isRenewedByMsidAndYear(int ms_id, String year);
     List<MembershipIdDTO> getAllMembershipIdsByYear(int year);
     List<MembershipIdDTO> getActiveMembershipIdsByYear(String year);
@@ -22,9 +20,8 @@ public interface MembershipIdRepository {
     int getMsidFromYearAndMembershipId(int year, String membershipId);
     int update(MembershipIdDTO o);
     int delete(MembershipIdDTO membershipIdDTO);
-
     void deleteMembershipId(int ms_id);
-
-    int insert(MembershipIdDTO membershipIdDTO);
+    MembershipIdDTO insert(MembershipIdDTO membershipIdDTO);
     String getMembershipIdByYearAndMsId(String year, int msId);
+    int getMembershipIdForNewestMembership(int year);
 }

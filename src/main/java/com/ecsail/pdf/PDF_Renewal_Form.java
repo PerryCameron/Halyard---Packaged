@@ -84,9 +84,9 @@ public class PDF_Renewal_Form {
 		filenm = HalyardPaths.RENEWALFORM + "/" + year + "/" + year + "_Renewal_Forms.pdf";
 		Document document = createDocument(filenm);
 		ids = membershipIdRepository.getAllMembershipIdsByYear(Integer.parseInt(year));
-		ids.sort(Comparator.comparing(MembershipIdDTO::getMembership_id));
+		ids.sort(Comparator.comparing(MembershipIdDTO::getMembershipId));
 		for (MembershipIdDTO id : ids) {
-			current_membership_id = id.getMembership_id();
+			current_membership_id = id.getMembershipId();
 			makeRenewPdf(document);
 			document.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 			PDF_Renewal_Form_Back.Create_Back_Side(document);
@@ -98,9 +98,9 @@ public class PDF_Renewal_Form {
 	
 	private void makeManyMembershipsIntoManyPDF() throws IOException {
 		ids = membershipIdRepository.getAllMembershipIdsByYear(Integer.parseInt(year));
-		ids.sort(Comparator.comparing(MembershipIdDTO::getMembership_id));
+		ids.sort(Comparator.comparing(MembershipIdDTO::getMembershipId));
 		for (MembershipIdDTO id : ids) {
-			current_membership_id = id.getMembership_id();
+			current_membership_id = id.getMembershipId();
 			Document document = makeRenewPdf();
 			document.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 			PDF_Renewal_Form_Back.Create_Back_Side(document);

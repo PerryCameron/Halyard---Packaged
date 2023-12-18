@@ -80,7 +80,7 @@ public class HBoxHistory extends HBox {
         HBox.setHgrow(this, Priority.ALWAYS);
         HBox.setHgrow(vboxGrey, Priority.ALWAYS);
 
-        parent.getModel().getMembershipIdDTOS().sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year).reversed());
+        parent.getModel().getMembershipIdDTOS().sort(Comparator.comparing(MembershipIdDTO::getFiscalYear).reversed());
 
         idTableView.setItems(parent.getModel().getMembershipIdDTOS());
         idTableView.setFixedCellSize(30);
@@ -97,33 +97,33 @@ public class HBoxHistory extends HBox {
 
         // example for this column found at
         // https://gist.github.com/james-d/be5bbd6255a4640a5357#file-editcell-java-L109
-        TableColumn<MembershipIdDTO, String> Col1 = createColumn("Year", MembershipIdDTO::fiscal_YearProperty);
+        TableColumn<MembershipIdDTO, String> Col1 = createColumn("Year", MembershipIdDTO::fiscalYearProperty);
         Col1.setOnEditCommit(t -> {
 			t.getTableView().getItems().get(t.getTablePosition().getRow())
-					.setFiscal_Year(t.getNewValue());
+					.setFiscalYear(t.getNewValue());
 			MembershipIdDTO thisId = t.getTableView().getItems().get(t.getTablePosition().getRow());
 			int mid = thisId.getMid();
 			if (!SqlUpdate.updateMembershipId(thisId, "fiscal_year", StringTools.changeEmptyStringToZero(t.getNewValue()))) {
 				// if it does not update correctly lets set tableview back to defaults
 				MembershipIdDTO storedId = SqlMembership_Id.getMembershipIdObject(mid);
-				thisId.setFiscal_Year(storedId.getFiscal_Year());
-				thisId.setMembership_id(storedId.getMembership_id());
+				thisId.setFiscalYear(storedId.getFiscalYear());
+				thisId.setMembershipId(storedId.getMembershipId());
 			}
 
 		});
 
         TableColumn<MembershipIdDTO, String> Col2 = createColumn("Mem ID",
-                MembershipIdDTO::membership_idProperty);
+                MembershipIdDTO::membershipIdProperty);
         Col2.setOnEditCommit(t -> {
 			t.getTableView().getItems().get(t.getTablePosition().getRow())
-					.setMembership_id(t.getNewValue());
+					.setMembershipId(t.getNewValue());
 			MembershipIdDTO thisId = t.getTableView().getItems().get(t.getTablePosition().getRow());
 			int mid = thisId.getMid();
 			if (!SqlUpdate.updateMembershipId(thisId, "membership_id", StringTools.changeEmptyStringToZero(t.getNewValue()))) {
 				// if it does not update correctly lets set tableview back to defaults
 				MembershipIdDTO storedId = SqlMembership_Id.getMembershipIdObject(mid);
-				thisId.setFiscal_Year(storedId.getFiscal_Year());
-				thisId.setMembership_id(storedId.getMembership_id());
+				thisId.setFiscalYear(storedId.getFiscalYear());
+				thisId.setMembershipId(storedId.getMembershipId());
 			}
 		});
 
@@ -135,7 +135,7 @@ public class HBoxHistory extends HBox {
         Col3.setCellValueFactory(
 				param -> {
 					MembershipIdDTO thisId = param.getValue();
-					String membershipCode = thisId.getMem_type();
+					String membershipCode = thisId.getMemType();
 					/// careful with capitals
 					MembershipType membershipType = MembershipType.getByCode(membershipCode);
 					return new SimpleObjectProperty<>(membershipType);
@@ -149,7 +149,7 @@ public class HBoxHistory extends HBox {
             int row = pos.getRow();
             MembershipIdDTO thisId = event.getTableView().getItems().get(row);
             SqlUpdate.updateMembershipId(thisId, "mem_type", newMembershipType.getCode());
-            thisId.setMem_type(newMembershipType.getCode());
+            thisId.setMemType(newMembershipType.getCode());
         });
 
         // example for this column found at
@@ -267,7 +267,7 @@ public class HBoxHistory extends HBox {
                 SqlDelete.deleteBlankMembershipIdRow();
             // see if another year=0 and memId=0 row exists in current tableView, bring it to top and edit
             if (blankTupleExistsInTableView()) {
-                parent.getModel().getMembershipIdDTOS().sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year));
+                parent.getModel().getMembershipIdDTOS().sort(Comparator.comparing(MembershipIdDTO::getFiscalYear));
                 idTableView.edit(0, Col1);
                 // create an appropriate new object to place in list
             } else {
@@ -280,7 +280,7 @@ public class HBoxHistory extends HBox {
                 // add the new tuple to the appropriate history tableView
                 parent.getModel().getMembershipIdDTOS().add(newIdTuple);
                 // sort so that new membership id entry is at the top
-                parent.getModel().getMembershipIdDTOS().sort(Comparator.comparing(MembershipIdDTO::getFiscal_Year));
+                parent.getModel().getMembershipIdDTOS().sort(Comparator.comparing(MembershipIdDTO::getFiscalYear));
                 // this line prevents strange buggy behaviour I found the solution here:
                 // https://stackoverflow.com/questions/49531071/insert-row-in-javafx-tableview-and-start-editing-is-not-working-correctly
                 idTableView.layout();
@@ -295,7 +295,7 @@ public class HBoxHistory extends HBox {
                 MembershipIdDTO membershipIdDTO = parent.getModel().getMembershipIdDTOS().get(selectedIndex);
                 Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
                 conformation.setTitle("Delete History Entry");
-                conformation.setHeaderText(membershipIdDTO.getFiscal_Year() + " Membership " + membershipIdDTO.getMembership_id());
+                conformation.setHeaderText(membershipIdDTO.getFiscalYear() + " Membership " + membershipIdDTO.getMembershipId());
                 conformation.setContentText("Are sure you want to delete this history entry?\n\n");
                 DialogPane dialogPane = conformation.getDialogPane();
                 dialogPane.getStylesheets().add("css/dark/dialogue.css");
@@ -324,7 +324,7 @@ public class HBoxHistory extends HBox {
     private boolean blankTupleExistsInTableView() {
         boolean tupleExists = false;
         for (MembershipIdDTO i : parent.getModel().getMembershipIdDTOS()) {
-            if (i.getFiscal_Year().equals("0") && i.getMembership_id().equals("0")) tupleExists = true;
+            if (i.getFiscalYear().equals("0") && i.getMembershipId().equals("0")) tupleExists = true;
         }
         return tupleExists;
     }

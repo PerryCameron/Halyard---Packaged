@@ -195,15 +195,15 @@ public class SqlUpdate {
 		try {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLIntegrityConstraintViolationException IV) {
-			PersonDTO accountHolder = SqlPerson.getPersonFromMembershipID(thisId.getMembership_id(), thisId.getFiscal_Year());
-			String errorMessage = "The entry for the year " + thisId.getFiscal_Year() + " with a membership ID of " + thisId.getMembership_id()
+			PersonDTO accountHolder = SqlPerson.getPersonFromMembershipID(thisId.getMembershipId(), thisId.getFiscalYear());
+			String errorMessage = "The entry for the year " + thisId.getFiscalYear() + " with a membership ID of " + thisId.getMembershipId()
 			+ " already exists for another member: " + accountHolder.getFname() + " " + accountHolder.getLname();
 			new Dialogue_CustomErrorMessage(errorMessage, "Duplicate Entry");
 				noError = false;
 		} catch (SQLException e) {
 				new Dialogue_ErrorSQL(e, "There was a problem with the UPDATE", "");
 		} catch (NullPointerException f) {
-				new Dialogue_ErrorSQL(f, "Null pointer for MID="+thisId.getMid()+" membership ID=" + thisId.getMembership_id() + " Fiscal Year=" + thisId.getFiscal_Year(), "");
+				new Dialogue_ErrorSQL(f, "Null pointer for MID="+thisId.getMid()+" membership ID=" + thisId.getMembershipId() + " Fiscal Year=" + thisId.getFiscalYear(), "");
 		}
 		return noError;
 	}

@@ -39,4 +39,5 @@ public interface MembershipRepository {
     void deleteMembership(int ms_id);
 
     void deleteFormMsIdHash(int ms_id);
+    MembershipListDTO insertMembership(MembershipListDTO nm);
 }

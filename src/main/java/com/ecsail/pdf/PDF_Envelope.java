@@ -138,9 +138,9 @@ public class PDF_Envelope {
 
 	private void buildAddress(Document doc) {
 		membershipIdDTOS = membershipIdRepository.getAllMembershipIdsByYear(year);
-		Collections.sort(membershipIdDTOS, Comparator.comparing(MembershipIdDTO::getMembership_id));
+		Collections.sort(membershipIdDTOS, Comparator.comparing(MembershipIdDTO::getMembershipId));
 		for(MembershipIdDTO id: membershipIdDTOS) {
-			current_membership_id = Integer.parseInt(id.getMembership_id());
+			current_membership_id = Integer.parseInt(id.getMembershipId());
 			membershipListDTO = membershipRepository.getMembershipListByIdAndYear(current_membership_id, year);
 			doc.add(createReturnAddress());
 			doc.add(new Paragraph(new Text("\n\n\n\n\n")));

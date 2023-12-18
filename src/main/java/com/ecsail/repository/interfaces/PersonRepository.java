@@ -29,6 +29,8 @@ public interface PersonRepository {
     void updatePerson(PersonDTO p);
 
     void removePersonFromMembership(PersonDTO p);
+
+    PersonDTO insertPerson(PersonDTO person);
 //    List<PersonDTO> getActiveAuxBoats();
 //    List<PersonDTO> getAllSailBoats();
 //    List<PersonDTO> getAllAuxBoats();

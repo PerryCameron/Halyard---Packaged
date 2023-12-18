@@ -146,8 +146,8 @@ public class SqlInsert {
 	}
 
 	public static void addMembershipId(MembershipIdDTO id) {
-		String query = "INSERT INTO membership_id () VALUES (" + id.getMid() + ",'" + id.getFiscal_Year() + "','" + id.getMs_id()
-				+ "'," + id.getMembership_id() + "," + id.isRenew() + ",'" + id.getMem_type()+ "'," + id.isSelected() + "," + id.isLateRenew() + ")";
+		String query = "INSERT INTO membership_id () VALUES (" + id.getMid() + ",'" + id.getFiscalYear() + "','" + id.getMsId()
+				+ "'," + id.getMembershipId() + "," + id.isRenew() + ",'" + id.getMemType()+ "'," + id.isSelected() + "," + id.isLateRenew() + ")";
 		try {
 			BaseApplication.connect.executeQuery(query);
 		 } catch (SQLException e) {

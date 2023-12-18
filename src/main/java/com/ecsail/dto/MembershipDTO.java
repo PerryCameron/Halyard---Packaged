@@ -29,6 +29,17 @@ public class MembershipDTO {
 		this.state = new SimpleStringProperty(state);
 		this.zip = new SimpleStringProperty(zip);
 	}
+
+	public MembershipDTO(String joinDate, String memType) {
+		this.msId = new SimpleIntegerProperty(0);
+		this.pId = new SimpleIntegerProperty(0);
+		this.joinDate = new SimpleStringProperty(joinDate);
+		this.memType = new SimpleStringProperty(memType);
+		this.address = new SimpleStringProperty("");
+		this.city = new SimpleStringProperty("");
+		this.state = new SimpleStringProperty("");
+		this.zip = new SimpleStringProperty("");
+	}
 	
 	
 

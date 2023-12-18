@@ -7,12 +7,16 @@ import com.ecsail.repository.rowmappers.MembershipListRowMapper;
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.repository.rowmappers.MembershipRowMapper;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
+import org.mariadb.jdbc.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -372,6 +376,35 @@ public class MembershipRepositoryImpl implements MembershipRepository {
             logger.error("Unable to DELETE form_msid_hash row: " + e.getMessage());
         }
     }
+    @Override
+    public MembershipListDTO insertMembership(MembershipListDTO nm) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        String sql = """
+        INSERT INTO membership (p_id, join_date, mem_type, address, city, state, zip)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        """;
 
+        try {
+            template.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setInt(1, nm.getpId());
+                ps.setDate(2, nm.getJoinDate() != null ? java.sql.Date.valueOf(nm.getJoinDate()) : null);
+                ps.setString(3, nm.getMemType());
+                ps.setString(4, nm.getAddress());
+                ps.setString(5, nm.getCity());
+                ps.setString(6, nm.getState());
+                ps.setString(7, nm.getZip());
+                return ps;
+            }, keyHolder);
+
+            Number key = keyHolder.getKey();
+            if (key != null) {
+                nm.setMsId(key.intValue()); // Update the DTO with the generated key
+            }
+        } catch (DataAccessException e) {
+            logger.error("Unable to insert into membership: " + e.getMessage());
+        }
+        return nm; // Return the updated DTO
+    }
 
 }
