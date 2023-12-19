@@ -40,4 +40,6 @@ public interface MembershipRepository {
 
     void deleteFormMsIdHash(int ms_id);
     MembershipListDTO insertMembership(MembershipListDTO nm);
+
+    void updateMembership(MembershipListDTO dto);
 }

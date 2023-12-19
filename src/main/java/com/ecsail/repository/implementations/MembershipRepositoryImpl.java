@@ -406,5 +406,15 @@ public class MembershipRepositoryImpl implements MembershipRepository {
         }
         return nm; // Return the updated DTO
     }
+    @Override
+    public void updateMembership(MembershipListDTO dto) {
+        String sql = "UPDATE membership SET P_ID = ?, JOIN_DATE = ?, MEM_TYPE = ?, ADDRESS = ?, CITY = ?, STATE = ?, ZIP = ? WHERE MS_ID = ?";
+        try {
+            template.update(sql, dto.getpId(), dto.getJoinDate(), dto.getMemType(), dto.getAddress(), dto.getCity(), dto.getState(), dto.getZip(), dto.getMsId());
+        } catch (DataAccessException e) {
+            logger.error("Error in updateMembership: " + e.getMessage());
+        }
+    }
+
 
 }

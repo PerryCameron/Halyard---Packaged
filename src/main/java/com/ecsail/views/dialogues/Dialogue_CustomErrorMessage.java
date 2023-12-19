@@ -36,7 +36,6 @@ public class Dialogue_CustomErrorMessage extends Stage implements Builder {
 		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));
 		this.getIcons().add(mainIcon);
 		setScene(scene);
-		System.out.println("Getting here");
 		show();
 	}
 
