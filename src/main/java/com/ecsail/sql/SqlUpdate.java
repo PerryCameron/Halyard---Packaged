@@ -198,7 +198,7 @@ public class SqlUpdate {
 			PersonDTO accountHolder = SqlPerson.getPersonFromMembershipID(thisId.getMembershipId(), thisId.getFiscalYear());
 			String errorMessage = "The entry for the year " + thisId.getFiscalYear() + " with a membership ID of " + thisId.getMembershipId()
 			+ " already exists for another member: " + accountHolder.getFname() + " " + accountHolder.getLname();
-			new Dialogue_CustomErrorMessage(errorMessage, "Duplicate Entry");
+			new Dialogue_CustomErrorMessage(errorMessage, "Duplicate Entry", true);
 				noError = false;
 		} catch (SQLException e) {
 				new Dialogue_ErrorSQL(e, "There was a problem with the UPDATE", "");

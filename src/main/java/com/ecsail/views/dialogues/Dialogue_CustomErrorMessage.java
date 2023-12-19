@@ -1,5 +1,7 @@
 package com.ecsail.views.dialogues;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -16,17 +18,23 @@ import javafx.util.Builder;
 
 import java.util.Objects;
 
-public class Dialogue_CustomErrorMessage extends Stage implements Builder {
-	TextArea textArea;
+public class Dialogue_CustomErrorMessage extends Stage implements Builder<Parent> {
+	private TextArea textArea;
+	private boolean withButton;
+	private ObjectProperty<VBox> mainContent = new SimpleObjectProperty<>();
 
-	public Dialogue_CustomErrorMessage(String title, String message) {
+
+
+	public Dialogue_CustomErrorMessage(String title, String message, boolean withButton) {
 		setText(message);
 		setTitle(title);
+		this.withButton=withButton;
 		setScene();
 	}
 
-	public Dialogue_CustomErrorMessage() {
+	public Dialogue_CustomErrorMessage(boolean withButton) {
 		super();
+		this.withButton=withButton;
 		setScene();
 	}
 
@@ -41,6 +49,14 @@ public class Dialogue_CustomErrorMessage extends Stage implements Builder {
 
 	public void setText(String message) {
 		this.textArea.appendText(message + "\n");
+	}
+
+	public void closeDialogue() {
+		this.close();
+	}
+
+	public void addCloseButton() {
+		mainContent.get().getChildren().add(createButton());
 	}
 
 	@Override
@@ -63,13 +79,15 @@ public class Dialogue_CustomErrorMessage extends Stage implements Builder {
 
 	private Node createContentBox() {
 		VBox vBox = new VBox(); // this is the vbox for organizing all the widgets
+		mainContent.set(vBox);
 		this.textArea = new TextArea();
 		textArea.setEditable(false);
 		vBox.setSpacing(15);
 		vBox.setPadding(new Insets(5,5,0,5));
 		vBox.setAlignment(Pos.CENTER);
 		VBox.setVgrow(vBox, Priority.ALWAYS);
-		vBox.getChildren().addAll(textArea, createButton());
+		vBox.getChildren().add(textArea);
+		if(withButton) vBox.getChildren().add(createButton());
 		return vBox;
 	}
 
@@ -78,4 +96,6 @@ public class Dialogue_CustomErrorMessage extends Stage implements Builder {
 		closeButton.setOnAction((event) -> this.close());
 		return closeButton;
 	}
+
+
 }

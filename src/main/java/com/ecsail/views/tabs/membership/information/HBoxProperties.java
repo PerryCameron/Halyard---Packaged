@@ -179,7 +179,7 @@ public class HBoxProperties extends HBox implements Builder {
     }
 
     private void deleteMembership(int msId) {
-        Dialogue_CustomErrorMessage dialogue = new Dialogue_CustomErrorMessage();
+        Dialogue_CustomErrorMessage dialogue = new Dialogue_CustomErrorMessage(true);
         if (slipRepository.existsSlipWithMsId(msId)) {
             dialogue.setTitle("Looks like we have a problem");
             dialogue.setText("You must re-assign their slip before deleting this membership");
