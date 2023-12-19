@@ -8,6 +8,7 @@ import com.ecsail.dto.PersonDTO;
 import com.ecsail.repository.interfaces.OfficerRepository;
 import com.ecsail.repository.rowmappers.OfficerRowMapper;
 import com.ecsail.repository.rowmappers.OfficerWithNamesRowMapper;
+import org.mariadb.jdbc.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -19,6 +20,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 
@@ -74,19 +76,37 @@ public class OfficerRepositoryImpl implements OfficerRepository {
         String query = "INSERT INTO officer (P_ID, BOARD_YEAR, OFF_TYPE, OFF_YEAR) " +
                 "VALUES (:pId, :boardYear, :officerType, :fiscalYear)";
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        namedParameters.addValue("pId", officerDTO.getPerson_id());
-        namedParameters.addValue("boardYear", Integer.parseInt(officerDTO.getBoard_year()));
-        namedParameters.addValue("officerType", officerDTO.getOfficer_type());
-        namedParameters.addValue("fiscalYear", Integer.parseInt(officerDTO.getFiscal_year()));
+        namedParameters.addValue("pId", officerDTO.getPersonId());
+        namedParameters.addValue("boardYear", Integer.parseInt(officerDTO.getBoardYear()));
+        namedParameters.addValue("officerType", officerDTO.getOfficerType());
+        namedParameters.addValue("fiscalYear", Integer.parseInt(officerDTO.getFiscalYear()));
         int affectedRows = namedParameterJdbcTemplate.update(query, namedParameters, keyHolder);
-        officerDTO.setOfficer_id(keyHolder.getKey().intValue());
+        officerDTO.setOfficerId(keyHolder.getKey().intValue());
         return affectedRows;
+    }
+    @Override
+    public OfficerDTO insertOfficer(OfficerDTO officer) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        String sql = "INSERT INTO officer (p_id, board_year, off_type, off_year) VALUES (?, ?, ?, ?)";
+        template.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, officer.getPersonId());
+            ps.setString(2, officer.getBoardYear());
+            ps.setString(3, officer.getOfficerType());
+            ps.setString(4, officer.getFiscalYear());
+            return ps;
+        }, keyHolder);
+
+        if (keyHolder.getKey() != null) {
+            officer.setOfficerId(keyHolder.getKey().intValue());
+        }
+        return officer;
     }
 
     @Override
     public int delete(OfficerDTO officerDTO) {
         String deleteSql = "DELETE FROM officer WHERE O_ID = ?";
-        return template.update(deleteSql, officerDTO.getOfficer_id());
+        return template.update(deleteSql, officerDTO.getOfficerId());
     }
 
     @Override

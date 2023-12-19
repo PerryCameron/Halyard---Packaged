@@ -12,7 +12,6 @@ import com.ecsail.repository.interfaces.MembershipRepository;
 import com.ecsail.repository.interfaces.PersonRepository;
 import com.ecsail.views.common.Note;
 import com.ecsail.views.dialogues.Dialogue_CustomErrorMessage;
-import com.itextpdf.commons.utils.JsonUtil;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import org.slf4j.Logger;

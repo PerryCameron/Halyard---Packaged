@@ -15,7 +15,7 @@ public interface OfficerRepository {
     List<OfficerWithNameDTO> getOfficersWithNames(String type);
     int update(OfficerDTO o);
     int insert(OfficerDTO o);
+    OfficerDTO insertOfficer(OfficerDTO officer);
     int delete(OfficerDTO o);
-
     void deleteOfficer(int p_id);
 }

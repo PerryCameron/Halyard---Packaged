@@ -3,11 +3,8 @@ package com.ecsail.sql;
 import com.ecsail.BaseApplication;
 import com.ecsail.dto.*;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
-import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
-import com.ecsail.repository.interfaces.InvoiceRepository;
 
 import java.sql.SQLException;
-import java.util.List;
 
 public class SqlDelete {
 
@@ -85,7 +82,7 @@ public class SqlDelete {
 
 	public static boolean deleteOfficer(OfficerDTO officer) {
 		boolean noError = false;
-		String query = "DELETE FROM officer WHERE o_id=" + officer.getOfficer_id();
+		String query = "DELETE FROM officer WHERE o_id=" + officer.getOfficerId();
 		try {
 			BaseApplication.connect.executeQuery(query);
 			noError = true;

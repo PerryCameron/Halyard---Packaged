@@ -32,21 +32,6 @@ public class SqlInsert {
 		}
 	}
 
-
-
-	public static boolean addOfficerRecord(int officer_id, int pid , String board_year, String officer, int year) {
-		boolean noError = false;
-		String query = "INSERT INTO officer () VALUES (" + officer_id + "," + pid + "," + board_year + ",\"" + officer + "\"," + year + ")";
-		try {
-			BaseApplication.connect.executeQuery(query);
-			noError = true;
-		 }
-		catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
-		}
-		return noError;  // return true if insert performed without error
-	}
-
 	public static int addPaymentRecord(PaymentDTO op) {
 		int pay_id = SqlSelect.getNextAvailablePrimaryKey("payment", "pay_id");
 		String query = "INSERT INTO payment () VALUES (" + pay_id + ","

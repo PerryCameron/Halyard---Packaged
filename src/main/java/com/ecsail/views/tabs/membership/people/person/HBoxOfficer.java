@@ -3,6 +3,8 @@ package com.ecsail.views.tabs.membership.people.person;
 import com.ecsail.BaseApplication;
 import com.ecsail.EditCell;
 import com.ecsail.enums.Officer;
+import com.ecsail.repository.implementations.OfficerRepositoryImpl;
+import com.ecsail.repository.interfaces.OfficerRepository;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
@@ -35,8 +37,9 @@ public class HBoxOfficer extends HBox {
 	private final ObservableList<OfficerDTO> officer;
 	private final TableView<OfficerDTO> officerTableView;
 	private final String currentYear;
+	private final OfficerRepository officerRepository = new OfficerRepositoryImpl();
 	
-	@SuppressWarnings("unchecked")
+
 	public HBoxOfficer(PersonDTO p) {
 		this.person = p;
 		this.currentYear = new SimpleDateFormat("yyyy").format(new Date());
@@ -76,13 +79,13 @@ public class HBoxOfficer extends HBox {
 			officerTableView.setEditable(true);
 			officerTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY );
 			
-			TableColumn<OfficerDTO, String> Col1 = createColumn("Year", OfficerDTO::fiscal_yearProperty);
+			TableColumn<OfficerDTO, String> Col1 = createColumn("Year", OfficerDTO::fiscalYearProperty);
 			Col1.setSortType(TableColumn.SortType.DESCENDING);
 	        Col1.setOnEditCommit(
 					t -> {
 						t.getTableView().getItems().get(
-								t.getTablePosition().getRow()).setFiscal_year(t.getNewValue());
-						SqlUpdate.updateOfficer("off_year",t.getRowValue().getOfficer_id(), t.getNewValue());  // have to get by money id and pid eventually
+								t.getTablePosition().getRow()).setFiscalYear(t.getNewValue());
+						SqlUpdate.updateOfficer("off_year",t.getRowValue().getOfficerId(), t.getNewValue());  // have to get by money id and pid eventually
 					}
 			);
 
@@ -90,7 +93,7 @@ public class HBoxOfficer extends HBox {
 	    	final TableColumn<OfficerDTO, String> Col2 = new TableColumn<>("Officers, Chairs and Board");
 	        Col2.setCellValueFactory(param -> {
 				OfficerDTO thisOfficer = param.getValue();
-				String type = Officer.getByCode(thisOfficer.getOfficer_type());
+				String type = Officer.getByCode(thisOfficer.getOfficerType());
 				return new SimpleObjectProperty<>(type);
 			});
 	        
@@ -101,16 +104,16 @@ public class HBoxOfficer extends HBox {
 	            String newOfficer = event.getNewValue();
 	            int row = pos.getRow();
 	            OfficerDTO thisofficer = event.getTableView().getItems().get(row);
-	            SqlUpdate.updateOfficer("off_type",thisofficer.getOfficer_id(), Officer.getByName(newOfficer));
-	            thisofficer.setOfficer_type(newOfficer);
+	            SqlUpdate.updateOfficer("off_type",thisofficer.getOfficerId(), Officer.getByName(newOfficer));
+	            thisofficer.setOfficerType(newOfficer);
 	        });
 	        
-			TableColumn<OfficerDTO, String> Col3 = createColumn("Exp", OfficerDTO::board_yearProperty);
+			TableColumn<OfficerDTO, String> Col3 = createColumn("Exp", OfficerDTO::boardYearProperty);
 	        Col3.setOnEditCommit(
 					t -> {
 						t.getTableView().getItems().get(
-								t.getTablePosition().getRow()).setBoard_year(t.getNewValue());  // need to change
-							SqlUpdate.updateOfficer("board_year",t.getRowValue().getOfficer_id(), t.getNewValue());  // have to get by money id and pid eventually
+								t.getTablePosition().getRow()).setBoardYear(t.getNewValue());  // need to change
+							SqlUpdate.updateOfficer("board_year",t.getRowValue().getOfficerId(), t.getNewValue());  // have to get by money id and pid eventually
 					}
 			);
 	        
@@ -122,14 +125,11 @@ public class HBoxOfficer extends HBox {
 
 		officerAdd.setOnAction(e -> {
 			BaseApplication.logger.info("Added new officer entry for " + person.getNameWithInfo());
-			// get next available primary key for officer table
-			int officer_id = SqlSelect.getNextAvailablePrimaryKey("officer", "o_id"); // gets last memo_id number
-			// insert a new officer row into SQL and return true on success
-			if (SqlInsert.addOfficerRecord(officer_id, person.getP_id(), "0", "new officer", Integer.parseInt(currentYear)))
+			OfficerDTO officerDTO = officerRepository.insertOfficer(new OfficerDTO(person.getP_id(), currentYear));
 				// add a new row to the tableView to match new SQL entry
-				officer.add(new OfficerDTO(officer_id, person.getP_id(), "0", "new officer", currentYear));
+			officer.add(officerDTO);
 			// Now we will sort it to the top
-			officer.sort(Comparator.comparing(OfficerDTO::getOfficer_id).reversed());
+			officer.sort(Comparator.comparing(OfficerDTO::getOfficerId).reversed());
 			// this line prevents strange buggy behaviour
 			officerTableView.layout();
 			// edit the phone number cell after creating
@@ -142,7 +142,7 @@ public class HBoxOfficer extends HBox {
 				OfficerDTO officerDTO = officer.get(selectedIndex);
 				Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
 				conformation.setTitle("Delete Officer Entry");
-				conformation.setHeaderText(officerDTO.getBoard_year() + " " + Officer.getByCode(officerDTO.getOfficer_type()));
+				conformation.setHeaderText(officerDTO.getBoardYear() + " " + Officer.getByCode(officerDTO.getOfficerType()));
 				conformation.setContentText("Are sure you want to delete this officer/chairman entry?");
 				DialogPane dialogPane = conformation.getDialogPane();
 				dialogPane.getStylesheets().add("css/dark/dialogue.css");
