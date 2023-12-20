@@ -83,7 +83,7 @@ public class HBoxPerson extends HBox {
         HBox hboxPhone = new HBoxPhone(personDTO); // Phone
         HBox hboxEmail = new HBoxEmail(personDTO); // Email
         HBox hboxOfficer = new HBoxOfficer(personDTO); // Officer
-        HBox hboxAward = new HBoxAward(personDTO);
+        HBox hboxAward = new HBoxAward(personDTO, parent);
 
         Label fnameLabel = new Label("First Name");
         Label lnameLabel = new Label("Last Name");

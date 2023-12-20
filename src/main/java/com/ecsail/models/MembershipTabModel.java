@@ -17,6 +17,7 @@ public class MembershipTabModel {
     private BoatRepository boatRepository;
     private MemoRepository memoRepository;
     private InvoiceRepository invoiceRepository;
+    private AwardRepository awardRepository;
     private ObservableList<MemoDTO> memos;
     private ObservableList<PersonDTO> people;
     private TabPane fiscalTabPane;
@@ -34,6 +35,7 @@ public class MembershipTabModel {
         this.memoRepository  = new MemoRepositoryImpl();
         this.invoiceRepository  = new InvoiceRepositoryImpl();
         this.membershipIdRepository = new MembershipIdRepositoryImpl();
+        this.awardRepository = new AwardRepositoryImpl();
         this.memos = FXCollections.observableArrayList(memoRepository.getMemosByMsId(membership.getMsId()));
         this.note = new Note(memos,membership.getMsId());
         this.people = FXCollections.observableList(personRepository.getActivePeopleByMsId(membership.getMsId()));
@@ -47,6 +49,14 @@ public class MembershipTabModel {
     }
 
     public MembershipTabModel() {
+    }
+
+    public AwardRepository getAwardRepository() {
+        return awardRepository;
+    }
+
+    public void setAwardRepository(AwardRepository awardRepository) {
+        this.awardRepository = awardRepository;
     }
 
     public PersonRepository getPersonRepository() {

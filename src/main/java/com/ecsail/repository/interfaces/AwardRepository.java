@@ -9,7 +9,8 @@ import java.util.List;
 public interface AwardRepository {
     List<AwardDTO> getAwards(PersonDTO p);
     List<AwardDTO> getAwards();
-    int update(AwardDTO o);
+    int updateAward(AwardDTO awardDTO);
+
     int insert(AwardDTO o);
 
     AwardDTO insertAward(AwardDTO award);

@@ -3,13 +3,10 @@ package com.ecsail.views.tabs.membership.people.person;
 import com.ecsail.BaseApplication;
 import com.ecsail.EditCell;
 import com.ecsail.enums.Awards;
-import com.ecsail.repository.implementations.AwardRepositoryImpl;
 import com.ecsail.repository.interfaces.AwardRepository;
-import com.ecsail.sql.SqlDelete;
-import com.ecsail.sql.SqlUpdate;
-import com.ecsail.sql.select.SqlAward;
 import com.ecsail.dto.AwardDTO;
 import com.ecsail.dto.PersonDTO;
+import com.ecsail.views.tabs.membership.TabMembership;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -35,14 +32,14 @@ public class HBoxAward extends HBox {
     private final ObservableList<AwardDTO> award;
     private final TableView<AwardDTO> awardTableView;
     private final String currentYear;
+    private final AwardRepository awardRepository;
 
-    private final AwardRepository awardRepository = new AwardRepositoryImpl();
 
-
-    public HBoxAward(PersonDTO p) {
+    public HBoxAward(PersonDTO p, TabMembership parent) {
         this.person = p;
+        this.awardRepository = parent.getModel().getAwardRepository();
         this.currentYear = new SimpleDateFormat("yyyy").format(new Date());
-        this.award = SqlAward.getAwards(person);
+        this.award = FXCollections.observableArrayList(awardRepository.getAwards(person));
 
         ///////////////// OBJECT INSTANCE ///////////////////
         var awardAdd = new Button("Add");
@@ -83,9 +80,8 @@ public class HBoxAward extends HBox {
         Col1.setSortType(TableColumn.SortType.DESCENDING);
         Col1.setOnEditCommit(
                 t -> {
-                    t.getTableView().getItems().get(
-                            t.getTablePosition().getRow()).setAwardYear(t.getNewValue());
-                    SqlUpdate.updateAward("award_year", t.getRowValue().getAwardId(), t.getNewValue());  // have to get by money id and pid eventually
+                    AwardDTO awardDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    awardRepository.updateAward(awardDTO);  // have to get by money id and pid eventually
                 }
         );
 
@@ -106,11 +102,11 @@ public class HBoxAward extends HBox {
             // use enum to convert DB value
             Awards newAward = event.getNewValue();
             // give object a name to manipulate
-            AwardDTO thisAward = event.getTableView().getItems().get(pos.getRow());
+            AwardDTO awardDTO = event.getTableView().getItems().get(pos.getRow());
             // update the SQL
-            SqlUpdate.updateAward("award_type", thisAward.getAwardId(), newAward.getCode());
+            awardRepository.updateAward(awardDTO);  // have to get by money id and pid eventually
             // update the GUI
-            thisAward.setAwardType(newAward.getCode());
+            awardDTO.setAwardType(newAward.getCode());
         });
 
         /// sets width of columns by percentage
@@ -148,7 +144,7 @@ public class HBoxAward extends HBox {
                 dialogPane.getStyleClass().add("dialog");
                 Optional<ButtonType> result = conformation.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
-                    if (SqlDelete.deleteAward(awardDTO)) {
+                    if (awardRepository.delete(awardDTO) == 1) {
 						BaseApplication.logger.info("Removed award entry "
 								+ thisAward
 								+ " for " + person.getNameWithInfo());
