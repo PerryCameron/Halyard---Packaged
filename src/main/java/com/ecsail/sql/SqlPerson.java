@@ -194,17 +194,5 @@ public class SqlPerson {
      * @param person a PersonDTO
      * @return an integer representing the age of the person in the personDTO
      */
-    public static int getPersonAge(PersonDTO person)  {
-        int age = 0;
-        String query = "SELECT DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),(SELECT birthday FROM person where p_id=" + person.getpId() + "))), '%Y')+0 AS AGE;";
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            rs.next();
-            age = rs.getInt("AGE");
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
-        }
-        return age;
-    }
+
 }

@@ -31,6 +31,8 @@ public interface PersonRepository {
     void removePersonFromMembership(PersonDTO p);
 
     PersonDTO insertPerson(PersonDTO person);
+
+    int getPersonAge(PersonDTO person);
 //    List<PersonDTO> getActiveAuxBoats();
 //    List<PersonDTO> getAllSailBoats();
 //    List<PersonDTO> getAllAuxBoats();

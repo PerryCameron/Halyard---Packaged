@@ -2,13 +2,12 @@ package com.ecsail.views.tabs.membership.people.person;
 
 
 import com.ecsail.BaseApplication;
+import com.ecsail.dto.PersonDTO;
 import com.ecsail.enums.MemberType;
-import com.ecsail.repository.implementations.PersonRepositoryImpl;
 import com.ecsail.repository.interfaces.PersonRepository;
+import com.ecsail.sql.SqlExists;
 import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.views.tabs.membership.people.HBoxPerson;
-import com.ecsail.sql.SqlExists;
-import com.ecsail.dto.PersonDTO;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -22,10 +21,13 @@ public class VBoxPersonMove extends VBox {
     private final PersonDTO person;
     final ComboBox<String> combo_box = new ComboBox<>();
     boolean calledFromMembershipTab = false;
-    PersonRepository personRepository = new PersonRepositoryImpl();
+    private final PersonRepository personRepository;
 
-    public VBoxPersonMove(PersonDTO person, TabPane personTabPane) {
+    public VBoxPersonMove(PersonDTO person, HBoxPerson parent) {
         this.person = person;
+        this.personRepository = parent.parent.getModel().getPersonRepository();
+        TabPane personTabPane = parent.parent.getModel().getPeopleTabPane();
+
 
         // this is to allow a person to be removed from membership only called from TabMembership.class
         try {
@@ -100,6 +102,7 @@ public class VBoxPersonMove extends VBox {
                     if (result.isPresent() && result.get() == ButtonType.OK) {
                         // TODO set the secondary to primary if this person is a primary user
                         personRepository.removePersonFromMembership(person);
+                        parent.parent.getModel().getPeople().remove(person);
                         removeThisTab(personTabPane);
                     }
                 } else
@@ -114,6 +117,7 @@ public class VBoxPersonMove extends VBox {
                         "Are you sure you want to delete " + person.getFullName() + " from this database?");
                 if (result.isPresent() && result.get() == ButtonType.OK) {
                     personRepository.deletePerson(person);
+                    parent.parent.getModel().getPeople().remove(person);
                     // TODO error check to make sure we are in membership view
                     removeThisTab(personTabPane);
                 }
@@ -170,7 +174,7 @@ public class VBoxPersonMove extends VBox {
 
     private void createInformation(String s) {
         Alert error = new Alert(Alert.AlertType.ERROR);
-        error.setTitle("Opps!");
+        error.setTitle("Error");
         error.setHeaderText("Can not remove this person");
         error.setContentText(s);
         DialogPane dialogPane = error.getDialogPane();

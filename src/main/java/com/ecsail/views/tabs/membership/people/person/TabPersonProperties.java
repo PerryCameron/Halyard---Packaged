@@ -1,68 +1,66 @@
 package com.ecsail.views.tabs.membership.people.person;
 
-import com.ecsail.repository.implementations.PersonRepositoryImpl;
-import com.ecsail.repository.interfaces.PersonRepository;
-import com.ecsail.views.tabs.membership.people.HBoxPerson;
-import com.ecsail.sql.SqlPerson;
 import com.ecsail.dto.PersonDTO;
+import com.ecsail.sql.SqlPerson;
+import com.ecsail.views.tabs.membership.people.HBoxPerson;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.util.Builder;
 
-public class TabPersonProperties extends Tab {
+public class TabPersonProperties extends Tab implements Builder {
 	private final PersonDTO person;  // this is the person we are focused on.
 	private final VBoxPersonMove personMove;
-	private final PersonRepository personRepository = new PersonRepositoryImpl();
 	HBoxPerson parent;
 	public TabPersonProperties(PersonDTO p, HBoxPerson parent) {
 		super("Properties");
 		this.parent = parent;
 		this.person = p;
-		this.personMove = new VBoxPersonMove(person, parent.parent.getModel().getPeopleTabPane());
-		int age = SqlPerson.getPersonAge(person);
 
-		//////////// OBJECTS /////////////////
+		this.personMove = new VBoxPersonMove(person, parent);
+		setContent(build());
+	}
+
+	@Override
+	public Node build() {
 		var hboxMain = new HBox();
-		var vBoxLeft = new VBox(); // holds all content
-		var vBoxRight = new VBox();
-		var hboxGrey = new HBox(); // this is here for the grey background to make nice appearance
-		var hboxMemberType = new HBox();
-
-		/////////////////  ATTRIBUTES  /////////////////////
-
-        HBox.setHgrow(hboxGrey, Priority.ALWAYS);
-		hboxMain.setId("custom-tap-pane-frame");
-		hboxGrey.setId("box-background-light");
-		vBoxLeft.setId("box-pink");
-		hboxMain.setPadding(new Insets(5, 5, 5, 5));
-		
-		hboxMain.setSpacing(5);
-		vBoxLeft.setSpacing(5);
-		hboxMemberType.setSpacing(5);
-		hboxGrey.setSpacing(10);  // spacing in between table and buttons
-		
 		hboxMain.setAlignment(Pos.CENTER);
-		hboxMemberType.setAlignment(Pos.CENTER_LEFT);
+		hboxMain.setSpacing(5);
+		hboxMain.setPadding(new Insets(5, 5, 5, 5));
+		hboxMain.setId("custom-tap-pane-frame");
+		var hboxGrey = new HBox(); // this is here for the grey background to make nice appearance
+		hboxGrey.setSpacing(10);  // spacing in between table and buttons
+		hboxGrey.setId("box-background-light");
+		HBox.setHgrow(hboxGrey, Priority.ALWAYS);
+		hboxGrey.getChildren().addAll(vBoxLeft(),vBoxRight());
+		hboxMain.getChildren().add(hboxGrey);
+		return hboxMain;
+	}
 
-
-		vBoxLeft.setPadding(new Insets(5,5,5,5));
-		//////////  LISTENERS /////
-
-		//////////////// SET  CONTENT ////////////////
-		vBoxLeft.getChildren().addAll(
+	private Node vBoxLeft() {
+		int age = parent.parent.getModel().getPersonRepository().getPersonAge(person);
+		var vBox = new VBox(); // holds all content
+		vBox.setId("box-pink");
+		vBox.setSpacing(5);
+		vBox.setPadding(new Insets(5,5,5,5));
+		vBox.getChildren().addAll(
 				new Label("Age: " + age),
 				new Label("Person ID: " + person.getpId()),
 				new Label("MSID: " + person.getMsId()));
-		vBoxRight.getChildren().add(personMove);
-		hboxGrey.getChildren().addAll(vBoxLeft,vBoxRight);
-		hboxMain.getChildren().add(hboxGrey);
-		setContent(hboxMain);
+		return vBox;
 	}
-	///////////////// CLASS METHODS /////////////////////
+
+	private Node vBoxRight() {
+		var vBox = new VBox();
+		vBox.getChildren().add(personMove);
+		return vBox;
+	}
 
 	public VBoxPersonMove getPersonMove() {
 		return personMove;

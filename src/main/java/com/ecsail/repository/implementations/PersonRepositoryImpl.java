@@ -16,6 +16,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -168,6 +169,16 @@ public class PersonRepositoryImpl implements PersonRepository {
             // Handle or rethrow the exception as per your application's requirements
         }
         return person; // Return the updated DTO
+    }
+    @Override
+    public int getPersonAge(PersonDTO person) {
+        String query = "SELECT DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),(SELECT birthday FROM person WHERE p_id = ?))), '%Y')+0 AS AGE";
+        try {
+            return template.queryForObject(query, new Object[]{person.getpId()}, (ResultSet rs, int rowNum) -> rs.getInt("AGE"));
+        } catch (DataAccessException e) {
+            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
+            return 0; // or handle the exception as per your application's needs
+        }
     }
 
 

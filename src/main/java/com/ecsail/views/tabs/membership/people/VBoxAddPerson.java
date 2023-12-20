@@ -8,6 +8,7 @@ import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.dto.PersonDTO;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -53,7 +54,20 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
 		vboxGrey.getChildren().add(addDatePicker());
 		vboxGrey.getChildren().add(addComboBox());
 		vboxGrey.getChildren().add(addButtonBox());
+		setPersonRemoveListener();
 		return vboxGrey;
+	}
+
+	private void setPersonRemoveListener() {
+		parent.getModel().getPeople().addListener(new ListChangeListener<PersonDTO>() {
+			@Override
+			public void onChanged(ListChangeListener.Change<? extends PersonDTO> change) {
+				while (change.next()) {
+					setComboBoxItems();
+					System.out.println("PeopleList changed");
+				}
+			}
+		});
 	}
 
 	private Node addButtonBox() {
@@ -73,6 +87,7 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
 					textFieldMap.get("Occupation").getText(),
 					textFieldMap.get("Business").getText(),
 					true));
+			parent.getModel().getPeople().add(personDTO);
 			logNewPerson(personDTO);
 			openNewPersonTab(personDTO);
 			clearAddMemberBox();
@@ -101,7 +116,7 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
 		textFieldMap.get("Occupation").setText("");
 		textFieldMap.get("Business").setText("");
 		datePickerProperty.get().setValue(null);
-		setComboBoxItems();
+//		setComboBoxItems();
 	}
 
 	private String getBirthday(LocalDate birthday) {
@@ -141,7 +156,7 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
 		datePicker.setPrefSize(240, 10);
 		vBox.getChildren().add(datePicker);
 		datePickerProperty.set(datePicker);
-		hBox.getChildren().addAll(addLabel("BirthDay"), vBox);
+		hBox.getChildren().addAll(addLabel("Birthday"), vBox);
 		return hBox;
 	}
 
