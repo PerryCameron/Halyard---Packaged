@@ -6,10 +6,8 @@ import com.ecsail.enums.Officer;
 import com.ecsail.repository.implementations.OfficerRepositoryImpl;
 import com.ecsail.repository.interfaces.OfficerRepository;
 import com.ecsail.sql.SqlDelete;
-import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlOfficer;
-import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.dto.OfficerDTO;
 import com.ecsail.dto.PersonDTO;
 import javafx.beans.property.SimpleObjectProperty;
@@ -43,7 +41,7 @@ public class HBoxOfficer extends HBox {
 	public HBoxOfficer(PersonDTO p) {
 		this.person = p;
 		this.currentYear = new SimpleDateFormat("yyyy").format(new Date());
-		this.officer =  SqlOfficer.getOfficer("p_id",person.getP_id());
+		this.officer =  SqlOfficer.getOfficer("p_id",person.getpId());
 		
 		///////////////// OBJECT INSTANCE ///////////////////
 		Button officerAdd = new Button("Add");
@@ -125,7 +123,7 @@ public class HBoxOfficer extends HBox {
 
 		officerAdd.setOnAction(e -> {
 			BaseApplication.logger.info("Added new officer entry for " + person.getNameWithInfo());
-			OfficerDTO officerDTO = officerRepository.insertOfficer(new OfficerDTO(person.getP_id(), currentYear));
+			OfficerDTO officerDTO = officerRepository.insertOfficer(new OfficerDTO(person.getpId(), currentYear));
 				// add a new row to the tableView to match new SQL entry
 			officer.add(officerDTO);
 			// Now we will sort it to the top

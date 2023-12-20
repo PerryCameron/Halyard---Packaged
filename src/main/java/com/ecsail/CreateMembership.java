@@ -44,11 +44,11 @@ public class CreateMembership {
                     setMessage("Creating Primary Member", dialogue);
                     PersonDTO personDTO = personRepository.insertPerson(
                             new PersonDTO(membershipListDTO.getMsId(), 1, true));
-                    membershipListDTO.setPid(personDTO.getP_id());
+                    membershipListDTO.setPid(personDTO.getpId());
 					membershipRepository.updateMembership(membershipListDTO);
                     setMessage("Adding note that membership record was created", dialogue);
                     newMemNote.addMemo(
-                            new MemoDTO(membershipListDTO.getMsId(), "Created new membership record", date, "N"));
+                            new MemoDTO(membershipListDTO.getMsId(), "Created new membership record", "N"));
                     setMessage("Creating Membership Id", dialogue);
                     membershipIdRepository.insert(
                             new MembershipIdDTO(String.valueOf(Year.now().getValue()), membershipListDTO.getMsId(), membership_id + ""));

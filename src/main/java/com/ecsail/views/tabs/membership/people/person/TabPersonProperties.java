@@ -3,13 +3,10 @@ package com.ecsail.views.tabs.membership.people.person;
 import com.ecsail.repository.implementations.PersonRepositoryImpl;
 import com.ecsail.repository.interfaces.PersonRepository;
 import com.ecsail.views.tabs.membership.people.HBoxPerson;
-import com.ecsail.views.tabs.people.TabPeople;
 import com.ecsail.sql.SqlPerson;
-import com.ecsail.sql.SqlUpdate;
 import com.ecsail.dto.PersonDTO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.HBox;
@@ -58,8 +55,8 @@ public class TabPersonProperties extends Tab {
 		//////////////// SET  CONTENT ////////////////
 		vBoxLeft.getChildren().addAll(
 				new Label("Age: " + age),
-				new Label("Person ID: " + person.getP_id()),
-				new Label("MSID: " + person.getMs_id()));
+				new Label("Person ID: " + person.getpId()),
+				new Label("MSID: " + person.getMsId()));
 		vBoxRight.getChildren().add(personMove);
 		hboxGrey.getChildren().addAll(vBoxLeft,vBoxRight);
 		hboxMain.getChildren().add(hboxGrey);

@@ -196,7 +196,7 @@ public class SqlPerson {
      */
     public static int getPersonAge(PersonDTO person)  {
         int age = 0;
-        String query = "SELECT DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),(SELECT birthday FROM person where p_id=" + person.getP_id() + "))), '%Y')+0 AS AGE;";
+        String query = "SELECT DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),(SELECT birthday FROM person where p_id=" + person.getpId() + "))), '%Y')+0 AS AGE;";
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
             rs.next();

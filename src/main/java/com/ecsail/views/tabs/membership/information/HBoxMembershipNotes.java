@@ -91,7 +91,7 @@ public class HBoxMembershipNotes extends HBox {
         add.setOnAction(e -> {
 			String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
 			int msId = parent.getModel().getMembership().getMsId();
-			parent.getModel().getNote().addMemoAndReturnId(new MemoDTO(msId,"new memo", date,"N"));
+			parent.getModel().getNote().addMemoAndReturnId(new MemoDTO(msId,"new memo","N"));
 			memoTableView.layout();
 			memoTableView.edit(0,Col3);
 		});

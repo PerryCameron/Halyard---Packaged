@@ -1,179 +1,111 @@
 package com.ecsail.views.tabs.membership.people;
 ///////////BUG///////  adding a person as secondary changes the pid in the membership to the secondary
 
-import com.ecsail.BaseApplication;
 import com.ecsail.dto.MemoDTO;
 import com.ecsail.enums.MemberType;
+import com.ecsail.repository.implementations.PersonRepositoryImpl;
+import com.ecsail.repository.interfaces.PersonRepository;
 import com.ecsail.views.tabs.membership.TabMembership;
-import com.ecsail.sql.SqlExists;
-import com.ecsail.sql.SqlInsert;
-import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.dto.PersonDTO;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
+import javafx.util.Builder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-public class VBoxAddPerson extends VBox {
+public class VBoxAddPerson extends VBox implements Builder<VBox> {
 
-	private final Label titleLabel;
-	private PersonDTO person;
+	public static Logger logger = LoggerFactory.getLogger(VBoxAddPerson.class);
 	private Boolean hasError = false;
-
+	private final PersonRepository personRepository = new PersonRepositoryImpl();
 	private final TabMembership parent;
+	private final Map<String, TextField> textFieldMap;
+	private final ObjectProperty<DatePicker> datePickerProperty = new SimpleObjectProperty<>();
+	private final ObjectProperty<ComboBox<MemberType>> comboBoxProperty = new SimpleObjectProperty<>();
+
 	public VBoxAddPerson(TabMembership parent) {
 		this.parent = parent;
-
-		
-		////// OBJECTS //////
-		VBox vboxGrey = new VBox();
-		Button addButton = new Button("Add");
-		Button populateButton = new Button("Populate");
-		this.titleLabel = new Label("Add New Member");
-		Label firstNameLabel = new Label("First Name");
-		Label lastNameLabel = new Label("Last Name");
-		Label occupationLabel = new Label("Occupation");
-		Label businessLabel = new Label("Business");
-		Label birthdayLabel = new Label("Birthday");
-		Label addFromPidLabel = new Label("Populate fields from existing PID");
-		Label memberTypeLabel = new Label("Member Type");
-		TextField populateTextField = new TextField();
-		TextField firstNameTextField = new TextField();
-		TextField lastNameTextField = new TextField();
-		TextField businessTextField = new TextField();
-		TextField occupationTextField = new TextField();
-		DatePicker birthdayDatePicker = new DatePicker();
-		final ComboBox<MemberType> memberType = new ComboBox<>();
-		HBox hboxTitle = new HBox(); // Title
-		HBox hbox1 = new HBox(); // first name
-		HBox hbox2 = new HBox(); // last name
-		HBox hbox3 = new HBox(); // Occupation
-		HBox hbox4 = new HBox(); // Business
-		HBox hbox5 = new HBox(); // Birthday
-		HBox hbox6 = new HBox(); // Member Type
-		HBox hbox7 = new HBox(); // Add Button
-		HBox hbox8 = new HBox(); // Populate Title
-		HBox hbox9 = new HBox(); // populate
-		
-		VBox vboxFnameLabel = new VBox();
-		VBox vboxLnameLabel = new VBox();
-		VBox vboxOccupLabel = new VBox();
-		VBox vboxBuisnLabel = new VBox();
-		VBox vboxBirthLabel = new VBox();
-		
-		VBox vboxFnameBox = new VBox();
-		VBox vboxLnameBox = new VBox();
-		VBox vboxOccupBox = new VBox();
-		VBox vboxBuisnBox = new VBox();
-		VBox vboxBirthBox = new VBox();
-		
-		///////////////  ATTRIBUTES ////////////////
+		this.textFieldMap = new HashMap<>();
 		setPrefWidth(460);
-		firstNameTextField.setPrefSize(240, 10);
-		lastNameTextField.setPrefSize(240, 10);
-		businessTextField.setPrefSize(240, 10);
-		occupationTextField.setPrefSize(240, 10);
-		populateTextField.setPrefWidth(45);
-		populateTextField.setPrefHeight(25);
-		memberType.getItems().setAll(MemberType.values());
-		memberType.setValue(MemberType.getByCode(1)); // sets to primary
-		addButton.setPrefWidth(80);
-		populateButton.setPrefWidth(80);
-		vboxFnameLabel.setPrefWidth(80);
-		vboxLnameLabel.setPrefWidth(80);
-		vboxOccupLabel.setPrefWidth(80);
-		vboxBuisnLabel.setPrefWidth(80);
-		vboxBirthLabel.setPrefWidth(80);
-		VBox.setVgrow(vboxGrey, Priority.ALWAYS);
-		
-		hboxTitle.setAlignment(Pos.CENTER);
-		hbox6.setAlignment(Pos.CENTER_LEFT);
-		hbox7.setAlignment(Pos.CENTER_RIGHT);
-		hbox8.setAlignment(Pos.CENTER);
-		hbox9.setAlignment(Pos.CENTER);
-		
-		hboxTitle.setSpacing(13);
-		hbox6.setSpacing(25);
-		hbox7.setSpacing(25);
-		hbox9.setSpacing(15);
-		
-		hboxTitle.setPadding(new Insets(5, 15, 5, 15));  // first Name
-		hbox1.setPadding(new Insets(5, 15, 5, 60));  // first Name
-		hbox2.setPadding(new Insets(5, 15, 5, 60));  // last name
-		hbox3.setPadding(new Insets(5, 15, 5, 60));  // occupation
-		hbox4.setPadding(new Insets(5, 15, 5, 60));  // business
-		hbox5.setPadding(new Insets(5, 15, 5, 60));  // birthday
-		hbox6.setPadding(new Insets(5, 15, 5, 60));  // member type
-		hbox7.setPadding(new Insets(5, 100, 5, 5));  // add button		
-		hbox8.setPadding(new Insets(60, 5, 5, 5));  // Populate title
-		hbox9.setPadding(new Insets(20, 15, 5, 5));  // populate field and button
 		setPadding(new Insets(5, 5, 5, 5));
 		setId("custom-tap-pane-frame");
-		vboxGrey.setId("box-background-light");
-		
-		vboxFnameLabel.setAlignment(Pos.CENTER_LEFT);
-		vboxLnameLabel.setAlignment(Pos.CENTER_LEFT);
-		vboxOccupLabel.setAlignment(Pos.CENTER_LEFT);
-		vboxBuisnLabel.setAlignment(Pos.CENTER_LEFT);
-		vboxBirthLabel.setAlignment(Pos.CENTER_LEFT);
-		
+		getChildren().add(build());
+	}
 
-		
-		/////////////////  LISTENERS  /////////////////////
+	@Override
+	public VBox build() {
+		VBox vboxGrey = new VBox();
+		vboxGrey.setId("box-background-light");
+		VBox.setVgrow(vboxGrey, Priority.ALWAYS);
+		vboxGrey.getChildren().add(hboxTitle());
+		vboxGrey.getChildren().add(addTextField("First Name"));
+		vboxGrey.getChildren().add(addTextField("Last Name"));
+		vboxGrey.getChildren().add(addTextField("Occupation"));
+		vboxGrey.getChildren().add(addTextField("Business"));
+		vboxGrey.getChildren().add(addDatePicker());
+		vboxGrey.getChildren().add(addComboBox());
+		vboxGrey.getChildren().add(addButtonBox());
+		return vboxGrey;
+	}
+
+	private Node addButtonBox() {
+		HBox hBox = new HBox();
+		Button addButton = new Button("Add");
+		hBox.setAlignment(Pos.CENTER_RIGHT);
+		hBox.setSpacing(25);
+		hBox.setPadding(new Insets(5, 100, 5, 5));  // add button
+		hBox.getChildren().addAll(addButton);
 		addButton.setOnAction((event) -> {
 			hasError = false;
-			int pid = SqlSelect.getNextAvailablePrimaryKey("person", "p_id");
-			person = new PersonDTO(pid, parent.getModel().getMembership().getMsId(), memberType.getValue().getCode(), firstNameTextField.getText(),
-					lastNameTextField.getText(), getBirthday(birthdayDatePicker.getValue()), occupationTextField.getText(),
-					businessTextField.getText(), true, "",0);
-			BaseApplication.logger.info("New Key=" + pid + " new person=" + person.getNameWithInfo());
-
-			// if adding member succeeds, clear the form
-			if (!setNewMember(person)) {
-				String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
-				String memoToSave = "New person: " + person.getNameWithInfo() + " added as " + memberType.getValue().toString() + ".";
-				parent.getModel().getNote().addMemoAndReturnId(new MemoDTO(person.getMs_id(),memoToSave, date,"N"));
-				firstNameTextField.setText("");
-				lastNameTextField.setText("");
-				businessTextField.setText("");
-				occupationTextField.setText("");
-				birthdayDatePicker.setValue(null);
-				memberType.setValue(MemberType.getByCode(1)); // sets to primary
-			}
+			PersonDTO personDTO = personRepository.insertPerson(
+					new PersonDTO(parent.getModel().getMembership().getMsId(),
+					comboBoxProperty.get().getValue().getCode(),
+					textFieldMap.get("First Name").getText(),
+					textFieldMap.get("Last Name").getText(),
+					getBirthday(datePickerProperty.get().getValue()),
+					textFieldMap.get("Occupation").getText(),
+					textFieldMap.get("Business").getText(),
+					true));
+			logNewPerson(personDTO);
+			openNewPersonTab(personDTO);
+			clearAddMemberBox();
 		});
-		
-		
-		vboxFnameLabel.getChildren().add(firstNameLabel);
-		vboxLnameLabel.getChildren().add(lastNameLabel);
-		vboxOccupLabel.getChildren().add(occupationLabel);
-		vboxBuisnLabel.getChildren().add(businessLabel);
-		vboxBirthLabel.getChildren().add(birthdayLabel);
-		
-		vboxFnameBox.getChildren().add(firstNameTextField);
-		vboxLnameBox.getChildren().add(lastNameTextField);
-		vboxOccupBox.getChildren().add(occupationTextField);
-		vboxBuisnBox.getChildren().add(businessTextField);
-		vboxBirthBox.getChildren().add(birthdayDatePicker);
-		
-		hboxTitle.getChildren().addAll(titleLabel);
-		hbox1.getChildren().addAll(vboxFnameLabel, vboxFnameBox);
-		hbox2.getChildren().addAll(vboxLnameLabel, vboxLnameBox);
-		hbox3.getChildren().addAll(vboxOccupLabel, vboxOccupBox);
-		hbox4.getChildren().addAll(vboxBuisnLabel, vboxBuisnBox);
-		hbox5.getChildren().addAll(vboxBirthLabel, vboxBirthBox);
-		hbox6.getChildren().addAll(memberTypeLabel,memberType);
-		hbox7.getChildren().addAll(addButton);
-		hbox8.getChildren().addAll(addFromPidLabel);
-		hbox9.getChildren().addAll(populateTextField,populateButton);
-		vboxGrey.getChildren().addAll(hboxTitle, hbox1, hbox2, hbox3, hbox4, hbox5, hbox6, hbox7, hbox8, hbox9);
-		getChildren().add(vboxGrey);
+		return hBox;
+	}
+
+	private void logNewPerson(PersonDTO personDTO) {
+		String memoToSave = "New person: " + personDTO.getNameWithInfo()
+				+ " added as " + MemberType.getByCode(personDTO.getMemberType());
+		logger.info(memoToSave);
+		parent.getModel().getNote().addMemoAndReturnId(new MemoDTO(personDTO.getMsId(),memoToSave,"N"));
+	}
+
+	private void openNewPersonTab(PersonDTO personDTO) {
+		String newMemberType = String.valueOf(MemberType.getByCode(personDTO.getMemberType()));
+		Tab tab = new Tab(newMemberType, new HBoxPerson(personDTO, parent));
+		parent.getModel().getPeopleTabPane().getTabs().add(tab);
+		parent.getModel().getPeopleTabPane().getSelectionModel().select(tab);
+		parent.getModel().getPeople().add(personDTO);
+	}
+
+	private void clearAddMemberBox() {
+		textFieldMap.get("First Name").setText("");
+		textFieldMap.get("Last Name").setText("");
+		textFieldMap.get("Occupation").setText("");
+		textFieldMap.get("Business").setText("");
+		datePickerProperty.get().setValue(null);
+		comboBoxProperty.get().setValue(MemberType.getByCode(3)); // sets to primary
 	}
 
 	private String getBirthday(LocalDate birthday) {
@@ -185,47 +117,81 @@ public class VBoxAddPerson extends VBox {
 		}
 		return date;
 	}
-	
-	private Boolean setNewMember(PersonDTO person) {  // gives the last memo_id number
-		checkIfCoreMembersExist(person);
-		String memberStringType = String.valueOf(MemberType.getByCode(person.getMemberType()));
-		checkName(person.getFname());
-		checkName(person.getLname());
-		if(!hasError) {
-			addPerson(memberStringType);
-			BaseApplication.logger.info("Added " + person.getNameWithInfo() + " to "
-					+ parent.getModel().getMembership().getMembershipInfo());
-		}
-		return hasError;
+
+	private Node addComboBox() {
+		HBox hBox = new HBox(); // first name
+		hBox.setPadding(new Insets(5, 15, 5, 60));  // first Name
+		hBox.getChildren().addAll(addLabel("Type"), createComboBox());
+		return hBox;
 	}
 
-	private void checkIfCoreMembersExist(PersonDTO person) {
-		if(person.getMemberType() < 3)
-   			if (SqlExists.personExists(person.getMemberType(), parent.getModel().getMembership().getMsId())) {
-			printErrorMessage("A " + MemberType.getByCode(person.getMemberType())
-					+ " member already exists for this account");
-			hasError = true;
-		}
+	private Node addTextField(String label) {
+		HBox hBox = new HBox(); // first name
+		hBox.setPadding(new Insets(5, 15, 5, 60));  // first Name
+		VBox vBox = new VBox();
+		TextField textField = new TextField();
+		textField.setPrefSize(240, 10);
+		textFieldMap.put(label,textField);
+		vBox.getChildren().add(textField);
+		hBox.getChildren().addAll(addLabel(label), vBox);
+		return hBox;
 	}
 
-	private void checkName(String name) {
-		if(name.equals("")) {
-			hasError = true;
-			printErrorMessage("Must have a name");
-		}
+	private Node addDatePicker() {
+		HBox hBox = new HBox(); // first name
+		VBox vBox = new VBox();
+		hBox.setPadding(new Insets(5, 15, 5, 60));  // first Name
+		DatePicker datePicker = new DatePicker();
+		datePicker.setPrefSize(240, 10);
+		vBox.getChildren().add(datePicker);
+		datePickerProperty.set(datePicker);
+		hBox.getChildren().addAll(addLabel("BirthDay"), vBox);
+		return hBox;
+	}
+
+	private Node createComboBox() {
+		VBox vBox = new VBox();
+		ComboBox<MemberType> comboBox = new ComboBox<>();
+		comboBox.getItems().setAll(MemberType.values());
+		comboBox.setValue(MemberType.getByCode(1)); // sets to primary
+		comboBoxProperty.set(comboBox);
+		comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			// This code will be executed whenever the selected item changes
+			if (newValue != null) {
+				System.out.println("Selected MemberType: " + newValue.getCode());
+				// You can also use other properties or methods of the MemberType object
+			}
+		});
+		vBox.getChildren().add(comboBox);
+		return vBox;
+	}
+
+
+
+	private Node addLabel(String text) {
+		VBox vBox = new VBox();
+		Label label = new Label(text);
+		vBox.setPrefWidth(80);
+		vBox.setAlignment(Pos.CENTER_LEFT);
+		vBox.getChildren().add(label);
+		return vBox;
+	}
+
+	private Node hboxTitle() {
+		HBox hBox = new HBox(); // Title
+		Label titleLabel = new Label("Add New Member");
+		hBox.setAlignment(Pos.CENTER);
+		hBox.setSpacing(13);
+		hBox.setPadding(new Insets(20, 15, 20, 15));  // first Name
+		hBox.getChildren().addAll(titleLabel);
+		return hBox;
 	}
 	
-	private void printErrorMessage(String message) {
-		titleLabel.setText(message);
-		titleLabel.setTextFill(Color.RED);
-		hasError = true;
-	}
-	
-	private void addPerson(String memberType) {
-		SqlInsert.addPersonRecord(person);
-		parent.getModel().getPeopleTabPane().getTabs().add(new Tab(memberType,
-				new HBoxPerson(person, parent)));
-    	titleLabel.setText("Add New Member");
-		titleLabel.setTextFill(Color.BLACK);
-	}
+//	private void printErrorMessage(String message) {
+//		titleLabel.setText(message);
+//		titleLabel.setTextFill(Color.RED);
+//		hasError = true;
+//	}
+
+
 }

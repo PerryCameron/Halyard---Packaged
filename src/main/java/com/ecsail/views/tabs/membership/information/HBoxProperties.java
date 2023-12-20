@@ -207,10 +207,10 @@ public class HBoxProperties extends HBox implements Builder {
                 membershipRepository.deleteMembership(msId);
                 setMessage("Deleting people", dialogue);
                 for (PersonDTO p : people) {
-                    phoneRepository.deletePhones(p.getP_id());
-                    emailRepository.deleteEmail(p.getP_id());
-                    officerRepository.deleteOfficer(p.getP_id());
-                    personRepository.deletePerson(p.getP_id());
+                    phoneRepository.deletePhones(p.getpId());
+                    emailRepository.deleteEmail(p.getpId());
+                    officerRepository.deleteOfficer(p.getpId());
+                    personRepository.deletePerson(p.getpId());
                 }
 
                 return null;

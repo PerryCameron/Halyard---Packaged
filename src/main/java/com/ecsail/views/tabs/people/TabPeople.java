@@ -1,6 +1,5 @@
 package com.ecsail.views.tabs.people;
 
-import com.ecsail.BaseApplication;
 import com.ecsail.Launcher;
 import com.ecsail.enums.MemberType;
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
@@ -23,7 +22,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.util.Callback;
 
 import java.time.Year;
 import java.util.regex.Matcher;
@@ -108,7 +106,7 @@ public class TabPeople extends Tab {
 	            if (! row.isEmpty() && event.getButton()==MouseButton.PRIMARY 
 	                 && event.getClickCount() == 2) {
 	                PersonDTO clickedRow = row.getItem();
-					Launcher.createMembershipTabFromPeopleList(clickedRow.getMs_id());
+					Launcher.createMembershipTabFromPeopleList(clickedRow.getMsId());
 	            }
 	            if (! row.isEmpty() && event.getButton()==MouseButton.PRIMARY 
 		                 && event.getClickCount() == 1) {
@@ -129,10 +127,10 @@ public class TabPeople extends Tab {
 
 	private void createPersonBox(PersonDTO person)  {
 		MembershipListDTO membership = null;
-		if(SqlExists.currentMembershipIdExists(person.getMs_id())) {
-		membership = membershipRepository.getMembershipByMsIdAndYear(person.getMs_id(), String.valueOf(Year.now().getValue()));
+		if(SqlExists.currentMembershipIdExists(person.getMsId())) {
+		membership = membershipRepository.getMembershipByMsIdAndYear(person.getMsId(), String.valueOf(Year.now().getValue()));
 		} else {
-		membership = membershipRepository.getMembershipFromListWithoutMembershipId(person.getMs_id());
+		membership = membershipRepository.getMembershipFromListWithoutMembershipId(person.getMsId());
 		}
 		personHBox.getChildren().clear();  // remove if exists
 	}
@@ -141,7 +139,7 @@ public class TabPeople extends Tab {
 		int index = 0;
 		int count = 0;
 		for(PersonDTO person : people) {
-			if(person.getP_id() == pid) {
+			if(person.getpId() == pid) {
 				//System.out.println("Found pid " + pid);
 				index = count; 
 			}
@@ -154,7 +152,7 @@ public class TabPeople extends Tab {
 		int index = 0;
 		int count = 0;
 		for(PersonDTO person : people) {
-			if(person.getP_id() == pid) {
+			if(person.getpId() == pid) {
 				//System.out.println("Found pid " + pid);
 				index = count; 
 			}
@@ -168,7 +166,7 @@ public class TabPeople extends Tab {
 		Pattern p = Pattern.compile("^" +searchString, Pattern.MULTILINE);
 		boolean flag = true;
 		for (PersonDTO o : personTableView.getItems()) {
-		Matcher m = p.matcher(o.getLname().toLowerCase());
+		Matcher m = p.matcher(o.getLastName().toLowerCase());
 		
 			while(m.find()) {
 				//System.out.println(m.group() + " found on row " + count);

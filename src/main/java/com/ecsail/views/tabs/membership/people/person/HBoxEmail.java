@@ -43,7 +43,7 @@ public class HBoxEmail extends HBox {
     public HBoxEmail(PersonDTO p) {
         this.person = p;
         this.emailDTOS = FXCollections.observableArrayList(param -> new Observable[]{param.isPrimaryUseProperty()});
-        this.emailDTOS.addAll(emailRepository.getEmail(person.getP_id()));
+        this.emailDTOS.addAll(emailRepository.getEmail(person.getpId()));
         this.emailTableView = createTableView();
         VBox vboxButtons = makeButtonBox();
         var hboxGrey = new HBox(); // this is here for the grey background to make nice appearance
@@ -215,7 +215,7 @@ public class HBoxEmail extends HBox {
             BaseApplication.logger.info("Added new email entry for " + person.getNameWithInfo());
             EmailDTO emailDTO = emailRepository.insertEmail(new EmailDTO(
                     0,
-                    person.getP_id(),
+                    person.getpId(),
                     true,
                     "new email",
                     true));

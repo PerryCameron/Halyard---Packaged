@@ -38,14 +38,14 @@ public class PhoneRepositoryImpl implements PhoneRepository {
     @Override
     public List<PhoneDTO> getPhoneByPerson(PersonDTO personDTO) {
         String query = "SELECT * FROM phone WHERE p_id = ?";
-        return template.query(query, new PhoneRowMapper(), personDTO.getP_id());
+        return template.query(query, new PhoneRowMapper(), personDTO.getpId());
     }
 
     @Override
     public String getListedPhoneByType(PersonDTO p, String type) {
         String sql = "SELECT PHONE FROM phone WHERE p_id = ? AND phone_listed = true AND phone_type = ?";
         try {
-            return template.queryForObject(sql, String.class, p.getP_id(), type);
+            return template.queryForObject(sql, String.class, p.getpId(), type);
         } catch (EmptyResultDataAccessException e) {
             logger.error("No listed phone found for the specified type: " + e.getMessage());
             return "";
@@ -97,7 +97,7 @@ public class PhoneRepositoryImpl implements PhoneRepository {
     public boolean listedPhoneOfTypeExists(PersonDTO p, String type) {
         String sql = "SELECT EXISTS(SELECT * FROM phone WHERE P_ID = ? AND PHONE_LISTED = true AND PHONE_TYPE = ?)";
         try {
-            return template.queryForObject(sql, Boolean.class, p.getP_id(), type);
+            return template.queryForObject(sql, Boolean.class, p.getpId(), type);
         } catch (DataAccessException e) {
             logger.error("Unable to check if EXISTS: " + e.getMessage());
             return false;

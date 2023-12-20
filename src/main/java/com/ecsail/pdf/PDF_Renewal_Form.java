@@ -153,7 +153,7 @@ public class PDF_Renewal_Form {
 		gatherMembershipInformation();  // gets all relevant info for membership obviously
 		// create a custom file name with gathered information
 		filenm = HalyardPaths.RENEWALFORM + "/" + year + "/" + year + "_Renewal_Form_"
-				+ primary.getLname() + "_" + membership.getMembershipId() + ".pdf";
+				+ primary.getLastName() + "_" + membership.getMembershipId() + ".pdf";
 		// create the document
 		Document document = createDocument(filenm);
 		addTablesToPDF(document);
@@ -208,7 +208,7 @@ public class PDF_Renewal_Form {
 			int numberOfChildren = dependants.size();
 			for (PersonDTO c : dependants) {
 				if (c.isActive()) {
-					children += c.getFname();
+					children += c.getFirstName();
 					if (c.getBirthday() != null) {
 						children += " (" + c.getBirthday().substring(0, 4) + ")";
 					}
@@ -1624,7 +1624,7 @@ public class PDF_Renewal_Form {
 		Cell cell;
 		Paragraph p;
 		
-		p = new Paragraph("Member Name: " + primary.getFname() + " " + primary.getLname());
+		p = new Paragraph("Member Name: " + primary.getFirstName() + " " + primary.getLastName());
 		p.setFontSize(10);
 		cell = new Cell(1,2);
 		cell.setWidth(290);
@@ -1635,7 +1635,7 @@ public class PDF_Renewal_Form {
 		cell.setBorderBottom(new SolidBorder(0.5f));
 		mainTable.addCell(cell);
 		
-		p = new Paragraph("Spouse/Partner Name: " + secondary.getFname() + " " + secondary.getLname());
+		p = new Paragraph("Spouse/Partner Name: " + secondary.getFirstName() + " " + secondary.getLastName());
 		p.setFontSize(10);
 		cell = new Cell(1,2);
 		cell.setWidth(290);

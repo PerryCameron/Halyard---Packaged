@@ -21,7 +21,7 @@ public class SqlDelete {
 	}
 	
 	public static void deletePerson(PersonDTO p) {
-		String query = "DELETE FROM person WHERE p_id=" + p.getP_id();
+		String query = "DELETE FROM person WHERE p_id=" + p.getpId();
 			try {
 				BaseApplication.connect.executeQuery(query);
 			} catch (SQLException e) {

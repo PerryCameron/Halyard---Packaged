@@ -21,7 +21,12 @@ public class AwardDTO {
 		this.awardType = new SimpleStringProperty(awardType);
 	}
 
-
+	public AwardDTO(Integer pid, String awardYear) {
+		this.awardId = new SimpleIntegerProperty(0);
+		this.pid = new SimpleIntegerProperty(pid);
+		this.awardYear = new SimpleStringProperty(awardYear);
+		this.awardType = new SimpleStringProperty("New Award");
+	}
 
 	public final IntegerProperty awardIdProperty() {
 		return this.awardId;

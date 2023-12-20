@@ -48,7 +48,7 @@ public class Object_MembershipInformation {
 		int count = 0;
 		ArrayList<PersonDTO> dependants = personRepository.getDependants(m);
 		for(PersonDTO d: dependants) {
-			children += d.getFname();
+			children += d.getFirstName();
 			count++;
 			if(count < dependants.size()) children += ",";
 		}

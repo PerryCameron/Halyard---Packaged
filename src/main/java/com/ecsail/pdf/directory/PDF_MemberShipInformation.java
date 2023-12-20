@@ -48,7 +48,7 @@ public class PDF_MemberShipInformation extends Table {
 		addCell(cell);
 
 		cell = new Cell();
-		p = new Paragraph(ms.getPrimary().getLname() + ", " + ms.getPrimary().getFname());
+		p = new Paragraph(ms.getPrimary().getLastName() + ", " + ms.getPrimary().getFirstName());
 		p.setFontSize(set.getNormalFontSize()).setFixedLeading(set.getFixedLeadingNarrow());
 		cell
 			.setBorder(Border.NO_BORDER).add(p);
@@ -56,7 +56,7 @@ public class PDF_MemberShipInformation extends Table {
 		
 		cell = new Cell();
 		if(ms.getSecondaryExists())
-		p = new Paragraph(ms.getSecondary().getLname() + ", " + ms.getSecondary().getFname());
+		p = new Paragraph(ms.getSecondary().getLastName() + ", " + ms.getSecondary().getFirstName());
 		else
 		p = new Paragraph("");
 		p.setFontSize(set.getNormalFontSize()).setFixedLeading(set.getFixedLeadingNarrow());

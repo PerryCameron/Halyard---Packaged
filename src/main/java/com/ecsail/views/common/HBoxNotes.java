@@ -124,8 +124,7 @@ public class HBoxNotes extends HBox {
 
 	private void setAddButtonListener(Button add) {
 		add.setOnAction(e -> {
-			String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
-			note.addMemoAndReturnId(new MemoDTO(date,"B",selectedBoat.getBoatId()));
+			note.addMemoAndReturnId(new MemoDTO("B",selectedBoat.getBoatId()));
 			memoTableView.layout();
 			// open memo for editing
 			memoTableView.requestFocus();

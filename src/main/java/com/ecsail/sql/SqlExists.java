@@ -158,7 +158,7 @@ public class SqlExists {
 
 	public static boolean emailExists(PersonDTO p) {
 		boolean result = false;
-		String query = "SELECT EXISTS(SELECT * FROM email WHERE P_ID=" + p.getP_id() + " AND PRIMARY_USE=true) AS email_exists";
+		String query = "SELECT EXISTS(SELECT * FROM email WHERE P_ID=" + p.getpId() + " AND PRIMARY_USE=true) AS email_exists";
 		try {
 			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
 			while(rs.next()) {
@@ -173,7 +173,7 @@ public class SqlExists {
 	
 	public static boolean listedPhoneOfTypeExists(PersonDTO p, String type) {
 		boolean result = false;
-		String query = "SELECT EXISTS(SELECT * FROM phone WHERE P_ID=" + p.getP_id() + " AND PHONE_LISTED=true AND PHONE_TYPE='" + type + "') AS phone_exists";
+		String query = "SELECT EXISTS(SELECT * FROM phone WHERE P_ID=" + p.getpId() + " AND PHONE_LISTED=true AND PHONE_TYPE='" + type + "') AS phone_exists";
 		try {
 			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
 			while(rs.next()) {

@@ -46,24 +46,11 @@ public class SqlInsert {
 		return pay_id;
 	}
 
-	public static void addAwardRecord(AwardDTO a) {
-		String query = "INSERT INTO awards () VALUES (" + a.getAwardId() + ","
-				+ a.getPid() + ",'" + a.getAwardYear() + "','" + a.getAwardType() + "')";
-		try {
-			BaseApplication.connect.executeQuery(query);
-		}
-		catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
-		}
-	}
-
-
-
 	public static void addPersonRecord(PersonDTO person) {
 		String query = "INSERT INTO person () VALUES ("
-				+ person.getP_id() + "," + person.getMs_id() + "," + person.getMemberType() + ",'" + person.getFname()
-				+ "','" + person.getLname() + "'," + getCorrectString(person.getBirthday())
-				+ ",'" + person.getOccupation() + "','" + person.getBusiness() +"',true,null,'"+person.getNname()+"',"+person.getOldMsid()+")";
+				+ person.getpId() + "," + person.getMsId() + "," + person.getMemberType() + ",'" + person.getFirstName()
+				+ "','" + person.getLastName() + "'," + getCorrectString(person.getBirthday())
+				+ ",'" + person.getOccupation() + "','" + person.getBusiness() +"',true,null,'"+person.getNickName()+"',"+person.getOldMsid()+")";
 		try {
 
 			BaseApplication.connect.executeQuery(query);
@@ -106,18 +93,6 @@ public class SqlInsert {
 		} catch (SQLException e) {
 			Platform.runLater(() -> new Dialogue_ErrorSQL(e,"Unable to insert data into invoice row","See below for details"));
 		}
-	}
-
-	public static boolean addMembershipIsSucessful(MembershipListDTO nm) {
-		boolean updateIsSucessful = false;
-		String query = "INSERT INTO membership () VALUES (" + nm.getMsId() + ",'" + nm.getpId() + "','" + nm.getJoinDate() + "','FM','','','IN','')";
-		try {
-			BaseApplication.connect.executeQuery(query);
-			updateIsSucessful = true;
-		 } catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
-		}
-		return updateIsSucessful;
 	}
 
 

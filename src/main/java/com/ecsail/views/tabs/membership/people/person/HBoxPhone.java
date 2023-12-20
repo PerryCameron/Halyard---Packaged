@@ -43,7 +43,7 @@ public class HBoxPhone extends HBox {
     public HBoxPhone(PersonDTO p) {
         this.person = p;  // the below callback is to allow commit when focus removed, overrides FX default behavior
         this.phoneDTOS = FXCollections.observableArrayList(param -> new Observable[] { param.isListedProperty() });
-        this.phoneDTOS.addAll(phoneRepository.getPhoneByPid(person.getP_id()));
+        this.phoneDTOS.addAll(phoneRepository.getPhoneByPid(person.getpId()));
         this.phoneTableView = createTableView();
         VBox vboxButtons = createButtonBox(); // holds phone buttons
         HBox hboxGrey = createOuterBox(vboxButtons); // this is here for the grey background to make nice appearance
@@ -251,7 +251,7 @@ public class HBoxPhone extends HBox {
             // attempt to add a new record and return if it is successful
             PhoneDTO phoneDTO = phoneRepository.insertPhone(new PhoneDTO(
                     0,
-                    person.getP_id(),
+                    person.getpId(),
                     true,
                     "new phone",
                     ""));

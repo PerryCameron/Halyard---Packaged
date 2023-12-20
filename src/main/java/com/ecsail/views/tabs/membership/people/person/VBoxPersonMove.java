@@ -7,7 +7,6 @@ import com.ecsail.repository.implementations.PersonRepositoryImpl;
 import com.ecsail.repository.interfaces.PersonRepository;
 import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.views.tabs.membership.people.HBoxPerson;
-import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlExists;
 import com.ecsail.dto.PersonDTO;
 import javafx.geometry.Insets;
@@ -39,10 +38,10 @@ public class VBoxPersonMove extends VBox {
         }
 
         ToggleGroup tg = new ToggleGroup();
-        RadioButton rb0 = new RadioButton("Change " + person.getFname() + "'s member type");
-        RadioButton rb1 = new RadioButton("Remove " + person.getFname() + " from this membership");
-        RadioButton rb2 = new RadioButton("Delete " + person.getFname() + " from database ");
-        RadioButton rb3 = new RadioButton("Move " + person.getFname() + " to membership (MSID)");
+        RadioButton rb0 = new RadioButton("Change " + person.getFirstName() + "'s member type");
+        RadioButton rb1 = new RadioButton("Remove " + person.getFirstName() + " from this membership");
+        RadioButton rb2 = new RadioButton("Delete " + person.getFirstName() + " from database ");
+        RadioButton rb3 = new RadioButton("Move " + person.getFirstName() + " to membership (MSID)");
         Button submit = new Button("Submit");
         TextField msidTextField = new TextField();
 
@@ -87,7 +86,7 @@ public class VBoxPersonMove extends VBox {
                 changeMembershipType(personTabPane, combo_box.getValue());
             }
             if (rb1.isSelected()) {
-                List<PersonDTO> people = personRepository.getPeople(person.getMs_id());
+                List<PersonDTO> people = personRepository.getPeople(person.getMsId());
                 // makes sure there is a secondary to take a primaries place
                 if(checkIfCanRemovePerson(person,people)) {
                     Optional<ButtonType> result = createConformation(
@@ -104,7 +103,7 @@ public class VBoxPersonMove extends VBox {
                         removeThisTab(personTabPane);
                     }
                 } else
-                    createInformation(person.getFname() + " can not be removed because there is no secondary person to " +
+                    createInformation(person.getFirstName() + " can not be removed because there is no secondary person to " +
                         "take their place");
             }
             if (rb2.isSelected()) {
@@ -121,12 +120,12 @@ public class VBoxPersonMove extends VBox {
             }
             if (rb3.isSelected()) {
                 // TODO move to another msid
-                int oldMsid = person.getMs_id();
+                int oldMsid = person.getMsId();
                 // set memberType to 3 as default
                 person.setMemberType(3);
                 person.setOldMsid(oldMsid);
                 // TODO make sure it is an integer and that this membership exists
-                person.setMs_id(Integer.parseInt(msidTextField.getText()));
+                person.setMsId(Integer.parseInt(msidTextField.getText()));
                 personRepository.updatePerson(person);
                 // TODO error check to make sure we are in membership view
                 removeThisTab(personTabPane);
@@ -193,7 +192,7 @@ public class VBoxPersonMove extends VBox {
     }
 
     private void changeToSecondary(TabPane personTabPane) {
-        if (SqlExists.memberTypeExists(MemberType.SECONDARY.getCode(), person.getMs_id())) {
+        if (SqlExists.memberTypeExists(MemberType.SECONDARY.getCode(), person.getMsId())) {
             Tab secondaryTab = getTab(personTabPane, "Secondary");
             assert secondaryTab != null;
             PersonDTO secondary = getPerson(secondaryTab);
@@ -221,7 +220,7 @@ public class VBoxPersonMove extends VBox {
 
     private void changeToPrimary(TabPane personTabPane) {
         // check if there is already a primary for persons msid
-        if (SqlExists.memberTypeExists(MemberType.PRIMARY.getCode(), person.getMs_id())) {
+        if (SqlExists.memberTypeExists(MemberType.PRIMARY.getCode(), person.getMsId())) {
             Tab primaryTab = getTab(personTabPane, "Primary");
             assert primaryTab != null;
             PersonDTO primary = getPerson(primaryTab);

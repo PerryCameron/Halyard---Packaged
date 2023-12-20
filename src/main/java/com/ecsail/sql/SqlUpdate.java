@@ -120,7 +120,7 @@ public class SqlUpdate {
 	}
 
 	public static void updatePersonChangeMemberType(PersonDTO person, int newMemType) {
-		String query = "UPDATE person SET MEMBER_TYPE=" + newMemType + " WHERE P_ID=" + person.getP_id();
+		String query = "UPDATE person SET MEMBER_TYPE=" + newMemType + " WHERE P_ID=" + person.getpId();
 		try {
 			BaseApplication.connect.executeQuery(query);
 		} catch (SQLException e) {
@@ -197,7 +197,7 @@ public class SqlUpdate {
 		} catch (SQLIntegrityConstraintViolationException IV) {
 			PersonDTO accountHolder = SqlPerson.getPersonFromMembershipID(thisId.getMembershipId(), thisId.getFiscalYear());
 			String errorMessage = "The entry for the year " + thisId.getFiscalYear() + " with a membership ID of " + thisId.getMembershipId()
-			+ " already exists for another member: " + accountHolder.getFname() + " " + accountHolder.getLname();
+			+ " already exists for another member: " + accountHolder.getFirstName() + " " + accountHolder.getLastName();
 			new Dialogue_CustomErrorMessage(errorMessage, "Duplicate Entry", true);
 				noError = false;
 		} catch (SQLException e) {

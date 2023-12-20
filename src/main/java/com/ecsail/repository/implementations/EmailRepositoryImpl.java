@@ -49,7 +49,7 @@ public class EmailRepositoryImpl implements EmailRepository {
     public EmailDTO getPrimaryEmail(PersonDTO person) {
         String query = "select * from email where P_ID=? and PRIMARY_USE=true limit 1;";
         try {
-            return template.queryForObject(query, new EmailRowMapper(), person.getP_id());
+            return template.queryForObject(query, new EmailRowMapper(), person.getpId());
         } catch (EmptyResultDataAccessException e) {
             return null; // Return null if no email is found
         }
@@ -122,13 +122,13 @@ public class EmailRepositoryImpl implements EmailRepository {
     @Override
     public boolean emailExists(PersonDTO p) {
         String sql = "SELECT EXISTS(SELECT * FROM email WHERE P_ID = ? AND PRIMARY_USE = true)";
-        return template.queryForObject(sql, Boolean.class, p.getP_id());
+        return template.queryForObject(sql, Boolean.class, p.getpId());
     }
     @Override
     public String getEmail(PersonDTO person) {
         String sql = "SELECT * FROM email WHERE p_id = ? AND primary_use = true";
         try {
-            EmailDTO email = template.queryForObject(sql, new EmailRowMapper(), person.getP_id());
+            EmailDTO email = template.queryForObject(sql, new EmailRowMapper(), person.getpId());
             return email != null ? email.getEmail() : "";
         } catch (EmptyResultDataAccessException e) {
             return ""; // No results found

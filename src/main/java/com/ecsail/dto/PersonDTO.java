@@ -3,60 +3,81 @@ package com.ecsail.dto;
 import javafx.beans.property.*;
 
 public class PersonDTO {
-	private IntegerProperty p_id;
-	private IntegerProperty ms_id;
+	private IntegerProperty pId;
+	private IntegerProperty msId;
 	private IntegerProperty memberType; // 1 == primary 2 == secondary 3 == children of
-	private StringProperty fname;
-	private StringProperty lname;
+	private StringProperty firstName;
+	private StringProperty lastName;
 	private StringProperty occupation;
 	private StringProperty business;
 	private StringProperty birthday;
 	private BooleanProperty active;
-	private StringProperty nname;
+	private StringProperty nickName;
 	private IntegerProperty oldMsid;
 
-	public PersonDTO(Integer pid, Integer ms_id, Integer memberType, String firstName, String lastName,
-					 String birthday, String occupation,
-                     String business, Boolean isActive, String nickName, Integer oldMsid) {
-		this.p_id = new SimpleIntegerProperty(pid);
-		this.ms_id = new SimpleIntegerProperty(ms_id);
+	public PersonDTO(Integer pid, Integer msId, Integer memberType, String firstName, String lastName,
+					 String birthday, String occupation, String business, Boolean isActive, String nickName,
+					 Integer oldMsid) {
+		this.pId = new SimpleIntegerProperty(pid);
+		this.msId = new SimpleIntegerProperty(msId);
 		this.memberType = new SimpleIntegerProperty(memberType);
-		this.fname = new SimpleStringProperty(firstName);
-		this.lname = new SimpleStringProperty(lastName);
+		this.firstName = new SimpleStringProperty(firstName);
+		this.lastName = new SimpleStringProperty(lastName);
 		this.birthday = new SimpleStringProperty(birthday);
 		this.occupation = new SimpleStringProperty(occupation);
 		this.business = new SimpleStringProperty(business);
 		this.active = new SimpleBooleanProperty(isActive);
-		this.nname = new SimpleStringProperty(nickName);
+		this.nickName = new SimpleStringProperty(nickName);
 		this.oldMsid = new SimpleIntegerProperty(oldMsid);
 	}
 
-	public PersonDTO(Integer ms_id, Integer memberType, Boolean isActive) {
-		this.p_id = new SimpleIntegerProperty(0);
-		this.ms_id = new SimpleIntegerProperty(ms_id);
+	public PersonDTO(Integer msId, Integer memberType, Boolean isActive) {
+		this.pId = new SimpleIntegerProperty(0);
+		this.msId = new SimpleIntegerProperty(msId);
 		this.memberType = new SimpleIntegerProperty(memberType);
-		this.fname = new SimpleStringProperty("");
-		this.lname = new SimpleStringProperty("");
+		this.firstName = new SimpleStringProperty("");
+		this.lastName = new SimpleStringProperty("");
 		this.birthday = new SimpleStringProperty("");
 		this.occupation = new SimpleStringProperty("");
 		this.business = new SimpleStringProperty("");
 		this.active = new SimpleBooleanProperty(isActive);
-		this.nname = new SimpleStringProperty("");
+		this.nickName = new SimpleStringProperty("");
 		this.oldMsid = new SimpleIntegerProperty(0);
 	}
+
+	public PersonDTO(Integer msId, Integer memberType, String firstName, String lastName,
+					 String birthday, String occupation, String business, Boolean isActive) {
+		this.pId = new SimpleIntegerProperty(0);
+		this.msId = new SimpleIntegerProperty(msId);
+		this.memberType = new SimpleIntegerProperty(memberType);
+		this.firstName = new SimpleStringProperty(firstName);
+		this.lastName = new SimpleStringProperty(lastName);
+		this.birthday = new SimpleStringProperty(birthday);
+		this.occupation = new SimpleStringProperty(occupation);
+		this.business = new SimpleStringProperty(business);
+		this.active = new SimpleBooleanProperty(isActive);
+		this.nickName = new SimpleStringProperty("");
+		this.oldMsid = new SimpleIntegerProperty(0);
+	}
+
+//	(0, parent.getModel().getMembership().getMsId(), memberType.getValue().getCode(), firstNameTextField.getText(),
+//							lastNameTextField.getText(), getBirthday(birthdayDatePicker.getValue()), occupationTextField.getText(),
+//			businessTextField.getText(), true, "",0)
 
 	public PersonDTO() { // default constructor
 
 	}
 
+
+
 	public String getFullName() {
-		if(getFname() == null) setFname("First");
-		if(getLname() == null) setLname("Last");
-		return getFname() + " " + getLname();
+		if(getFirstName() == null) setFirstName("First");
+		if(getLastName() == null) setLastName("Last");
+		return getFirstName() + " " + getLastName();
 	}
 
 	public String getNameWithInfo() {
-		return getFullName() + " (p_id " + getP_id() + ")";
+		return getFullName() + " (p_id " + getpId() + ")";
 	}
 
 	public final IntegerProperty oldMsidProperty( ) {
@@ -71,28 +92,28 @@ public class PersonDTO {
 		this.oldMsidProperty().set(oldMsid);
 	}
 
-	public final IntegerProperty p_idProperty() {
-		return this.p_id;
+	public final IntegerProperty pIdProperty() {
+		return this.pId;
 	}
 
-	public final int getP_id() {
-		return this.p_idProperty().get();
+	public final int getpId() {
+		return this.pIdProperty().get();
 	}
 
-	public final void setP_id(final int p_id) {
-		this.p_idProperty().set(p_id);
+	public final void setpId(final int pId) {
+		this.pIdProperty().set(pId);
 	}
 
-	public final IntegerProperty ms_idProperty() {
-		return this.ms_id;
+	public final IntegerProperty msIdProperty() {
+		return this.msId;
 	}
 
-	public final int getMs_id() {
-		return this.ms_idProperty().get();
+	public final int getMsId() {
+		return this.msIdProperty().get();
 	}
 
-	public final void setMs_id(final int ms_id) {
-		this.ms_idProperty().set(ms_id);
+	public final void setMsId(final int msId) {
+		this.msIdProperty().set(msId);
 	}
 
 	public final IntegerProperty memberTypeProperty() {
@@ -107,28 +128,28 @@ public class PersonDTO {
 		this.memberTypeProperty().set(memberType);
 	}
 
-	public final StringProperty fnameProperty() {
-		return this.fname;
+	public final StringProperty firstNameProperty() {
+		return this.firstName;
 	}
 
-	public final String getFname() {
-		return this.fnameProperty().get();
+	public final String getFirstName() {
+		return this.firstNameProperty().get();
 	}
 
-	public final void setFname(final String fname) {
-		this.fnameProperty().set(fname);
+	public final void setFirstName(final String firstName) {
+		this.firstNameProperty().set(firstName);
 	}
 
-	public final StringProperty lnameProperty() {
-		return this.lname;
+	public final StringProperty lastNameProperty() {
+		return this.lastName;
 	}
 
-	public final String getLname() {
-		return this.lnameProperty().get();
+	public final String getLastName() {
+		return this.lastNameProperty().get();
 	}
 
-	public final void setLname(final String lname) {
-		this.lnameProperty().set(lname);
+	public final void setLastName(final String lastName) {
+		this.lastNameProperty().set(lastName);
 	}
 
 	public final StringProperty occupationProperty() {
@@ -179,23 +200,23 @@ public class PersonDTO {
 		this.activeProperty().set(active);
 	}
 
-	public final StringProperty nnameProperty() {
-		return this.nname;
+	public final StringProperty nickNameProperty() {
+		return this.nickName;
 	}
 
-	public final String getNname() {
-		return this.nnameProperty().get();
+	public final String getNickName() {
+		return this.nickNameProperty().get();
 	}
 
-	public final void setNname(final String nname) {
-		this.nnameProperty().set(nname);
+	public final void setNickName(final String nickName) {
+		this.nickNameProperty().set(nickName);
 	}
 
 	@Override
 	public String toString() {
-		return "Object_Person [p_id=" + p_id + ", ms_id=" + ms_id + ", memberType=" + memberType + ", fname=" + fname
-				+ ", lname=" + lname + ", occupation=" + occupation + ", business=" + business + ", birthday="
-				+ birthday + ", active=" + active + ", nname=" + nname + "]";
+		return "Object_Person [p_id=" + pId + ", ms_id=" + msId + ", memberType=" + memberType + ", fname=" + firstName
+				+ ", lname=" + lastName + ", occupation=" + occupation + ", business=" + business + ", birthday="
+				+ birthday + ", active=" + active + ", nname=" + nickName + "]";
 	}
 
 }

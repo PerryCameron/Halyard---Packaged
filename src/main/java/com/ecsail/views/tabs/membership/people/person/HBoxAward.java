@@ -3,11 +3,11 @@ package com.ecsail.views.tabs.membership.people.person;
 import com.ecsail.BaseApplication;
 import com.ecsail.EditCell;
 import com.ecsail.enums.Awards;
+import com.ecsail.repository.implementations.AwardRepositoryImpl;
+import com.ecsail.repository.interfaces.AwardRepository;
 import com.ecsail.sql.SqlDelete;
-import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlAward;
-import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.dto.AwardDTO;
 import com.ecsail.dto.PersonDTO;
 import javafx.beans.property.SimpleObjectProperty;
@@ -35,6 +35,8 @@ public class HBoxAward extends HBox {
     private final ObservableList<AwardDTO> award;
     private final TableView<AwardDTO> awardTableView;
     private final String currentYear;
+
+    private final AwardRepository awardRepository = new AwardRepositoryImpl();
 
 
     public HBoxAward(PersonDTO p) {
@@ -120,14 +122,10 @@ public class HBoxAward extends HBox {
 
         awardAdd.setOnAction((event) -> {
             BaseApplication.logger.info("Added award entry to " + person.getNameWithInfo());
-            // get next primary key for awards table
-            int awards_id = SqlSelect.getNextAvailablePrimaryKey("awards", "award_id"); // gets last memo_id number
-            // Create new award object
-            AwardDTO a = new AwardDTO(awards_id, person.getP_id(), currentYear, "New Award");
-            // Add info from award object to SQL database
-            SqlInsert.addAwardRecord(a);
-            // create a new row in tableView to match the SQL insert from above
-            award.add(a);
+            // Create new award object and insert into database
+            AwardDTO awardDTO = awardRepository.insertAward(new AwardDTO(person.getpId(), currentYear));
+            // create awardDTO new row in tableView to match the SQL insert from above
+            award.add(awardDTO);
             // sort awards ascending
             award.sort(Comparator.comparing(AwardDTO::getAwardId).reversed());
             // this line prevents strange buggy behaviour

@@ -175,14 +175,14 @@ public class HBoxPerson extends HBox {
 
         fnameTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (oldValue) {  // we have focused and unfocused
-                personDTO.setFname(fnameTextField.getText());
+                personDTO.setFirstName(fnameTextField.getText());
                 personRepository.updatePerson(personDTO);
             }
         });
 
         lnameTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (oldValue) {  // we have focused and unfocused
-                personDTO.setLname(lnameTextField.getText());
+                personDTO.setLastName(lnameTextField.getText());
                 personRepository.updatePerson(personDTO);
             }
         });
@@ -203,7 +203,7 @@ public class HBoxPerson extends HBox {
 
         nnameTextField.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (oldValue) {  // we have focused and unfocused
-                personDTO.setNname(nnameTextField.getText());
+                personDTO.setNickName(nnameTextField.getText());
                 personRepository.updatePerson(personDTO);
             }
         });
@@ -266,11 +266,11 @@ public class HBoxPerson extends HBox {
         hboxMemberInfoAndPicture.getChildren().addAll(vboxMemberInfo, vboxPicture);
         hboxPictureFrame.getChildren().add(photo);
         vboxPicture.getChildren().add(hboxPictureFrame);
-        fnameTextField.setText(personDTO.getFname());
-        lnameTextField.setText(personDTO.getLname());
+        fnameTextField.setText(personDTO.getFirstName());
+        lnameTextField.setText(personDTO.getLastName());
         businessTextField.setText(personDTO.getBusiness());
         occupationTextField.setText(personDTO.getOccupation());
-        nnameTextField.setText(personDTO.getNname());
+        nnameTextField.setText(personDTO.getNickName());
         infoTabPane.getTabs().add(propertiesTab);
         infoTabPane.getTabs().add(new Tab("Phone", hboxPhone));
         infoTabPane.getTabs().add(new Tab("Email", hboxEmail));

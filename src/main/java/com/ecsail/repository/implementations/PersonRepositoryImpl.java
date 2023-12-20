@@ -38,7 +38,7 @@ public class PersonRepositoryImpl implements PersonRepository {
     public  void deletePerson(PersonDTO p) {
         String query = "DELETE FROM person WHERE p_id = ?";
         try {
-            template.update(query, p.getP_id());
+            template.update(query, p.getpId());
         } catch (DataAccessException e) {
             new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
         }
@@ -113,10 +113,10 @@ public class PersonRepositoryImpl implements PersonRepository {
 
         try {
             template.update(sql,
-                    p.getMemberType(), p.getMs_id(), p.getFname(), p.getLname(),
+                    p.getMemberType(), p.getMsId(), p.getFirstName(), p.getLastName(),
                     p.getBirthday(), p.getOccupation(), p.getBusiness(),
-                    p.isActive() ? 1 : 0, p.getNname(), p.getOldMsid(),
-                    p.getP_id());
+                    p.isActive() ? 1 : 0, p.getNickName(), p.getOldMsid(),
+                    p.getpId());
         } catch (DataAccessException e) {
             logger.error("There was a problem with the UPDATE: " + e.getMessage());
         }
@@ -125,7 +125,7 @@ public class PersonRepositoryImpl implements PersonRepository {
     public void removePersonFromMembership(PersonDTO p) {
         String sql = "UPDATE person SET MS_ID = null, OLD_MSID = ? WHERE P_ID = ?";
         try {
-            template.update(sql, p.getMs_id(), p.getP_id());
+            template.update(sql, p.getMsId(), p.getpId());
         } catch (DataAccessException e) {
             logger.error("There was a problem with the UPDATE: " + e.getMessage());
         }
@@ -141,10 +141,10 @@ public class PersonRepositoryImpl implements PersonRepository {
         try {
             template.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-                ps.setInt(1, person.getMs_id());
+                ps.setInt(1, person.getMsId());
                 ps.setInt(2, person.getMemberType());
-                ps.setString(3, person.getFname());
-                ps.setString(4, person.getLname());
+                ps.setString(3, person.getFirstName());
+                ps.setString(4, person.getLastName());
                 // Handle birthday conversion with the correctly formatted date string
                 if (person.getBirthday() != null && !person.getBirthday().isEmpty()) {
                     ps.setDate(5, java.sql.Date.valueOf(person.getBirthday()));
@@ -154,14 +154,14 @@ public class PersonRepositoryImpl implements PersonRepository {
                 ps.setString(6, person.getOccupation());
                 ps.setString(7, person.getBusiness());
                 ps.setBoolean(8, person.isActive());
-                ps.setString(9, person.getNname());
+                ps.setString(9, person.getNickName());
                 ps.setInt(10, person.getOldMsid());
                 return ps;
             }, keyHolder);
 
             Number key = keyHolder.getKey();
             if (key != null) {
-                person.setP_id(key.intValue()); // Update the DTO with the generated key
+                person.setpId(key.intValue()); // Update the DTO with the generated key
             }
         } catch (DataAccessException e) {
             logger.error("Unable to insert into person: " + e.getMessage());
