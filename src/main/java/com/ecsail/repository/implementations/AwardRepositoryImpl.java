@@ -68,7 +68,7 @@ public class AwardRepositoryImpl implements AwardRepository {
 
         template.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, award.getPid());
+            ps.setInt(1, award.getpId());
             ps.setString(2, award.getAwardYear());
             ps.setString(3, award.getAwardType());
             return ps;

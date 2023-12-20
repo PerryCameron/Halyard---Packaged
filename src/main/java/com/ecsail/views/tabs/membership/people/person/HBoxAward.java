@@ -86,32 +86,32 @@ public class HBoxAward extends HBox {
         );
 
         ObservableList<Awards> awardsList = FXCollections.observableArrayList(Awards.values());
-        final TableColumn<AwardDTO, Awards> Col2 = new TableColumn<>("Award Type");
-        Col2.setCellValueFactory(param -> {
+        final TableColumn<AwardDTO, Awards> col2 = new TableColumn<>("Award Type");
+        col2.setCellValueFactory(param -> {
             AwardDTO thisAward = param.getValue();
             String awardCode = thisAward.getAwardType();
             Awards type = Awards.getByCode(awardCode);
             return new SimpleObjectProperty<>(type);
         });
 
-        Col2.setCellFactory(ComboBoxTableCell.forTableColumn(awardsList));
+        col2.setCellFactory(ComboBoxTableCell.forTableColumn(awardsList));
 
-        Col2.setOnEditCommit((CellEditEvent<AwardDTO, Awards> event) -> {
+        col2.setOnEditCommit((CellEditEvent<AwardDTO, Awards> event) -> {
             // get the position on the table
             TablePosition<AwardDTO, Awards> pos = event.getTablePosition();
             // use enum to convert DB value
             Awards newAward = event.getNewValue();
             // give object a name to manipulate
             AwardDTO awardDTO = event.getTableView().getItems().get(pos.getRow());
+            // update the DTO
+            awardDTO.setAwardType(newAward.getCode());
             // update the SQL
             awardRepository.updateAward(awardDTO);  // have to get by money id and pid eventually
-            // update the GUI
-            awardDTO.setAwardType(newAward.getCode());
         });
 
         /// sets width of columns by percentage
         Col1.setMaxWidth(1f * Integer.MAX_VALUE * 20);   // Phone
-        Col2.setMaxWidth(1f * Integer.MAX_VALUE * 50);  // Type
+        col2.setMaxWidth(1f * Integer.MAX_VALUE * 50);  // Type
 
 
         ////////////////////// LISTENERS /////////////////////////
@@ -157,7 +157,7 @@ public class HBoxAward extends HBox {
         /////////////////// SET CONTENT //////////////////
 
         vboxButtons.getChildren().addAll(awardAdd, awardDelete);
-        awardTableView.getColumns().addAll(Arrays.asList(Col1, Col2));
+        awardTableView.getColumns().addAll(Arrays.asList(Col1, col2));
         awardTableView.getSortOrder().add(Col1);
         vboxPink.getChildren().add(awardTableView);
         awardTableView.sort();
