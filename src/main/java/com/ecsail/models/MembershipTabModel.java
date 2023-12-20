@@ -152,4 +152,20 @@ public class MembershipTabModel {
     public void setBoats(ObservableList<BoatDTO> boats) {
         this.boats = boats;
     }
+
+    public MembershipIdRepository getMembershipIdRepository() {
+        return membershipIdRepository;
+    }
+
+    public void setMembershipIdRepository(MembershipIdRepository membershipIdRepository) {
+        this.membershipIdRepository = membershipIdRepository;
+    }
+
+    public ObservableList<MemoDTO> getMemos() {
+        return memos;
+    }
+
+    public void setMemos(ObservableList<MemoDTO> memos) {
+        this.memos = memos;
+    }
 }

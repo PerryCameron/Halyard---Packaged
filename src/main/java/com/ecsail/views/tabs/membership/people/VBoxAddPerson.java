@@ -1,5 +1,4 @@
 package com.ecsail.views.tabs.membership.people;
-///////////BUG///////  adding a person as secondary changes the pid in the membership to the secondary
 
 import com.ecsail.dto.MemoDTO;
 import com.ecsail.enums.MemberType;
@@ -21,14 +20,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class VBoxAddPerson extends VBox implements Builder<VBox> {
 
 	public static Logger logger = LoggerFactory.getLogger(VBoxAddPerson.class);
-	private Boolean hasError = false;
-	private final PersonRepository personRepository = new PersonRepositoryImpl();
 	private final TabMembership parent;
 	private final Map<String, TextField> textFieldMap;
 	private final ObjectProperty<DatePicker> datePickerProperty = new SimpleObjectProperty<>();
@@ -67,8 +64,7 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
 		hBox.setPadding(new Insets(5, 100, 5, 5));  // add button
 		hBox.getChildren().addAll(addButton);
 		addButton.setOnAction((event) -> {
-			hasError = false;
-			PersonDTO personDTO = personRepository.insertPerson(
+			PersonDTO personDTO = parent.getModel().getPersonRepository().insertPerson(
 					new PersonDTO(parent.getModel().getMembership().getMsId(),
 					comboBoxProperty.get().getValue().getCode(),
 					textFieldMap.get("First Name").getText(),
@@ -105,7 +101,7 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
 		textFieldMap.get("Occupation").setText("");
 		textFieldMap.get("Business").setText("");
 		datePickerProperty.get().setValue(null);
-		comboBoxProperty.get().setValue(MemberType.getByCode(3)); // sets to primary
+		setComboBoxItems();
 	}
 
 	private String getBirthday(LocalDate birthday) {
@@ -120,14 +116,14 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
 
 	private Node addComboBox() {
 		HBox hBox = new HBox(); // first name
-		hBox.setPadding(new Insets(5, 15, 5, 60));  // first Name
+		hBox.setPadding(new Insets(5, 15, 10, 60));  // first Name
 		hBox.getChildren().addAll(addLabel("Type"), createComboBox());
 		return hBox;
 	}
 
 	private Node addTextField(String label) {
 		HBox hBox = new HBox(); // first name
-		hBox.setPadding(new Insets(5, 15, 5, 60));  // first Name
+		hBox.setPadding(new Insets(5, 15, 10, 60));  // first Name
 		VBox vBox = new VBox();
 		TextField textField = new TextField();
 		textField.setPrefSize(240, 10);
@@ -140,7 +136,7 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
 	private Node addDatePicker() {
 		HBox hBox = new HBox(); // first name
 		VBox vBox = new VBox();
-		hBox.setPadding(new Insets(5, 15, 5, 60));  // first Name
+		hBox.setPadding(new Insets(5, 15, 10, 60));  // first Name
 		DatePicker datePicker = new DatePicker();
 		datePicker.setPrefSize(240, 10);
 		vBox.getChildren().add(datePicker);
@@ -152,21 +148,30 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
 	private Node createComboBox() {
 		VBox vBox = new VBox();
 		ComboBox<MemberType> comboBox = new ComboBox<>();
-		comboBox.getItems().setAll(MemberType.values());
-		comboBox.setValue(MemberType.getByCode(1)); // sets to primary
 		comboBoxProperty.set(comboBox);
+		setComboBoxItems();
 		comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			// This code will be executed whenever the selected item changes
 			if (newValue != null) {
-				System.out.println("Selected MemberType: " + newValue.getCode());
-				// You can also use other properties or methods of the MemberType object
+				if(memberTypeExists(newValue.getCode())) comboBox.setValue(MemberType.DEPENDANT);
 			}
 		});
 		vBox.getChildren().add(comboBox);
 		return vBox;
 	}
 
+	private void setComboBoxItems() {
+		comboBoxProperty.get().getItems().clear();
+		List<MemberType> filteredItems = Arrays.stream(MemberType.values())
+				.filter(memberType -> !memberTypeExists(memberType.getCode()))
+				.collect(Collectors.toList());
+		comboBoxProperty.get().getItems().setAll(filteredItems);
+		comboBoxProperty.get().setValue(MemberType.getByCode(3)); // sets to primary
+	}
 
+	private boolean memberTypeExists(int type) {
+		return parent.getModel().getPeople().stream()
+				.anyMatch(p -> p.getMemberType() == type);
+	}
 
 	private Node addLabel(String text) {
 		VBox vBox = new VBox();
@@ -186,12 +191,4 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
 		hBox.getChildren().addAll(titleLabel);
 		return hBox;
 	}
-	
-//	private void printErrorMessage(String message) {
-//		titleLabel.setText(message);
-//		titleLabel.setTextFill(Color.RED);
-//		hasError = true;
-//	}
-
-
 }
