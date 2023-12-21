@@ -126,24 +126,15 @@ public class TabMembership extends Tab {
 	}
 	
 	private HBoxPerson getPrimaryMember() {
-		HBoxPerson primaryMember;
-		if (isNewMembership()) 
-			primaryMember = new HBoxPerson(SqlInsert.createUser(model.getMembership().getMsId()), this);// create new primary
-		else
-			primaryMember = new HBoxPerson(getPerson(MemberType.PRIMARY.getCode()), this); // load the primary member
+		HBoxPerson primaryMember = new HBoxPerson(getPerson(MemberType.PRIMARY.getCode()), this); // load the primary member
 		return primaryMember;
 	}
-	
-	private boolean isNewMembership() {
-		return model.getPeople().size() == 0;
-	}
+
 	
 	private String setTabLabel() {
 		String tabLabel;
 		if(model.getMembership().getMembershipId() == 0) {
 			tabLabel = "MSID " + model.getMembership().getMsId();
-		} else if (isNewMembership()) { 
-		    tabLabel = "New Membership";
 		} else {
 			tabLabel= "Membership " + model.getMembership().getMembershipId();
 		}

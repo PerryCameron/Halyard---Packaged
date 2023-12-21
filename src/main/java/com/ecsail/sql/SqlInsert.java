@@ -11,22 +11,6 @@ import java.sql.SQLException;
 public class SqlInsert {
 
 
-
-
-	public static void addInvoiceItemRecord(InvoiceItemDTO i) {
-		int id = SqlSelect.getNextAvailablePrimaryKey("invoice_item","ID");
-		String query = "INSERT INTO invoice_item () VALUES ("
-				+ id + "," + i.getInvoiceId() + "," + i.getMsId() + "," + i.getYear()
-				+ ",'" + i.getFieldName() + "'," + i.isCredit()
-				+ ",'" + i.getValue() + "'," + i.getQty() + ")";
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			Platform.runLater(() -> new Dialogue_ErrorSQL(e,"Unable to insert data into invoice row","See below for details"));
-		}
-	}
-
-
 	public static void addDeposit(DepositDTO d) {
 		String query = "INSERT INTO deposit () VALUES (" + d.getDeposit_id() + ",'" + d.getDepositDate() + "','" + d.getFiscalYear() + "'," + d.getBatch() + ");";
 		try {
@@ -93,15 +77,4 @@ public class SqlInsert {
 		}
 	}
 
-	public static PersonDTO createUser(int msid) {
-		// create a main person for the membership
-		int pid = SqlSelect.getNextAvailablePrimaryKey("person","p_id");
-		String query = "INSERT INTO person () VALUES (" + pid  +"," + msid + ",1,'','',null,'','',true,null,null,null)";
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return new PersonDTO(pid,msid,1,"","",null,"","",true,null,0);
-	}
 }

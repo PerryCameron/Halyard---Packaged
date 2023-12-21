@@ -55,9 +55,7 @@ public class InvoiceItemRow extends HBox {
         this.invoiceItemDTO = setItem();
         this.fee = getFee();    /// THIS is where dues fee is added
         parent.invoiceItemMap.put(dbInvoiceDTO.getFieldName(), this);
-        System.out.println("Balance before addChildren=" + parent.invoice.getBalance());
         addChildren();
-        System.out.println("Balance after addChildren=" + parent.invoice.getBalance());
     }
 
     private void addChildren() {

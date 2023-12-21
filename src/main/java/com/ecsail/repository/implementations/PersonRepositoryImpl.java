@@ -180,6 +180,29 @@ public class PersonRepositoryImpl implements PersonRepository {
             return 0; // or handle the exception as per your application's needs
         }
     }
+    @Override
+    public PersonDTO insertUserByMsId(int msId) {
+        String sql = """
+        INSERT INTO person (
+            MS_ID, MEMBER_TYPE, F_NAME, L_NAME, BIRTHDAY, 
+            OCCUPATION, BUSINESS, IS_ACTIVE, NICK_NAME, OLD_MSID
+        ) VALUES (?, 1, '', '', null, '', '', true, null, null)
+        """;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        try {
+            template.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setInt(1, msId);
+                return ps;
+            }, keyHolder);
+
+            int generatedId = keyHolder.getKey().intValue();
+            return new PersonDTO(generatedId, msId, 1, "", "", null, "", "", true, null, 0);
+        } catch (DataAccessException e) {
+            logger.error("Unable to create new user: " + e.getMessage());
+            return null; // or handle as appropriate
+        }
+    }
 
 
 }

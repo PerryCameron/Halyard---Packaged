@@ -33,6 +33,8 @@ public interface PersonRepository {
     PersonDTO insertPerson(PersonDTO person);
 
     int getPersonAge(PersonDTO person);
+
+    PersonDTO insertUserByMsId(int msId);
 //    List<PersonDTO> getActiveAuxBoats();
 //    List<PersonDTO> getAllSailBoats();
 //    List<PersonDTO> getAllAuxBoats();
