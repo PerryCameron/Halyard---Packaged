@@ -2,6 +2,7 @@ package com.ecsail.repository.interfaces;
 
 
 
+import com.ecsail.dto.DbInvoiceDTO;
 import com.ecsail.dto.DepositDTO;
 import com.ecsail.dto.InvoiceDTO;
 import com.ecsail.dto.PaymentDTO;
@@ -15,14 +16,11 @@ public interface InvoiceRepository {
     List<InvoiceWithMemberInfoDTO> getInvoicesWithMembershipInfoByDeposit(DepositDTO d);
     List<InvoiceWithMemberInfoDTO> getInvoicesWithMembershipInfoByYear(String year);
     int getBatchNumber(String year);
-
     void deletePayment(PaymentDTO p);
-
     void deletePaymentByInvoiceID(int invoiceId);
-
     void deleteInvoiceItemByInvoiceID(int invoiceId);
-
     void deleteInvoiceByID(int invoiceId);
-
     void deleteAllPaymentsAndInvoicesByMsId(int msId);
+    DbInvoiceDTO insertDbInvoice(DbInvoiceDTO d);
+    PaymentDTO insertPayment(PaymentDTO op);
 }

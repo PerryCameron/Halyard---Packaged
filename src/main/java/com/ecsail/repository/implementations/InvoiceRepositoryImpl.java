@@ -1,6 +1,7 @@
 package com.ecsail.repository.implementations;
 
 import com.ecsail.BaseApplication;
+import com.ecsail.dto.DbInvoiceDTO;
 import com.ecsail.dto.DepositDTO;
 import com.ecsail.dto.InvoiceDTO;
 import com.ecsail.dto.PaymentDTO;
@@ -8,11 +9,17 @@ import com.ecsail.views.tabs.deposits.InvoiceWithMemberInfoDTO;
 import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.repository.rowmappers.InvoiceRowMapper;
 import com.ecsail.repository.rowmappers.InvoiceWithMemberInfoRowMapper;
+import org.mariadb.jdbc.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -104,6 +111,68 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
         } catch (DataAccessException e) {
             logger.error("Unable to DELETE: " + e.getMessage());
         }
+    }
+    @Override
+    public DbInvoiceDTO insertDbInvoice(DbInvoiceDTO d) {
+        String sql = """
+        INSERT INTO db_invoice (
+            FISCAL_YEAR, FIELD_NAME, widget_type, width, 
+            Invoice_order, multiplied, price_editable, is_credit, 
+            max_qty, auto_populate, is_itemized
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        try {
+            template.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+                ps.setString(1, d.getFiscalYear());
+                ps.setString(2, d.getFieldName());
+                ps.setString(3, d.getWidgetType());
+                ps.setDouble(4, d.getWidth());
+                ps.setInt(5, d.getOrder());
+                ps.setBoolean(6, d.isMultiplied());
+                ps.setBoolean(7, d.isPrice_editable());
+                ps.setBoolean(8, d.isCredit());
+                ps.setInt(9, d.getMaxQty());
+                ps.setBoolean(10, d.isAutoPopulate());
+                ps.setBoolean(11, d.isItemized());
+                return ps;
+            }, keyHolder);
+
+            // Update the ID of the DbInvoiceDTO with the generated key
+            d.setId(keyHolder.getKey().intValue());
+        } catch (DataAccessException e) {
+            logger.error("Unable to create new db_invoice row: " + e.getMessage());
+            return null; // or handle as appropriate
+        }
+        return d;
+    }
+    @Override
+    public PaymentDTO insertPayment(PaymentDTO op) {
+        String sql = """
+        INSERT INTO payment (
+            INVOICE_ID, CHECK_NUMBER, PAYMENT_TYPE, PAYMENT_DATE, 
+            AMOUNT, DEPOSIT_ID
+        ) VALUES (?, ?, ?, ?, ?, ?)
+        """;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        try {
+            template.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setInt(1, op.getInvoice_id());
+                ps.setString(2, op.getCheckNumber());
+                ps.setString(3, op.getPaymentType());
+                ps.setDate(4, Date.valueOf(op.getPaymentDate()));
+                ps.setBigDecimal(5, new BigDecimal(op.getPaymentAmount())); // this is line 180
+                ps.setInt(6, op.getDeposit_id());
+                return ps;
+            }, keyHolder);
+            op.setPay_id(keyHolder.getKey().intValue());
+        } catch (DataAccessException e) {
+            logger.error("Unable to create new payment record: " + e.getMessage());
+            return null; // or handle as appropriate
+        }
+        return op;
     }
 
 

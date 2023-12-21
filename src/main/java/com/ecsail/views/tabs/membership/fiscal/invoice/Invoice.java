@@ -2,6 +2,8 @@ package com.ecsail.views.tabs.membership.fiscal.invoice;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
+import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
+import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.views.common.Note;
 import com.ecsail.views.tabs.membership.fiscal.HBoxInvoiceList;
 import com.ecsail.sql.SqlExists;
@@ -41,6 +43,7 @@ public class Invoice extends HBox {
     private boolean updateAllowed; // prevents any writing to database on load
 
     protected ObservableList<InvoiceItemDTO> items;
+    private InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
 
     public Invoice(HBoxInvoiceList parent, int index) {
         this.invoice = parent.getTabMembership().getModel().getInvoices().get(index);
@@ -165,10 +168,8 @@ public class Invoice extends HBox {
             return SqlPayment.getPayments(invoice.getId());
         } else {  // if not create one
             BaseApplication.logger.info("getPayment(): Creating a new payment entry");
-            PaymentDTO paymentDTO = new PaymentDTO(0, invoice.getId(), "0", "CH",
-                    HalyardPaths.date, "0", 1);
+            PaymentDTO paymentDTO = invoiceRepository.insertPayment(new PaymentDTO(invoice.getId()));
             // saves to database and updates object with correct pay_id
-            paymentDTO.setPay_id(SqlInsert.addPaymentRecord(paymentDTO));
             payments.add(paymentDTO);
         }
         return payments;

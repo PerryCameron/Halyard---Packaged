@@ -63,9 +63,7 @@ public class InvoiceFooter extends VBox {
         ///// TODO TEMP /////
 
         buttonAdd.setOnAction(e -> {
-            PaymentDTO paymentDTO = new PaymentDTO(0, parent.invoice.getId(), null, "CH", date, "0", 1);
-            // adds to database and updates pay_id
-            paymentDTO.setPay_id(SqlInsert.addPaymentRecord(paymentDTO));
+            PaymentDTO paymentDTO = invoiceRepository.insertPayment(new PaymentDTO(parent.invoice.getId()));
             parent.payments.add(paymentDTO); // let's add it to our GUI
         });
 

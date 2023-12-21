@@ -1,9 +1,12 @@
 package com.ecsail.dto;
 
+import com.ecsail.HalyardPaths;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+
+import java.time.LocalDate;
 
 public class PaymentDTO {
 	private IntegerProperty pay_id;
@@ -24,6 +27,19 @@ public class PaymentDTO {
 		this.PaymentAmount = new SimpleStringProperty(paymentAmount);
 		this.deposit_id = new SimpleIntegerProperty(deposit_id);
 	}
+
+	public PaymentDTO(Integer invoice_id) {
+		this.pay_id = new SimpleIntegerProperty(0);
+		this.invoice_id = new SimpleIntegerProperty(invoice_id);
+		this.checkNumber = new SimpleStringProperty("");
+		this.paymentType = new SimpleStringProperty("CH");
+		this.paymentDate = new SimpleStringProperty(LocalDate.now().toString());
+		this.PaymentAmount = new SimpleStringProperty("0.00");
+		this.deposit_id = new SimpleIntegerProperty(1);
+	}
+
+//	PaymentDTO paymentDTO = new PaymentDTO(0, invoice.getId(), "0", "CH",
+//			HalyardPaths.date, "0", 1);
 
 	public final IntegerProperty pay_idProperty() {
 		return this.pay_id;

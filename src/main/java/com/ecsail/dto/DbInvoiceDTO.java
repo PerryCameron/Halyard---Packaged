@@ -25,7 +25,6 @@ public class DbInvoiceDTO {
      * below not included in database
      */
     private FeeDTO fee;
-//    private ObservableList<InvoiceItemDTO> items;
 
 
     public DbInvoiceDTO(int id, String fiscalYear, String fieldName, String widgetType, double width, Integer order, boolean multiplied, boolean price_editable, boolean is_credit, int maxQty, boolean autoPopulate, boolean itemized) {
@@ -44,7 +43,7 @@ public class DbInvoiceDTO {
     }
 
     public DbInvoiceDTO(String fiscalYear, Integer order) {  // for creation of new DTO
-        this.id = SqlSelect.getNextAvailablePrimaryKey("db_invoice", "ID");
+        this.id = 0;
         this.fiscalYear = fiscalYear;
         this.fieldName = "new entry";
         this.widgetType = "none";

@@ -1,6 +1,8 @@
 package com.ecsail.views.tabs.fee;
 
 import com.ecsail.BaseApplication;
+import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
+import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
@@ -32,6 +34,7 @@ public class TabFee extends Tab {
     protected FeeEditControls feeEditControls;
     protected boolean okToWriteToDataBase = true;
     protected FeeRow selectedFeeRow;
+    private InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
 
     public TabFee(String text) {
         super(text);
@@ -107,7 +110,7 @@ public class TabFee extends Tab {
 
     private FeeRow addNewRow() {
         DbInvoiceDTO dbInvoiceDTO = new DbInvoiceDTO(selectedYear, rows.size() + 1);
-        SqlInsert.addNewDbInvoice(dbInvoiceDTO);
+        invoiceRepository.insertDbInvoice(dbInvoiceDTO);
         FeeRow feeRow = new FeeRow(this, dbInvoiceDTO);
         rows.add(feeRow);
         feeEditControls.refreshData();

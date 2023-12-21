@@ -9,42 +9,7 @@ import javafx.application.Platform;
 import java.sql.SQLException;
 
 public class SqlInsert {
-	
-	///////////////  CLASS OF STATIC PURE FUNCTIONS /////////////////////////////
-	public static void addNewDbInvoice(DbInvoiceDTO d) {
-		String query = "INSERT INTO db_invoice () VALUES ("
-				+ d.getId() + ","
-				+ d.getFiscalYear() + ",'"
-				+ d.getFieldName() + "','"
-				+ d.getWidgetType() + "',"
-				+ d.getWidth() + ","
-				+ d.getOrder() + ","
-				+ d.isMultiplied() + ","
-				+ d.isPrice_editable() + ","
-				+ d.isCredit() + ","
-				+ d.getMaxQty() + ","
-				+ d.isAutoPopulate() + ","
-				+ d.isItemized() +")";
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
-		}
-	}
 
-	public static int addPaymentRecord(PaymentDTO op) {
-		int pay_id = SqlSelect.getNextAvailablePrimaryKey("payment", "pay_id");
-		String query = "INSERT INTO payment () VALUES (" + pay_id + ","
-				+ op.getInvoice_id() + "," + op.getCheckNumber() + ",'" + op.getPaymentType() + "','"
-				+ op.getPaymentDate() + "','" + op.getPaymentAmount() + "','" + op.getDeposit_id() + "')";
-		try {
-		BaseApplication.connect.executeQuery(query);
-		 }
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return pay_id;
-	}
 
 
 	public static void addInvoiceRecord(InvoiceDTO m) {
