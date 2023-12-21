@@ -38,8 +38,6 @@ public class PaymentDTO {
 		this.deposit_id = new SimpleIntegerProperty(1);
 	}
 
-//	PaymentDTO paymentDTO = new PaymentDTO(0, invoice.getId(), "0", "CH",
-//			HalyardPaths.date, "0", 1);
 
 	public final IntegerProperty pay_idProperty() {
 		return this.pay_id;

@@ -1,7 +1,9 @@
 package com.ecsail.views.tabs;
 
 import com.ecsail.dto.*;
+import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.repository.interfaces.MembershipRepository;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.select.SqlDbInvoice;
@@ -23,7 +25,8 @@ public class TabNewYearGenerator extends Tab {
     private static final ArrayList<SlipDTO> slips = new ArrayList<>();
     private static final ArrayList<FeeDTO> fees = new ArrayList<>();
 
-    private MembershipRepository membershipRepository = new MembershipRepositoryImpl();
+    private static MembershipRepository membershipRepository = new MembershipRepositoryImpl();
+    private static InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
 
     public static Logger logger = LoggerFactory.getLogger(TabNewYearGenerator.class);
     int yearToAdd = 2024;
@@ -64,13 +67,10 @@ public class TabNewYearGenerator extends Tab {
     private void createInvoices() {
         ArrayList<MembershipListDTO> rosters = (ArrayList<MembershipListDTO>) membershipRepository.getRoster(String.valueOf(yearToAdd - 1), true);
         rosters.forEach(membershipListDTO -> {
-						var newInvoice = new InvoiceDTO(membershipListDTO.getMsId(), yearToAdd);
-						// insert the new record into the SQL database
-						SqlInsert.addInvoiceRecord(newInvoice);
+						InvoiceDTO invoiceDTO = invoiceRepository.insertInvoice(new InvoiceDTO(membershipListDTO.getMsId(), yearToAdd));
 						logger.info("Added invoice for " + membershipListDTO.getFirstName() + " " + membershipListDTO.getLastName());
 						// insert items for the invoice
-						// TODO change dues for each record
-						createInvoiceItems(newInvoice.getId(), yearToAdd, membershipListDTO.getMsId());
+//						createInvoiceItems(invoiceDTO.getId(), yearToAdd, membershipListDTO.getMsId());
         });
         logger.info("Invoice creation complete");
     }
@@ -97,42 +97,27 @@ public class TabNewYearGenerator extends Tab {
 //						// TODO change dues for each record
 //						createInvoiceItems(newInvoice.getId(), yearToAdd, membershipListDTO.getMsId());
 
-    private void createInvoiceItems(int invoiceId, Integer year, int msid) {
-        // gets db_invoices for selected year
-        ArrayList<DbInvoiceDTO> categories = SqlDbInvoice.getDbInvoiceByYear(year);
-        for (DbInvoiceDTO dbInvoiceDTO : categories) {
-            if (dbInvoiceDTO.isItemized()) {
-                createItemizedCategories(invoiceId, year, msid, dbInvoiceDTO);
-            } else {
-                createNonItemizedCategories(invoiceId, year, msid, dbInvoiceDTO);
-            }
-        }
-    }
+
 
     private static void createNonItemizedCategories(int invoiceId, Integer year, int msid, DbInvoiceDTO dbInvoiceDTO) {
-        InvoiceItemDTO item;
-        item = new InvoiceItemDTO(0, invoiceId, msid, year, dbInvoiceDTO.getFieldName()
-                , dbInvoiceDTO.isCredit(), "0.00", 0);
-        updateItem(item);
-        SqlInsert.addInvoiceItemRecord(item);
+        InvoiceItemDTO invoiceItemDTO = invoiceRepository.insertInvoiceItem(
+                new InvoiceItemDTO(0, invoiceId, msid, year, dbInvoiceDTO.getFieldName()
+                , dbInvoiceDTO.isCredit(), "0.00", 0));
     }
 
     // creates itemized invoice items
-    private static void createItemizedCategories(int invoiceId, Integer year, int msid, DbInvoiceDTO dbInvoiceDTO) {
-        Set<FeeDTO> fees = SqlFee.getRelatedFeesAsInvoiceItems(dbInvoiceDTO);
-        fees.forEach(feeDTO -> {
-            InvoiceItemDTO item = new InvoiceItemDTO(0, invoiceId, msid, year, feeDTO.getDescription()
-                    , dbInvoiceDTO.isCredit(), "0.00", 0);
-            updateItem(item);
-            SqlInsert.addInvoiceItemRecord(item);
-        });
+
+    private static String getFieldName(String description, InvoiceItemDTO item) {
+        if (description.equals("Wet Slip")) {
+            for (SlipDTO slipDTO : slips) {  // Assuming slips is a collection of SlipDTO
+                if (item.getMsId() == slipDTO.getMs_id()) {
+                    return "500.00";
+                }
+            }
+        }
+        return "";
     }
 
-    private static void updateItem(InvoiceItemDTO item) {
-        if (item.getFieldName().equals("Wet Slip")) {
-            slips.forEach(slipDTO -> {
-                if (item.getMsId() == slipDTO.getMs_id()) item.setValue("500.00");
-            });
-        }
-    }
+
+
 }

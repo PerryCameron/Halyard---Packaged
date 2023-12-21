@@ -26,7 +26,7 @@ public class InvoiceItemDTO {
     }
 
     public InvoiceItemDTO(Integer invoiceId, Integer msId, Integer year, String fieldName) {
-        this.id = new SimpleIntegerProperty(SqlSelect.getNextAvailablePrimaryKey("invoice_item", "ID"));
+        this.id = new SimpleIntegerProperty(0);
         this.invoiceId = new SimpleIntegerProperty(invoiceId);
         this.msId = new SimpleIntegerProperty(msId);
         this.year = new SimpleIntegerProperty(year);
@@ -35,6 +35,20 @@ public class InvoiceItemDTO {
         this.value = new SimpleStringProperty("0.00");
         this.qty = new SimpleIntegerProperty(0);
     }
+
+    public InvoiceItemDTO(Integer invoiceId, Integer msId, Integer year, String fieldName, Boolean credit) {
+        this.id = new SimpleIntegerProperty(0);
+        this.invoiceId = new SimpleIntegerProperty(invoiceId);
+        this.msId = new SimpleIntegerProperty(msId);
+        this.year = new SimpleIntegerProperty(year);
+        this.fieldName = new SimpleStringProperty(fieldName);
+        this.credit = new SimpleBooleanProperty(credit);
+        this.value = new SimpleStringProperty("0.00");
+        this.qty = new SimpleIntegerProperty(0);
+    }
+
+//    (0, invoiceId, msid, year, dbInvoiceDTO.getFieldName()
+//            , dbInvoiceDTO.isCredit(), "0.00", 0);
 
     public final IntegerProperty idProperty() {
         return this.id;

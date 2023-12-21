@@ -35,7 +35,7 @@ public class InvoiceDTO {
     }
 
     public InvoiceDTO(Integer msId, Integer year) {
-        this.id = new SimpleIntegerProperty(SqlSelect.getNextAvailablePrimaryKey("invoice","id"));
+        this.id = new SimpleIntegerProperty(0);
         this.msId = new SimpleIntegerProperty(msId);
         this.year = new SimpleIntegerProperty(year);
         this.paid = new SimpleStringProperty("0.00");

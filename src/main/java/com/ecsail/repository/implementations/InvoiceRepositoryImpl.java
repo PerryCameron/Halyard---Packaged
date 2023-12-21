@@ -1,10 +1,7 @@
 package com.ecsail.repository.implementations;
 
 import com.ecsail.BaseApplication;
-import com.ecsail.dto.DbInvoiceDTO;
-import com.ecsail.dto.DepositDTO;
-import com.ecsail.dto.InvoiceDTO;
-import com.ecsail.dto.PaymentDTO;
+import com.ecsail.dto.*;
 import com.ecsail.views.tabs.deposits.InvoiceWithMemberInfoDTO;
 import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.repository.rowmappers.InvoiceRowMapper;
@@ -173,6 +170,66 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
             return null; // or handle as appropriate
         }
         return op;
+    }
+    @Override
+    public InvoiceDTO insertInvoice(InvoiceDTO m) {
+        String sql = """
+        INSERT INTO invoice (
+            MS_ID, FISCAL_YEAR, PAID, TOTAL, CREDIT, 
+            BALANCE, BATCH, COMMITTED, CLOSED, SUPPLEMENTAL, MAX_CREDIT
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        try {
+            template.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setInt(1, m.getMsId());
+                ps.setInt(2, m.getYear());
+                ps.setBigDecimal(3, new BigDecimal(m.getPaid()));
+                ps.setBigDecimal(4, new BigDecimal(m.getTotal()));
+                ps.setBigDecimal(5, new BigDecimal(m.getCredit()));
+                ps.setBigDecimal(6, new BigDecimal(m.getBalance()));
+                ps.setInt(7, m.getBatch());
+                ps.setBoolean(8, m.isCommitted());
+                ps.setBoolean(9, m.isClosed());
+                ps.setBoolean(10, m.isSupplemental());
+                ps.setBigDecimal(11, new BigDecimal(m.getMaxCredit()));
+                return ps;
+            }, keyHolder);
+            m.setId(keyHolder.getKey().intValue());
+        } catch (DataAccessException e) {
+            logger.error("Unable to insert data into invoice row: " + e.getMessage());
+            return null; // or handle as appropriate
+        }
+        return m;
+    }
+    @Override
+    public InvoiceItemDTO insertInvoiceItem(InvoiceItemDTO i) {
+        String sql = """
+        INSERT INTO invoice_item (
+            INVOICE_ID, MS_ID, FISCAL_YEAR, FIELD_NAME, 
+            IS_CREDIT, VALUE, QTY
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        """;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        try {
+            template.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setInt(1, i.getInvoiceId());
+                ps.setInt(2, i.getMsId());
+                ps.setInt(3, i.getYear());
+                ps.setString(4, i.getFieldName());
+                ps.setBoolean(5, i.isCredit());
+                ps.setBigDecimal(6, new BigDecimal(i.getValue()));
+                ps.setInt(7, i.getQty());
+                return ps;
+            }, keyHolder);
+            i.setId(keyHolder.getKey().intValue());
+        } catch (DataAccessException e) {
+            logger.error("Unable to insert data into invoice_item: " + e.getMessage());
+            return null; // or handle as appropriate
+        }
+        return i;
     }
 
 

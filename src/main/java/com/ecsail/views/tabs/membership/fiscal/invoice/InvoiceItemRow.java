@@ -6,6 +6,8 @@ import com.ecsail.dto.DbInvoiceDTO;
 import com.ecsail.dto.FeeDTO;
 import com.ecsail.dto.InvoiceDTO;
 import com.ecsail.dto.InvoiceItemDTO;
+import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
+import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlFee;
@@ -41,6 +43,8 @@ public class InvoiceItemRow extends HBox {
     private final VBox vBox5 = new VBox();
     InvoiceDTO invoice;
     Invoice parent;
+
+    private InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
 
     public InvoiceItemRow(Invoice invoice, DbInvoiceDTO dbInvoiceDTO, InvoiceFooter footer) {
         this.parent = invoice;
@@ -217,9 +221,9 @@ public class InvoiceItemRow extends HBox {
      * after the invoice was created. It is a way to update them. In theory should never be needed.
      */
     private InvoiceItemDTO addNewInvoiceItem() { //
-        InvoiceItemDTO newInvoiceItem = new InvoiceItemDTO(invoice.getId(), invoice.getMsId(), invoice.getYear(), itemName);
+        InvoiceItemDTO newInvoiceItem = invoiceRepository.insertInvoiceItem(
+                new InvoiceItemDTO(invoice.getId(), invoice.getMsId(), invoice.getYear(), itemName));
         parent.items.add(newInvoiceItem);
-        SqlInsert.addInvoiceItemRecord(newInvoiceItem);
         return newInvoiceItem;
     }
 

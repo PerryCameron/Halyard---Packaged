@@ -12,18 +12,6 @@ public class SqlInsert {
 
 
 
-	public static void addInvoiceRecord(InvoiceDTO m) {
-		String query = "INSERT INTO invoice () VALUES ("
-				+ m.getId() + "," + m.getMsId() + "," + m.getYear() + ",'" + m.getPaid()
-				+ "','" + m.getTotal() + "','" + m.getCredit() + "','" + m.getBalance()
-				+ "'," + m.getBatch() + "," + m.isCommitted() + "," + m.isClosed()
-				+ "," + m.isSupplemental() + "," + m.getMaxCredit() + ")";
-		try {
-			BaseApplication.connect.executeQuery(query);
-		 } catch (SQLException e) {
-			Platform.runLater(() -> new Dialogue_ErrorSQL(e,"Unable to insert data into invoice row","See below for details"));
-		}
-	}
 
 	public static void addInvoiceItemRecord(InvoiceItemDTO i) {
 		int id = SqlSelect.getNextAvailablePrimaryKey("invoice_item","ID");

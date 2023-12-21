@@ -36,7 +36,7 @@ public class HBoxInvoiceList extends HBox {
 	String currentYear;
 	TabMembership parent;
 
-	private final InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
+	private static final InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
 	public HBoxInvoiceList(TabMembership parent) {
 		super();
 		this.parent = parent;
@@ -119,7 +119,7 @@ public class HBoxInvoiceList extends HBox {
 				newInvoice.setSupplemental(true);
 			}
 			// insert the new record into the SQL database
-			SqlInsert.addInvoiceRecord(newInvoice);
+			invoiceRepository.insertInvoice(newInvoice);
 			// insert items for the invoice
 			createInvoiceItems(newInvoice.getId(), comboBox.getValue(), parent.getModel().getMembership().getMsId());
 			// add new money row to tableview
@@ -183,20 +183,16 @@ public class HBoxInvoiceList extends HBox {
 	}
 
 	private static void createNonItemizedCategories(int invoiceId, Integer year, int msid, DbInvoiceDTO dbInvoiceDTO) {
-		InvoiceItemDTO item;
-		item = new InvoiceItemDTO(0, invoiceId, msid, year, dbInvoiceDTO.getFieldName()
-				, dbInvoiceDTO.isCredit(), "0.00", 0);
-		SqlInsert.addInvoiceItemRecord(item);
+		invoiceRepository.insertInvoiceItem(new InvoiceItemDTO(invoiceId, msid, year, dbInvoiceDTO.getFieldName()
+				, dbInvoiceDTO.isCredit()));
 	}
 
 	// creates itemized invoice items
 	private static void createItemizedCategories(DbInvoiceDTO dbInvoiceDTO, int invoiceId, int msid, int year) {
 		Set<FeeDTO> fees = SqlFee.getRelatedFeesAsInvoiceItems(dbInvoiceDTO);
 		fees.forEach(feeDTO -> {
-			InvoiceItemDTO item = new InvoiceItemDTO(0, invoiceId, msid, year, feeDTO.getDescription()
-					, dbInvoiceDTO.isCredit(), "0.00", 0);
-//			System.out.println(item);
-			SqlInsert.addInvoiceItemRecord(item);
+			invoiceRepository.insertInvoiceItem(
+					new InvoiceItemDTO(invoiceId, msid, year, feeDTO.getDescription(), dbInvoiceDTO.isCredit()));
 		});
 	}
 
