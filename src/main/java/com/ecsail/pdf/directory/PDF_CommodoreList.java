@@ -1,7 +1,8 @@
 package com.ecsail.pdf.directory;
 
-import com.ecsail.sql.select.SqlOfficer;
 import com.ecsail.dto.OfficerWithNameDTO;
+import com.ecsail.repository.implementations.PDFRepositoryImpl;
+import com.ecsail.repository.interfaces.PDFRepository;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;
@@ -20,11 +21,13 @@ public class PDF_CommodoreList extends Table {
 	ArrayList<OfficerWithNameDTO> commodores = new ArrayList<OfficerWithNameDTO>();
 	ArrayList<Table> tables = new ArrayList<Table>(); // Stores the column tables
 	PDF_Object_Settings set;
+
+	PDFRepository pdfRepository = new PDFRepositoryImpl();
 	
 	public PDF_CommodoreList(int numColumns, PDF_Object_Settings set) {
 		super(numColumns);
 		this.set = set;
-		this.commodores = SqlOfficer.getOfficersWithNames("CO");
+		this.commodores = (ArrayList<OfficerWithNameDTO>) pdfRepository.getOfficersWithNames("CO");
 		setWidth(PageSize.A5.getWidth() * 0.8f);  // makes table 90% of page width
 		setHorizontalAlignment(HorizontalAlignment.CENTER);
 		// sort commodore list by year

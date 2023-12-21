@@ -1,7 +1,8 @@
 package com.ecsail.pdf.directory;
 
 import com.ecsail.enums.Officer;
-import com.ecsail.sql.select.SqlOfficer;
+import com.ecsail.repository.implementations.PDFRepositoryImpl;
+import com.ecsail.repository.interfaces.PDFRepository;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
@@ -10,9 +11,7 @@ import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 
 
 public class PDF_BoardOfDirectors extends Table {
@@ -20,12 +19,14 @@ public class PDF_BoardOfDirectors extends Table {
     PDF_Object_Settings set;
     ArrayList<PDF_Object_Officer> officers;
 
+    PDFRepository pdfRepository = new PDFRepositoryImpl();
+
     public PDF_BoardOfDirectors(int numColumns, PDF_Object_Settings set) {
         super(numColumns);
         this.set = set;
-        officers = SqlOfficer.getOfficersByYear(set.getSelectedYear());
+        officers = (ArrayList<PDF_Object_Officer>) pdfRepository.getOfficersByYear(set.getSelectedYear());
         officers.forEach(System.out::println);
-        Collections.sort(officers, Comparator.comparing(PDF_Object_Officer::getLastName));
+        officers.sort(Comparator.comparing(PDF_Object_Officer::getLastName));
         setWidth(set.getPageSize().getWidth() * 0.9f);  // makes table 90% of page width
         setHorizontalAlignment(HorizontalAlignment.CENTER);
         Cell cell = new Cell();
@@ -45,7 +46,7 @@ public class PDF_BoardOfDirectors extends Table {
 
         cell = new Cell();
         cell.setBorder(Border.NO_BORDER);
-        Paragraph p = new Paragraph("\u00a9Eagle Creek Sailing club 1969-" + set.getSelectedYear() + " - This directory may not be used for commercial purposes");
+        Paragraph p = new Paragraph("©Eagle Creek Sailing club 1969-" + set.getSelectedYear() + " - This directory may not be used for commercial purposes");
         p.setTextAlignment(TextAlignment.CENTER);
         cell.add(p);
         addCell(cell);
@@ -67,11 +68,6 @@ public class PDF_BoardOfDirectors extends Table {
         p.setFontColor(set.getMainColor());
         cell.add(p);
         officerTable.addCell(cell);
-
-        //cell = new Cell(1,2);
-        //cell.add(new Paragraph("\n"));
-        //cell.setBorder(Border.NO_BORDER);
-        //officerTable.addCell(cell);
 
         addOfficerToTable(officerTable, "CO");
         addOfficerToTable(officerTable, "VC");
@@ -133,20 +129,15 @@ public class PDF_BoardOfDirectors extends Table {
         cell.add(p);
         bodTable.addCell(cell);
 
-        //cell = new Cell(1,3);
-        //cell.add(new Paragraph("\n"));
-        //cell.setBorder(Border.NO_BORDER);
-        //bodTable.addCell(cell);
-
         createBoardMemberTables(bodTable); // will create 3 more cells and put a table in each
 
         return bodTable;
     }
 
     private void createBoardMemberTables(Table bodTable) {
-        ArrayList<String> currentYearList = new ArrayList<String>();
-        ArrayList<String> nextYearList = new ArrayList<String>();
-        ArrayList<String> afterNextYearList = new ArrayList<String>();
+        ArrayList<String> currentYearList = new ArrayList<>();
+        ArrayList<String> nextYearList = new ArrayList<>();
+        ArrayList<String> afterNextYearList = new ArrayList<>();
         int thisYear = Integer.parseInt(set.getSelectedYear());
         int nextYear = thisYear + 1;
         int afterNextYear = thisYear + 2;
@@ -163,17 +154,17 @@ public class PDF_BoardOfDirectors extends Table {
         Cell cell;
 
         cell = new Cell();  // make a big cell in previous table to put 3 tables in
-        cell.add(createBoardMemberColumn(currentYearList, thisYear + ""));
+        cell.add(createBoardMemberColumn(currentYearList, String.valueOf(thisYear)));
         cell.setBorder(Border.NO_BORDER);
         bodTable.addCell(cell);
 
         cell = new Cell();
-        cell.add(createBoardMemberColumn(nextYearList, nextYear + ""));
+        cell.add(createBoardMemberColumn(nextYearList, String.valueOf(nextYear)));
         cell.setBorder(Border.NO_BORDER);
         bodTable.addCell(cell);
 
         cell = new Cell();
-        cell.add(createBoardMemberColumn(afterNextYearList, afterNextYear + ""));
+        cell.add(createBoardMemberColumn(afterNextYearList, String.valueOf(afterNextYear)));
         cell.setBorder(Border.NO_BORDER);
         bodTable.addCell(cell);
 
@@ -226,18 +217,16 @@ public class PDF_BoardOfDirectors extends Table {
     }
 
 	public PDF_Object_Officer getOfficer(String type) {
-		Iterator<PDF_Object_Officer> it = officers.iterator();
-		while (it.hasNext()) {
-			PDF_Object_Officer o = it.next();
-			if (!o.getOfficerPlaced()) {
-				if (o.getOfficerType().equals(type)) {
-					o.setOfficerPlaced(true);
-					return o;
-				}
-			} else {
-				System.out.println("Not retuning object");
-			}
-		}
+        for (PDF_Object_Officer o : officers) {
+            if (!o.getOfficerPlaced()) {
+                if (o.getOfficerType().equals(type)) {
+                    o.setOfficerPlaced(true);
+                    return o;
+                }
+            } else {
+                System.out.println("Not retuning object");
+            }
+        }
 		return null;
 	}
 

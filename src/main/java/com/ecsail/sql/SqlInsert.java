@@ -46,28 +46,6 @@ public class SqlInsert {
 		return pay_id;
 	}
 
-	public static void addPersonRecord(PersonDTO person) {
-		String query = "INSERT INTO person () VALUES ("
-				+ person.getpId() + "," + person.getMsId() + "," + person.getMemberType() + ",'" + person.getFirstName()
-				+ "','" + person.getLastName() + "'," + getCorrectString(person.getBirthday())
-				+ ",'" + person.getOccupation() + "','" + person.getBusiness() +"',true,null,'"+person.getNickName()+"',"+person.getOldMsid()+")";
-		try {
-
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
-		}
-	}
-
-	public static String getCorrectString(String example) {
-		String result;
-		if(example == null) {  // if actually null print null
-			result = "null";
-		}  else {
-			result = "\"" + example + "\""; // print "string"
-		}
-		return result;
-	}
 
 	public static void addInvoiceRecord(InvoiceDTO m) {
 		String query = "INSERT INTO invoice () VALUES ("
