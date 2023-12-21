@@ -1,6 +1,7 @@
 package com.ecsail.sql.select;
 
 import com.ecsail.BaseApplication;
+import com.ecsail.dto.PersonDTO;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import com.ecsail.pdf.directory.PDF_Object_Officer;
 import com.ecsail.dto.OfficerDTO;
@@ -52,26 +53,6 @@ public class SqlOfficer {
             new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
         }
         return officers;
-    }
-
-    public static ObservableList<OfficerDTO> getOfficer(String field, int attribute) {  //p_id
-        ObservableList<OfficerDTO> thisOfficer = FXCollections.observableArrayList();
-        String query = "SELECT * FROM officer WHERE " + field + "='" + attribute + "'";
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            while (rs.next()) {
-                thisOfficer.add(new OfficerDTO(
-                        rs.getInt("O_ID"),
-                        rs.getInt("p_id"),
-                        rs.getString("BOARD_YEAR"),
-                        rs.getString("off_type"),
-                        rs.getString("off_year")));
-            }
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
-        }
-        return thisOfficer;
     }
 
     public static ArrayList<OfficerWithNameDTO> getOfficersWithNames(String type) {

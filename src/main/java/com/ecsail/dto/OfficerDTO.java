@@ -8,24 +8,24 @@ import javafx.beans.property.StringProperty;
 public class OfficerDTO {
 
 	private IntegerProperty officerId;
-	private IntegerProperty personId;
+	private IntegerProperty pId;
 	private StringProperty boardYear;
 	private StringProperty officerType;
 	private StringProperty fiscalYear;
 	
-	public OfficerDTO(Integer officerId, Integer personId, String boardYear,
+	public OfficerDTO(Integer officerId, Integer pId, String boardYear,
 					  String officerType, String fiscalYear) {
 
 		this.officerId = new SimpleIntegerProperty(officerId);
-		this.personId = new SimpleIntegerProperty(personId);
+		this.pId = new SimpleIntegerProperty(pId);
 		this.boardYear = new SimpleStringProperty(boardYear);
 		this.officerType = new SimpleStringProperty(officerType);
 		this.fiscalYear = new SimpleStringProperty(fiscalYear);
 	}
 
-	public OfficerDTO(Integer personId, String fiscalYear) {
+	public OfficerDTO(Integer pId, String fiscalYear) {
 		this.officerId = new SimpleIntegerProperty(0);
-		this.personId = new SimpleIntegerProperty(personId);
+		this.pId = new SimpleIntegerProperty(pId);
 		this.boardYear = new SimpleStringProperty("0");
 		this.officerType = new SimpleStringProperty("BM");
 		this.fiscalYear = new SimpleStringProperty(fiscalYear);
@@ -46,18 +46,18 @@ public class OfficerDTO {
 	}
 	
 
-	public final IntegerProperty personIdProperty() {
-		return this.personId;
+	public final IntegerProperty pIdProperty() {
+		return this.pId;
 	}
 	
 
-	public final int getPersonId() {
-		return this.personIdProperty().get();
+	public final int getpId() {
+		return this.pIdProperty().get();
 	}
 	
 
-	public final void setPersonId(final int personId) {
-		this.personIdProperty().set(personId);
+	public final void setpId(final int pId) {
+		this.pIdProperty().set(pId);
 	}
 	
 
@@ -107,7 +107,7 @@ public class OfficerDTO {
 
 	@Override
 	public String toString() {
-		return "Object_Officer [officer_id=" + officerId + ", person_id=" + personId + ", board_year=" + boardYear
+		return "Object_Officer [officer_id=" + officerId + ", person_id=" + pId + ", board_year=" + boardYear
 				+ ", officer_type=" + officerType + ", fiscal_year=" + fiscalYear + "]";
 	}
 }

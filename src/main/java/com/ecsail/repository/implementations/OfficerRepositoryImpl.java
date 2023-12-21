@@ -76,7 +76,7 @@ public class OfficerRepositoryImpl implements OfficerRepository {
         String query = "INSERT INTO officer (P_ID, BOARD_YEAR, OFF_TYPE, OFF_YEAR) " +
                 "VALUES (:pId, :boardYear, :officerType, :fiscalYear)";
         MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-        namedParameters.addValue("pId", officerDTO.getPersonId());
+        namedParameters.addValue("pId", officerDTO.getpId());
         namedParameters.addValue("boardYear", Integer.parseInt(officerDTO.getBoardYear()));
         namedParameters.addValue("officerType", officerDTO.getOfficerType());
         namedParameters.addValue("fiscalYear", Integer.parseInt(officerDTO.getFiscalYear()));
@@ -90,7 +90,7 @@ public class OfficerRepositoryImpl implements OfficerRepository {
         String sql = "INSERT INTO officer (p_id, board_year, off_type, off_year) VALUES (?, ?, ?, ?)";
         template.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, officer.getPersonId());
+            ps.setInt(1, officer.getpId());
             ps.setString(2, officer.getBoardYear());
             ps.setString(3, officer.getOfficerType());
             ps.setString(4, officer.getFiscalYear());
@@ -104,18 +104,24 @@ public class OfficerRepositoryImpl implements OfficerRepository {
     }
 
     @Override
-    public int delete(OfficerDTO officerDTO) {
-        String deleteSql = "DELETE FROM officer WHERE O_ID = ?";
-        return template.update(deleteSql, officerDTO.getOfficerId());
-    }
-
-    @Override
-    public void deleteOfficer(int p_id) {
+    public void delete(int pId) {
         String sql = "DELETE FROM officer WHERE p_id = ?";
         try {
-            template.update(sql, p_id);
+            template.update(sql, pId);
         } catch (DataAccessException e) {
             logger.error("Unable to DELETE officer: " + e.getMessage());
+        }
+    }
+    @Override
+    public int deleteOfficer(OfficerDTO officerDTO) {
+        String sql = "DELETE FROM officer WHERE O_ID = ?";
+        try {
+            return template.update(sql, officerDTO.getOfficerId());
+        } catch (DataAccessException e) {
+            logger.error("Unable to DELETE officer: " + e.getMessage());
+            // Depending on your application's logic, you might want to rethrow the exception
+            // or return a specific value indicating failure (e.g., -1)
+            return -1;
         }
     }
 

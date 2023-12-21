@@ -19,15 +19,6 @@ public class SqlDelete {
 //			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
 		}
 	}
-	
-	public static void deletePerson(PersonDTO p) {
-		String query = "DELETE FROM person WHERE p_id=" + p.getpId();
-			try {
-				BaseApplication.connect.executeQuery(query);
-			} catch (SQLException e) {
-				new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-			}
-	}
 
 	public static void deleteFee(FeeDTO f) {
 		String query = "DELETE FROM fee WHERE fee_id=" + f.getFeeId();
@@ -91,24 +82,5 @@ public class SqlDelete {
 		}
 		return noError;
 	}
-
-	public static boolean deleteAward(AwardDTO a) {
-		boolean noError = false;
-		String query = "DELETE FROM awards WHERE award_id=" + a.getAwardId();
-		try {
-			BaseApplication.connect.executeQuery(query);
-			noError = true;
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-		}
-		return noError;
-	}
-
-
-
-
-
-
-
 
 }

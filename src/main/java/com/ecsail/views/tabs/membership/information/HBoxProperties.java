@@ -209,7 +209,7 @@ public class HBoxProperties extends HBox implements Builder {
                 for (PersonDTO p : people) {
                     phoneRepository.deletePhones(p.getpId());
                     emailRepository.deleteEmail(p.getpId());
-                    officerRepository.deleteOfficer(p.getpId());
+                    officerRepository.delete(p.getpId());
                     personRepository.deletePerson(p.getpId());
                 }
 

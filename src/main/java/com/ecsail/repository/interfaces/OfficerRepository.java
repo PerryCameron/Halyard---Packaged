@@ -16,6 +16,6 @@ public interface OfficerRepository {
     int update(OfficerDTO o);
     int insert(OfficerDTO o);
     OfficerDTO insertOfficer(OfficerDTO officer);
-    int delete(OfficerDTO o);
-    void deleteOfficer(int p_id);
+    void delete(int pId);
+    int deleteOfficer(OfficerDTO officerDTO);
 }
