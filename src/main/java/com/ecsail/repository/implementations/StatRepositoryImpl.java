@@ -1,27 +1,32 @@
 package com.ecsail.repository.implementations;
 
 
-
+import com.ecsail.BaseApplication;
 import com.ecsail.dto.StatsDTO;
+import com.ecsail.repository.interfaces.MembershipIdRepository;
 import com.ecsail.repository.interfaces.StatRepository;
 import com.ecsail.repository.rowmappers.StatsRowMapper;
 import com.ecsail.repository.rowmappers.StatsSpecialRowMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 public class StatRepositoryImpl implements StatRepository {
+    public static Logger logger = LoggerFactory.getLogger(StatRepository.class);
+
     private final JdbcTemplate template;
 
-    public StatRepositoryImpl(DataSource dataSource) {
-        this.template = new JdbcTemplate(dataSource);
+    public StatRepositoryImpl() {
+        this.template = new JdbcTemplate(BaseApplication.getDataSource());
     }
 
 
     @Override
     public List<StatsDTO> getStatistics(int startYear, int stopYear) {
-        String query = "SELECT * FROM stats WHERE fiscal_year > "+(startYear -1)+" AND fiscal_year < " + (stopYear +1);
+        String query = "SELECT * FROM stats WHERE fiscal_year > " + (startYear - 1) + " AND fiscal_year < " + (stopYear + 1);
         return template.query(query, new StatsRowMapper());
     }
 
@@ -32,51 +37,44 @@ public class StatRepositoryImpl implements StatRepository {
 
     @Override
     public StatsDTO createStatDTO(int year) {
-        String query =
-                """
-                                SELECT
-                                id.fiscal_year AS 'YEAR',
-                                COUNT(DISTINCT IF(id.mem_type = 'RM' AND id.RENEW=true,id.membership_id , NULL)) AS 'REGULAR',
-                                COUNT(DISTINCT IF(id.mem_type = 'FM' AND id.RENEW=true,id.membership_id , NULL)) AS 'FAMILY',
-                                COUNT(DISTINCT IF(id.mem_type = 'SO' AND id.RENEW=true,id.membership_id , NULL)) AS 'SOCIAL',
-                                COUNT(DISTINCT IF(id.mem_type = 'LA' AND id.RENEW=true,id.membership_id , NULL)) AS 'LAKE_ASSOCIATES',
-                                COUNT(DISTINCT IF(id.mem_type = 'LM' AND id.RENEW=true,id.membership_id , NULL)) AS 'LIFE_MEMBERS',
-                                COUNT(DISTINCT IF(id.mem_type = 'SM' AND id.RENEW=true,id.membership_id , NULL)) AS 'STUDENT',
-                                COUNT(DISTINCT IF(id.mem_type = 'RF' AND id.RENEW=true,id.membership_id , NULL)) AS 'RACE_FELLOWS',
-                                COUNT(DISTINCT IF(YEAR(m.JOIN_DATE)=?,id.membership_id, NULL)) AS 'NEW_MEMBERS',
-                                COUNT(DISTINCT IF(id.membership_id >
-                                (SELECT membership_id FROM membership_id WHERE fiscal_year=? AND MS_ID=(SELECT MS_ID FROM membership_id WHERE membership_id=(
-                                SELECT max(membership_id) FROM membership_id WHERE fiscal_year=(? -1)AND membership_id < 500 AND renew=1)
-                                AND fiscal_year=(? -1))) AND id.membership_id < 500 AND YEAR(m.JOIN_DATE)!=?
-                                AND (SELECT NOT EXISTS(SELECT mid FROM membership_id WHERE fiscal_year=(? -1) AND RENEW=1 AND MS_ID=id.MS_ID)), id.membership_id, NULL)) AS 'RETURN_MEMBERS',
-                                SUM(NOT RENEW) as 'NON_RENEW', SUM(RENEW) as 'ACTIVE_MEMBERSHIPS'
-                                FROM membership_id id LEFT JOIN membership m on id.MS_ID=m.MS_ID
-                                WHERE fiscal_year=?;
+        final String sql = """
+                SELECT id.FISCAL_YEAR AS 'YEAR',
+                    COUNT(DISTINCT CASE WHEN id.MEM_TYPE = 'RM' AND id.RENEW = true THEN id.MEMBERSHIP_ID ELSE NULL END) AS 'REGULAR',
+                    COUNT(DISTINCT CASE WHEN id.MEM_TYPE = 'FM' AND id.RENEW = true THEN id.MEMBERSHIP_ID ELSE NULL END) AS 'FAMILY',
+                    COUNT(DISTINCT CASE WHEN id.MEM_TYPE = 'SO' AND id.RENEW = true THEN id.MEMBERSHIP_ID ELSE NULL END) AS 'SOCIAL',
+                    COUNT(DISTINCT CASE WHEN id.MEM_TYPE = 'LA' AND id.RENEW = true THEN id.MEMBERSHIP_ID ELSE NULL END) AS 'LAKE_ASSOCIATES',
+                    COUNT(DISTINCT CASE WHEN id.MEM_TYPE = 'LM' AND id.RENEW = true THEN id.MEMBERSHIP_ID ELSE NULL END) AS 'LIFE_MEMBERS',
+                    COUNT(DISTINCT CASE WHEN id.MEM_TYPE = 'SM' AND id.RENEW = true THEN id.MEMBERSHIP_ID ELSE NULL END) AS 'STUDENT',
+                    COUNT(DISTINCT CASE WHEN id.MEM_TYPE = 'RF' AND id.RENEW = true THEN id.MEMBERSHIP_ID ELSE NULL END) AS 'RACE_FELLOWS',
+                    COUNT(DISTINCT CASE WHEN YEAR(m.JOIN_DATE) = ? THEN id.MEMBERSHIP_ID ELSE NULL END) AS 'NEW_MEMBERS',
+                    COUNT(DISTINCT CASE
+                WHEN id.MEMBERSHIP_ID < 500 AND YEAR(m.JOIN_DATE) != ?
+                AND NOT EXISTS (
+                    SELECT 1 FROM membership_id mi
+                    WHERE mi.FISCAL_YEAR = (? - 1) AND mi.RENEW = 1 AND mi.MS_ID = id.MS_ID
+                    )
+                    AND id.MEMBERSHIP_ID > (
+                    SELECT MAX(mi.MEMBERSHIP_ID)
+                    FROM membership_id mi
+                    WHERE mi.FISCAL_YEAR = (? - 1) AND mi.MEMBERSHIP_ID < 500 AND mi.RENEW = 1
+                    )
+                    THEN id.MEMBERSHIP_ID ELSE NULL END
+                    ) AS 'RETURN_MEMBERS',
+                    SUM(NOT id.RENEW) as 'NON_RENEW',
+                    SUM(id.RENEW) as 'ACTIVE_MEMBERSHIPS'
+                    FROM membership_id id
+                    LEFT JOIN membership m ON id.MS_ID = m.MS_ID
+                    WHERE id.FISCAL_YEAR = ?
+                    GROUP BY id.FISCAL_YEAR
                         """;
-        StatsDTO statsDTO = template.queryForObject(query,new StatsSpecialRowMapper(), year, year, year, year, year, year);
-            return statsDTO;
+        try {
+            return template.queryForObject(sql, new Object[]{year, year, year, year, year}, new StatsSpecialRowMapper());
+        } catch (DataAccessException e) {
+            logger.error("Error creating stats for year " + year + ": " + e.getMessage());
+            return null;
+        }
     }
 
-//    public StatsDTO createStatDTO(int year) {
-//        String query = "SELECT id.fiscal_year AS 'YEAR'," +
-//        "COUNT(DISTINCT IF(id.mem_type = 'RM' AND id.RENEW=true,id.membership_id , NULL)) AS 'REGULAR'," +
-//        "COUNT(DISTINCT IF(id.mem_type = 'FM' AND id.RENEW=true,id.membership_id , NULL)) AS 'FAMILY'," +
-//        "COUNT(DISTINCT IF(id.mem_type = 'SO' AND id.RENEW=true,id.membership_id , NULL)) AS 'SOCIAL'," +
-//        "COUNT(DISTINCT IF(id.mem_type = 'LA' AND id.RENEW=true,id.membership_id , NULL)) AS 'LAKE_ASSOCIATES'," +
-//        "COUNT(DISTINCT IF(id.mem_type = 'LM' AND id.RENEW=true,id.membership_id , NULL)) AS 'LIFE_MEMBERS'," +
-//        "COUNT(DISTINCT IF(id.mem_type = 'SM' AND id.RENEW=true,id.membership_id , NULL)) AS 'STUDENT'," +
-//        "COUNT(DISTINCT IF(id.mem_type = 'RF' AND id.RENEW=true,id.membership_id , NULL)) AS 'RACE_FELLOWS'," +
-//        "COUNT(DISTINCT IF(YEAR(m.JOIN_DATE)="+year+",id.membership_id, NULL)) AS 'NEW_MEMBERS'," +
-//        "COUNT(DISTINCT IF(id.membership_id >" +
-//        "(SELECT membership_id FROM membership_id WHERE fiscal_year=? AND MS_ID=(SELECT MS_ID FROM membership_id WHERE membership_id=(" +
-//        "SELECT max(membership_id) FROM membership_id WHERE fiscal_year=("+year+" -1)AND membership_id < 500 AND renew=1)" +
-//        "AND fiscal_year=("+year+" -1))) AND id.membership_id < 500 AND YEAR(m.JOIN_DATE)!=?" +
-//        "AND (SELECT NOT EXISTS(SELECT mid FROM membership_id WHERE fiscal_year=("+year+" -1) AND RENEW=1 AND MS_ID=id.MS_ID)), id.membership_id, NULL)) AS 'RETURN_MEMBERS'," +
-//        "SUM(NOT RENEW) as 'NON_RENEW', SUM(RENEW) as 'ACTIVE_MEMBERSHIPS'" +
-//        "FROM membership_id id LEFT JOIN membership m on id.MS_ID=m.MS_ID " +
-//        "WHERE fiscal_year="+year+";";
-//        return template.queryForObject(query,new StatsSpecialRowMapper());
-//    }
 
     @Override
     public int getNumberOfStatYears() {
@@ -90,7 +88,7 @@ public class StatRepositoryImpl implements StatRepository {
     }
 
     @Override
-    public int addStatRecord(StatsDTO s) {
+    public int insertStat(StatsDTO s) {
         String query = "INSERT INTO stats (fiscal_year, active_memberships, non_renew, return_members," +
                 " new_members, secondary_members, dependants, number_of_boats, family, regular, social, " +
                 "lake_associates, life_members, race_fellows, student, deposits, initiation) " +

@@ -2,9 +2,7 @@ package com.ecsail.sql;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.dto.DepositDTO;
-import com.ecsail.dto.FeeDTO;
 import com.ecsail.dto.MembershipIdDTO;
-import com.ecsail.dto.StatsDTO;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import javafx.application.Platform;
 
@@ -31,34 +29,4 @@ public class SqlInsert {
 			Platform.runLater(() -> new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details"));
 		}
 	}
-
-	public static void addStatRecord(StatsDTO s) {
-		String query = "INSERT INTO stats () VALUES ("
-				+ null + "," // autoincrement
-				+ s.getFiscalYear() + ","
-				+ s.getActiveMemberships() + ","
-				+ s.getNonRenewMemberships() + ","
-				+ s.getReturnMemberships() + ","
-				+ s.getNewMemberships() + ","
-				+ s.getSecondaryMembers() + ","
-				+ s.getDependants() + ","
-				+ s.getNumberOfBoats() + ","
-				+ s.getFamily() + ","
-				+ s.getRegular() + ","
-				+ s.getSocial() + ","
-				+ s.getLakeAssociates() + ","
-				+ s.getLifeMembers() + ","
-				+ s.getRaceFellows() + ","
-				+ s.getStudent() + ","
-				+ s.getDeposits() + ","
-				+ s.getInitiation() + ")";
-		try {
-			BaseApplication.connect.executeQuery(query);
-		 } catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-
-
 }

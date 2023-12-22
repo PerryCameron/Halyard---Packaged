@@ -15,5 +15,5 @@ public interface StatRepository {
 
     int deleteAllStats();
 
-    int addStatRecord(StatsDTO s);
+    int insertStat(StatsDTO s);
 }

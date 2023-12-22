@@ -45,6 +45,47 @@ public class SqlStats {
 
     public static StatsDTO createStatDTO(int year) {
         StatsDTO stat = null;
+        String query = """
+                         SELECT
+                        id.fiscal_year AS 'YEAR',
+                        COUNT(DISTINCT IF(id.mem_type = 'RM' AND id.RENEW=true,id.membership_id , NULL)) AS 'REGULAR',
+                        COUNT(DISTINCT IF(id.mem_type = 'FM' AND id.RENEW=true,id.membership_id , NULL)) AS 'FAMILY',
+                        COUNT(DISTINCT IF(id.mem_type = 'SO' AND id.RENEW=true,id.membership_id , NULL)) AS 'SOCIAL',
+                        COUNT(DISTINCT IF(id.mem_type = 'LA' AND id.RENEW=true,id.membership_id , NULL)) AS 'LAKE_ASSOCIATES',
+                        COUNT(DISTINCT IF(id.mem_type = 'LM' AND id.RENEW=true,id.membership_id , NULL)) AS 'LIFE_MEMBERS',
+                        COUNT(DISTINCT IF(id.mem_type = 'SM' AND id.RENEW=true,id.membership_id , NULL)) AS 'STUDENT',
+                        COUNT(DISTINCT IF(id.mem_type = 'RF' AND id.RENEW=true,id.membership_id , NULL)) AS 'RACE_FELLOWS',
+                        COUNT(DISTINCT IF(YEAR(m.JOIN_DATE)=2023,id.membership_id, NULL)) AS 'NEW_MEMBERS',
+                        COUNT(DISTINCT IF(id.membership_id > 
+                          (
+                         SELECT membership_id 
+                          FROM membership_id 
+                         WHERE fiscal_year=2023 AND MS_ID=
+                            (
+                             SELECT MS_ID 
+                             FROM membership_id 
+                             WHERE membership_id=
+                               (
+                               SELECT max(membership_id)
+                        FROM membership_id
+                        WHERE fiscal_year=2022
+                        AND membership_id < 500
+                        AND renew=1
+                        )
+                        AND fiscal_year=2022
+                        )
+                        ) 
+                        AND id.membership_id < 500
+                        AND YEAR(m.JOIN_DATE)!=2023
+                        AND (SELECT NOT EXISTS(SELECT mid FROM membership_id WHERE fiscal_year=2022 AND RENEW=1 AND MS_ID=id.MS_ID)), id.membership_id, NULL)) AS 'RETURN_MEMBERS', 
+                        SUM(NOT RENEW) as 'NON_RENEW',
+                        SUM(RENEW) as 'ACTIVE_MEMBERSHIPS'
+                        FROM membership_id id
+                        LEFT JOIN membership m on id.MS_ID=m.MS_ID 
+                        WHERE fiscal_year=2023;
+                """;
+
+
         try {
             ResultSet rs = BaseApplication.connect.executeSelectQuery(getStatQuery(year));
             while (rs.next()) {

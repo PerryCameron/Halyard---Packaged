@@ -1,6 +1,8 @@
 package com.ecsail.views.dialogues;
 
 import com.ecsail.HalyardPaths;
+import com.ecsail.repository.implementations.StatRepositoryImpl;
+import com.ecsail.repository.interfaces.StatRepository;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.select.SqlStats;
@@ -27,6 +29,8 @@ public class Dialogue_LoadNewStats extends Stage {
 	private int startYear;
 	private final int stopYear;
 	BooleanProperty dataBaseStatisticsRefreshed;
+
+	StatRepository statRepository = new StatRepositoryImpl();
 
 	public Dialogue_LoadNewStats(BooleanProperty dataBaseStatisticsRefreshed) {
 		this.dataBaseStatisticsRefreshed = dataBaseStatisticsRefreshed;
@@ -70,14 +74,14 @@ public class Dialogue_LoadNewStats extends Stage {
 	}
 
 	public void updateStats() {
-		SqlDelete.deleteStatistics();
+		statRepository.deleteAllStats();
 		int numberOfYears = stopYear - startYear + 1;
 		var task = new Task<String>(){
 	        @Override
 	        protected String call() {
 	        for (int i = 0; i < numberOfYears; i++) {
-	        StatsDTO stats = SqlStats.createStatDTO(startYear);
-			SqlInsert.addStatRecord(stats);
+				StatsDTO statsDTO = statRepository.createStatDTO(startYear);
+				statRepository.insertStat(statsDTO);
 			startYear++;
 			statId++;
 			pb.setProgress((double)statId/ numberOfYears);
