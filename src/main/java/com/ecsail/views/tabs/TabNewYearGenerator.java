@@ -7,8 +7,6 @@ import com.ecsail.repository.implementations.MembershipRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.repository.interfaces.MembershipIdRepository;
 import com.ecsail.repository.interfaces.MembershipRepository;
-import com.ecsail.sql.SqlInsert;
-import com.ecsail.sql.select.SqlDbInvoice;
 import com.ecsail.sql.select.SqlFee;
 import com.ecsail.sql.select.SqlSlip;
 import javafx.geometry.Insets;
@@ -21,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 public class TabNewYearGenerator extends Tab {
     private static final ArrayList<SlipDTO> slips = new ArrayList<>();

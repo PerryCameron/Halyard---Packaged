@@ -45,10 +45,10 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
     }
 
     @Override
-    public int getId(int ms_id) {
+    public int getId(int msId) {
         String sql = "SELECT membership_id FROM membership_id WHERE ms_id = ?";
         try {
-            return template.queryForObject(sql, Integer.class, ms_id);
+            return template.queryForObject(sql, Integer.class, msId);
         } catch (DataAccessException e) {
             logger.error(e.getMessage());
             new Dialogue_ErrorSQL(e, "Unable to retrieve information", "See below for details");
@@ -76,10 +76,10 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
 
     // one in question
     @Override
-    public Integer getMsidFromMembershipID(int membership_id) {
+    public int getMsidFromMembershipID(int membershipId) {
         String sql = "SELECT ms_id FROM membership_id WHERE fiscal_year = ? AND membership_id = ?";
         try {
-            return template.queryForObject(sql, Integer.class, String.valueOf(Year.now().getValue()), membership_id);
+            return template.queryForObject(sql, Integer.class, String.valueOf(Year.now().getValue()), membershipId);
         } catch (EmptyResultDataAccessException e) {
             logger.error(e.getMessage());
             return 0;
@@ -96,7 +96,7 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
     }
 
     @Override
-    public boolean isRenewedByMsidAndYear(int ms_id, String year) {
+    public boolean isRenewedByMsidAndYear(int msId, String year) {
         return false;
     }
 
@@ -150,10 +150,10 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
         return template.update(deleteSql, membershipIdDTO.getMid());
     }
     @Override
-    public void deleteMembershipId(int ms_id) {
+    public void deleteMembershipId(int msId) {
         String sql = "DELETE FROM membership_id WHERE ms_id = ?";
         try {
-            template.update(sql, ms_id);
+            template.update(sql, msId);
         } catch (DataAccessException e) {
             logger.error("Unable to DELETE membership_id: " + e.getMessage());
         }
@@ -192,6 +192,28 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
             logger.error("Unable to retrieve highest membership ID: " + e.getMessage());
             // Handle or rethrow the exception as per your application's requirements
             return 0;
+        }
+    }
+    @Override
+    public boolean membershipIdBlankRowExists(String msid) {
+        String sql = "SELECT EXISTS(SELECT * FROM membership_id WHERE fiscal_year = 0 AND MEMBERSHIP_ID = 0 AND ms_id != ?) AS new_tuple";
+        try {
+            return template.queryForObject(sql, new Object[]{msid}, Boolean.class);
+        } catch (DataAccessException e) {
+            logger.error("Unable to check if a blank membership_id row EXISTS: " + e.getMessage());
+            // Depending on your error handling, you might want to rethrow the exception or return a default value
+            return false;
+        }
+    }
+    @Override
+    public void deleteBlankMembershipIdRow() {
+        String sql = "DELETE FROM membership_id WHERE fiscal_year = 0 AND membership_id = 0";
+        try {
+            template.update(sql);
+        } catch (DataAccessException e) {
+            logger.error("Unable to DELETE Blank Membership ID Row: " + e.getMessage());
+            // Depending on your error handling strategy, handle the exception here
+            // For example, rethrow it, log it, or return a status indicator
         }
     }
 

@@ -9,16 +9,7 @@ import java.sql.SQLException;
 public class SqlDelete {
 
 
-	public static void deleteStatistics() {
-		String query1 = "DELETE FROM stats";
-		String query2 = "ALTER TABLE stats AUTO_INCREMENT = 1";
-		try {
-			BaseApplication.connect.executeQuery(query1);
-			BaseApplication.connect.executeQuery(query2);
-		} catch (SQLException e) {
-//			new Dialogue_ErrorSQL(e,"Unable to DELETE","See below for details");
-		}
-	}
+
 
 	public static void deleteFee(FeeDTO f) {
 		String query = "DELETE FROM fee WHERE fee_id=" + f.getFeeId();

@@ -1,10 +1,9 @@
 package com.ecsail.sql;
 
 import com.ecsail.BaseApplication;
+import com.ecsail.dto.*;
 import com.ecsail.views.dialogues.Dialogue_CustomErrorMessage;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
-import com.ecsail.dto.*;
-import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
@@ -16,39 +15,6 @@ public class SqlUpdate {
 	
 	static Alert alert = new Alert(AlertType.ERROR);
 
-
-	public static void updateBoat(String field, int boat_id, String attribute)  {
-		String query = "UPDATE boat SET " + field + "=null WHERE boat_id=" + boat_id;
-		String query1 = "UPDATE boat SET " + field + "=\"" + attribute + "\" WHERE boat_id=" + boat_id;
-		try {
-			if(attribute == null || attribute.equals(""))
-				BaseApplication.connect.executeQuery(query);
-			else
-				BaseApplication.connect.executeQuery(query1);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
-
-	public static void updateBoat(int boat_id, String fieldName, Boolean hasTrailer) {
-		String query = "UPDATE boat SET "+fieldName+"=" + hasTrailer + " WHERE boat_id=" + boat_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
-
-
-
-	public static void updateBoat(int boat_id, String keel) {
-		String query = "UPDATE boat SET keel='" + keel + "' WHERE boat_id=" + boat_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
 
 	public static void updateAddress(MembershipListDTO membership) {
 		String query = "UPDATE membership SET address='" + membership.getAddress()
@@ -110,54 +76,9 @@ public class SqlUpdate {
 		}
 	}
 
-	public static void updateListed(String field, int phone_id, Boolean attribute) {
-		String query = "UPDATE phone SET " + field + "=" + attribute + " WHERE phone_id=" + phone_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
-
-	public static void updatePersonChangeMemberType(PersonDTO person, int newMemType) {
-		String query = "UPDATE person SET MEMBER_TYPE=" + newMemType + " WHERE P_ID=" + person.getpId();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
 
 
 
-	public static void updateOfficer(String field, int officer_id, String attribute) {
-		String query = "UPDATE officer SET " + field + "='" + attribute + "' WHERE o_id=" + officer_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			//new Dialogue_ErrorSQL(e,"There was a problem with the Update","");
-			Platform.runLater(() -> {
-			alert.setTitle("Error Dialog");
-			alert.setHeaderText("Duplicate");
-			alert.setContentText("Duplicate entry!");
-			alert.showAndWait();
-			});
-		}
-	}
-
-	public static void updateAward(String field, int awardId, String attribute) {
-		String query = "UPDATE awards SET " + field + "='" + attribute + "' WHERE award_id=" + awardId;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			Platform.runLater(() -> {
-			alert.setTitle("Error Dialog");
-			alert.setHeaderText("Duplicate");
-			alert.setContentText("Duplicate entry!");
-			alert.showAndWait();
-			});
-		}
-	}
 
 
 

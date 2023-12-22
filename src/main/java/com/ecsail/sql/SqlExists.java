@@ -52,22 +52,6 @@ public class SqlExists {
 		}
 		return answer;
 	}
-
-	public static Boolean personExists(int type, int ms_id) {
-		boolean answer = false;
-		String query = "SELECT EXISTS(SELECT * FROM person INNER JOIN membership ON person.ms_id = membership.ms_id WHERE membership.ms_id ="
-				+ ms_id + " AND person.member_type=" + type + ") AS person_exists";
-		try {
-			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-			rs.next();
-		    answer = rs.getBoolean("person_exists");
-		BaseApplication.connect.closeResultSet(rs);
-		}
-		catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to check if EXISTS","See below for details");
-		}
-		return answer;
-	}
 	
 	public static Boolean paymentExists(int invoice_id) {
 		boolean answer = false;
@@ -111,21 +95,6 @@ public class SqlExists {
 		return answer;
 	}
 	
-	public static boolean memberShipExists(int ms_id) {
-		boolean result = false;
-		String query = "SELECT EXISTS(SELECT * FROM membership WHERE ms_id='" + ms_id + "')";
-		try {
-			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-			while(rs.next()) {
-			result = rs.getBoolean("EXISTS(SELECT * FROM membership WHERE ms_id='" + ms_id + "')");
-			}
-		BaseApplication.connect.closeResultSet(rs); }
-		catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to verify if a membership EXISTS","See below for details");
-		}
-		return result;
-	}
-	
 	public static boolean membershipIdBlankRowExists(String msid) {
 		boolean result = false;
 		String query = "SELECT EXISTS(SELECT * FROM membership_id WHERE fiscal_year=0 AND MEMBERSHIP_ID=0 AND ms_id!="+msid+") AS new_tuple";
@@ -141,20 +110,6 @@ public class SqlExists {
 		return result;
 	}
 
-	public static boolean activePersonExists(int ms_id, int member_type) {
-		boolean result = false;
-		String query = "SELECT EXISTS(SELECT * FROM person WHERE ms_id=" + ms_id + " AND member_type=" + member_type + " AND is_active=true)";
-		try {
-			ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-			while(rs.next()) {
-			result = rs.getBoolean("EXISTS(SELECT * FROM person WHERE ms_id=" + ms_id + " AND member_type=" + member_type + " AND is_active=true)");
-			}
-		BaseApplication.connect.closeResultSet(rs); }
-		catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to check if EXISTS","See below for details");
-		}
-		return result;
-	}
 
 	public static boolean emailExists(PersonDTO p) {
 		boolean result = false;

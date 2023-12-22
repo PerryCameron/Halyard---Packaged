@@ -5,9 +5,6 @@ import com.ecsail.EditCell;
 import com.ecsail.StringTools;
 import com.ecsail.enums.MembershipType;
 import com.ecsail.views.tabs.membership.TabMembership;
-import com.ecsail.sql.SqlDelete;
-import com.ecsail.sql.SqlExists;
-import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlMembership_Id;
 import com.ecsail.sql.select.SqlSelect;
@@ -263,8 +260,8 @@ public class HBoxHistory extends HBox {
             // gets next available id for membership_id table
             int mid = SqlSelect.getNextAvailablePrimaryKey("membership_id", "mid"); // get last mid number add 1
             //	if tuple of year=0 and memId=0 exists anywhere in SQL not belonging to this membership then delete it
-            if (SqlExists.membershipIdBlankRowExists(String.valueOf(parent.getModel().getMembership().getMsId())))
-                SqlDelete.deleteBlankMembershipIdRow();
+            if (parent.getModel().getMembershipIdRepository().membershipIdBlankRowExists(String.valueOf(parent.getModel().getMembership().getMsId())))
+                parent.getModel().getMembershipIdRepository().deleteBlankMembershipIdRow();
             // see if another year=0 and memId=0 row exists in current tableView, bring it to top and edit
             if (blankTupleExistsInTableView()) {
                 parent.getModel().getMembershipIdDTOS().sort(Comparator.comparing(MembershipIdDTO::getFiscalYear));
@@ -302,7 +299,7 @@ public class HBoxHistory extends HBox {
                 dialogPane.getStyleClass().add("dialog");
                 Optional<ButtonType> result = conformation.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
-                    if (SqlDelete.deleteMembershipId(membershipIdDTO)) // if it is properly deleted in our database
+                    if (parent.getModel().getMembershipIdRepository().delete(membershipIdDTO) == 1) // if it is properly deleted in our database
                         idTableView.getItems().remove(selectedIndex); // remove it from our GUI
                 }
             }

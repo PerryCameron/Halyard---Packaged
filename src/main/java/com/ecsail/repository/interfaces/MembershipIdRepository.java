@@ -8,20 +8,23 @@ import java.util.List;
 public interface MembershipIdRepository {
     List<MembershipIdDTO> getIds();
     List<MembershipIdDTO> getIds(int ms_id);
-    int getId(int ms_id);
-    MembershipIdDTO getCurrentId(int ms_id);
-    int getMembershipIDFromMsid(int msid);
-    Integer getMsidFromMembershipID(int membership_id);
-    MembershipIdDTO getMembershipIdObject(int mid);
-    boolean isRenewedByMsidAndYear(int ms_id, String year);
     List<MembershipIdDTO> getAllMembershipIdsByYear(int year);
     List<MembershipIdDTO> getActiveMembershipIdsByYear(String year);
+    MembershipIdDTO getCurrentId(int ms_id);
+    MembershipIdDTO getMembershipIdObject(int mid);
+    MembershipIdDTO insert(MembershipIdDTO membershipIdDTO);
+    int getId(int msId);
+    int getMembershipIDFromMsid(int msid);
+    int getMsidFromMembershipID(int membershipId);
     int getNonRenewNumber(int year);
     int getMsidFromYearAndMembershipId(int year, String membershipId);
-    int update(MembershipIdDTO o);
+    int update(MembershipIdDTO membershipIdDTO);
     int delete(MembershipIdDTO membershipIdDTO);
-    void deleteMembershipId(int ms_id);
-    MembershipIdDTO insert(MembershipIdDTO membershipIdDTO);
-    String getMembershipIdByYearAndMsId(String year, int msId);
     int getMembershipIdForNewestMembership(int year);
+    String getMembershipIdByYearAndMsId(String year, int msId);
+    boolean isRenewedByMsidAndYear(int msId, String year);
+    boolean membershipIdBlankRowExists(String msid);
+    void deleteBlankMembershipIdRow();
+    void deleteMembershipId(int msId);
+
 }
