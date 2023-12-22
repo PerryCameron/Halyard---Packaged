@@ -2,8 +2,10 @@ package com.ecsail.views.tabs;
 
 import com.ecsail.dto.*;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
+import com.ecsail.repository.implementations.MembershipIdRepositoryImpl;
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
+import com.ecsail.repository.interfaces.MembershipIdRepository;
 import com.ecsail.repository.interfaces.MembershipRepository;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.select.SqlDbInvoice;
@@ -27,6 +29,7 @@ public class TabNewYearGenerator extends Tab {
 
     private static MembershipRepository membershipRepository = new MembershipRepositoryImpl();
     private static InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
+    private static MembershipIdRepository membershipIdRepository = new MembershipIdRepositoryImpl();
 
     public static Logger logger = LoggerFactory.getLogger(TabNewYearGenerator.class);
     int yearToAdd = 2024;
@@ -85,7 +88,7 @@ public class TabNewYearGenerator extends Tab {
                             String.valueOf(membershipListDTO.getMembershipId()), membershipListDTO.getMemType());
                     // create invoice for a specified year for this membership
                     logger.info("Added MembershipId for:" + membershipListDTO.getFullName());
-                    SqlInsert.addMembershipId(newMembershipIdDTO);
+                    membershipIdRepository.insert(newMembershipIdDTO);
                 });
     }
 

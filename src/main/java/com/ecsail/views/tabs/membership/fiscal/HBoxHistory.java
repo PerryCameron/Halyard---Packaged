@@ -273,12 +273,12 @@ public class HBoxHistory extends HBox {
             } else {
                 BaseApplication.logger.info("Added history record for membership " + parent.getModel().getMembership().getMembershipId());
                 // create a blank membershipId object
-                MembershipIdDTO newIdTuple = new MembershipIdDTO(mid, "0",
+                MembershipIdDTO membershipIdDTO = new MembershipIdDTO(mid, "0",
                         parent.getModel().getMembership().getMsId(), "0", true, parent.getModel().getMembership().getMemType(), false, false);
                 // add the information from the new object into SQL
-                SqlInsert.addMembershipId(newIdTuple);
+                parent.getModel().getMembershipIdRepository().insert(membershipIdDTO);
                 // add the new tuple to the appropriate history tableView
-                parent.getModel().getMembershipIdDTOS().add(newIdTuple);
+                parent.getModel().getMembershipIdDTOS().add(membershipIdDTO);
                 // sort so that new membership id entry is at the top
                 parent.getModel().getMembershipIdDTOS().sort(Comparator.comparing(MembershipIdDTO::getFiscalYear));
                 // this line prevents strange buggy behaviour I found the solution here:
