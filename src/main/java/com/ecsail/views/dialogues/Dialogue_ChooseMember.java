@@ -1,5 +1,6 @@
 package com.ecsail.views.dialogues;
 
+import com.ecsail.BaseApplication;
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.repository.implementations.BoatRepositoryImpl;
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
@@ -27,7 +28,12 @@ public class Dialogue_ChooseMember extends Stage {
 	private BoatRepository boatRepository = new BoatRepositoryImpl();
 	
 	public Dialogue_ChooseMember(ObservableList<MembershipListDTO> boatOwners, int boatId) {
-		
+		double centerXPosition = BaseApplication.stage.getX() + BaseApplication.stage.getWidth() / 2d;
+		double centerYPosition = BaseApplication.stage.getY() + BaseApplication.stage.getHeight() / 2d;
+		setOnShown(windowEvent -> {
+			setX(centerXPosition - getWidth() / 2d);
+			setY(centerYPosition - getHeight() / 2d);
+		});
 		//////////////// ADD OBJECTS ///////////////////
 		VBox vboxGrey = new VBox(); // this is the vbox for organizing all the widgets
 		VBox vboxBlue = new VBox();

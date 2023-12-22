@@ -20,7 +20,12 @@ import java.util.Objects;
 public class Dialogue_MembershipIdSearch extends Stage {
 
 	public Dialogue_MembershipIdSearch() {
-
+		double centerXPosition = BaseApplication.stage.getX() + BaseApplication.stage.getWidth() / 2d;
+		double centerYPosition = BaseApplication.stage.getY() + BaseApplication.stage.getHeight() / 2d;
+		setOnShown(windowEvent -> {
+			setX(centerXPosition - getWidth() / 2d);
+			setY(centerYPosition - getHeight() / 2d);
+		});
 		VBox vboxGrey = new VBox(); // this is the vbox for organizing all the widgets
 		VBox vboxBlue = new VBox();
 		VBox vboxPink = new VBox(); // this creates a pink border around the table

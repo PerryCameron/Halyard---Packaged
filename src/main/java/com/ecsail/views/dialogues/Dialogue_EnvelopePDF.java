@@ -1,6 +1,7 @@
 package com.ecsail.views.dialogues;
 
 
+import com.ecsail.BaseApplication;
 import com.ecsail.pdf.PDF_Envelope;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -35,6 +36,12 @@ public class Dialogue_EnvelopePDF extends Stage implements Builder {
 		VBox vboxBlue = new VBox();
 		vboxBlue.setId("box-frame-dark");
 		vboxBlue.setPadding(new Insets(10, 10, 10, 10));
+		double centerXPosition = BaseApplication.stage.getX() + BaseApplication.stage.getWidth() / 2d;
+		double centerYPosition = BaseApplication.stage.getY() + BaseApplication.stage.getHeight() / 2d;
+		setOnShown(windowEvent -> {
+			setX(centerXPosition - getWidth() / 2d);
+			setY(centerYPosition - getHeight() / 2d);
+		});
 		Scene scene = new Scene(vboxBlue, 600, 300);
 		scene.getStylesheets().add("css/dark/custom_dialogue.css");
 		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));

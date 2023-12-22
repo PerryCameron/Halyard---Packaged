@@ -141,13 +141,18 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
                 "LATE_RENEW = :lateRenew " +
                 "WHERE MID = :mId ";
         SqlParameterSource namedParameters = new BeanPropertySqlParameterSource(membershipIdDTO);
-        return namedParameterJdbcTemplate.update(query, namedParameters);
+        try {
+            return namedParameterJdbcTemplate.update(query, namedParameters);
+        } catch (DataAccessException e) {
+            logger.error("Error updating MembershipIdDTO: " + e.getMessage());
+            return -1;
+        }
     }
 
     @Override
     public int delete(MembershipIdDTO membershipIdDTO) {
         String deleteSql = "DELETE FROM membership_id WHERE MID = ?";
-        return template.update(deleteSql, membershipIdDTO.getMid());
+        return template.update(deleteSql, membershipIdDTO.getmId());
     }
     @Override
     public void deleteMembershipId(int msId) {
@@ -166,7 +171,7 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
                 "VALUES (:fiscalYear, :msId, :membershipId, :renew, :memType, :selected, :lateRenew)";
         SqlParameterSource namedParameters = new BeanPropertySqlParameterSource(membershipIdDTO);
         int affectedRows = namedParameterJdbcTemplate.update(query, namedParameters, keyHolder);
-        membershipIdDTO.setMid(keyHolder.getKey().intValue());
+        membershipIdDTO.setmId(keyHolder.getKey().intValue());
         return membershipIdDTO;
     }
     @Override
@@ -214,6 +219,24 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
             logger.error("Unable to DELETE Blank Membership ID Row: " + e.getMessage());
             // Depending on your error handling strategy, handle the exception here
             // For example, rethrow it, log it, or return a status indicator
+        }
+    }
+    @Override
+    public int rowExists(MembershipIdDTO membershipIdDTO) {
+        final String sql = """
+        SELECT EXISTS(
+            SELECT * FROM membership_id 
+            WHERE FISCAL_YEAR = ? AND MEMBERSHIP_ID = ?
+        )
+        """;
+
+        try {
+            int fiscalYear = Integer.parseInt(membershipIdDTO.getFiscalYear());
+            int membershipId = Integer.parseInt(membershipIdDTO.getMembershipId());
+            return template.queryForObject(sql, new Object[]{fiscalYear, membershipId}, Integer.class);
+        } catch (DataAccessException e) {
+            logger.error("Error checking row existence: " + e.getMessage());
+            return 0; // or a different error handling strategy
         }
     }
 

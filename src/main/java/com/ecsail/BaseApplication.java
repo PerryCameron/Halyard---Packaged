@@ -144,8 +144,6 @@ public class BaseApplication extends Application implements Log {
                 "css/dark/invoice.css");
     }
 
-
-
     public static void connectDatabase() {
         connect = new ConnectDatabase(stage);
     }

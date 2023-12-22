@@ -1,5 +1,6 @@
 package com.ecsail.views.dialogues;
 
+import com.ecsail.BaseApplication;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
@@ -61,6 +62,12 @@ public class Dialogue_CustomErrorMessage extends Stage implements Builder<Parent
 
 	@Override
 	public Parent build() {
+		double centerXPosition = BaseApplication.stage.getX() + BaseApplication.stage.getWidth() / 2d;
+		double centerYPosition = BaseApplication.stage.getY() + BaseApplication.stage.getHeight() / 2d;
+		setOnShown(windowEvent -> {
+			setX(centerXPosition - getWidth() / 2d);
+			setY(centerYPosition - getHeight() / 2d);
+		});
 		VBox vBox = new VBox();
 		vBox.setId("box-frame-dark");
 		vBox.setPadding(new Insets(10, 10, 10, 10));

@@ -52,7 +52,7 @@ public class SqlDelete {
 
 	public static boolean deleteMembershipId(MembershipIdDTO mid) {
 		boolean noError = false;
-		String query = "DELETE FROM membership_id WHERE mid=" + mid.getMid();
+		String query = "DELETE FROM membership_id WHERE mid=" + mid.getmId();
 			try {
 				BaseApplication.connect.executeQuery(query);
 				noError = true;

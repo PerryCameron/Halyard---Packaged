@@ -27,4 +27,5 @@ public interface MembershipIdRepository {
     void deleteBlankMembershipIdRow();
     void deleteMembershipId(int msId);
 
+    int rowExists(MembershipIdDTO membershipIdDTO);
 }

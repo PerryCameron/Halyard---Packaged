@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class MembershipIdDTO {
-	private IntegerProperty mid;
+	private IntegerProperty mId;
 	private SimpleStringProperty fiscalYear;
 	private IntegerProperty msId;
 	private SimpleStringProperty membershipId;
@@ -16,9 +16,9 @@ public class MembershipIdDTO {
 	private SimpleBooleanProperty selected;
 	private SimpleBooleanProperty isLateRenew;
 	
-	public MembershipIdDTO(Integer mid, String fiscalYear, Integer msId, String membershipId,
+	public MembershipIdDTO(Integer mId, String fiscalYear, Integer msId, String membershipId,
 						   Boolean isRenew, String memType, Boolean selected, Boolean isLateRenew) {
-		this.mid = new SimpleIntegerProperty(mid);
+		this.mId = new SimpleIntegerProperty(mId);
 		this.fiscalYear = new SimpleStringProperty(fiscalYear);
 		this.msId = new SimpleIntegerProperty(msId);
 		this.membershipId = new SimpleStringProperty(membershipId);
@@ -29,7 +29,7 @@ public class MembershipIdDTO {
 	}
 
 	public MembershipIdDTO(String fiscalYear, Integer msId, String membershipId, String memType) {
-		this.mid = new SimpleIntegerProperty(SqlSelect.getNextAvailablePrimaryKey("membership_id","MID"));
+		this.mId = new SimpleIntegerProperty(SqlSelect.getNextAvailablePrimaryKey("membership_id","MID"));
 		this.fiscalYear = new SimpleStringProperty(fiscalYear);
 		this.msId = new SimpleIntegerProperty(msId);
 		this.membershipId = new SimpleStringProperty(membershipId);
@@ -40,7 +40,7 @@ public class MembershipIdDTO {
 	}
 
 	public MembershipIdDTO(String fiscalYear, Integer msId, String membershipId) {
-		this.mid = new SimpleIntegerProperty(0);
+		this.mId = new SimpleIntegerProperty(0);
 		this.fiscalYear = new SimpleStringProperty(fiscalYear);
 		this.msId = new SimpleIntegerProperty(msId);
 		this.membershipId = new SimpleStringProperty(membershipId);
@@ -53,18 +53,18 @@ public class MembershipIdDTO {
 //			"RM", false, false)
 
 
-	public final IntegerProperty midProperty() {
-		return this.mid;
+	public final IntegerProperty mIdProperty() {
+		return this.mId;
 	}
 	
 
-	public final int getMid() {
-		return this.midProperty().get();
+	public final int getmId() {
+		return this.mIdProperty().get();
 	}
 	
 
-	public final void setMid(final int mid) {
-		this.midProperty().set(mid);
+	public final void setmId(final int mId) {
+		this.mIdProperty().set(mId);
 	}
 	
 
@@ -174,7 +174,7 @@ public class MembershipIdDTO {
 	@Override
 	public String toString() {
 		return "Object_MembershipId{" +
-				"mid=" + mid +
+				"mid=" + mId +
 				", fiscal_Year=" + fiscalYear +
 				", ms_id=" + msId +
 				", membership_id=" + membershipId +

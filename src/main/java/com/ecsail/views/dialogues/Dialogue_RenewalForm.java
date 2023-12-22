@@ -21,7 +21,12 @@ public class Dialogue_RenewalForm extends Stage {
 	
 	public Dialogue_RenewalForm() {
 		this.selectedYear= String.valueOf(Year.now().getValue());
-		
+		double centerXPosition = BaseApplication.stage.getX() + BaseApplication.stage.getWidth() / 2d;
+		double centerYPosition = BaseApplication.stage.getY() + BaseApplication.stage.getHeight() / 2d;
+		setOnShown(windowEvent -> {
+			setX(centerXPosition - getWidth() / 2d);
+			setY(centerYPosition - getHeight() / 2d);
+		});
 		Button createPDFbutton = new Button("Create PDF");
 		ToggleGroup tg1 = new ToggleGroup();  
 		RadioButton r1 = new RadioButton("Print All Memberships"); 

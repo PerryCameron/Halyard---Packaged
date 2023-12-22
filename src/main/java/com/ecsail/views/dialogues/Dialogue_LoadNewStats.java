@@ -1,12 +1,8 @@
 package com.ecsail.views.dialogues;
 
-import com.ecsail.HalyardPaths;
+import com.ecsail.dto.StatsDTO;
 import com.ecsail.repository.implementations.StatRepositoryImpl;
 import com.ecsail.repository.interfaces.StatRepository;
-import com.ecsail.sql.SqlDelete;
-import com.ecsail.sql.SqlInsert;
-import com.ecsail.sql.select.SqlStats;
-import com.ecsail.dto.StatsDTO;
 import javafx.beans.property.BooleanProperty;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
@@ -29,7 +25,6 @@ public class Dialogue_LoadNewStats extends Stage {
 	private int startYear;
 	private final int stopYear;
 	BooleanProperty dataBaseStatisticsRefreshed;
-
 	StatRepository statRepository = new StatRepositoryImpl();
 
 	public Dialogue_LoadNewStats(BooleanProperty dataBaseStatisticsRefreshed) {

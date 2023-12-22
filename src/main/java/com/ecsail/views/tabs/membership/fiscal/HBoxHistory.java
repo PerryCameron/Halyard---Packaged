@@ -3,12 +3,12 @@ package com.ecsail.views.tabs.membership.fiscal;
 import com.ecsail.BaseApplication;
 import com.ecsail.EditCell;
 import com.ecsail.StringTools;
-import com.ecsail.enums.MembershipType;
-import com.ecsail.views.tabs.membership.TabMembership;
-import com.ecsail.sql.SqlUpdate;
-import com.ecsail.sql.select.SqlMembership_Id;
-import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.dto.MembershipIdDTO;
+import com.ecsail.enums.MembershipType;
+import com.ecsail.repository.interfaces.MembershipIdRepository;
+import com.ecsail.sql.SqlUpdate;
+import com.ecsail.sql.select.SqlSelect;
+import com.ecsail.views.tabs.membership.TabMembership;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
@@ -24,6 +24,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -34,6 +36,8 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class HBoxHistory extends HBox {
+    public static Logger logger = LoggerFactory.getLogger(HBoxHistory.class);
+
     private final TableView<MembershipIdDTO> idTableView;
     private final TabMembership parent;
     LocalDate date;
@@ -96,32 +100,23 @@ public class HBoxHistory extends HBox {
         // https://gist.github.com/james-d/be5bbd6255a4640a5357#file-editcell-java-L109
         TableColumn<MembershipIdDTO, String> Col1 = createColumn("Year", MembershipIdDTO::fiscalYearProperty);
         Col1.setOnEditCommit(t -> {
-			t.getTableView().getItems().get(t.getTablePosition().getRow())
-					.setFiscalYear(t.getNewValue());
-			MembershipIdDTO thisId = t.getTableView().getItems().get(t.getTablePosition().getRow());
-			int mid = thisId.getMid();
-			if (!SqlUpdate.updateMembershipId(thisId, "fiscal_year", StringTools.changeEmptyStringToZero(t.getNewValue()))) {
-				// if it does not update correctly lets set tableview back to defaults
-				MembershipIdDTO storedId = SqlMembership_Id.getMembershipIdObject(mid);
-				thisId.setFiscalYear(storedId.getFiscalYear());
-				thisId.setMembershipId(storedId.getMembershipId());
-			}
-
+//			t.getTableView().getItems().get(t.getTablePosition().getRow())
+//					.setFiscalYear(t.getNewValue());
+			MembershipIdDTO membershipIdDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            membershipIdDTO.setFiscalYear(StringTools.changeEmptyStringToZero(t.getNewValue()));
+            if(parent.getModel().getMembershipIdRepository().rowExists(membershipIdDTO) == 0)
+            parent.getModel().getMembershipIdRepository().update(membershipIdDTO);
+            else logger.error("Entry already exists");
 		});
 
         TableColumn<MembershipIdDTO, String> Col2 = createColumn("Mem ID",
                 MembershipIdDTO::membershipIdProperty);
         Col2.setOnEditCommit(t -> {
-			t.getTableView().getItems().get(t.getTablePosition().getRow())
-					.setMembershipId(t.getNewValue());
-			MembershipIdDTO thisId = t.getTableView().getItems().get(t.getTablePosition().getRow());
-			int mid = thisId.getMid();
-			if (!SqlUpdate.updateMembershipId(thisId, "membership_id", StringTools.changeEmptyStringToZero(t.getNewValue()))) {
-				// if it does not update correctly lets set tableview back to defaults
-				MembershipIdDTO storedId = SqlMembership_Id.getMembershipIdObject(mid);
-				thisId.setFiscalYear(storedId.getFiscalYear());
-				thisId.setMembershipId(storedId.getMembershipId());
-			}
+			MembershipIdDTO membershipIdDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            membershipIdDTO.setMembershipId(StringTools.changeEmptyStringToZero(t.getNewValue()));
+            if(parent.getModel().getMembershipIdRepository().rowExists(membershipIdDTO) == 0)
+            parent.getModel().getMembershipIdRepository().update(membershipIdDTO);
+            else logger.error("Entry already exists");
 		});
 
         // example for this column found at
@@ -140,34 +135,23 @@ public class HBoxHistory extends HBox {
 
         Col3.setCellFactory(ComboBoxTableCell.forTableColumn(MembershipTypeList));
 
-        Col3.setOnEditCommit((CellEditEvent<MembershipIdDTO, MembershipType> event) -> {
-            TablePosition<MembershipIdDTO, MembershipType> pos = event.getTablePosition();
-            MembershipType newMembershipType = event.getNewValue();
-            int row = pos.getRow();
-            MembershipIdDTO thisId = event.getTableView().getItems().get(row);
-            SqlUpdate.updateMembershipId(thisId, "mem_type", newMembershipType.getCode());
-            thisId.setMemType(newMembershipType.getCode());
+        Col3.setOnEditCommit((CellEditEvent<MembershipIdDTO, MembershipType> t) -> {
+            MembershipIdDTO membershipIdDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            membershipIdDTO.setMemType(t.getNewValue().getCode());
+            parent.getModel().getMembershipIdRepository().update(membershipIdDTO);
         });
 
-        // example for this column found at
-        // https://o7planning.org/en/11079/javafx-tableview-tutorial
         TableColumn<MembershipIdDTO, Boolean> Col4 = new TableColumn<>("Renewed");
         Col4.setCellValueFactory(
 				param -> {
-					MembershipIdDTO id = param.getValue();
-					SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(id.isRenew());
-					// Note: singleCol.setOnEditCommit(): Not work for
-					// CheckBoxTableCell.
-					// When "isListed?" column change.
+					MembershipIdDTO membershipIdDTO = param.getValue();
+					SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(membershipIdDTO.isRenew());
 					booleanProp.addListener((observable, oldValue, newValue) -> {
-						id.setIsRenew(newValue);
-						// SqlUpdate.updateListed("phone_listed",phone.getPhone_ID(), newValue);
-						SqlUpdate.updateMembershipId(id.getMid(), "RENEW", newValue);
+						membershipIdDTO.setIsRenew(newValue);
+                        parent.getModel().getMembershipIdRepository().update(membershipIdDTO);
 					});
 					return booleanProp;
 				});
-
-		//
 		Col4.setCellFactory(p -> {
 			CheckBoxTableCell<MembershipIdDTO, Boolean> cell = new CheckBoxTableCell<>();
 			cell.setAlignment(Pos.CENTER);
@@ -177,20 +161,14 @@ public class HBoxHistory extends HBox {
         TableColumn<MembershipIdDTO, Boolean> Col5 = new TableColumn<>("Renew Late");
         Col5.setCellValueFactory(
 				param -> {
-					MembershipIdDTO id = param.getValue();
-					SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(id.isLateRenew());
-					// Note: singleCol.setOnEditCommit(): Not work for
-					// CheckBoxTableCell.
-					// When "isListed?" column change.
+					MembershipIdDTO membershipIdDTO = param.getValue();
+					SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(membershipIdDTO.isLateRenew());
 					booleanProp.addListener((observable, oldValue, newValue) -> {
-						id.setIsLateRenew(newValue);
-
-						SqlUpdate.updateMembershipId(id.getMid(), "LATE_RENEW", newValue);
+						membershipIdDTO.setIsLateRenew(newValue);
+                        parent.getModel().getMembershipIdRepository().update(membershipIdDTO);
 					});
 					return booleanProp;
 				});
-
-		//
 		Col5.setCellFactory(p -> {
 			CheckBoxTableCell<MembershipIdDTO, Boolean> cell = new CheckBoxTableCell<>();
 			cell.setAlignment(Pos.CENTER);

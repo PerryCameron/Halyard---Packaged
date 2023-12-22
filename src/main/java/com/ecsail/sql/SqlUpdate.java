@@ -110,24 +110,7 @@ public class SqlUpdate {
 		}
 	}
 
-	public static Boolean updateMembershipId(MembershipIdDTO thisId, String field, String attribute) {
-		boolean noError = true;
-		String query = "UPDATE membership_id SET " + field + "='" + attribute + "' WHERE mid=" + thisId.getMid();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLIntegrityConstraintViolationException IV) {
-			PersonDTO accountHolder = SqlPerson.getPersonFromMembershipID(thisId.getMembershipId(), thisId.getFiscalYear());
-			String errorMessage = "The entry for the year " + thisId.getFiscalYear() + " with a membership ID of " + thisId.getMembershipId()
-			+ " already exists for another member: " + accountHolder.getFirstName() + " " + accountHolder.getLastName();
-			new Dialogue_CustomErrorMessage(errorMessage, "Duplicate Entry", true);
-				noError = false;
-		} catch (SQLException e) {
-				new Dialogue_ErrorSQL(e, "There was a problem with the UPDATE", "");
-		} catch (NullPointerException f) {
-				new Dialogue_ErrorSQL(f, "Null pointer for MID="+thisId.getMid()+" membership ID=" + thisId.getMembershipId() + " Fiscal Year=" + thisId.getFiscalYear(), "");
-		}
-		return noError;
-	}
+
 
 	public static void updateAux(String boatId, Boolean value) {
 		String query = "UPDATE boat SET aux=" + value + " where BOAT_ID=" + boatId;
