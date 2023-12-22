@@ -1,9 +1,11 @@
 package com.ecsail.sql;
 
 import com.ecsail.BaseApplication;
+import com.ecsail.dto.DepositDTO;
+import com.ecsail.dto.FeeDTO;
+import com.ecsail.dto.MembershipIdDTO;
+import com.ecsail.dto.StatsDTO;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
-import com.ecsail.sql.select.SqlSelect;
-import com.ecsail.dto.*;
 import javafx.application.Platform;
 
 import java.sql.SQLException;
@@ -54,27 +56,9 @@ public class SqlInsert {
 			BaseApplication.connect.executeQuery(query);
 		 } catch (SQLException e) {
 			e.printStackTrace();
-//			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
-		}
-	}
-	
-	public static void addBoatOwner(int boat_id,int ms_id) {
-		String query = "INSERT INTO boat_owner () VALUES (" + ms_id + "," + boat_id +")";
-		try {
-			BaseApplication.connect.executeQuery(query);
-		 } catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
 		}
 	}
 
-	public static void addNewFee(FeeDTO feeDTO) {
-		String query = "INSERT INTO fee () VALUES (" + feeDTO.getFeeId() + ",'" + feeDTO.getFieldName() + "'," + feeDTO.getFieldValue()
-				+ "," + feeDTO.getDbInvoiceID() + "," + feeDTO.getFeeYear() + ",'" + feeDTO.getDescription() + "',false)";
-		try {
-			BaseApplication.connect.executeQuery(query);
-		 } catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"Unable to create new row","See below for details");
-		}
-	}
+
 
 }

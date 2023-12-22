@@ -1,9 +1,10 @@
 package com.ecsail.views.dialogues;
 
 import com.ecsail.dto.MembershipListDTO;
+import com.ecsail.repository.implementations.BoatRepositoryImpl;
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.interfaces.BoatRepository;
 import com.ecsail.repository.interfaces.MembershipRepository;
-import com.ecsail.sql.SqlInsert;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -23,8 +24,9 @@ import java.util.Objects;
 public class Dialogue_ChooseMember extends Stage {
 	private MembershipListDTO newOwner;
 	private MembershipRepository membershipRepository = new MembershipRepositoryImpl();
+	private BoatRepository boatRepository = new BoatRepositoryImpl();
 	
-	public Dialogue_ChooseMember(ObservableList<MembershipListDTO> boatOwners, int boat_id) {
+	public Dialogue_ChooseMember(ObservableList<MembershipListDTO> boatOwners, int boatId) {
 		
 		//////////////// ADD OBJECTS ///////////////////
 		VBox vboxGrey = new VBox(); // this is the vbox for organizing all the widgets
@@ -88,7 +90,7 @@ public class Dialogue_ChooseMember extends Stage {
         });
 		
 		okButton.setOnAction((event) -> {
-			SqlInsert.addBoatOwner(boat_id, newOwner.getMsId());
+			boatRepository.insertBoatOwner(newOwner.getMsId(), boatId);
 			boatOwners.add(newOwner);
 			this.close();
 		});

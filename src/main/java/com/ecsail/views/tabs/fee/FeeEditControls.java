@@ -1,5 +1,7 @@
 package com.ecsail.views.tabs.fee;
 
+import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
+import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
@@ -35,6 +37,7 @@ public class FeeEditControls extends HBox {
     private ToggleGroup tg = new ToggleGroup();
     private FeeTableView feeTableView = new FeeTableView(this);
     private boolean okToWriteToDatabase;
+    private InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
 
     public FeeEditControls(TabFee parent) {
         this.parent = parent;
@@ -137,7 +140,7 @@ public class FeeEditControls extends HBox {
             // TODO combine fees and tableView fees, or not
             fees.add(feeDTO);  // tableview
             parent.selectedFeeRow.fees.add(feeDTO); // invoice dto
-            SqlInsert.addNewFee(feeDTO);
+            invoiceRepository.insertFee(feeDTO);
         });
         return addFeeButton;
     }

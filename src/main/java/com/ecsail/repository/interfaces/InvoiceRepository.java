@@ -24,4 +24,6 @@ public interface InvoiceRepository {
     InvoiceDTO insertInvoice(InvoiceDTO m);
 
     InvoiceItemDTO insertInvoiceItem(InvoiceItemDTO i);
+
+    FeeDTO insertFee(FeeDTO feeDTO);
 }

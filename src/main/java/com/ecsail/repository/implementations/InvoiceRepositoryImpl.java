@@ -231,6 +231,33 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
         }
         return i;
     }
+    @Override
+    public FeeDTO insertFee(FeeDTO feeDTO) {
+        String sql = """
+        INSERT INTO fee (
+            FIELD_NAME, FIELD_VALUE, DB_INVOICE_ID, FEE_YEAR, 
+            Description, DEFAULT_FEE
+        ) VALUES (?, ?, ?, ?, ?, false)
+        """;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        try {
+            template.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, feeDTO.getFieldName());
+                ps.setBigDecimal(2, new BigDecimal(feeDTO.getFieldValue()));
+                ps.setInt(3, feeDTO.getDbInvoiceID());
+                ps.setInt(4, feeDTO.getFeeYear());
+                ps.setString(5, feeDTO.getDescription());
+                return ps;
+            }, keyHolder);
+
+            feeDTO.setFeeId(keyHolder.getKey().intValue());
+            return feeDTO;
+        } catch (DataAccessException e) {
+            logger.error("Unable to create new fee record: " + e.getMessage());
+            return null; // or handle as appropriate
+        }
+    }
 
 
 }
