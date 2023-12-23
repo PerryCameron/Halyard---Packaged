@@ -7,11 +7,8 @@ import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.views.tabs.membership.fiscal.invoice.Invoice;
-import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlExists;
-import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.select.SqlDbInvoice;
-import com.ecsail.sql.select.SqlFee;
 import com.ecsail.dto.DbInvoiceDTO;
 import com.ecsail.dto.FeeDTO;
 import com.ecsail.dto.InvoiceDTO;
@@ -189,7 +186,7 @@ public class HBoxInvoiceList extends HBox {
 
 	// creates itemized invoice items
 	private static void createItemizedCategories(DbInvoiceDTO dbInvoiceDTO, int invoiceId, int msid, int year) {
-		Set<FeeDTO> fees = SqlFee.getRelatedFeesAsInvoiceItems(dbInvoiceDTO);
+		Set<FeeDTO> fees = invoiceRepository.getRelatedFeesAsInvoiceItems(dbInvoiceDTO);
 		fees.forEach(feeDTO -> {
 			invoiceRepository.insertInvoiceItem(
 					new InvoiceItemDTO(invoiceId, msid, year, feeDTO.getDescription(), dbInvoiceDTO.isCredit()));

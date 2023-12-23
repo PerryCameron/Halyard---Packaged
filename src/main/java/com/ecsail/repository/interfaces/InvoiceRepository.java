@@ -6,6 +6,7 @@ import com.ecsail.dto.*;
 import com.ecsail.views.tabs.deposits.InvoiceWithMemberInfoDTO;
 
 import java.util.List;
+import java.util.Set;
 
 public interface InvoiceRepository {
     List<InvoiceDTO> getInvoicesByMsid(int ms_id);
@@ -40,4 +41,13 @@ public interface InvoiceRepository {
     List<DbInvoiceDTO> getDbInvoiceByYear(int year);
 
     List<FeeDTO> getFeesFromYear(int year);
+
+    void updateFeeByDescriptionAndFieldName(FeeDTO feeDTO, String oldDescription);
+
+    Set<FeeDTO> getRelatedFeesAsInvoiceItems(DbInvoiceDTO dbInvoiceDTO);
+
+    List<FeeDTO> getAllFeesByDescription(String description);
+
+    List<FeeDTO> getAllFeesByFieldNameAndYear(FeeDTO feeDTO);
+    FeeDTO getFeeByMembershipTypeForFiscalYear(int year, int msId);
 }

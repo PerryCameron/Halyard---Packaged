@@ -34,15 +34,6 @@ public class SqlUpdate {
 		}
 	}
 
-	public static void updateFeeByDescriptionAndFieldName(FeeDTO feeDTO, String s) {
-		String query = "UPDATE fee SET DESCRIPTION='" + feeDTO.getDescription()
-				+ "' WHERE FIELD_NAME='" + feeDTO.getFieldName() + "' AND DESCRIPTION='" + s + "'";
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
 
 	public static void updateInvoiceItem(InvoiceItemDTO item) {
 		String query = "UPDATE invoice_item SET "

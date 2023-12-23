@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class FeeRowMapper implements RowMapper<FeeDTO> {
-
     @Override
     public FeeDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new FeeDTO(

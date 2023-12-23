@@ -7,7 +7,6 @@ import com.ecsail.repository.implementations.MembershipRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.repository.interfaces.MembershipIdRepository;
 import com.ecsail.repository.interfaces.MembershipRepository;
-import com.ecsail.sql.select.SqlFee;
 import com.ecsail.sql.select.SqlSlip;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -44,7 +43,7 @@ public class TabNewYearGenerator extends Tab {
         Text bod = new Text("Make sure that all officers and board members are in for the current year");
         Text membership_ID = new Text("The membership ID entries need to be created, compact or keep?");
         Text fees = new Text("The custom invoices need to be set up for current year");
-        this.fees.addAll(SqlFee.getFeesFromYear(yearToAdd));
+        this.fees.addAll(invoiceRepository.getFeesFromYear(yearToAdd));
         Text invoices = new Text("Create a new invoice for each person");
         Text credits = new Text("Add credit, wet slip data to invoices");
         vboxBlue.setId("box-blue");

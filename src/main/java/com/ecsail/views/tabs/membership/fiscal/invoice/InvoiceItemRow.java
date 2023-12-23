@@ -8,9 +8,7 @@ import com.ecsail.dto.InvoiceDTO;
 import com.ecsail.dto.InvoiceItemDTO;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
-import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
-import com.ecsail.sql.select.SqlFee;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -194,7 +192,7 @@ public class InvoiceItemRow extends HBox {
     private FeeDTO getFee() {
         FeeDTO duesFee;
         if (getDbInvoiceDTO().isAutoPopulate()) {
-            duesFee = SqlFee.getFeeByMembershipTypeForFiscalYear(invoice.getYear(), invoice.getMsId());
+            duesFee = invoiceRepository.getFeeByMembershipTypeForFiscalYear(invoice.getYear(), invoice.getMsId());
             if (duesFee == null)
                 invoiceItemDTO.setValue("0.00");
             else if (invoice.isCommitted()) {

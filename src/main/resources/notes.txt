@@ -1,27 +1,7 @@
-(fixed) blank invoice tab that pops up when you put in a new invoice
-(fixed) Memtype to change on record when you change it in history table view
-(fixed) Make Jotform work
-(fixed) Datepicker not functioning correctly
-(fixed) Secondary and Dependent 1 both displaying as secondary
-(fixed) When making new people it puts a null in nickname
-SQLUPDATE uses 7 or so methods, for people when it should use 1
+when removing a fee, it removes it from the database and the table, but when you click on a different fee and come back you
+see it again.  If you reboot the fee tab it is gone.
 
-features
-Make is so it remembers last server visited
-
-For some reason work credits got out of whack with John Turner in 2015. It may have been user error.
-
-When making deposit report, it prints out current year instead of the selected year, see 2015 Deposit #2
-
-When adding a Note you can't add a single quote. need to fix this.
-
-When adding a fee, need to refresh the fee list or add the fee
+If you click on a history tuple, open a field to edit but make no changes, it will give you a dialogue error
 
 
-Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icon_24.png")));
-		this.getIcons().add(mainIcon);
-
-EmailDTO emailDTO = email.get(selectedIndex);
-
-317-201-5816
 

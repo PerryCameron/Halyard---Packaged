@@ -1,16 +1,12 @@
 package com.ecsail.views.tabs.fee;
 
-import com.ecsail.BaseApplication;
+import com.ecsail.dto.DbInvoiceDTO;
+import com.ecsail.dto.FeeDTO;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.sql.SqlDelete;
-import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlDbInvoice;
-import com.ecsail.sql.select.SqlFee;
-import com.ecsail.sql.select.SqlSelect;
-import com.ecsail.dto.DbInvoiceDTO;
-import com.ecsail.dto.FeeDTO;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -34,17 +30,18 @@ public class TabFee extends Tab {
     protected FeeEditControls feeEditControls;
     protected boolean okToWriteToDataBase = true;
     protected FeeRow selectedFeeRow;
-    private InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
+    private InvoiceRepository invoiceRepository;
 
     public TabFee(String text) {
         super(text);
         this.selectedYear = String.valueOf(Year.now().getValue());
-        this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
+        this.invoiceRepository = new InvoiceRepositoryImpl();
+        this.feeDTOS = (ArrayList<FeeDTO>) invoiceRepository.getFeesFromYear(Integer.parseInt(selectedYear));
         this.radioGroup = new ToggleGroup();
         this.comboBox = addComboBox();
         this.vboxCategories = createControlsVBox();
         this.hboxYearNewDeleteButtons = new HBox();
-        this.duesLineChart = new FeesLineChartEx();
+        this.duesLineChart = new FeesLineChartEx(this);
         feeEditControls = new FeeEditControls(this);
         createFeeRows();
         addFeeRows();
@@ -146,7 +143,7 @@ public class TabFee extends Tab {
     // this worked great for going back, I need to make it work going forward now
     private void copyPreviousYearsFees() {
         // previous years fees
-        ArrayList<FeeDTO> previousYearsFees = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear) - 1);
+        ArrayList<FeeDTO> previousYearsFees = (ArrayList<FeeDTO>) invoiceRepository.getFeesFromYear(Integer.parseInt(selectedYear) - 1);
         // previous years dbInvoices
         ArrayList<DbInvoiceDTO> dbInvoiceDTOS = SqlDbInvoice.getDbInvoiceByYear(Integer.parseInt(selectedYear) - 1);
 
@@ -166,7 +163,7 @@ public class TabFee extends Tab {
         this.selectedYear = newValue.toString();
         String fieldName = selectedFeeRow.dbInvoiceDTO.getFieldName();
         this.feeDTOS.clear();
-        this.feeDTOS = SqlFee.getFeesFromYear(Integer.parseInt(selectedYear));
+        this.feeDTOS = (ArrayList<FeeDTO>) invoiceRepository.getFeesFromYear(Integer.parseInt(selectedYear));
         rows.clear();
         addControlBox();
         createFeeRows();
@@ -288,5 +285,9 @@ public class TabFee extends Tab {
 
     public FeesLineChartEx getDuesLineChart() {
         return duesLineChart;
+    }
+
+    public InvoiceRepository getInvoiceRepository() {
+        return invoiceRepository;
     }
 }

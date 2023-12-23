@@ -466,6 +466,81 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
             return new ArrayList<>();
         }
     }
-
-
+    @Override
+    public void updateFeeByDescriptionAndFieldName(FeeDTO feeDTO, String oldDescription) {
+        String query = """
+                   UPDATE fee 
+                   SET DESCRIPTION = ? 
+                   WHERE FIELD_NAME = ? 
+                   AND DESCRIPTION = ?
+                   """;
+        try {
+            template.update(query, feeDTO.getDescription(), feeDTO.getFieldName(), oldDescription);
+        } catch (Exception e) {
+            logger.error("There was a problem with the UPDATE", e);
+        }
+    }
+    @Override
+    public Set<FeeDTO> getRelatedFeesAsInvoiceItems(DbInvoiceDTO dbInvoiceDTO) {
+        String query = """
+                   SELECT * FROM fee 
+                   WHERE DB_INVOICE_ID = ?
+                   """;
+        try {
+            List<FeeDTO> feesList = template.query(query, new FeeRowMapper(), dbInvoiceDTO.getId());
+            return new HashSet<>(feesList);
+        } catch (Exception e) {
+            logger.error("Error retrieving related fees for DbInvoiceDTO ID: " + dbInvoiceDTO.getId(), e);
+            return new HashSet<>();
+        }
+    }
+    @Override
+    public List<FeeDTO> getAllFeesByDescription(String description) {
+        String query = """
+                   SELECT * FROM fee 
+                   WHERE description = ?
+                   """;
+        try {
+            return template.query(query, new FeeRowMapper(), description);
+        } catch (Exception e) {
+            logger.error("Error retrieving fees with description: " + description, e);
+            return new ArrayList<>();
+        }
+    }
+    @Override
+    public List<FeeDTO> getAllFeesByFieldNameAndYear(FeeDTO feeDTO) {
+        String query = """
+                   SELECT * FROM fee 
+                   WHERE field_name = ? 
+                   AND fee_year = ?
+                   """;
+        try {
+            return template.query(query, new FeeRowMapper(), feeDTO.getFieldName(), feeDTO.getFeeYear());
+        } catch (Exception e) {
+            logger.error("Error while retrieving all fees by field name and year", e);
+            return new ArrayList<>();
+        }
+    }
+    @Override
+    public FeeDTO getFeeByMembershipTypeForFiscalYear(int year, int msId) {
+        FeeDTO feeDTO = null;
+        String sql = """
+                    select f.* from fee f where f.Description=(select
+                    CASE
+                        WHEN (select MEM_TYPE from membership_id where FISCAL_YEAR=? and MS_ID=?) = 'FM' THEN 'Family'
+                        WHEN (select MEM_TYPE from membership_id where FISCAL_YEAR=? and MS_ID=?) = 'RM' THEN 'Regular'
+                        WHEN (select MEM_TYPE from membership_id where FISCAL_YEAR=? and MS_ID=?) = 'LA' THEN 'Lake Associate'
+                        WHEN (select MEM_TYPE from membership_id where FISCAL_YEAR=? and MS_ID=?) = 'SO' THEN 'Social'
+                        ELSE 'None'
+                    END AS TYPE
+                    from membership_id where FISCAL_YEAR=? and MS_ID=?
+                    ) and FEE_YEAR=?;
+                    """;
+        try {
+            feeDTO = template.queryForObject(sql, new FeeRowMapper(), year, msId, year, msId, year, msId, year, msId, year, msId, year);
+        } catch (Exception e) {
+            logger.error("Error fetching fee data", e);
+        }
+        return feeDTO;
+    }
 }

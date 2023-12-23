@@ -2,6 +2,8 @@ package com.ecsail.views.tabs.fee;
 
 import com.ecsail.EditCell;
 import com.ecsail.StringTools;
+import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
+import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.dto.FeeDTO;
 import javafx.beans.property.StringProperty;
@@ -24,6 +26,7 @@ public class FeeTableView extends TableView<FeeDTO> {
     FeeEditControls parent;
     ObservableList<FeeDTO> fees;
     HashMap<Integer,String> hashMap = new HashMap<>();
+    InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
     public FeeTableView(FeeEditControls hBoxEditControls) {
         this.parent = hBoxEditControls;
         this.fees = parent.getFees();
@@ -56,7 +59,7 @@ public class FeeTableView extends TableView<FeeDTO> {
             t.getTableView().getItems().get(t.getTablePosition().getRow()).setDescription(t.getNewValue());
             FeeDTO feeDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
             int fee_id = feeDTO.getFeeId();
-            SqlUpdate.updateFeeByDescriptionAndFieldName(feeDTO, hashMap.get(fee_id)); // hashMap.get(fee_id) = old
+            invoiceRepository.updateFeeByDescriptionAndFieldName(feeDTO, hashMap.get(fee_id)); // hashMap.get(fee_id) = old
             hashMap.put(fee_id, feeDTO.getDescription()); // = change hash value in case you change it again right away
             parent.parent.duesLineChart.refreshChart(feeDTO.getDescription());
         });
