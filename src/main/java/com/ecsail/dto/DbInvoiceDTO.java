@@ -1,6 +1,5 @@
 package com.ecsail.dto;
 
-import com.ecsail.sql.select.SqlSelect;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
@@ -58,7 +57,7 @@ public class DbInvoiceDTO {
     }
 
     public DbInvoiceDTO(String fiscalYear) {  // for creation of new DTO
-        this.id = SqlSelect.getNextAvailablePrimaryKey("db_invoice", "ID");
+        this.id = 0;
         this.fiscalYear = fiscalYear;
         this.fieldName = "new entry";
         this.widgetType = "none";

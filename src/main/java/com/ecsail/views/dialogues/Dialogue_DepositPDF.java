@@ -1,7 +1,9 @@
 package com.ecsail.views.dialogues;
 
 import com.ecsail.BaseApplication;
+import com.ecsail.repository.implementations.DepositRepositoryImpl;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
+import com.ecsail.repository.interfaces.DepositRepository;
 import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.views.tabs.deposits.TabDeposits;
 import com.ecsail.pdf.PDF_DepositReport;
@@ -25,7 +27,7 @@ public class Dialogue_DepositPDF extends Stage {
     private final DepositPDFDTO pdfOptions;
     String selectedYear;
 
-    private InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
+    private DepositRepository depositRepository = new DepositRepositoryImpl();
 //    DepositDTO cd, DefinedFeeDTO cdf, String y ( probably get rid of these items)
     public Dialogue_DepositPDF(TabDeposits td, boolean isSinglePDF) {
         double centerXPosition = BaseApplication.stage.getX() + BaseApplication.stage.getWidth() / 2d;
@@ -60,7 +62,7 @@ public class Dialogue_DepositPDF extends Stage {
             if (!newValue) {
                 batchSpinner.increment(0); // won't change value, but will commit editor
                 int fieldValue = Integer.parseInt(batchSpinner.getEditor().getText());
-                if (invoiceRepository.depositRecordExists(depositDTO.getFiscalYear(), fieldValue))  // deposit exists
+                if (depositRepository.depositRecordExists(depositDTO.getFiscalYear(), fieldValue))  // deposit exists
                     depositDTO.setBatch(fieldValue);
                 else
                     depositDTO.setBatch(1);

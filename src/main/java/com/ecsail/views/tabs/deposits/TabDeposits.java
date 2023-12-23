@@ -2,7 +2,9 @@ package com.ecsail.views.tabs.deposits;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.dto.DepositDTO;
+import com.ecsail.repository.implementations.DepositRepositoryImpl;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
+import com.ecsail.repository.interfaces.DepositRepository;
 import com.ecsail.repository.interfaces.InvoiceRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,7 +18,8 @@ import java.time.Year;
 import java.util.List;
 
 public class TabDeposits extends Tab {
-	protected InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
+	private InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
+	private DepositRepository depositRepository = new DepositRepositoryImpl();
 	private final ObservableList<InvoiceWithMemberInfoDTO> invoices;
 	private final String selectedYear;
 	private final InvoicesTableView tableView;
@@ -75,4 +78,12 @@ public class TabDeposits extends Tab {
 	public void setInvoiceRepository(InvoiceRepository invoiceRepository) {
 		this.invoiceRepository = invoiceRepository;
 	}
+	public DepositRepository getDepositRepository() {
+		return depositRepository;
+	}
+
+	public void setDepositRepository(DepositRepository depositRepository) {
+		this.depositRepository = depositRepository;
+	}
+
 }

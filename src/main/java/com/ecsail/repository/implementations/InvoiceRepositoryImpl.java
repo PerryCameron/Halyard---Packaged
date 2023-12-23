@@ -255,28 +255,6 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
     }
 
     @Override
-    public int updateDeposit(DepositDTO depositDTO) {
-        final String sql = """
-        UPDATE deposit
-        SET DEPOSIT_DATE = ?, FISCAL_YEAR = ?, BATCH = ?
-        WHERE DEPOSIT_ID = ?
-        """;
-
-        try {
-            // The update method returns the number of rows affected by the query
-            return template.update(
-                    sql,
-                    depositDTO.getDepositDate(), // Assuming getDepositDate returns a string in the correct format
-                    depositDTO.getFiscalYear(),  // Assuming getFiscalYear returns a string that can be parsed as an integer
-                    depositDTO.getBatch(),
-                    depositDTO.getDeposit_id()
-            );
-        } catch (DataAccessException e) {
-            logger.error("Error updating deposit: " + e.getMessage());
-            return 0; // Or a different error handling strategy, like throwing an exception
-        }
-    }
-    @Override
     public int updatePayment(PaymentDTO paymentDTO) {
         final String sql = """
         UPDATE payment
@@ -577,48 +555,7 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
             // new Dialogue_ErrorSQL(e, "Unable to DELETE dbInvoice with ID " + dbInvoiceDTO.getId(), "See below for details");
         }
     }
-    @Override
-    public DepositDTO insertDeposit(DepositDTO d) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        String sql = "INSERT INTO deposit (DEPOSIT_DATE, FISCAL_YEAR, BATCH) VALUES (?, ?, ?);";
-        template.update(con -> {
-            PreparedStatement ps = con.prepareStatement(sql, new String[]{"DEPOSIT_ID"});
-            ps.setString(1, d.getDepositDate());
-            ps.setString(2, d.getFiscalYear());
-            ps.setInt(3, d.getBatch());
-            return ps;
-        }, keyHolder);
-        if (keyHolder.getKey() != null) {
-            d.setDeposit_id(keyHolder.getKey().intValue());
-        }
-        return d;
-    }
-    @Override
-    public Boolean depositIsUsed(int year, int batch) {
-        String sql = "SELECT EXISTS(SELECT * FROM invoice WHERE FISCAL_YEAR = ? AND BATCH = ?) AS LATEST_EXISTS";
-        try {
-            return template.queryForObject(sql, new Object[]{year, batch}, Boolean.class);
-        } catch (Exception e) {
-            logger.error("Unable to check if EXISTS", e);
-            // Handle exception as required
-            // For example, showing a dialog or rethrowing as a custom exception
-            // new Dialogue_ErrorSQL(e, "Unable to check if EXISTS", "See below for details");
-            return false;
-        }
-    }
-    @Override
-    public Boolean depositRecordExists(String year, int batch) {
-        String sql = "SELECT EXISTS(SELECT * FROM deposit WHERE fiscal_year = ? AND BATCH = ?)";
-        try {
-            return template.queryForObject(sql, new Object[]{year, batch}, Boolean.class);
-        } catch (Exception e) {
-            logger.error("Unable to check if EXISTS", e);
-            // Handle exception as required
-            // For example, showing a dialog or rethrowing as a custom exception
-            // new Dialogue_ErrorSQL(e, "Unable to check if EXISTS", "See below for details");
-            return false;
-        }
-    }
+
     @Override
     public Boolean invoiceExists(String year, MembershipDTO membership) {
         String sql = "SELECT EXISTS(SELECT * FROM invoice WHERE ms_id = ? AND fiscal_year = ?) AS invoiceExists";
@@ -682,16 +619,17 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
             return 0; // Indicating that no rows were updated
         }
     }
+
     @Override
-    public int getNumberOfDepositsForYear(int year) {
-        String query = "SELECT COUNT(*) FROM deposit WHERE FISCAL_YEAR = ?";
+    public List<String> getInvoiceCategoriesByYear(int year) {
+        String query = """
+            SELECT FIELD_NAME FROM db_invoice WHERE FISCAL_YEAR = ?
+            """;
         try {
-            return template.queryForObject(query, new Object[]{year}, Integer.class);
+            return template.query(query, new Object[]{year}, (rs, rowNum) -> rs.getString("FIELD_NAME"));
         } catch (Exception e) {
-            logger.error("Unable to retrieve information", e);
-            return 0; // Return 0 in case of an error
+            logger.error("Unable to retrieve categories", e);
+            return List.of(); // Return an empty list in case of failure
         }
     }
-
-
 }

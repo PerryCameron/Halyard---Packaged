@@ -48,7 +48,7 @@ public class VboxDepositControls extends VBox {
         this.parent = tabDeposits;
         this.depositDTO = parent.getDepositDTO();
         this.selectedYear = Integer.parseInt(depositDTO.getFiscalYear());
-        this.invoiceItemTypes = SqlDbInvoice.getInvoiceCategoriesByYear(selectedYear);
+        this.invoiceItemTypes = (ArrayList<String>) parent.getInvoiceRepository().getInvoiceCategoriesByYear(selectedYear);
         this.numberOfRecordsText.setText(String.valueOf(tabDeposits.getInvoices().size()));
         // counts number of depoists for year
         this.numberOfDeposits = initialDepositCount();
@@ -193,7 +193,7 @@ public class VboxDepositControls extends VBox {
                     depositDatePicker.getEditor().setText(depositDatePicker.getConverter().toString(depositDatePicker.getValue()));
                 }
                 depositDTO.setDepositDate(String.valueOf(depositDatePicker.getValue()));
-                parent.getInvoiceRepository().updateDeposit(depositDTO);
+                parent.getDepositRepository().updateDeposit(depositDTO);
                 System.out.println("Update deposit");
             }
         });
@@ -204,7 +204,7 @@ public class VboxDepositControls extends VBox {
             if(okToMakeNewDeposit()) { // checks to see that last deposit is not empty, so ok to make new one
                 numberOfDeposits++; // must be first
                 cleanDeposit();
-                parent.getInvoiceRepository().insertDeposit(depositDTO);
+                parent.getDepositRepository().insertDeposit(depositDTO);
                 refreshDepositCount();
                 depositDTO.setBatch(numberOfDeposits);
                 batchSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,numberOfDeposits));
@@ -217,7 +217,7 @@ public class VboxDepositControls extends VBox {
 
         insertInvoicesButton.setOnAction(event -> {
             ObservableList<InvoiceWithMemberInfoDTO> allInvoices =
-                    FXCollections.observableArrayList(parent.invoiceRepository
+                    FXCollections.observableArrayList(parent.getInvoiceRepository()
                             .getInvoicesWithMembershipInfoByYear(String.valueOf(selectedYear)));
             AtomicInteger atomicBatch = new AtomicInteger(getCorrectBatch());
             allInvoices.stream()
@@ -271,11 +271,11 @@ public class VboxDepositControls extends VBox {
     }
 
     public boolean okToMakeNewDeposit() {
-        return parent.getInvoiceRepository().depositIsUsed(selectedYear,numberOfDeposits);
+        return parent.getDepositRepository().depositIsUsed(selectedYear,numberOfDeposits);
     }
 
     public boolean depositIsUsed() {
-        return parent.getInvoiceRepository().depositIsUsed(selectedYear,depositDTO.getBatch());
+        return parent.getDepositRepository().depositIsUsed(selectedYear,depositDTO.getBatch());
     }
 
     private void refreshAllData(boolean newYearSelected) {
@@ -347,14 +347,14 @@ public class VboxDepositControls extends VBox {
     private void refreshInvoices() {
         parent.getInvoices().clear();
         if (comboBox.getValue().equals("Show All"))
-            parent.getInvoices().addAll(parent.invoiceRepository.getInvoicesWithMembershipInfoByYear(depositDTO.getFiscalYear()));
+            parent.getInvoices().addAll(parent.getInvoiceRepository().getInvoicesWithMembershipInfoByYear(depositDTO.getFiscalYear()));
         else
-        parent.getInvoices().addAll(parent.invoiceRepository.getInvoicesWithMembershipInfoByDeposit(depositDTO));
+        parent.getInvoices().addAll(parent.getInvoiceRepository().getInvoicesWithMembershipInfoByDeposit(depositDTO));
     }
 
     private void refreshInvoiceTypes() {
         invoiceItemTypes.clear();
-        invoiceItemTypes.addAll(SqlDbInvoice.getInvoiceCategoriesByYear(selectedYear));
+        invoiceItemTypes.addAll(parent.getInvoiceRepository().getInvoiceCategoriesByYear(selectedYear));
     }
 
     private void refreshCurrentDeposit() {
@@ -385,19 +385,19 @@ public class VboxDepositControls extends VBox {
     }
 
     private void refreshDepositCount() {
-        numberOfDeposits = parent.getInvoiceRepository().getNumberOfDepositsForYear(selectedYear);
+        numberOfDeposits = parent.getDepositRepository().getNumberOfDepositsForYear(selectedYear);
         numberOfDepositsText.setText(String.valueOf(numberOfDeposits));
     }
 
     private int initialDepositCount() {
-        int depositCount = parent.getInvoiceRepository().getNumberOfDepositsForYear(selectedYear);
+        int depositCount = parent.getDepositRepository().getNumberOfDepositsForYear(selectedYear);
         // perhaps a new year or new database and no deposits yet, we shall create the first
         if (depositCount == 0) {
             depositCount = 1;
             cleanDeposit();  // sets all the correct information in depositDTO to make first deposit for year
             depositDTO.setBatch(1); // first deposit for the selected year
             System.out.println(depositDTO);
-            parent.getInvoiceRepository().insertDeposit(depositDTO);
+            parent.getDepositRepository().insertDeposit(depositDTO);
         }
         numberOfDepositsText.setText(String.valueOf(depositCount));
         return depositCount;

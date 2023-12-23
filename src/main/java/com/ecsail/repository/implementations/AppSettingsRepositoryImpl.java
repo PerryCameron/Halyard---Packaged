@@ -2,7 +2,9 @@ package com.ecsail.repository.implementations;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.dto.AppSettingsDTO;
+import com.ecsail.jotform.structures.ApiKeyDTO;
 import com.ecsail.repository.interfaces.AppSettingsRepository;
+import com.ecsail.repository.rowmappers.ApiKeyRowMapper;
 import com.ecsail.repository.rowmappers.AppSettingsRowMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,4 +29,15 @@ public class AppSettingsRepositoryImpl implements AppSettingsRepository {
             return null;
         }
     }
+    @Override
+    public ApiKeyDTO getApiKeyByName(String name) {
+        String query = "SELECT * FROM api_key WHERE NAME = ?";
+        try {
+            return template.queryForObject(query, new Object[]{name}, new ApiKeyRowMapper());
+        } catch (Exception e) {
+            logger.error("Unable to retrieve API key information", e);
+            return null; // Return null in case of failure
+        }
+    }
+
 }

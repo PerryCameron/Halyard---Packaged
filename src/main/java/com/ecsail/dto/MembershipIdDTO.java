@@ -1,6 +1,5 @@
 package com.ecsail.dto;
 
-import com.ecsail.sql.select.SqlSelect;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -29,7 +28,7 @@ public class MembershipIdDTO {
 	}
 
 	public MembershipIdDTO(String fiscalYear, Integer msId, String membershipId, String memType) {
-		this.mId = new SimpleIntegerProperty(SqlSelect.getNextAvailablePrimaryKey("membership_id","MID"));
+		this.mId = new SimpleIntegerProperty(0);
 		this.fiscalYear = new SimpleStringProperty(fiscalYear);
 		this.msId = new SimpleIntegerProperty(msId);
 		this.membershipId = new SimpleStringProperty(membershipId);

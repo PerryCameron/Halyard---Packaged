@@ -2,7 +2,8 @@ package com.ecsail.jotform;
 
 import com.ecsail.jotform.structures.ApiKeyDTO;
 import com.ecsail.jotform.structures.JotFormSubmissionListDTO;
-import com.ecsail.sql.select.SqlApi_key;
+import com.ecsail.repository.implementations.AppSettingsRepositoryImpl;
+import com.ecsail.repository.interfaces.AppSettingsRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -11,11 +12,12 @@ import javafx.scene.control.Tab;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-
 public class TabJotForm extends Tab {
+
+	AppSettingsRepository appSettingsRepository = new AppSettingsRepositoryImpl();
 	public TabJotForm(String text) {
 		super(text);
-		ApiKeyDTO thisApi = SqlApi_key.getApiKeyByName("Jotform API");
+		ApiKeyDTO thisApi = appSettingsRepository.getApiKeyByName("Jotform API");
 		JotForm client = new JotForm(thisApi.getKey());
 		VBox vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
 		VBox vboxBlue = new VBox();

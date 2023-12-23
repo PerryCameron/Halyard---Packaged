@@ -24,7 +24,6 @@ public interface InvoiceRepository {
     InvoiceDTO insertInvoice(InvoiceDTO m);
     InvoiceItemDTO insertInvoiceItem(InvoiceItemDTO i);
     FeeDTO insertFee(FeeDTO feeDTO);
-    int updateDeposit(DepositDTO depositDTO);
     int updatePayment(PaymentDTO paymentDTO);
     String getTotalAmount(int invoiceId);
     List<PaymentDTO> getPaymentsWithInvoiceId(int invoiceId);
@@ -57,17 +56,11 @@ public interface InvoiceRepository {
 
     void deleteDbInvoice(DbInvoiceDTO dbInvoiceDTO);
 
-    DepositDTO insertDeposit(DepositDTO d);
-
-    Boolean depositIsUsed(int year, int batch);
-
-    Boolean depositRecordExists(String year, int batch);
-
     Boolean invoiceExists(String year, MembershipDTO membership);
 
     void updateDbInvoice(DbInvoiceDTO dbInvoiceDTO);
 
     int updateFee(FeeDTO feeDTO);
 
-    int getNumberOfDepositsForYear(int year);
+    List<String> getInvoiceCategoriesByYear(int year);
 }

@@ -3,11 +3,12 @@ package com.ecsail.pdf;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
+import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
+import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.views.tabs.deposits.InvoiceWithMemberInfoDTO;
 import com.ecsail.views.tabs.deposits.TabDeposits;
 import com.ecsail.repository.implementations.MemoRepositoryImpl;
 import com.ecsail.repository.interfaces.MemoRepository;
-import com.ecsail.sql.select.SqlDbInvoice;
 import com.ecsail.sql.select.SqlDeposit;
 import com.ecsail.sql.select.SqlInvoiceItem;
 import com.ecsail.dto.*;
@@ -41,10 +42,12 @@ public class PDF_DepositReport {
 	String fiscalYear;  // save this because I clear current Deposit
 	Boolean includeDollarSigns = false;
 	static String[] TDRHeaders = {"Date", "Deposit Number", "Fee", "Records", "Amount"};
+	private InvoiceRepository invoiceRepository;
 
 	public PDF_DepositReport(TabDeposits td, DepositPDFDTO pdfOptions) {
 		this.depositDTO = td.getDepositDTO();
 		this.invoices = td.getInvoices();
+		this.invoiceRepository = new InvoiceRepositoryImpl();
 		this.invoiceItems = SqlInvoiceItem.getAllInvoiceItemsByYearAndBatch(depositDTO);
 		BaseApplication.logger.info("Creating Deposit Report "
 				+ depositDTO.getBatch() + " for " + depositDTO.getFiscalYear());
@@ -53,7 +56,7 @@ public class PDF_DepositReport {
 		// get our categories
 		// a list of types of invoice items for a given year
 		ArrayList<String> invoiceItemTypes = new ArrayList<>(
-				SqlDbInvoice.getInvoiceCategoriesByYear(Integer.parseInt(depositDTO.getFiscalYear())));
+				invoiceRepository.getInvoiceCategoriesByYear(Integer.parseInt(depositDTO.getFiscalYear())));
 		// get our summed items
 		for (String type : invoiceItemTypes) {
 			invoiceSummedItems.add(SqlInvoiceItem.getInvoiceItemSumByYearAndType(

@@ -29,4 +29,6 @@ public interface BoatRepository {
     void deleteBoatOwner(int msId);
 
     int updateAux(String boatId, Boolean value);
+
+    List<BoatPhotosDTO> getImagesByBoatId(int boatId);
 }

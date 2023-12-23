@@ -1,7 +1,8 @@
 package com.ecsail.enums;
 
 import com.ecsail.BaseApplication;
-import com.ecsail.sql.select.SqlBoardPositions;
+import com.ecsail.repository.implementations.BoardPositionsRepositoryImpl;
+import com.ecsail.repository.interfaces.BoardPositionsRepository;
 import com.ecsail.dto.BoardPositionDTO;
 
 import java.util.ArrayList;
@@ -18,8 +19,10 @@ public class Officer {
      * This is the most appropriate location to create an Array list of board positions
      * @return ArrayList<BoardPositionDTO>
      */
+
+    static BoardPositionsRepository boardPositionsRepository = new BoardPositionsRepositoryImpl();
     public static ArrayList<BoardPositionDTO> getPositionList() {
-        return SqlBoardPositions.getPositions();
+        return (ArrayList<BoardPositionDTO>) boardPositionsRepository.getPositions();
     }
 
     /**

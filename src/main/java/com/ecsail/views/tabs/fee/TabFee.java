@@ -4,7 +4,6 @@ import com.ecsail.dto.DbInvoiceDTO;
 import com.ecsail.dto.FeeDTO;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
-import com.ecsail.sql.select.SqlDbInvoice;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -143,7 +142,7 @@ public class TabFee extends Tab {
         // previous years fees
         ArrayList<FeeDTO> previousYearsFees = (ArrayList<FeeDTO>) invoiceRepository.getFeesFromYear(Integer.parseInt(selectedYear) - 1);
         // previous years dbInvoices
-        ArrayList<DbInvoiceDTO> dbInvoiceDTOS = SqlDbInvoice.getDbInvoiceByYear(Integer.parseInt(selectedYear) - 1);
+        ArrayList<DbInvoiceDTO> dbInvoiceDTOS = (ArrayList<DbInvoiceDTO>) invoiceRepository.getDbInvoiceByYear(Integer.parseInt(selectedYear) - 1);
 
         previousYearsFees.forEach(feeDTO -> feeDTO.setFeeYear(Integer.parseInt(selectedYear)));
         feeDTOS.addAll(previousYearsFees);
@@ -235,7 +234,7 @@ public class TabFee extends Tab {
 
     // used to initially place hbox rows into vbox for a given year
     private void createFeeRows() {
-        ArrayList<DbInvoiceDTO> dbInvoiceDTOS = SqlDbInvoice.getDbInvoiceByYear(Integer.parseInt(selectedYear));
+        ArrayList<DbInvoiceDTO> dbInvoiceDTOS = (ArrayList<DbInvoiceDTO>) invoiceRepository.getDbInvoiceByYear(Integer.parseInt(selectedYear));
         FeeRow newRow;
         for(DbInvoiceDTO item: dbInvoiceDTOS) {  // make each item type
             newRow = new FeeRow( this, item); // add db_invoice to each row

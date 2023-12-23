@@ -1,6 +1,5 @@
 package com.ecsail.dto;
 
-import com.ecsail.sql.select.SqlSelect;
 import javafx.beans.property.*;
 
 public class FeeDTO {
@@ -23,7 +22,7 @@ public class FeeDTO {
     }
 
     public FeeDTO(String fieldName, String fieldValue, Integer dbInvoiceID, Integer feeYear, String description) {
-        this.feeId = new SimpleIntegerProperty(SqlSelect.getNextAvailablePrimaryKey("fee","fee_id"));
+        this.feeId = new SimpleIntegerProperty(0);
         this.fieldName = new SimpleStringProperty(fieldName);
         this.fieldValue = new SimpleStringProperty(fieldValue);
         this.dbInvoiceID = new SimpleIntegerProperty(dbInvoiceID);

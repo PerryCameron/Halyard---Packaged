@@ -12,7 +12,6 @@ import com.ecsail.repository.implementations.SettingsRepositoryImpl;
 import com.ecsail.repository.interfaces.BoatRepository;
 import com.ecsail.repository.interfaces.MembershipRepository;
 import com.ecsail.repository.interfaces.SettingsRepository;
-import com.ecsail.sql.select.SqlBoatPhotos;
 import com.ecsail.views.common.HBoxNotes;
 import com.ecsail.views.common.ImageViewPane;
 import com.ecsail.views.dialogues.Dialogue_ChooseMember;
@@ -44,7 +43,7 @@ public class TabBoatView extends Tab {
     protected ArrayList<DbBoatSettingsDTO> boatSettings;
     protected BoatDTO boatDTO;
     protected BoatListDTO boatListDTO;
-    protected ArrayList<BoatPhotosDTO> images;
+    protected ArrayList<BoatPhotosDTO> boatPhotosDTOS;
     protected BoatPhotosDTO selectedImage;
     private String user = BaseApplication.getModel().getCurrentLogon().getSshUser();
     private String remotePath = "/home/"+user+"/ecsc_membership/boat_images/";
@@ -62,7 +61,7 @@ public class TabBoatView extends Tab {
     private void createBoatView() {
         this.boatOwners = FXCollections.observableArrayList(membershipRepository.getBoatOwnerRoster(boatDTO.getBoatId()));
         this.scp = BaseApplication.connect.getScp();
-        this.images = SqlBoatPhotos.getImagesByBoatId(boatDTO.getBoatId());
+        this.boatPhotosDTOS = (ArrayList<BoatPhotosDTO>) boatRepository.getImagesByBoatId(boatDTO.getBoatId());
         this.imageView = new ImageView();
         // make sure directory exists, and create it if it does not
         this.selectedImage = getDefaultBoatPhotoDTO();
@@ -211,7 +210,7 @@ public class TabBoatView extends Tab {
             }
             BoatPhotosDTO boatPhotosDTO = getBoatPhotoDTOById(id);
             // remove old BoatPhotosDTO arraylist
-            images.remove(boatPhotosDTO);
+            boatPhotosDTOS.remove(boatPhotosDTO);
         });
 
         buttonAddPicture.setOnAction((event) -> {
@@ -219,7 +218,7 @@ public class TabBoatView extends Tab {
         });
 
         buttonDefault.setOnAction((event) -> {
-            for(BoatPhotosDTO photo: images) {
+            for(BoatPhotosDTO photo: boatPhotosDTOS) {
                 if(photo.getId() == selectedImage.getId()) photo.setDefault(true);
                 else photo.setDefault(false);
                 boatRepository.updateBoatImages(photo);
@@ -287,17 +286,17 @@ public class TabBoatView extends Tab {
 
     private void moveToNextImage(boolean moveForward) {
         // put them in ascending order, in case a new image has recently been added
-        images.sort(Comparator.comparingInt(BoatPhotosDTO::getFileNumber));
+        boatPhotosDTOS.sort(Comparator.comparingInt(BoatPhotosDTO::getFileNumber));
         // find index of current image
-        int index = images.indexOf(selectedImage);
+        int index = boatPhotosDTOS.indexOf(selectedImage);
         if (moveForward) {
-            if (index < images.size() - 1) index++;
+            if (index < boatPhotosDTOS.size() - 1) index++;
             else index = 0;
         } else { // we are moving backwards
-            if(index == 0) index = images.size() - 1;
+            if(index == 0) index = boatPhotosDTOS.size() - 1;
             else index--;
         }
-        selectedImage = images.get(index);
+        selectedImage = boatPhotosDTOS.get(index);
         String localFile = localPath + selectedImage.getFilename();
         String remoteFile = remotePath + selectedImage.getFilename();
         // if we don't have file on local computer then retrieve it
@@ -337,22 +336,22 @@ public class TabBoatView extends Tab {
     }
 
     private BoatPhotosDTO resetImages() {
-        images.clear();
-        images.addAll(SqlBoatPhotos.getImagesByBoatId(boatDTO.getBoatId()));
+        boatPhotosDTOS.clear();
+        boatPhotosDTOS.addAll(boatRepository.getImagesByBoatId(boatDTO.getBoatId()));
         // sort them so one just created is last
-        images.sort(Comparator.comparingInt(BoatPhotosDTO::getId));
+        boatPhotosDTOS.sort(Comparator.comparingInt(BoatPhotosDTO::getId));
         // get the last
-        return images.get(images.size() -1);
+        return boatPhotosDTOS.get(boatPhotosDTOS.size() -1);
     }
 
     private int getNextFileNumberAvailable() {
-        if(images.size() == 0) return 1;
-        else images.sort(Comparator.comparingInt(BoatPhotosDTO::getFileNumber));
-        return images.get(images.size() - 1).getFileNumber() + 1;
+        if(boatPhotosDTOS.size() == 0) return 1;
+        else boatPhotosDTOS.sort(Comparator.comparingInt(BoatPhotosDTO::getFileNumber));
+        return boatPhotosDTOS.get(boatPhotosDTOS.size() - 1).getFileNumber() + 1;
     }
 
     private void refreshBoatList() {  // this should update boat view when images are added probably should add all columns
-        boatListDTO.setNumberOfImages(images.size());
+        boatListDTO.setNumberOfImages(boatPhotosDTOS.size());
     }
 
     private boolean isImageType(String srcPath) {
@@ -364,11 +363,11 @@ public class TabBoatView extends Tab {
     }
 
     private boolean isFirstPic() {
-        return images.size() == 0;
+        return boatPhotosDTOS.size() == 0;
     }
 
     private BoatPhotosDTO getDefaultBoatPhotoDTO() {
-        BoatPhotosDTO boatPhotosDTO1 = images.stream()
+        BoatPhotosDTO boatPhotosDTO1 = boatPhotosDTOS.stream()
                 .filter(boatPhotosDTO -> boatPhotosDTO.isDefault())
                 .findFirst()
                 .orElse(new BoatPhotosDTO(0, 0, "", "no_image.png", 0, true));
@@ -376,7 +375,7 @@ public class TabBoatView extends Tab {
     }
 
     private BoatPhotosDTO getBoatPhotoDTOById(int id) {
-        BoatPhotosDTO boatPhotosDTO = images.stream()
+        BoatPhotosDTO boatPhotosDTO = boatPhotosDTOS.stream()
                 .filter(boatPhotosDTO1 -> boatPhotosDTO1.getId() == id)
                 .findFirst().orElse(null);
         return boatPhotosDTO;

@@ -7,7 +7,6 @@ import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.views.tabs.membership.fiscal.invoice.Invoice;
-import com.ecsail.sql.select.SqlDbInvoice;
 import com.ecsail.dto.DbInvoiceDTO;
 import com.ecsail.dto.FeeDTO;
 import com.ecsail.dto.InvoiceDTO;
@@ -168,7 +167,7 @@ public class HBoxInvoiceList extends HBox {
 
 	private void createInvoiceItems(int invoiceId, Integer year, int msid) {
 		// gets db_invoices for selected year
-		ArrayList<DbInvoiceDTO> categories = SqlDbInvoice.getDbInvoiceByYear(year);
+		ArrayList<DbInvoiceDTO> categories = (ArrayList<DbInvoiceDTO>) invoiceRepository.getDbInvoiceByYear(year);
 		for (DbInvoiceDTO dbInvoiceDTO : categories) {
 			if (dbInvoiceDTO.isItemized()) {
 				createItemizedCategories(dbInvoiceDTO, invoiceId, msid, year);

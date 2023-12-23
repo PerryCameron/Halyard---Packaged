@@ -8,6 +8,7 @@ import com.ecsail.dto.BoatPhotosDTO;
 import com.ecsail.repository.interfaces.BoatRepository;
 import com.ecsail.repository.rowmappers.BoatListRowMapper;
 import com.ecsail.repository.rowmappers.BoatOwnerRowMapper;
+import com.ecsail.repository.rowmappers.BoatPhotosRowMapper;
 import com.ecsail.repository.rowmappers.BoatRowMapper;
 import org.mariadb.jdbc.Statement;
 import org.slf4j.Logger;
@@ -186,17 +187,17 @@ public class BoatRepositoryImpl implements BoatRepository {
     }
 
     @Override
-    public void updateBoatImages(BoatPhotosDTO bp) {
+    public void updateBoatImages(BoatPhotosDTO boatPhotosDTO) {
         String sql = "UPDATE boat_photos SET default_image = ? WHERE ID = ?";
         try {
-            template.update(sql, bp.isDefault(), bp.getId());
+            template.update(sql, boatPhotosDTO.isDefault(), boatPhotosDTO.getId());
         } catch (DataAccessException e) {
             logger.error("There was a problem with the UPDATE: " + e.getMessage());
         }
     }
 
     @Override
-    public void updateBoat(BoatDTO boat) {
+    public void updateBoat(BoatDTO boatDTO) {
         String sql = """
                 UPDATE boat 
                 SET MANUFACTURER = ?, MANUFACTURE_YEAR = ?, REGISTRATION_NUM = ?, MODEL = ?, 
@@ -206,29 +207,29 @@ public class BoatRepositoryImpl implements BoatRepository {
                 """;
         try {
             template.update(sql,
-                    boat.getManufacturer(),
-                    boat.getManufactureYear(),
-                    boat.getRegistrationNum(),
-                    boat.getModel(),
-                    boat.getBoatName(),
-                    boat.getSailNumber(),
-                    boat.hasTrailer(),
-                    boat.getLoa(),
-                    boat.getDisplacement(),
-                    boat.getKeel(),
-                    boat.getPhrf(),
-                    boat.getDraft(),
-                    boat.getBeam(),
-                    boat.getLwl(),
-                    boat.isAux(),
-                    boat.getBoatId());
+                    boatDTO.getManufacturer(),
+                    boatDTO.getManufactureYear(),
+                    boatDTO.getRegistrationNum(),
+                    boatDTO.getModel(),
+                    boatDTO.getBoatName(),
+                    boatDTO.getSailNumber(),
+                    boatDTO.hasTrailer(),
+                    boatDTO.getLoa(),
+                    boatDTO.getDisplacement(),
+                    boatDTO.getKeel(),
+                    boatDTO.getPhrf(),
+                    boatDTO.getDraft(),
+                    boatDTO.getBeam(),
+                    boatDTO.getLwl(),
+                    boatDTO.isAux(),
+                    boatDTO.getBoatId());
         } catch (DataAccessException e) {
             logger.error("Error updating boat: " + e.getMessage());
         }
     }
 
     @Override
-    public BoatDTO insertBoat(BoatDTO boat) {
+    public BoatDTO insertBoat(BoatDTO boatDTO) {
         final String sql = """
                 INSERT INTO boat (MANUFACTURER, MANUFACTURE_YEAR, REGISTRATION_NUM, MODEL, 
                                   BOAT_NAME, SAIL_NUMBER, HAS_TRAILER, LENGTH, WEIGHT, KEEL, 
@@ -239,26 +240,26 @@ public class BoatRepositoryImpl implements BoatRepository {
         try {
             template.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-                ps.setString(1, boat.getManufacturer());
-                ps.setString(2, boat.getManufactureYear());
-                ps.setString(3, boat.getRegistrationNum());
-                ps.setString(4, boat.getModel());
-                ps.setString(5, boat.getBoatName());
-                ps.setString(6, boat.getSailNumber());
-                ps.setBoolean(7, boat.hasTrailer());
-                ps.setString(8, boat.getLoa());
-                ps.setString(9, boat.getDisplacement());
-                ps.setString(10, boat.getKeel());
-                ps.setString(11, boat.getPhrf());
-                ps.setString(12, boat.getDraft());
-                ps.setString(13, boat.getBeam());
-                ps.setString(14, boat.getLwl());
-                ps.setBoolean(15, boat.isAux());
+                ps.setString(1, boatDTO.getManufacturer());
+                ps.setString(2, boatDTO.getManufactureYear());
+                ps.setString(3, boatDTO.getRegistrationNum());
+                ps.setString(4, boatDTO.getModel());
+                ps.setString(5, boatDTO.getBoatName());
+                ps.setString(6, boatDTO.getSailNumber());
+                ps.setBoolean(7, boatDTO.hasTrailer());
+                ps.setString(8, boatDTO.getLoa());
+                ps.setString(9, boatDTO.getDisplacement());
+                ps.setString(10, boatDTO.getKeel());
+                ps.setString(11, boatDTO.getPhrf());
+                ps.setString(12, boatDTO.getDraft());
+                ps.setString(13, boatDTO.getBeam());
+                ps.setString(14, boatDTO.getLwl());
+                ps.setBoolean(15, boatDTO.isAux());
                 return ps;
             }, keyHolder);
             // Update the BoatDTO with the generated boat ID
-            boat.setBoatId(keyHolder.getKey().intValue());
-            return boat;
+            boatDTO.setBoatId(keyHolder.getKey().intValue());
+            return boatDTO;
         } catch (DataAccessException e) {
             logger.error("Error inserting boat: " + e.getMessage());
             return null; // or handle this case as per your application's requirements
@@ -292,6 +293,18 @@ public class BoatRepositoryImpl implements BoatRepository {
         } catch (Exception e) {
             logger.error("There was a problem with the UPDATE operation", e);
             return 0; // Indicating that no rows were updated
+        }
+    }
+    @Override
+    public List<BoatPhotosDTO> getImagesByBoatId(int boatId) {
+        String query = """
+            SELECT * FROM boat_photos WHERE BOAT_ID = ?
+            """;
+        try {
+            return template.query(query, new Object[]{boatId}, new BoatPhotosRowMapper());
+        } catch (Exception e) {
+            logger.error("Error while retrieving boat images", e);
+            return List.of(); // Return an empty list in case of failure
         }
     }
 }

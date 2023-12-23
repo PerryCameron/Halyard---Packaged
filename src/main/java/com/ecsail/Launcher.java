@@ -10,7 +10,6 @@ import com.ecsail.views.tabs.welcome.HBoxWelcome;
 import com.ecsail.views.dialogues.Dialogue_EnvelopePDF;
 import com.ecsail.views.dialogues.Dialogue_RenewalForm;
 import com.ecsail.views.tabs.*;
-import com.ecsail.views.tabs.database.TabDataBase;
 import com.ecsail.views.tabs.deposits.TabDeposits;
 import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.views.tabs.roster.TabRoster;
@@ -19,7 +18,6 @@ import com.ecsail.jotform.TabJotForm;
 import com.ecsail.pdf.PDF_BoatReport;
 import com.ecsail.sql.select.SqlMembership_Id;
 import com.ecsail.dto.BoatDTO;
-import com.ecsail.dto.BoatListDTO;
 import com.ecsail.dto.MembershipListDTO;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -42,12 +40,6 @@ public class Launcher extends VBox {
         tabPane.setId("toolbar-box");
         getChildren().add(tabPane);
 
-    }
-
-    public static void openTabDataBase() {
-        if (!tabOpen("Database"))
-            tabPane.getTabs().add(new TabDataBase("Database"));
-        tabPane.getSelectionModel().select(getTabIndex("Database"));
     }
 
     public static void openBoatsTab() {
