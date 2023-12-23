@@ -2,14 +2,11 @@ package com.ecsail.sql;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.dto.*;
-import com.ecsail.views.dialogues.Dialogue_CustomErrorMessage;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.time.LocalDate;
 
 public class SqlUpdate {
 	
