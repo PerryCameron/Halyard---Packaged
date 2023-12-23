@@ -239,5 +239,20 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
             return 0; // or a different error handling strategy
         }
     }
+    @Override
+    public void updateMembershipId(int msId, int year, boolean value) {
+        String query = """
+                   UPDATE membership_id 
+                   SET renew = ? 
+                   WHERE fiscal_year = ? 
+                   AND ms_id = ?
+                   """;
+        try {
+            template.update(query, value ? 1 : 0, year, msId);
+        } catch (Exception e) {
+            logger.error("There was a problem with the UPDATE", e);
+        }
+    }
+
 
 }

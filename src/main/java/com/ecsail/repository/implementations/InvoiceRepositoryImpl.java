@@ -2,10 +2,9 @@ package com.ecsail.repository.implementations;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.dto.*;
+import com.ecsail.repository.rowmappers.*;
 import com.ecsail.views.tabs.deposits.InvoiceWithMemberInfoDTO;
 import com.ecsail.repository.interfaces.InvoiceRepository;
-import com.ecsail.repository.rowmappers.InvoiceRowMapper;
-import com.ecsail.repository.rowmappers.InvoiceWithMemberInfoRowMapper;
 import org.mariadb.jdbc.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +16,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class InvoiceRepositoryImpl implements InvoiceRepository {
 
@@ -45,12 +41,13 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
     }
 
     @Override
-    public List<InvoiceWithMemberInfoDTO> getInvoicesWithMembershipInfoByDeposit(DepositDTO d) {
+    public List<InvoiceWithMemberInfoDTO> getInvoicesWithMembershipInfoByDeposit(DepositDTO depositDTO) {
         String query = "select mi.MEMBERSHIP_ID, p.L_NAME, p.F_NAME, i.* from invoice i " +
                 "left join person p on i.MS_ID = p.MS_ID " +
                 "left join membership_id mi on i.MS_ID = mi.MS_ID " +
                 "where i.FISCAL_YEAR=? and mi.FISCAL_YEAR=? and p.MEMBER_TYPE=1 and i.COMMITTED=true and i.batch=?";
-        return template.query(query, new InvoiceWithMemberInfoRowMapper(), new Object[]{d.getFiscalYear(), d.getFiscalYear(), d.getBatch()});
+        return template.query(query, new InvoiceWithMemberInfoRowMapper(),
+                new Object[]{depositDTO.getFiscalYear(), depositDTO.getFiscalYear(), depositDTO.getBatch()});
     }
 
     @Override
@@ -256,6 +253,217 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
         } catch (DataAccessException e) {
             logger.error("Unable to create new fee record: " + e.getMessage());
             return null; // or handle as appropriate
+        }
+    }
+
+    @Override
+    public int updateDeposit(DepositDTO depositDTO) {
+        final String sql = """
+        UPDATE deposit
+        SET DEPOSIT_DATE = ?, FISCAL_YEAR = ?, BATCH = ?
+        WHERE DEPOSIT_ID = ?
+        """;
+
+        try {
+            // The update method returns the number of rows affected by the query
+            return template.update(
+                    sql,
+                    depositDTO.getDepositDate(), // Assuming getDepositDate returns a string in the correct format
+                    depositDTO.getFiscalYear(),  // Assuming getFiscalYear returns a string that can be parsed as an integer
+                    depositDTO.getBatch(),
+                    depositDTO.getDeposit_id()
+            );
+        } catch (DataAccessException e) {
+            logger.error("Error updating deposit: " + e.getMessage());
+            return 0; // Or a different error handling strategy, like throwing an exception
+        }
+    }
+    @Override
+    public int updatePayment(PaymentDTO paymentDTO) {
+        final String sql = """
+        UPDATE payment
+        SET INVOICE_ID = ?, CHECK_NUMBER = ?, PAYMENT_TYPE = ?, PAYMENT_DATE = ?, 
+            AMOUNT = ?, DEPOSIT_ID = ?
+        WHERE PAY_ID = ?
+        """;
+        try {
+            return template.update(
+                    sql,
+                    paymentDTO.getInvoice_id(),
+                    paymentDTO.getCheckNumber(),
+                    paymentDTO.getPaymentType(),
+                    paymentDTO.getPaymentDate(), // Ensure this is in the correct format for your database
+                    paymentDTO.getPaymentAmount(), // Convert to BigDecimal if necessary
+                    paymentDTO.getDeposit_id(),
+                    paymentDTO.getPay_id()
+            );
+        } catch (DataAccessException e) {
+            logger.error("Error updating payment: " + e.getMessage());
+            return 0; // Or handle the exception as appropriate
+        }
+    }
+    @Override
+    public String getTotalAmount(int invoiceId) {
+        final String sql = "SELECT SUM(AMOUNT) FROM payment WHERE INVOICE_ID = ?";
+        try {
+            BigDecimal totalAmount = template.queryForObject(
+                    sql,
+                    new Object[]{invoiceId},
+                    BigDecimal.class
+            );
+            // Check if the result is null (i.e., no payments found) and return "0.00" in that case
+            return totalAmount != null ? totalAmount.toString() : "0.00";
+        } catch (DataAccessException e) {
+            logger.error("Unable to retrieve total amount: " + e.getMessage());
+            return "0.00"; // Returning default value in case of an error
+        }
+    }
+    @Override
+    public List<PaymentDTO> getPaymentsWithInvoiceId(int invoiceId) {
+        String query = """
+                   SELECT * FROM payment 
+                   WHERE invoice_id = ?
+                   """;
+        try {
+            return template.query(query, new PaymentRowMapper(), invoiceId);
+        } catch (Exception e) {
+            logger.error("Error while retrieving payments", e);
+            return new ArrayList<>();
+        }
+    }
+    @Override
+    public List<InvoiceItemDTO> getInvoiceItemsByInvoiceId(int invoiceId) {
+        String query = "SELECT * FROM invoice_item WHERE invoice_id = ?";
+        try {
+            return template.query(query, new InvoiceItemRowMapper(), invoiceId);
+        } catch (Exception e) {
+            logger.error("Error while retrieving invoice items by invoice ID", e);
+            return new ArrayList<>();
+        }
+    }
+    @Override
+    public Boolean invoiceItemPositionCreditExistsWithValue(int year, int msId) {
+        String query = """
+                   SELECT EXISTS(
+                       SELECT * FROM invoice_item 
+                       WHERE FISCAL_YEAR = ? 
+                       AND MS_ID = ? 
+                       AND field_name = 'Position Credit' 
+                       AND VALUE > 0
+                   ) AS ITEM_EXISTS
+                   """;
+        try {
+            return template.queryForObject(query, Boolean.class, year, msId);
+        } catch (Exception e) {
+            logger.error("Unable to check if 'Position Credit' item exists", e);
+            return false;
+        }
+    }
+    @Override
+    public Boolean membershipHasOfficerForYear(int msid, int year) {
+        String query = """
+                   SELECT EXISTS(
+                       SELECT * FROM officer o 
+                       JOIN person p ON p.P_ID = o.P_ID 
+                       WHERE o.OFF_YEAR = ? 
+                       AND p.MS_ID = ? 
+                       AND o.OFF_TYPE != 'BM'
+                   ) AS officer_exists
+                   """;
+        try {
+            return template.queryForObject(query, Boolean.class, year, msid);
+        } catch (Exception e) {
+            logger.error("Unable to check if Officer exists", e);
+            return false;
+        }
+    }
+    @Override
+    public int updateInvoiceItem(InvoiceItemDTO item) {
+        String query = """
+                   UPDATE invoice_item 
+                   SET VALUE = ?, QTY = ?, INVOICE_ID = ?, MS_ID = ?, FISCAL_YEAR = ?, FIELD_NAME = ?, IS_CREDIT = ?
+                   WHERE ID = ?
+                   """;
+        try {
+            return template.update(query,
+                    item.getValue(),
+                    item.getQty(),
+                    item.getInvoiceId(),
+                    item.getMsId(),
+                    item.getYear(),
+                    item.getFieldName(),
+                    item.isCredit() ? 1 : 0,
+                    item.getId());
+        } catch (Exception e) {
+            logger.error("There was a problem with updating item " + item.getFieldName(), e);
+            return 0;
+        }
+    }
+    @Override
+    public void updateInvoice(InvoiceDTO invoice) {
+        String query = """
+                   UPDATE invoice SET 
+                   PAID = ?, 
+                   TOTAL = ?, 
+                   CREDIT = ?, 
+                   BALANCE = ?, 
+                   BATCH = ?, 
+                   COMMITTED = ?, 
+                   CLOSED = ?, 
+                   SUPPLEMENTAL = ?, 
+                   MAX_CREDIT = ?
+                   WHERE ID = ?
+                   """;
+        try {
+            template.update(query,
+                    invoice.getPaid(),
+                    invoice.getTotal(),
+                    invoice.getCredit(),
+                    invoice.getBalance(),
+                    invoice.getBatch(),
+                    invoice.isCommitted() ? 1 : 0,
+                    invoice.isClosed() ? 1 : 0,
+                    invoice.isSupplemental() ? 1 : 0,
+                    invoice.getMaxCredit(),
+                    invoice.getId());
+        } catch (Exception e) {
+            logger.error("There was a problem with updating Invoice ID " + invoice.getId(), e);
+        }
+    }
+    @Override
+    public Boolean paymentExists(int invoiceId) {
+        String query = "SELECT EXISTS(SELECT * FROM payment WHERE INVOICE_ID = ?)";
+        try {
+            return template.queryForObject(query, Boolean.class, invoiceId);
+        } catch (Exception e) {
+            logger.error("Unable to check if payment record EXISTS", e);
+            return false;
+        }
+    }
+    @Override
+    public List<DbInvoiceDTO> getDbInvoiceByYear(int year) {
+        String query = """
+                   SELECT * FROM db_invoice 
+                   WHERE FISCAL_YEAR = ?
+                   """;
+        try {
+            return template.query(query, new DbInvoiceRowMapper(), year);
+        } catch (Exception e) {
+            logger.error("Unable to retrieve DbInvoice information for year: " + year, e);
+            return new ArrayList<>();
+        }
+    }
+    @Override
+    public List<FeeDTO> getFeesFromYear(int year) {
+        String query = """
+                   SELECT * FROM fee 
+                   WHERE fee_year = ?
+                   """;
+        try {
+            return template.query(query, new FeeRowMapper(), year);
+        } catch (Exception e) {
+            logger.error("Error retrieving fees from year: " + year, e);
+            return new ArrayList<>();
         }
     }
 

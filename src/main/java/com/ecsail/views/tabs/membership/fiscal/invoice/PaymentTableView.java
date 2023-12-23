@@ -2,8 +2,7 @@ package com.ecsail.views.tabs.membership.fiscal.invoice;
 
 import com.ecsail.EditCell;
 import com.ecsail.enums.PaymentType;
-import com.ecsail.sql.SqlUpdate;
-import com.ecsail.sql.select.SqlPayment;
+import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.dto.PaymentDTO;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
@@ -20,21 +19,22 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 public class PaymentTableView extends TableView<PaymentDTO> {
+
+    InvoiceRepository invoiceRepository;
     InvoiceFooter parent;
     public PaymentTableView(InvoiceFooter invoiceFooter) {
         this.parent = invoiceFooter;
+        this.invoiceRepository = parent.parent.getInvoiceRepository();
         TableColumn<PaymentDTO, String> col1 = createColumn("Amount", PaymentDTO::PaymentAmountProperty);
         col1.setPrefWidth(60);
         col1.setStyle("-fx-alignment: CENTER-RIGHT;");
         col1.setOnEditCommit(
                 t -> {
-                    t.getTableView().getItems().get(
-                            t.getTablePosition().getRow()).setPaymentAmount(String.valueOf(new BigDecimal(t.getNewValue()).setScale(2)));
-                    var pay_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getPay_id();
-                    BigDecimal amount = new BigDecimal(t.getNewValue());
-                    SqlUpdate.updatePayment(pay_id, "amount", String.valueOf(amount.setScale(2)));
+                    PaymentDTO paymentDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    paymentDTO.setPaymentAmount(String.valueOf(new BigDecimal(t.getNewValue()).setScale(2)));
+                    parent.parent.getInvoiceRepository().updatePayment(paymentDTO);
                     // This adds all the amounts together
-                    BigDecimal totalPaidAmount = new BigDecimal(SqlPayment.getTotalAmount(parent.getInvoice().getId())).setScale(2);
+                    BigDecimal totalPaidAmount = new BigDecimal(invoiceRepository.getTotalAmount(parent.getInvoice().getId())).setScale(2);
                     String totalAmountPaid = String.valueOf(totalPaidAmount.setScale(2));
                     parent.parent.totalPaymentText.setText(totalAmountPaid);
                     parent.getInvoice().setPaid(totalAmountPaid);
@@ -58,13 +58,10 @@ public class PaymentTableView extends TableView<PaymentDTO> {
         col2.setCellFactory(ComboBoxTableCell.forTableColumn(paymentTypeList));
 
         col2.setOnEditCommit((TableColumn.CellEditEvent<PaymentDTO, PaymentType> event) -> {
-            var pos = event.getTablePosition();
-            var newPaymentType = event.getNewValue();
-            var row = pos.getRow();
-            var thisPayment = event.getTableView().getItems().get(row);
-            SqlUpdate.updatePayment(thisPayment.getPay_id(), "payment_type", newPaymentType.getCode());
-            // need to update paid from here
-            thisPayment.setPaymentType(newPaymentType.getCode());
+            PaymentType newPaymentType = event.getNewValue();
+            PaymentDTO paymentDTO = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            paymentDTO.setPaymentType(newPaymentType.getCode());
+            parent.parent.getInvoiceRepository().updatePayment(paymentDTO);
         });
 
         TableColumn<PaymentDTO, String> col3 = createColumn("Check #", PaymentDTO::checkNumberProperty);
@@ -72,23 +69,19 @@ public class PaymentTableView extends TableView<PaymentDTO> {
         col3.setStyle("-fx-alignment: CENTER-LEFT;");
         col3.setOnEditCommit(
                 t -> {
-                    t.getTableView().getItems().get(
-                            t.getTablePosition().getRow()).setCheckNumber(t.getNewValue());
-                    var pay_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getPay_id();
-                    SqlUpdate.updatePayment(pay_id, "CHECK_NUMBER", t.getNewValue());
+                    PaymentDTO paymentDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                    paymentDTO.setCheckNumber(t.getNewValue());
+                    parent.parent.getInvoiceRepository().updatePayment(paymentDTO);
                 }
         );
 
         TableColumn<PaymentDTO, String> col4 = createColumn("Date", PaymentDTO::paymentDateProperty);
         col4.setPrefWidth(70);
         col4.setStyle("-fx-alignment: CENTER-LEFT;");
-        col4.setOnEditCommit(
-                t -> {
-                    t.getTableView().getItems().get(
-                            t.getTablePosition().getRow()).setPaymentDate(t.getNewValue());
-                    var pay_id = t.getTableView().getItems().get(t.getTablePosition().getRow()).getPay_id();
-                    SqlUpdate.updatePayment(pay_id, "payment_date", t.getNewValue());
-                    //	SqlUpdate.updatePhone("phone", phone_id, t.getNewValue());
+        col4.setOnEditCommit(t -> {
+            PaymentDTO paymentDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            paymentDTO.setPaymentDate(t.getNewValue());
+            parent.parent.getInvoiceRepository().updatePayment(paymentDTO);
                 }
         );
 

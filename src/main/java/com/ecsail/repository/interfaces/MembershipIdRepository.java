@@ -28,4 +28,6 @@ public interface MembershipIdRepository {
     void deleteMembershipId(int msId);
 
     int rowExists(MembershipIdDTO membershipIdDTO);
+
+    void updateMembershipId(int msId, int year, boolean value);
 }

@@ -1,6 +1,5 @@
 package com.ecsail.dto;
 
-import com.ecsail.sql.select.SqlSelect;
 import javafx.beans.property.*;
 
 public class InvoiceItemDTO {

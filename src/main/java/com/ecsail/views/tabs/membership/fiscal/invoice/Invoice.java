@@ -1,16 +1,12 @@
 package com.ecsail.views.tabs.membership.fiscal.invoice;
 
-import com.ecsail.BaseApplication;
-import com.ecsail.HalyardPaths;
+import com.ecsail.dto.*;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
+import com.ecsail.repository.implementations.MembershipIdRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
+import com.ecsail.repository.interfaces.MembershipIdRepository;
 import com.ecsail.views.common.Note;
 import com.ecsail.views.tabs.membership.fiscal.HBoxInvoiceList;
-import com.ecsail.sql.SqlExists;
-import com.ecsail.sql.SqlInsert;
-import com.ecsail.sql.SqlUpdate;
-import com.ecsail.sql.select.*;
-import com.ecsail.dto.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -20,12 +16,16 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Invoice extends HBox {
+    
+    public static Logger logger = LoggerFactory.getLogger(Invoice.class);
     protected ObservableList<PaymentDTO> payments;
 
     protected InvoiceDTO invoice;
@@ -44,14 +44,16 @@ public class Invoice extends HBox {
 
     protected ObservableList<InvoiceItemDTO> items;
     private InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
+    private MembershipIdRepository membershipIdRepository = new MembershipIdRepositoryImpl();
 
     public Invoice(HBoxInvoiceList parent, int index) {
         this.invoice = parent.getTabMembership().getModel().getInvoices().get(index);
         this.membership = parent.getTabMembership().getModel().getMembership();
         this.note = parent.getTabMembership().getModel().getNote();
-        ArrayList<DbInvoiceDTO> dbInvoiceDTOs = SqlDbInvoice.getDbInvoiceByYear(invoice.getYear());
-        this.items = SqlInvoiceItem.getInvoiceItemsByInvoiceId(invoice.getId());
-        this.fees = SqlFee.getFeesFromYear(invoice.getYear());
+        ArrayList<DbInvoiceDTO> dbInvoiceDTOs =
+                (ArrayList<DbInvoiceDTO>) invoiceRepository.getDbInvoiceByYear(invoice.getYear());
+        this.items = FXCollections.observableArrayList(invoiceRepository.getInvoiceItemsByInvoiceId(invoice.getId()));
+        this.fees = (ArrayList<FeeDTO>) invoiceRepository.getFeesFromYear(invoice.getYear());
         this.payments = getPayment();
         this.footer = new InvoiceFooter(this);
         InvoiceHeader header = new InvoiceHeader();
@@ -85,7 +87,7 @@ public class Invoice extends HBox {
             footer.setCommitMode(invoice.isCommitted());
             // need to set membership_id as active
             updateInvoice(invoice);
-            SqlUpdate.updateMembershipId(membership.getMsId(),invoice.getYear(),footer.getRenewCheckBox().isSelected());
+            membershipIdRepository.updateMembershipId(membership.getMsId(),invoice.getYear(),footer.getRenewCheckBox().isSelected());
         });
 
 
@@ -119,7 +121,7 @@ public class Invoice extends HBox {
         updateAllowed = true; // may write to database
         if (getOfficerCredit()) { // has an officer
             //if position doesn't already exist then add it
-            if(!SqlExists.invoiceItemPositionCreditExistsWithValue(invoice.getYear(),invoice.getMsId())) {
+            if(!invoiceRepository.invoiceItemPositionCreditExistsWithValue(invoice.getYear(),invoice.getMsId())) {
                 invoiceItemMap.get("Position Credit").getRowTotal().setText(invoiceItemMap.get("Dues").getRowTotal().getText());
                 // TODO this needs to be tested ( added so that deposit reports will show qty)
                 invoiceItemMap.get("Position Credit").invoiceItemDTO.setQty(1);
@@ -127,7 +129,7 @@ public class Invoice extends HBox {
             }
         } else { // has no officer
             // has no officer but was once set as officer, will remove position credit // TODO need to test
-            if(SqlExists.invoiceItemPositionCreditExistsWithValue(invoice.getYear(),invoice.getMsId())) {
+            if(invoiceRepository.invoiceItemPositionCreditExistsWithValue(invoice.getYear(),invoice.getMsId())) {
                 invoiceItemMap.get("Position Credit").invoiceItemDTO.setQty(0);
                 invoiceItemMap.get("Position Credit").invoiceItemDTO.setValue("0.00");
                 updateInvoiceItem(invoiceItemMap.get("Position Credit").invoiceItemDTO);
@@ -136,18 +138,18 @@ public class Invoice extends HBox {
     }
 
     private boolean getOfficerCredit() {
-        boolean hasOfficer = SqlExists.membershipHasOfficerForYear(invoice.getMsId(), invoice.getYear());
-        BaseApplication.logger.info("Membership has officer: " + hasOfficer);
+        boolean hasOfficer = invoiceRepository.membershipHasOfficerForYear(invoice.getMsId(), invoice.getYear());
+        logger.info("Membership has officer: " + hasOfficer);
         return hasOfficer && !invoice.isSupplemental();
     }
 
     public void updateInvoiceItem(InvoiceItemDTO invoiceItemDTO) {
         if(updateAllowed)
-            SqlUpdate.updateInvoiceItem(invoiceItemDTO);
+            invoiceRepository.updateInvoiceItem(invoiceItemDTO);
     }
     public void updateInvoice(InvoiceDTO invoice) {
         if(updateAllowed)
-            SqlUpdate.updateInvoice(invoice);
+            invoiceRepository.updateInvoice(invoice);
     }
 
     private FeeDTO insertFeeIntoWidget(DbInvoiceDTO i) {
@@ -164,10 +166,10 @@ public class Invoice extends HBox {
     private ObservableList<PaymentDTO> getPayment() {
         // check to see if invoice record exists
         ObservableList<PaymentDTO> payments = FXCollections.observableArrayList();
-        if (SqlExists.paymentExists(invoice.getId())) {
-            return SqlPayment.getPayments(invoice.getId());
+        if (invoiceRepository.paymentExists(invoice.getId())) {
+            return FXCollections.observableArrayList(invoiceRepository.getPaymentsWithInvoiceId(invoice.getId()));
         } else {  // if not create one
-            BaseApplication.logger.info("getPayment(): Creating a new payment entry");
+            logger.info("getPayment(): Creating a new payment entry");
             PaymentDTO paymentDTO = invoiceRepository.insertPayment(new PaymentDTO(invoice.getId()));
             // saves to database and updates object with correct pay_id
             payments.add(paymentDTO);
@@ -193,5 +195,13 @@ public class Invoice extends HBox {
 
     public boolean isUpdateAllowed() {
         return updateAllowed;
+    }
+
+    public InvoiceRepository getInvoiceRepository() {
+        return invoiceRepository;
+    }
+
+    public void setInvoiceRepository(InvoiceRepository invoiceRepository) {
+        this.invoiceRepository = invoiceRepository;
     }
 }

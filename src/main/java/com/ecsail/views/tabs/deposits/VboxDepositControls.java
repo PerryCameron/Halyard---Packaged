@@ -197,7 +197,8 @@ public class VboxDepositControls extends VBox {
                     depositDatePicker.getEditor().setText(depositDatePicker.getConverter().toString(depositDatePicker.getValue()));
                 }
                 depositDTO.setDepositDate(String.valueOf(depositDatePicker.getValue()));
-                SqlUpdate.updateDeposit(depositDTO);
+                parent.getInvoiceRepository().updateDeposit(depositDTO);
+                System.out.println("Update deposit");
             }
         });
 

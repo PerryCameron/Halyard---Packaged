@@ -67,4 +67,12 @@ public class TabDeposits extends Tab {
 	public DepositDTO getDepositDTO() {
 		return depositDTO;
 	}
+
+	public InvoiceRepository getInvoiceRepository() {
+		return invoiceRepository;
+	}
+
+	public void setInvoiceRepository(InvoiceRepository invoiceRepository) {
+		this.invoiceRepository = invoiceRepository;
+	}
 }

@@ -1,13 +1,9 @@
 package com.ecsail.views.tabs.membership.fiscal.invoice;
 
-import com.ecsail.dto.MemoDTO;
-import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
-import com.ecsail.repository.interfaces.InvoiceRepository;
-import com.ecsail.sql.SqlDelete;
-import com.ecsail.sql.SqlInsert;
-import com.ecsail.sql.select.SqlPayment;
 import com.ecsail.dto.InvoiceDTO;
+import com.ecsail.dto.MemoDTO;
 import com.ecsail.dto.PaymentDTO;
+import com.ecsail.repository.interfaces.InvoiceRepository;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -23,8 +19,6 @@ import javafx.scene.text.Text;
 
 import java.math.BigDecimal;
 
-import static com.ecsail.HalyardPaths.date;
-
 public class InvoiceFooter extends VBox {
 
     private final TableView<PaymentDTO> paymentTableView;
@@ -38,11 +32,11 @@ public class InvoiceFooter extends VBox {
     private final Button buttonAddNote = new Button("Add Note");
 
     protected final Invoice parent;
-
-    private final InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
+    private final InvoiceRepository invoiceRepository;
 
     public InvoiceFooter(Invoice hboxInvoice) {
         this.parent = hboxInvoice;
+        this.invoiceRepository = parent.getInvoiceRepository();
         parent.totalFeesText.setText(parent.invoice.getTotal());
         parent.totalCreditText.setText(parent.invoice.getCredit());
         parent.totalCreditText.setId("invoice-text-credit");
@@ -72,7 +66,7 @@ public class InvoiceFooter extends VBox {
 			if (selectedIndex >= 0) // is something selected?
 				invoiceRepository.deletePayment(parent.payments.get(selectedIndex));
 			paymentTableView.getItems().remove(selectedIndex); // remove it from our GUI
-			BigDecimal totalPaidAmount = new BigDecimal(SqlPayment.getTotalAmount(parent.invoice.getId()));
+			BigDecimal totalPaidAmount = new BigDecimal(invoiceRepository.getTotalAmount(parent.invoice.getId()));
             parent.totalPaymentText.setText(String.valueOf(totalPaidAmount.setScale(2)));
             parent.invoice.setPaid(String.valueOf(totalPaidAmount.setScale(2)));
 			updateTotals();

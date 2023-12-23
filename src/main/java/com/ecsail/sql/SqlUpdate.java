@@ -3,102 +3,11 @@ package com.ecsail.sql;
 import com.ecsail.BaseApplication;
 import com.ecsail.dto.*;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+
 
 import java.sql.SQLException;
 
 public class SqlUpdate {
-	
-	static Alert alert = new Alert(AlertType.ERROR);
-
-
-	public static void updateAddress(MembershipListDTO membership) {
-		String query = "UPDATE membership SET address='" + membership.getAddress()
-				+ "' WHERE ms_id=" + membership.getMsId();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
-
-	public static void updateCity(MembershipListDTO membership) {
-		String query = "UPDATE membership SET city='" + membership.getCity()
-				+ "' WHERE ms_id=" + membership.getMsId();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
-
-	public static void updateState(MembershipListDTO membership) {
-		String query = "UPDATE membership SET state='" + membership.getState()
-				+ "' WHERE ms_id=" + membership.getMsId();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
-
-	public static void updateZipcode(MembershipListDTO membership) {
-		String query = "UPDATE membership SET zip='" + membership.getZip()
-				+ "' WHERE ms_id=" + membership.getMsId();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
-
-
-	public static void updateDeposit(DepositDTO depositDTO) {
-		String query = "UPDATE deposit SET DEPOSIT_DATE='" + depositDTO.getDepositDate()
-				+ "', FISCAL_YEAR=" + depositDTO.getFiscalYear()
-				+ ", BATCH=" + depositDTO.getBatch() + " WHERE deposit_id=" + depositDTO.getDeposit_id();
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the updating this deposit","");
-		}
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	public static void updatePayment(int pay_id, String field, String attribute) {
-		String query = "UPDATE payment SET " + field + "='" + attribute + "' WHERE pay_id=" + pay_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
-
 
 
 	public static void updateAux(String boatId, Boolean value) {
@@ -110,23 +19,6 @@ public class SqlUpdate {
 		}
 	}
 
-	public static void updateMembershipId(int ms_id, int year, boolean value) {
-		String query = "UPDATE membership_id SET renew=" + value + " where fiscal_year='" + year + "' and ms_id=" + ms_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
-
-	public static void updateMembershipId(int mid, String field, Boolean attribute) {
-		String query = "UPDATE membership_id SET " + field + "=" + attribute + " WHERE mid=" + mid;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
 
 	public static void updateFeeRecord(FeeDTO feeDTO) {
 		String query = "UPDATE fee SET FIELD_NAME='" + feeDTO.getFieldName()

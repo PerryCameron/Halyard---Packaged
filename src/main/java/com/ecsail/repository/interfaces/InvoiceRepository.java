@@ -20,10 +20,24 @@ public interface InvoiceRepository {
     void deleteAllPaymentsAndInvoicesByMsId(int msId);
     DbInvoiceDTO insertDbInvoice(DbInvoiceDTO d);
     PaymentDTO insertPayment(PaymentDTO op);
-
     InvoiceDTO insertInvoice(InvoiceDTO m);
-
     InvoiceItemDTO insertInvoiceItem(InvoiceItemDTO i);
-
     FeeDTO insertFee(FeeDTO feeDTO);
+    int updateDeposit(DepositDTO depositDTO);
+    int updatePayment(PaymentDTO paymentDTO);
+    String getTotalAmount(int invoiceId);
+    List<PaymentDTO> getPaymentsWithInvoiceId(int invoiceId);
+    List<InvoiceItemDTO> getInvoiceItemsByInvoiceId(int invoiceId);
+    Boolean invoiceItemPositionCreditExistsWithValue(int year, int msId);
+    Boolean membershipHasOfficerForYear(int msid, int year);
+
+    int updateInvoiceItem(InvoiceItemDTO item);
+
+    void updateInvoice(InvoiceDTO invoice);
+
+    Boolean paymentExists(int invoiceId);
+
+    List<DbInvoiceDTO> getDbInvoiceByYear(int year);
+
+    List<FeeDTO> getFeesFromYear(int year);
 }
