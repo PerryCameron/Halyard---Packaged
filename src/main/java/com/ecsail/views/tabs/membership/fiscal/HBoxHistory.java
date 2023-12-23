@@ -4,9 +4,8 @@ import com.ecsail.BaseApplication;
 import com.ecsail.EditCell;
 import com.ecsail.StringTools;
 import com.ecsail.dto.MembershipIdDTO;
+import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.enums.MembershipType;
-import com.ecsail.sql.SqlUpdate;
-import com.ecsail.sql.select.SqlSelect;
 import com.ecsail.views.dialogues.DialogueError;
 import com.ecsail.views.tabs.membership.TabMembership;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -223,8 +222,7 @@ public class HBoxHistory extends HBox {
                 }
             }
         });
-        //This deals with the bug located here where the datepicker value is not updated on focus lost
-        //https://bugs.openjdk.java.net/browse/JDK-8092295?page=com.atlassian.jira.plugin.system.issuetabpanels:all-tabpanel
+
         joinDatePicker.focusedProperty().addListener((observable, wasFocused, isFocused) -> {
             if (!isFocused) {
                 try {
@@ -232,17 +230,15 @@ public class HBoxHistory extends HBox {
                 } catch (DateTimeParseException e) {
                     joinDatePicker.getEditor().setText(joinDatePicker.getConverter().toString(joinDatePicker.getValue()));
                 }
-                LocalDate date = joinDatePicker.getValue();
-                SqlUpdate.updateMembership(parent.getModel().getMembership().getMsId(), "JOIN_DATE", date);
-                parent.getModel().getMembership().setJoinDate(joinDatePicker.getValue().toString());
+//                LocalDate date = joinDatePicker.getValue();
+                MembershipListDTO membershipListDTO = parent.getModel().getMembership();
+                membershipListDTO.setJoinDate(joinDatePicker.getValue().toString());
+                parent.getModel().getMembershipRepository().updateMembership(membershipListDTO);
                 parent.getModel().getLabels().getJoinDate().setText(joinDatePicker.getValue().toString());
             }
         });
 
         idAdd.setOnAction((event) -> {
-
-            // gets next available id for membership_id table
-            int mid = SqlSelect.getNextAvailablePrimaryKey("membership_id", "mid"); // get last mid number add 1
             //	if tuple of year=0 and memId=0 exists anywhere in SQL not belonging to this membership then delete it
             if (parent.getModel().getMembershipIdRepository().membershipIdBlankRowExists(String.valueOf(parent.getModel().getMembership().getMsId())))
                 parent.getModel().getMembershipIdRepository().deleteBlankMembershipIdRow();
@@ -254,7 +250,7 @@ public class HBoxHistory extends HBox {
             } else {
                 BaseApplication.logger.info("Added history record for membership " + parent.getModel().getMembership().getMembershipId());
                 // create a blank membershipId object
-                MembershipIdDTO membershipIdDTO = new MembershipIdDTO(mid, "0",
+                MembershipIdDTO membershipIdDTO = new MembershipIdDTO(0, "0",
                         parent.getModel().getMembership().getMsId(), "0", true, parent.getModel().getMembership().getMemType(), false, false);
                 // add the information from the new object into SQL
                 parent.getModel().getMembershipIdRepository().insert(membershipIdDTO);

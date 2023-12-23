@@ -11,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TabPane;
 
 public class MembershipTabModel {
+    private MembershipRepository membershipRepository;
     private MembershipListDTO membership;
     private MembershipIdRepository membershipIdRepository;
     private PersonRepository personRepository;
@@ -38,6 +39,7 @@ public class MembershipTabModel {
         this.membershipIdRepository = new MembershipIdRepositoryImpl();
         this.awardRepository = new AwardRepositoryImpl();
         this.officerRepository = new OfficerRepositoryImpl();
+        this.membershipRepository = new MembershipRepositoryImpl();
         this.memos = FXCollections.observableArrayList(memoRepository.getMemosByMsId(membership.getMsId()));
         this.note = new Note(memos,membership.getMsId());
         this.people = FXCollections.observableList(personRepository.getActivePeopleByMsId(membership.getMsId()));
@@ -186,5 +188,13 @@ public class MembershipTabModel {
 
     public void setMemos(ObservableList<MemoDTO> memos) {
         this.memos = memos;
+    }
+
+    public MembershipRepository getMembershipRepository() {
+        return membershipRepository;
+    }
+
+    public void setMembershipRepository(MembershipRepository membershipRepository) {
+        this.membershipRepository = membershipRepository;
     }
 }

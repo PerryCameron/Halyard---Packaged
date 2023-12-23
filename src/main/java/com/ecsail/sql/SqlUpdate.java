@@ -56,14 +56,6 @@ public class SqlUpdate {
 		}
 	}
 
-	public static void updateMembership(int ms_id, String field, LocalDate date) {
-		String query = "UPDATE membership SET " + field + "='" + date + "' WHERE ms_id=" + ms_id;
-		try {
-			BaseApplication.connect.executeQuery(query);
-		} catch (SQLException e) {
-			new Dialogue_ErrorSQL(e,"There was a problem with the UPDATE","");
-		}
-	}
 
 	public static void updateDeposit(DepositDTO depositDTO) {
 		String query = "UPDATE deposit SET DEPOSIT_DATE='" + depositDTO.getDepositDate()
