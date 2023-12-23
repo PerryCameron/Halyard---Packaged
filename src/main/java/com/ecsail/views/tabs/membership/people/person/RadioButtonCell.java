@@ -2,7 +2,6 @@ package com.ecsail.views.tabs.membership.people.person;
 
 import com.ecsail.repository.implementations.EmailRepositoryImpl;
 import com.ecsail.repository.interfaces.EmailRepository;
-import com.ecsail.sql.SqlUpdate;
 import com.ecsail.dto.EmailDTO;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.control.RadioButton;

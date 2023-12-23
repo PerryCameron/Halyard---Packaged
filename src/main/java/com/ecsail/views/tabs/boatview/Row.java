@@ -4,7 +4,6 @@ import com.ecsail.dto.BoatDTO;
 import com.ecsail.dto.DbBoatSettingsDTO;
 import com.ecsail.enums.KeelType;
 import com.ecsail.repository.interfaces.BoatRepository;
-import com.ecsail.sql.SqlUpdate;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

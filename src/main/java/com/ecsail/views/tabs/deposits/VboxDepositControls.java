@@ -5,7 +5,6 @@ import com.ecsail.HalyardPaths;
 import com.ecsail.views.dialogues.Dialogue_DepositPDF;
 import com.ecsail.pdf.PDF_DepositReport;
 import com.ecsail.sql.SqlCount;
-import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.*;
 import com.ecsail.dto.DepositDTO;
 import com.ecsail.dto.DepositPDFDTO;
@@ -227,7 +226,7 @@ public class VboxDepositControls extends VBox {
                         invoice.setBatch(atomicBatch.get());
                         invoice.setClosed(true); // allows check to be selected and invoice to be in deposit
                         tabDeposits.getInvoices().add(invoice); // I can probably get rid of this as the refresh does it
-                        SqlUpdate.updateInvoice(invoice);
+                        tabDeposits.getInvoiceRepository().updateInvoice(invoice);
                     });
             refreshAllData(false); // refreshes screen to match data
         });

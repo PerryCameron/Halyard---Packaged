@@ -21,9 +21,7 @@ import java.util.*;
 public class InvoiceRepositoryImpl implements InvoiceRepository {
 
     public static Logger logger = LoggerFactory.getLogger(InvoiceRepository.class);
-
     private final JdbcTemplate template;
-
     public InvoiceRepositoryImpl() {
         this.template = new JdbcTemplate(BaseApplication.getDataSource());
     }
@@ -583,7 +581,6 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
     public DepositDTO insertDeposit(DepositDTO d) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         String sql = "INSERT INTO deposit (DEPOSIT_DATE, FISCAL_YEAR, BATCH) VALUES (?, ?, ?);";
-
         template.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, new String[]{"DEPOSIT_ID"});
             ps.setString(1, d.getDepositDate());
@@ -591,7 +588,6 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
             ps.setInt(3, d.getBatch());
             return ps;
         }, keyHolder);
-
         if (keyHolder.getKey() != null) {
             d.setDeposit_id(keyHolder.getKey().intValue());
         }
@@ -636,4 +632,56 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
             return false;
         }
     }
+    @Override
+    public void updateDbInvoice(DbInvoiceDTO dbInvoiceDTO) {
+        String sql = """
+                UPDATE db_invoice SET 
+                FIELD_NAME = ?, widget_type = ?, width = ?, invoice_order = ?, 
+                multiplied = ?, price_editable = ?, is_credit = ?, max_qty = ?, 
+                auto_populate = ?, is_itemized = ? 
+                WHERE ID = ?
+                """;
+        try {
+            template.update(sql,
+                    dbInvoiceDTO.getFieldName(),
+                    dbInvoiceDTO.getWidgetType(),
+                    dbInvoiceDTO.getWidth(),
+                    dbInvoiceDTO.getOrder(),
+                    dbInvoiceDTO.isMultiplied(),
+                    dbInvoiceDTO.isPrice_editable(),
+                    dbInvoiceDTO.isCredit(),
+                    dbInvoiceDTO.getMaxQty(),
+                    dbInvoiceDTO.isAutoPopulate(),
+                    dbInvoiceDTO.isItemized(),
+                    dbInvoiceDTO.getId()
+            );
+        } catch (Exception e) {
+            logger.error("There was a problem with updating db_invoice " + dbInvoiceDTO.getId(), e);
+            // Handle exception as required
+            // For example, showing a dialog or rethrowing as a custom exception
+            // new Dialogue_ErrorSQL(e, "There was a problem with updating db_invoice " + dbInvoiceDTO.getId(), "");
+        }
+    }
+    @Override
+    public int updateFee(FeeDTO feeDTO) {
+        String query = """
+            UPDATE fee
+            SET FIELD_NAME = ?, FIELD_VALUE = ?, DB_INVOICE_ID = ?, FEE_YEAR = ?, DESCRIPTION = ?
+            WHERE FEE_ID = ?
+            """;
+        try {
+            return template.update(query,
+                    feeDTO.getFieldName(),
+                    feeDTO.getFieldValue(),
+                    feeDTO.getDbInvoiceID(),
+                    feeDTO.getFeeYear(),
+                    feeDTO.getDescription(),
+                    feeDTO.getFeeId());
+        } catch (Exception e) {
+            logger.error("There was a problem with the UPDATE operation", e);
+            return 0; // Indicating that no rows were updated
+        }
+    }
+
+
 }

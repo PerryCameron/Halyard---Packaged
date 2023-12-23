@@ -8,7 +8,6 @@ import com.ecsail.dto.InvoiceDTO;
 import com.ecsail.dto.InvoiceItemDTO;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
-import com.ecsail.sql.SqlUpdate;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -301,7 +300,7 @@ public class InvoiceItemRow extends HBox {
 
     private void updateInvoiceItem(InvoiceItemDTO invoiceItemDTO) {
         if (footer.getBoxInvoice().isUpdateAllowed())
-            SqlUpdate.updateInvoiceItem(invoiceItemDTO);
+            invoiceRepository.updateInvoiceItem(invoiceItemDTO);
     }
 
     private void setPriceChangeListener(TextField textField) {

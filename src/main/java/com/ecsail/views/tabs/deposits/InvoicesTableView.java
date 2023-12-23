@@ -1,7 +1,6 @@
 package com.ecsail.views.tabs.deposits;
 
 
-import com.ecsail.sql.SqlUpdate;
 import com.ecsail.dto.DepositDTO;
 import com.ecsail.dto.InvoiceDTO;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -44,12 +43,12 @@ public class InvoicesTableView extends TableView {
                     invoiceM.setBatch(depositDTO.getBatch()); // updates tableview batch
                     invoiceDTO.setBatch(depositDTO.getBatch()); // sets batch to invoice for saving to db
                     invoiceDTO.setClosed(true);
-                    SqlUpdate.updateInvoice(invoiceDTO);
+                    tabParent.invoiceRepository.updateInvoice(invoiceDTO);
                 } else { // if unchecked
                     invoiceM.setBatch(0);  // updates tableview batch
                     invoiceDTO.setBatch(0); // sets batch to invoice for saving to db
                     invoiceDTO.setClosed(false);
-                    SqlUpdate.updateInvoice(invoiceDTO);
+                    tabParent.invoiceRepository.updateInvoice(invoiceDTO);
                 }
             });
             return booleanProp;

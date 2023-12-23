@@ -3,7 +3,6 @@ package com.ecsail.views.tabs.boatlist;
 import com.ecsail.Launcher;
 import com.ecsail.dto.BoatDTO;
 import com.ecsail.dto.BoatListDTO;
-import com.ecsail.sql.SqlUpdate;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -69,16 +68,11 @@ public class BoatListTableView extends TableView<BoatListDTO> {
         Col9.setCellValueFactory(new PropertyValueFactory<>("aux"));
 
         Col9.setCellValueFactory(param -> {
-            BoatListDTO boat = param.getValue();
-            SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(boat.isAux());
-            // Note: singleCol.setOnEditCommit(): Not work for
-            // CheckBoxTableCell.
-
-            // When "Listed?" column change.
+            BoatListDTO boatListDTO = param.getValue();
+            SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(boatListDTO.isAux());
             booleanProp.addListener((observable, oldValue, newValue) -> {
-                boat.setAux(newValue);
-                SqlUpdate.updateAux(String.valueOf(boat.getBoatId()), newValue);
-
+                boatListDTO.setAux(newValue);
+                parent.getBoatRepository().updateAux(String.valueOf(boatListDTO.getBoatId()), newValue);
             });
             return booleanProp;
         });

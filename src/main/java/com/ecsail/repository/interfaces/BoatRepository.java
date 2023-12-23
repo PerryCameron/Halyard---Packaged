@@ -27,4 +27,6 @@ public interface BoatRepository {
     int insertBoatOwner(int msId, int boatId);
 
     void deleteBoatOwner(int msId);
+
+    int updateAux(String boatId, Boolean value);
 }

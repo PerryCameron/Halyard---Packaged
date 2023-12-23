@@ -4,7 +4,6 @@ import com.ecsail.dto.DbInvoiceDTO;
 import com.ecsail.dto.FeeDTO;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
-import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlDbInvoice;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -211,7 +210,7 @@ public class TabFee extends Tab {
             if(currentOrder > order) {
                 row.dbInvoiceDTO.setOrder(currentOrder -1);
                 row.setOrder(currentOrder -1);
-                SqlUpdate.updateDbInvoice(row.dbInvoiceDTO);
+                invoiceRepository.updateDbInvoice(row.dbInvoiceDTO);
             }
         }
     }

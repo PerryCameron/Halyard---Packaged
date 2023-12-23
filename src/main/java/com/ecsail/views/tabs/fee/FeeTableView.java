@@ -4,7 +4,6 @@ import com.ecsail.EditCell;
 import com.ecsail.StringTools;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
-import com.ecsail.sql.SqlUpdate;
 import com.ecsail.dto.FeeDTO;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ListChangeListener;
@@ -49,7 +48,7 @@ public class FeeTableView extends TableView<FeeDTO> {
             String fixedDollarValue = String.valueOf(dollarValue.setScale(2, RoundingMode.HALF_UP));
             t.getTableView().getItems().get(t.getTablePosition().getRow()).setFieldValue(fixedDollarValue);
             FeeDTO feeDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
-            SqlUpdate.updateFeeRecord(feeDTO);
+            invoiceRepository.updateFee(feeDTO);
             parent.parent.duesLineChart.refreshChart(feeDTO.getDescription());
         });
 

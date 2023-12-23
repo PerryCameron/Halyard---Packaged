@@ -2,7 +2,6 @@ package com.ecsail.views.tabs.membership.information;
 
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.views.tabs.membership.TabMembership;
-import com.ecsail.sql.SqlUpdate;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

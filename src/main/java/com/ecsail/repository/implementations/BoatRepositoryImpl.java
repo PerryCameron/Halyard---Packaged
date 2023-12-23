@@ -284,6 +284,16 @@ public class BoatRepositoryImpl implements BoatRepository {
             logger.error("Unable to DELETE boat owner: " + e.getMessage());
         }
     }
+    @Override
+    public int updateAux(String boatId, Boolean value) {
+        String query = "UPDATE boat SET aux = ? WHERE BOAT_ID = ?";
+        try {
+            return template.update(query, value, boatId);
+        } catch (Exception e) {
+            logger.error("There was a problem with the UPDATE operation", e);
+            return 0; // Indicating that no rows were updated
+        }
+    }
 
 
 }

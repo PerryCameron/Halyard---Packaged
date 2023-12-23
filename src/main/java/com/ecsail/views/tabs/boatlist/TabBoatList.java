@@ -2,6 +2,8 @@ package com.ecsail.views.tabs.boatlist;
 
 import com.ecsail.dto.BoatListDTO;
 import com.ecsail.models.BoatListModel;
+import com.ecsail.repository.implementations.BoatRepositoryImpl;
+import com.ecsail.repository.interfaces.BoatRepository;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
@@ -25,12 +27,14 @@ public class TabBoatList extends Tab {
 	protected boolean isActiveSearch;
 	protected TextField textField = new TextField();
 	protected TableView<BoatListDTO> boatListTableView;
+	private BoatRepository boatRepository;
 
 	public TabBoatList(String text) {
 		super(text);
 		this.model = new BoatListModel();
 		this.boatListTableView = new BoatListTableView(this);
 		this.controlBox = new ControlBox(this);
+		this.boatRepository  = new BoatRepositoryImpl();
 		setContent(createContentBox(createSplitScreenBox()));
 	}
 
@@ -51,5 +55,13 @@ public class TabBoatList extends Tab {
 
 	public BoatListModel getModel() {
 		return model;
+	}
+
+	public BoatRepository getBoatRepository() {
+		return boatRepository;
+	}
+
+	public void setBoatRepository(BoatRepository boatRepository) {
+		this.boatRepository = boatRepository;
 	}
 }

@@ -2,7 +2,6 @@ package com.ecsail.views.tabs.fee;
 
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
-import com.ecsail.sql.SqlUpdate;
 import com.ecsail.dto.FeeDTO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -180,7 +179,7 @@ public class FeeEditControls extends HBox {
             // must change both db_invoice and matching fees
             updateFees();
             parent.selectedFeeRow.dbInvoiceDTO.setFieldName(fieldNameText.getTextField().getText());
-            SqlUpdate.updateDbInvoice(parent.selectedFeeRow.dbInvoiceDTO);
+            invoiceRepository.updateDbInvoice(parent.selectedFeeRow.dbInvoiceDTO);
         });
     }
 
@@ -188,7 +187,7 @@ public class FeeEditControls extends HBox {
         if(fees.size() > 0)
             fees.stream().forEach(feeDTO -> {
                 feeDTO.setFieldName(fieldNameText.getTextField().getText());
-                SqlUpdate.updateFeeRecord(feeDTO);
+                invoiceRepository.updateFee(feeDTO);
             });
     }
 
@@ -209,8 +208,8 @@ public class FeeEditControls extends HBox {
                 FeeRow changedRow = parent.selectedFeeRow;
                 displacedRow.setOrder(oldValue);
                 changedRow.setOrder(newValue);
-                SqlUpdate.updateDbInvoice(displacedRow.dbInvoiceDTO);
-                SqlUpdate.updateDbInvoice(changedRow.dbInvoiceDTO);
+                invoiceRepository.updateDbInvoice(displacedRow.dbInvoiceDTO);
+                invoiceRepository.updateDbInvoice(changedRow.dbInvoiceDTO);
                 parent.refreshFeeRows();
             }
         });
@@ -220,7 +219,7 @@ public class FeeEditControls extends HBox {
         maxQtySpinner.getSpinner().valueProperty().addListener((observable, oldValue, newValue) -> {
             if (parent.isOkToWriteToDataBase()) { // don't trigger order spinner if you select another radio button
                 parent.selectedFeeRow.dbInvoiceDTO.setMaxQty(newValue);
-                SqlUpdate.updateDbInvoice(parent.selectedFeeRow.dbInvoiceDTO);
+                invoiceRepository.updateDbInvoice(parent.selectedFeeRow.dbInvoiceDTO);
                 refreshMockBox();
             }
         });
@@ -273,7 +272,7 @@ public class FeeEditControls extends HBox {
             }
             refreshMockBox();
             if(okToWriteToDatabase)
-            SqlUpdate.updateDbInvoice(parent.selectedFeeRow.dbInvoiceDTO);
+                invoiceRepository.updateDbInvoice(parent.selectedFeeRow.dbInvoiceDTO);
             okToWriteToDatabase = true;
         });
     }
@@ -294,7 +293,7 @@ public class FeeEditControls extends HBox {
                 .addListener((observable, oldValue, newValue) -> {
                     parent.selectedFeeRow.dbInvoiceDTO.setAutoPopulate(newValue);
                     if(parent.isOkToWriteToDataBase())
-                    SqlUpdate.updateDbInvoice(parent.selectedFeeRow.dbInvoiceDTO);
+                        invoiceRepository.updateDbInvoice(parent.selectedFeeRow.dbInvoiceDTO);
                 });
     }
 
@@ -303,7 +302,7 @@ public class FeeEditControls extends HBox {
             parent.selectedFeeRow.dbInvoiceDTO.setIsCredit(newValue);
             refreshMockBox();
             if(parent.isOkToWriteToDataBase())
-            SqlUpdate.updateDbInvoice(parent.selectedFeeRow.dbInvoiceDTO);
+                invoiceRepository.updateDbInvoice(parent.selectedFeeRow.dbInvoiceDTO);
         });
     }
 
@@ -312,7 +311,7 @@ public class FeeEditControls extends HBox {
             parent.selectedFeeRow.dbInvoiceDTO.setPrice_editable(newValue);
             refreshMockBox();
             if(parent.isOkToWriteToDataBase())
-            SqlUpdate.updateDbInvoice(parent.selectedFeeRow.dbInvoiceDTO);
+                invoiceRepository.updateDbInvoice(parent.selectedFeeRow.dbInvoiceDTO);
         });
     }
 

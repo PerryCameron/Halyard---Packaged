@@ -64,4 +64,8 @@ public interface InvoiceRepository {
     Boolean depositRecordExists(String year, int batch);
 
     Boolean invoiceExists(String year, MembershipDTO membership);
+
+    void updateDbInvoice(DbInvoiceDTO dbInvoiceDTO);
+
+    int updateFee(FeeDTO feeDTO);
 }
