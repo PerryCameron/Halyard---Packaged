@@ -5,9 +5,9 @@ import com.ecsail.EditCell;
 import com.ecsail.StringTools;
 import com.ecsail.dto.MembershipIdDTO;
 import com.ecsail.enums.MembershipType;
-import com.ecsail.repository.interfaces.MembershipIdRepository;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlSelect;
+import com.ecsail.views.dialogues.DialogueError;
 import com.ecsail.views.tabs.membership.TabMembership;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -41,6 +41,7 @@ public class HBoxHistory extends HBox {
     private final TableView<MembershipIdDTO> idTableView;
     private final TabMembership parent;
     LocalDate date;
+
     public HBoxHistory(TabMembership parent) {
         this.parent = parent;
         this.idTableView = new TableView<>();
@@ -66,7 +67,6 @@ public class HBoxHistory extends HBox {
 
         idAdd.setPrefWidth(60);
         idDelete.setPrefWidth(60);
-        //vboxGrey.setPrefWidth(460);
 
         vboxGrey.setPadding(new Insets(5, 5, 5, 5)); // spacing around table and buttons
         vboxPink.setPadding(new Insets(2, 2, 2, 2)); // spacing to make pink frame around table
@@ -96,42 +96,48 @@ public class HBoxHistory extends HBox {
         }
         joinDatePicker.setValue(date);
 
-        // example for this column found at
-        // https://gist.github.com/james-d/be5bbd6255a4640a5357#file-editcell-java-L109
         TableColumn<MembershipIdDTO, String> Col1 = createColumn("Year", MembershipIdDTO::fiscalYearProperty);
         Col1.setOnEditCommit(t -> {
-//			t.getTableView().getItems().get(t.getTablePosition().getRow())
-//					.setFiscalYear(t.getNewValue());
-			MembershipIdDTO membershipIdDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            MembershipIdDTO membershipIdDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            String savedValue = membershipIdDTO.getFiscalYear();
             membershipIdDTO.setFiscalYear(StringTools.changeEmptyStringToZero(t.getNewValue()));
-            if(parent.getModel().getMembershipIdRepository().rowExists(membershipIdDTO) == 0)
-            parent.getModel().getMembershipIdRepository().update(membershipIdDTO);
-            else logger.error("Entry already exists");
-		});
+            if (parent.getModel().getMembershipIdRepository().rowExists(membershipIdDTO) == 0)
+                parent.getModel().getMembershipIdRepository().update(membershipIdDTO);
+            else {
+                new DialogueError(true, "An entry for " + membershipIdDTO.getFiscalYear()
+                        + " already exists with the membership Id of " + membershipIdDTO.getMembershipId(), 500, 100);
+                membershipIdDTO.setFiscalYear(savedValue);
+            }
+        });
 
         TableColumn<MembershipIdDTO, String> Col2 = createColumn("Mem ID",
                 MembershipIdDTO::membershipIdProperty);
         Col2.setOnEditCommit(t -> {
-			MembershipIdDTO membershipIdDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            MembershipIdDTO membershipIdDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            String savedValue = membershipIdDTO.getMembershipId();
             membershipIdDTO.setMembershipId(StringTools.changeEmptyStringToZero(t.getNewValue()));
-            if(parent.getModel().getMembershipIdRepository().rowExists(membershipIdDTO) == 0)
-            parent.getModel().getMembershipIdRepository().update(membershipIdDTO);
-            else logger.error("Entry already exists");
-		});
+            if (parent.getModel().getMembershipIdRepository().rowExists(membershipIdDTO) == 0)
+                parent.getModel().getMembershipIdRepository().update(membershipIdDTO);
+            else { // if it ain't right, but it back right
+                new DialogueError(true, "An entry for " + membershipIdDTO.getFiscalYear()
+                        + " already exists with the membership Id of " + membershipIdDTO.getMembershipId(), 500, 100);
+                membershipIdDTO.setMembershipId(savedValue);
+            }
+        });
 
         // example for this column found at
         // https://o7planning.org/en/11079/javafx-tableview-tutorial
         ObservableList<MembershipType> MembershipTypeList = FXCollections.observableArrayList(MembershipType.values());
         TableColumn<MembershipIdDTO, MembershipType> Col3 = new TableColumn<>(
-				"Mem Type");
+                "Mem Type");
         Col3.setCellValueFactory(
-				param -> {
-					MembershipIdDTO thisId = param.getValue();
-					String membershipCode = thisId.getMemType();
-					/// careful with capitals
-					MembershipType membershipType = MembershipType.getByCode(membershipCode);
-					return new SimpleObjectProperty<>(membershipType);
-				});
+                param -> {
+                    MembershipIdDTO thisId = param.getValue();
+                    String membershipCode = thisId.getMemType();
+                    /// careful with capitals
+                    MembershipType membershipType = MembershipType.getByCode(membershipCode);
+                    return new SimpleObjectProperty<>(membershipType);
+                });
 
         Col3.setCellFactory(ComboBoxTableCell.forTableColumn(MembershipTypeList));
 
@@ -143,37 +149,37 @@ public class HBoxHistory extends HBox {
 
         TableColumn<MembershipIdDTO, Boolean> Col4 = new TableColumn<>("Renewed");
         Col4.setCellValueFactory(
-				param -> {
-					MembershipIdDTO membershipIdDTO = param.getValue();
-					SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(membershipIdDTO.isRenew());
-					booleanProp.addListener((observable, oldValue, newValue) -> {
-						membershipIdDTO.setIsRenew(newValue);
+                param -> {
+                    MembershipIdDTO membershipIdDTO = param.getValue();
+                    SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(membershipIdDTO.isRenew());
+                    booleanProp.addListener((observable, oldValue, newValue) -> {
+                        membershipIdDTO.setIsRenew(newValue);
                         parent.getModel().getMembershipIdRepository().update(membershipIdDTO);
-					});
-					return booleanProp;
-				});
-		Col4.setCellFactory(p -> {
-			CheckBoxTableCell<MembershipIdDTO, Boolean> cell = new CheckBoxTableCell<>();
-			cell.setAlignment(Pos.CENTER);
-			return cell;
-		});
+                    });
+                    return booleanProp;
+                });
+        Col4.setCellFactory(p -> {
+            CheckBoxTableCell<MembershipIdDTO, Boolean> cell = new CheckBoxTableCell<>();
+            cell.setAlignment(Pos.CENTER);
+            return cell;
+        });
 
         TableColumn<MembershipIdDTO, Boolean> Col5 = new TableColumn<>("Renew Late");
         Col5.setCellValueFactory(
-				param -> {
-					MembershipIdDTO membershipIdDTO = param.getValue();
-					SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(membershipIdDTO.isLateRenew());
-					booleanProp.addListener((observable, oldValue, newValue) -> {
-						membershipIdDTO.setIsLateRenew(newValue);
+                param -> {
+                    MembershipIdDTO membershipIdDTO = param.getValue();
+                    SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(membershipIdDTO.isLateRenew());
+                    booleanProp.addListener((observable, oldValue, newValue) -> {
+                        membershipIdDTO.setIsLateRenew(newValue);
                         parent.getModel().getMembershipIdRepository().update(membershipIdDTO);
-					});
-					return booleanProp;
-				});
-		Col5.setCellFactory(p -> {
-			CheckBoxTableCell<MembershipIdDTO, Boolean> cell = new CheckBoxTableCell<>();
-			cell.setAlignment(Pos.CENTER);
-			return cell;
-		});
+                    });
+                    return booleanProp;
+                });
+        Col5.setCellFactory(p -> {
+            CheckBoxTableCell<MembershipIdDTO, Boolean> cell = new CheckBoxTableCell<>();
+            cell.setAlignment(Pos.CENTER);
+            return cell;
+        });
 
         /// sets width of columns by percentage
         Col1.setMaxWidth(1f * Integer.MAX_VALUE * 25);   // Year
@@ -220,7 +226,7 @@ public class HBoxHistory extends HBox {
         //This deals with the bug located here where the datepicker value is not updated on focus lost
         //https://bugs.openjdk.java.net/browse/JDK-8092295?page=com.atlassian.jira.plugin.system.issuetabpanels:all-tabpanel
         joinDatePicker.focusedProperty().addListener((observable, wasFocused, isFocused) -> {
-            if (!isFocused){
+            if (!isFocused) {
                 try {
                     joinDatePicker.setValue(joinDatePicker.getConverter().fromString(joinDatePicker.getEditor().getText()));
                 } catch (DateTimeParseException e) {
