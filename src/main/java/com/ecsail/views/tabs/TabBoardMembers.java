@@ -3,6 +3,8 @@ package com.ecsail.views.tabs;
 import com.ecsail.BaseApplication;
 import com.ecsail.Launcher;
 import com.ecsail.enums.Officer;
+import com.ecsail.repository.implementations.BoardPositionsRepositoryImpl;
+import com.ecsail.repository.interfaces.BoardPositionsRepository;
 import com.ecsail.sql.select.SqlBoard;
 import com.ecsail.dto.BoardDTO;
 import javafx.collections.ObservableList;
@@ -19,6 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 
@@ -32,16 +35,17 @@ public class TabBoardMembers extends Tab {
 	private VBox committeeVBox2 = new VBox();
 	private VBox officerVBox1 = new VBox();  // titles
 	private VBox officerVBox2 = new VBox();
-	private ObservableList<BoardDTO> board;
+	private ArrayList<BoardDTO> board;
 	private String selectedYear;
 	private String currentYear;
 	private Text year;
+	private BoardPositionsRepository boardPositionsRepository = new BoardPositionsRepositoryImpl();
 
 	
 	public TabBoardMembers(String text) {
 		super(text);
 		this.selectedYear = new SimpleDateFormat("yyyy").format(new Date());  // let's start at the current year
-		this.board =  SqlBoard.getBoard(selectedYear);
+		this.board = (ArrayList<BoardDTO>) boardPositionsRepository.getBoard(selectedYear);
 		this.currentYear = selectedYear;  // save the current year for later
 		this.year = new Text(selectedYear + " Officers");
 		// gets a list of board position data to use throughout app.
@@ -150,11 +154,6 @@ public class TabBoardMembers extends Tab {
 	boardMembersTitleBox.getChildren().addAll(board);
 	vboxLeft.getChildren().addAll(comboBox, imageView);
 	vboxPink.getChildren().addAll(officersTitleHBox, officersHBox, committeeTitleHBox, committeeHBox, boardMembersTitleBox,boardMembersHBox);
-	//Pane screenPane = new Pane();
-//	vboxBlue.setId("box-blue");
-	//screenPane.setId("slip-fonts");
-
-
 
 	vboxBlue.getChildren().addAll(vboxLeft,vboxPink);
 	setContent(vboxBlue);
@@ -163,7 +162,7 @@ public class TabBoardMembers extends Tab {
 	private void refreshBoardList() {
 		year.setText(selectedYear + " Officers");
 		board.clear();
-		board =  SqlBoard.getBoard(selectedYear);
+		board = (ArrayList<BoardDTO>) boardPositionsRepository.getBoard(selectedYear);
 	}
 	
 	private void clearBoard(VBox officerVBox1, VBox officerVBox2, VBox committeeVBox1, VBox committeeVBox2,VBox boardMembersVBox1,VBox boardMembersVBox2,VBox boardMembersVBox3) {
@@ -254,14 +253,14 @@ public class TabBoardMembers extends Tab {
 	 * @return
 	 */
 	private String getOfficer(String offType) {
-		return board.stream().filter(o -> o.getOfficer_type().equals(offType))
-				.map(o -> String.join(" ", o.getFname(), o.getLname()))
+		return board.stream().filter(o -> o.getOfficerType().equals(offType))
+				.map(o -> String.join(" ", o.getFirstName(), o.getLastName()))
 				.findFirst().orElse("");
 	}
 
 	private int getOfficerMSID(String offType) {
-		return board.stream().filter(bm -> offType.equals(bm.getOfficer_type()))
-				.map(BoardDTO::getMs_id)
+		return board.stream().filter(bm -> offType.equals(bm.getOfficerType()))
+				.map(BoardDTO::getMsId)
 				.findFirst().orElse(0);
 	}
 	
@@ -269,12 +268,12 @@ public class TabBoardMembers extends Tab {
 		Text yearText = new Text(year);
 		yearText.getStyleClass().add("year-bod-text");
 		fillHBox.getChildren().add(yearText);
-		board.stream().filter(bm -> bm.getBoard_year().equals(year))
+		board.stream().filter(bm -> bm.getBoardYear().equals(year))
 				.forEach(bm -> {
-					Text boardMember = new Text((bm.getFname() + " " + bm.getLname()));
+					Text boardMember = new Text((bm.getFirstName() + " " + bm.getLastName()));
 					boardMember.getStyleClass().add("bod-names-text");
 					fillHBox.getChildren()
-							.add(setMouseListener(boardMember, bm.getMs_id()));
+							.add(setMouseListener(boardMember, bm.getMsId()));
 				});
 	}
 	

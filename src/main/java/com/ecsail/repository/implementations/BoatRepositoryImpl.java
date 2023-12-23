@@ -294,6 +294,4 @@ public class BoatRepositoryImpl implements BoatRepository {
             return 0; // Indicating that no rows were updated
         }
     }
-
-
 }

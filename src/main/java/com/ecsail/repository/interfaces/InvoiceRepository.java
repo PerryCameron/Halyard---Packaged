@@ -68,4 +68,6 @@ public interface InvoiceRepository {
     void updateDbInvoice(DbInvoiceDTO dbInvoiceDTO);
 
     int updateFee(FeeDTO feeDTO);
+
+    int getNumberOfDepositsForYear(int year);
 }

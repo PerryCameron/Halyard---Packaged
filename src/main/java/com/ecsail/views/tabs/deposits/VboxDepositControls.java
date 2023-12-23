@@ -4,7 +4,6 @@ import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.views.dialogues.Dialogue_DepositPDF;
 import com.ecsail.pdf.PDF_DepositReport;
-import com.ecsail.sql.SqlCount;
 import com.ecsail.sql.select.*;
 import com.ecsail.dto.DepositDTO;
 import com.ecsail.dto.DepositPDFDTO;
@@ -316,9 +315,6 @@ public class VboxDepositControls extends VBox {
     private void refreshDate() {
         LocalDate date;
         var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        // if no deposit selected put in today's date
-//        if(depositDTO.getDepositDate() == null)  // if it is a new year and there are no deposits yet
-//            depositDTO.setDepositDate(String.valueOf(LocalDate.now()));
         date = LocalDate.parse(depositDTO.getDepositDate(), formatter);
         depositDatePicker.setValue(date);
     }
@@ -389,12 +385,12 @@ public class VboxDepositControls extends VBox {
     }
 
     private void refreshDepositCount() {
-        numberOfDeposits = SqlCount.getNumberOfDepositsForYear(selectedYear);
+        numberOfDeposits = parent.getInvoiceRepository().getNumberOfDepositsForYear(selectedYear);
         numberOfDepositsText.setText(String.valueOf(numberOfDeposits));
     }
 
     private int initialDepositCount() {
-        int depositCount = SqlCount.getNumberOfDepositsForYear(selectedYear);
+        int depositCount = parent.getInvoiceRepository().getNumberOfDepositsForYear(selectedYear);
         // perhaps a new year or new database and no deposits yet, we shall create the first
         if (depositCount == 0) {
             depositCount = 1;

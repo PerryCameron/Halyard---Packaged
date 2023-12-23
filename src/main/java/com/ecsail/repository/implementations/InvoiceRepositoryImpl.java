@@ -682,6 +682,16 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
             return 0; // Indicating that no rows were updated
         }
     }
+    @Override
+    public int getNumberOfDepositsForYear(int year) {
+        String query = "SELECT COUNT(*) FROM deposit WHERE FISCAL_YEAR = ?";
+        try {
+            return template.queryForObject(query, new Object[]{year}, Integer.class);
+        } catch (Exception e) {
+            logger.error("Unable to retrieve information", e);
+            return 0; // Return 0 in case of an error
+        }
+    }
 
 
 }
