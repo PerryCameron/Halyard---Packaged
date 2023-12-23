@@ -5,8 +5,6 @@ import com.ecsail.HalyardPaths;
 import com.ecsail.views.dialogues.Dialogue_DepositPDF;
 import com.ecsail.pdf.PDF_DepositReport;
 import com.ecsail.sql.SqlCount;
-import com.ecsail.sql.SqlExists;
-import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.*;
 import com.ecsail.dto.DepositDTO;
@@ -208,7 +206,7 @@ public class VboxDepositControls extends VBox {
             if(okToMakeNewDeposit()) { // checks to see that last deposit is not empty, so ok to make new one
                 numberOfDeposits++; // must be first
                 cleanDeposit();
-                SqlInsert.addDeposit(depositDTO);
+                parent.getInvoiceRepository().insertDeposit(depositDTO);
                 refreshDepositCount();
                 depositDTO.setBatch(numberOfDeposits);
                 batchSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,numberOfDeposits));
@@ -275,11 +273,11 @@ public class VboxDepositControls extends VBox {
     }
 
     public boolean okToMakeNewDeposit() {
-        return SqlExists.depositIsUsed(selectedYear,numberOfDeposits);
+        return parent.getInvoiceRepository().depositIsUsed(selectedYear,numberOfDeposits);
     }
 
     public boolean depositIsUsed() {
-        return SqlExists.depositIsUsed(selectedYear,depositDTO.getBatch());
+        return parent.getInvoiceRepository().depositIsUsed(selectedYear,depositDTO.getBatch());
     }
 
     private void refreshAllData(boolean newYearSelected) {
@@ -376,7 +374,7 @@ public class VboxDepositControls extends VBox {
     }
 
     private void cleanDeposit() {
-        depositDTO.setDeposit_id(SqlSelect.getNextAvailablePrimaryKey("deposit", "DEPOSIT_ID"));
+        depositDTO.setDeposit_id(0);
         depositDTO.setBatch(numberOfDeposits);
         depositDTO.setFiscalYear(String.valueOf(selectedYear));
         LocalDate date;
@@ -404,7 +402,7 @@ public class VboxDepositControls extends VBox {
             cleanDeposit();  // sets all the correct information in depositDTO to make first deposit for year
             depositDTO.setBatch(1); // first deposit for the selected year
             System.out.println(depositDTO);
-            SqlInsert.addDeposit(depositDTO);
+            parent.getInvoiceRepository().insertDeposit(depositDTO);
         }
         numberOfDepositsText.setText(String.valueOf(depositCount));
         return depositCount;

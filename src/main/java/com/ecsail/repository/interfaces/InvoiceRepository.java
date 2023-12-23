@@ -50,4 +50,18 @@ public interface InvoiceRepository {
 
     List<FeeDTO> getAllFeesByFieldNameAndYear(FeeDTO feeDTO);
     FeeDTO getFeeByMembershipTypeForFiscalYear(int year, int msId);
+
+    void deleteFee(FeeDTO f);
+
+    void deleteFeesByDbInvoiceId(DbInvoiceDTO dbInvoiceDTO);
+
+    void deleteDbInvoice(DbInvoiceDTO dbInvoiceDTO);
+
+    DepositDTO insertDeposit(DepositDTO d);
+
+    Boolean depositIsUsed(int year, int batch);
+
+    Boolean depositRecordExists(String year, int batch);
+
+    Boolean invoiceExists(String year, MembershipDTO membership);
 }

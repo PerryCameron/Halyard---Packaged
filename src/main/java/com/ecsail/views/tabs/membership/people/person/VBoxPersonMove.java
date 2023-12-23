@@ -5,7 +5,6 @@ import com.ecsail.BaseApplication;
 import com.ecsail.dto.PersonDTO;
 import com.ecsail.enums.MemberType;
 import com.ecsail.repository.interfaces.PersonRepository;
-import com.ecsail.sql.SqlExists;
 import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.views.tabs.membership.people.HBoxPerson;
 import javafx.geometry.Insets;
@@ -196,7 +195,7 @@ public class VBoxPersonMove extends VBox {
     }
 
     private void changeToSecondary(TabPane personTabPane) {
-        if (SqlExists.memberTypeExists(MemberType.SECONDARY.getCode(), person.getMsId())) {
+        if (personRepository.memberTypeExists(MemberType.SECONDARY.getCode(), person.getMsId())) {
             Tab secondaryTab = getTab(personTabPane, "Secondary");
             assert secondaryTab != null;
             PersonDTO secondary = getPerson(secondaryTab);
@@ -224,7 +223,7 @@ public class VBoxPersonMove extends VBox {
 
     private void changeToPrimary(TabPane personTabPane) {
         // check if there is already a primary for persons msid
-        if (SqlExists.memberTypeExists(MemberType.PRIMARY.getCode(), person.getMsId())) {
+        if (personRepository.memberTypeExists(MemberType.PRIMARY.getCode(), person.getMsId())) {
             Tab primaryTab = getTab(personTabPane, "Primary");
             assert primaryTab != null;
             PersonDTO primary = getPerson(primaryTab);
@@ -252,11 +251,9 @@ public class VBoxPersonMove extends VBox {
 
     // will select tab by text in tab
     private Tab getTab(TabPane personTabPane, String text) {
-        for (Tab t : personTabPane.getTabs()) {
-            if (t.getText().equals(text))
-                return t;
-        }
-        return null;
+        Optional<Tab> matchingTab = personTabPane.getTabs().stream()
+                .filter(t -> t.getText().equals(text)).findFirst();
+        return matchingTab.orElse(null);
     }
 
     // will select PersonDTO attached to tab

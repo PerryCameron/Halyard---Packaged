@@ -12,7 +12,6 @@ import com.ecsail.views.tabs.membership.information.*;
 import com.ecsail.views.tabs.membership.people.HBoxPerson;
 import com.ecsail.views.tabs.membership.people.VBoxAddPerson;
 import com.ecsail.models.MembershipTabModel;
-import com.ecsail.sql.SqlInsert;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Tab;

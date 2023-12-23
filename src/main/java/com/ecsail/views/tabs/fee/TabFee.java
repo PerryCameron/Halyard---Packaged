@@ -4,7 +4,6 @@ import com.ecsail.dto.DbInvoiceDTO;
 import com.ecsail.dto.FeeDTO;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
-import com.ecsail.sql.SqlDelete;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.sql.select.SqlDbInvoice;
 import javafx.geometry.Insets;
@@ -192,9 +191,9 @@ public class TabFee extends Tab {
             // gets the number we are removing
             int order = selectedFeeRow.dbInvoiceDTO.getOrder();
             // remove fees for this db_invoice from database
-            SqlDelete.deleteFeesByDbInvoiceId(selectedFeeRow.dbInvoiceDTO);
+            invoiceRepository.deleteFeesByDbInvoiceId(selectedFeeRow.dbInvoiceDTO);
             // remove dbInvoice
-            SqlDelete.deleteDbInvoice(selectedFeeRow.dbInvoiceDTO);
+            invoiceRepository.deleteDbInvoice(selectedFeeRow.dbInvoiceDTO);
             // remove feeRow from list
             rows.remove(selectedFeeRow);
             // clear HBoxes from column

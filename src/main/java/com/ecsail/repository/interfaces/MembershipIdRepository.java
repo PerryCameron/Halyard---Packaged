@@ -30,4 +30,6 @@ public interface MembershipIdRepository {
     int rowExists(MembershipIdDTO membershipIdDTO);
 
     void updateMembershipId(int msId, int year, boolean value);
+
+    Boolean currentMembershipIdExists(int msId);
 }

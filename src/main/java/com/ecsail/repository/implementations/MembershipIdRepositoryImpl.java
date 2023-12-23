@@ -253,6 +253,20 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
             logger.error("There was a problem with the UPDATE", e);
         }
     }
+    @Override
+    public Boolean currentMembershipIdExists(int msId) {
+        int currentYear = Year.now().getValue();
+        String sql = "SELECT EXISTS(SELECT * FROM membership_id WHERE fiscal_year = ? AND ms_id = ?)";
+        try {
+            return template.queryForObject(sql, new Object[]{currentYear, msId}, Boolean.class);
+        } catch (Exception e) {
+            logger.error("Unable to check if current membership ID exists", e);
+            // Handle exception as required
+            // For example, showing a dialog or rethrowing as a custom exception
+            // new Dialogue_ErrorSQL(e, "Unable to check if EXISTS", "See below for details");
+            return false;
+        }
+    }
 
 
 }

@@ -203,6 +203,19 @@ public class PersonRepositoryImpl implements PersonRepository {
             return null; // or handle as appropriate
         }
     }
+    @Override
+    public Boolean memberTypeExists(int memberType, int msid) {
+        String sql = "SELECT EXISTS(SELECT P_ID FROM person WHERE member_type = ? AND ms_id = ?) as memberTypeExists";
+        try {
+            return template.queryForObject(sql, new Object[]{memberType, msid}, Boolean.class);
+        } catch (Exception e) {
+            logger.error("Unable to check if member type exists", e);
+            // Handle exception as required
+            // For example, showing a dialog or rethrowing as a custom exception
+            // new Dialogue_ErrorSQL(e, "Unable to check if member type exists", "See below for details");
+            return false;
+        }
+    }
 
 
 }

@@ -2,8 +2,6 @@ package com.ecsail.views.tabs.fee;
 
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
-import com.ecsail.sql.SqlDelete;
-import com.ecsail.sql.SqlInsert;
 import com.ecsail.sql.SqlUpdate;
 import com.ecsail.dto.FeeDTO;
 import javafx.collections.FXCollections;
@@ -122,7 +120,7 @@ public class FeeEditControls extends HBox {
                 dialogPane.getStyleClass().add("dialog");
                 Optional<ButtonType> result = conformation.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
-                    SqlDelete.deleteFee(feeDTO);  // if deleted in database
+                    invoiceRepository.deleteFee(feeDTO);  // if deleted in database
                     feeTableView.getItems().remove(selectedIndex); // remove from GUI
                 }
             }

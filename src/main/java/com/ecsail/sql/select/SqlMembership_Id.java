@@ -32,42 +32,6 @@ public class SqlMembership_Id {
         return id;
     }
 
-    public static MembershipIdDTO getMembershipIdObject(int mid) {
-        MembershipIdDTO id = null;
-        String query = "SELECT * FROM membership_id WHERE mid="  + mid;
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            rs.next();
-                id = new MembershipIdDTO(
-                        rs.getInt("MID")
-                        , rs.getString("fiscal_year")
-                        , rs.getInt("ms_id")
-                        , rs.getString("membership_id")
-                        , rs.getBoolean("renew")
-                        , rs.getString("MEM_TYPE")
-                        , rs.getBoolean("SELECTED")
-                        , rs.getBoolean("LATE_RENEW"));
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
-        }
-        return id;
-    }
-
-    public static int getHighestMembershipId(String year) {  // example-> "email","email_id"
-        int result = 0;
-        String query = "SELECT Max(membership_id) FROM membership_id WHERE fiscal_year='" + year + "' AND membership_id < 500";
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            rs.next();
-            result =  rs.getInt("Max(membership_id)");
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
-        }
-        return result;
-    }
-
     public static boolean isRenewedByMsidAndYear(int ms_id, String year)
     {
         boolean renew = false;
@@ -81,33 +45,6 @@ public class SqlMembership_Id {
             new Dialogue_ErrorSQL(e,"membership id record does not exist for ms_id " + ms_id + " for year " + year,"See below for details");
         }
         return renew;
-    }
-
-
-    //////////  FOR CHARTS /////////////
-
-
-    public static ObservableList<MembershipIdDTO> getActiveMembershipIdsByYear(String year) {
-        ObservableList<MembershipIdDTO> theseIds = FXCollections.observableArrayList();
-        String query = "SELECT * FROM membership_id WHERE fiscal_year=" + year + " AND renew=true ORDER BY membership_id";
-        try {
-            ResultSet rs = BaseApplication.connect.executeSelectQuery(query);
-            while (rs.next()) {
-                theseIds.add(new MembershipIdDTO(
-                        rs.getInt("MID"),
-                        rs.getString("fiscal_year"),
-                        rs.getInt("ms_id"),
-                        rs.getString("membership_id"),
-                        rs.getBoolean("renew"),
-                        rs.getString("MEM_TYPE"),
-                        rs.getBoolean("SELECTED"),
-                        rs.getBoolean("LATE_RENEW")));
-            }
-            BaseApplication.connect.closeResultSet(rs);
-        } catch (SQLException e) {
-            new Dialogue_ErrorSQL(e,"Unable to retrieve information","See below for details");
-        }
-        return theseIds;
     }
 
     public static int getNonRenewNumber(int year) {

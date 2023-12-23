@@ -2,9 +2,10 @@ package com.ecsail.views.tabs.people;
 
 import com.ecsail.Launcher;
 import com.ecsail.enums.MemberType;
+import com.ecsail.repository.implementations.MembershipIdRepositoryImpl;
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.interfaces.MembershipIdRepository;
 import com.ecsail.repository.interfaces.MembershipRepository;
-import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.SqlPerson;
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.dto.PersonDTO;
@@ -43,11 +44,13 @@ public class TabPeople extends Tab {
 	static int pick = 1;
 
 	MembershipRepository membershipRepository;
+	MembershipIdRepository membershipIdRepository;
 
 	public TabPeople(String text) {
 		super(text);
 		TabPeople.people = SqlPerson.getPeople();
 		this.membershipRepository = new MembershipRepositoryImpl();
+		this.membershipIdRepository = new MembershipIdRepositoryImpl();
 		
 		VBox vboxBlue = new VBox(); // main vbox
 		VBox vbox2 = new VBox(); // sepearates box search and box people
@@ -127,7 +130,7 @@ public class TabPeople extends Tab {
 
 	private void createPersonBox(PersonDTO person)  {
 		MembershipListDTO membership = null;
-		if(SqlExists.currentMembershipIdExists(person.getMsId())) {
+		if(membershipIdRepository.currentMembershipIdExists(person.getMsId())) {
 		membership = membershipRepository.getMembershipByMsIdAndYear(person.getMsId(), String.valueOf(Year.now().getValue()));
 		} else {
 		membership = membershipRepository.getMembershipFromListWithoutMembershipId(person.getMsId());

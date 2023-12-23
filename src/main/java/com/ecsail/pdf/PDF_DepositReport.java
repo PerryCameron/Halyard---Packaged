@@ -7,7 +7,6 @@ import com.ecsail.views.tabs.deposits.InvoiceWithMemberInfoDTO;
 import com.ecsail.views.tabs.deposits.TabDeposits;
 import com.ecsail.repository.implementations.MemoRepositoryImpl;
 import com.ecsail.repository.interfaces.MemoRepository;
-import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.select.SqlDbInvoice;
 import com.ecsail.sql.select.SqlDeposit;
 import com.ecsail.sql.select.SqlInvoiceItem;
@@ -195,7 +194,7 @@ public class PDF_DepositReport {
 			addItemRow(detailTable,"Total Credit", i.getCredit(), 0);
 			addItemRow(detailTable, "Total Due", totalDue,0);
 			addItemPaidRow(detailTable, i);
-			if (SqlExists.memoExists(i.getId(), "I"))
+			if (memoRepository.memoExists(i.getId(), "I"))
 				addNoteRow(detailTable, " ",getNote(i));
 		}
 		return detailTable;
@@ -222,7 +221,7 @@ public class PDF_DepositReport {
 	private String getNote(InvoiceWithMemberInfoDTO invoice) {
 		String thisMemo;
 		// make sure the memo exists
-		if(SqlExists.memoExists(invoice.getId(), "I")) {
+		if(memoRepository.memoExists(invoice.getId(), "I")) {
 			thisMemo = memoRepository.getMemoByInvoiceIdAndCategory(invoice, "I").getMemo();
 		} else {
 		thisMemo = "No note for this entry";

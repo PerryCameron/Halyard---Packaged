@@ -7,7 +7,6 @@ import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.views.tabs.membership.fiscal.invoice.Invoice;
-import com.ecsail.sql.SqlExists;
 import com.ecsail.sql.select.SqlDbInvoice;
 import com.ecsail.dto.DbInvoiceDTO;
 import com.ecsail.dto.FeeDTO;
@@ -112,7 +111,7 @@ public class HBoxInvoiceList extends HBox {
 			// create invoice for a specified year for this membership
 			var newInvoice = new InvoiceDTO(parent.getModel().getMembership().getMsId(), comboBox.getValue());
 			// if a record already exists for this year then this is a supplemental record
-			if (SqlExists.invoiceExists(String.valueOf(comboBox.getValue()), parent.getModel().getMembership())) {
+			if (invoiceRepository.invoiceExists(String.valueOf(comboBox.getValue()), parent.getModel().getMembership())) {
 				newInvoice.setSupplemental(true);
 			}
 			// insert the new record into the SQL database

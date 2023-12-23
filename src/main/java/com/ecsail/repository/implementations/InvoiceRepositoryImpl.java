@@ -543,4 +543,97 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
         }
         return feeDTO;
     }
+    @Override
+    public void deleteFee(FeeDTO feeDTO) {
+        String sql = "DELETE FROM fee WHERE fee_id = ?";
+        try {
+            template.update(sql, feeDTO.getFeeId());
+        } catch (Exception e) {
+            logger.error("Unable to DELETE fee data", e);
+            // Handle exception as required
+            // For example, showing a dialog or rethrowing as a custom exception
+            // new Dialogue_ErrorSQL(e, "Unable to DELETE", "See below for details");
+        }
+    }
+    @Override
+    public void deleteFeesByDbInvoiceId(DbInvoiceDTO dbInvoiceDTO) {
+        String sql = "DELETE FROM fee WHERE db_invoice_id = ?";
+        try {
+            template.update(sql, dbInvoiceDTO.getId());
+        } catch (Exception e) {
+            logger.error("Unable to DELETE fees for dbInvoiceID " + dbInvoiceDTO.getId(), e);
+            // Handle exception as required
+            // For example, showing a dialog or rethrowing as a custom exception
+            // new Dialogue_ErrorSQL(e, "Unable to DELETE fees for dbInvoiceID " + dbInvoiceDTO.getId(), "See below for details");
+        }
+    }
+    @Override
+    public void deleteDbInvoice(DbInvoiceDTO dbInvoiceDTO) {
+        String sql = "DELETE FROM db_invoice WHERE id = ?";
+        try {
+            template.update(sql, dbInvoiceDTO.getId());
+        } catch (Exception e) {
+            logger.error("Unable to DELETE dbInvoice with ID " + dbInvoiceDTO.getId(), e);
+            // Handle exception as required
+            // For example, showing a dialog or rethrowing as a custom exception
+            // new Dialogue_ErrorSQL(e, "Unable to DELETE dbInvoice with ID " + dbInvoiceDTO.getId(), "See below for details");
+        }
+    }
+    @Override
+    public DepositDTO insertDeposit(DepositDTO d) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        String sql = "INSERT INTO deposit (DEPOSIT_DATE, FISCAL_YEAR, BATCH) VALUES (?, ?, ?);";
+
+        template.update(con -> {
+            PreparedStatement ps = con.prepareStatement(sql, new String[]{"DEPOSIT_ID"});
+            ps.setString(1, d.getDepositDate());
+            ps.setString(2, d.getFiscalYear());
+            ps.setInt(3, d.getBatch());
+            return ps;
+        }, keyHolder);
+
+        if (keyHolder.getKey() != null) {
+            d.setDeposit_id(keyHolder.getKey().intValue());
+        }
+        return d;
+    }
+    @Override
+    public Boolean depositIsUsed(int year, int batch) {
+        String sql = "SELECT EXISTS(SELECT * FROM invoice WHERE FISCAL_YEAR = ? AND BATCH = ?) AS LATEST_EXISTS";
+        try {
+            return template.queryForObject(sql, new Object[]{year, batch}, Boolean.class);
+        } catch (Exception e) {
+            logger.error("Unable to check if EXISTS", e);
+            // Handle exception as required
+            // For example, showing a dialog or rethrowing as a custom exception
+            // new Dialogue_ErrorSQL(e, "Unable to check if EXISTS", "See below for details");
+            return false;
+        }
+    }
+    @Override
+    public Boolean depositRecordExists(String year, int batch) {
+        String sql = "SELECT EXISTS(SELECT * FROM deposit WHERE fiscal_year = ? AND BATCH = ?)";
+        try {
+            return template.queryForObject(sql, new Object[]{year, batch}, Boolean.class);
+        } catch (Exception e) {
+            logger.error("Unable to check if EXISTS", e);
+            // Handle exception as required
+            // For example, showing a dialog or rethrowing as a custom exception
+            // new Dialogue_ErrorSQL(e, "Unable to check if EXISTS", "See below for details");
+            return false;
+        }
+    }
+    @Override
+    public Boolean invoiceExists(String year, MembershipDTO membership) {
+        String sql = "SELECT EXISTS(SELECT * FROM invoice WHERE ms_id = ? AND fiscal_year = ?) AS invoiceExists";
+        try {
+            return template.queryForObject(sql, new Object[]{membership.getMsId(), year}, Boolean.class);
+        } catch (Exception e) {
+            logger.error("Unable to check if Invoice Exists", e);
+            // Handle exception as required
+            // For example, showing a dialog or rethrowing as a custom exception
+            // new Dialogue_ErrorSQL(e, "Unable to check if Invoice Exists", "See below for details");
+            return false;
+        }
+    }
 }

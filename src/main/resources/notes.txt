@@ -3,5 +3,7 @@ see it again.  If you reboot the fee tab it is gone.
 
 If you click on a history tuple, open a field to edit but make no changes, it will give you a dialogue error
 
+In Dialogue_DepositPDF, if deposit is empty it will throw an exception - low priority
+
 
 

@@ -113,4 +113,17 @@ public class MemoRepositoryImpl implements MemoRepository {
             logger.error("There was a problem with the UPDATE: " + e.getMessage());
         }
     }
+    @Override
+    public Boolean memoExists(int invoiceId, String category) {
+        String sql = "SELECT EXISTS(SELECT * FROM memo WHERE CATEGORY = ? AND invoice_id = ?) AS memoExists";
+        try {
+            return template.queryForObject(sql, new Object[]{category, invoiceId}, Boolean.class);
+        } catch (Exception e) {
+            logger.error("Unable to check if memo exists", e);
+            // Handle exception as required
+            // For example, showing a dialog or rethrowing as a custom exception
+            // new Dialogue_ErrorSQL(e, "Unable to check if memo exists", "See below for details");
+            return false;
+        }
+    }
 }

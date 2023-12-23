@@ -20,4 +20,6 @@ public interface MemoRepository {
     MemoDTO insertMemo(MemoDTO m);
 
     void updateMemo(int memoId, String field, String attribute);
+
+    Boolean memoExists(int invoiceId, String category);
 }

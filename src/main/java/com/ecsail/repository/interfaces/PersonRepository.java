@@ -35,6 +35,8 @@ public interface PersonRepository {
     int getPersonAge(PersonDTO person);
 
     PersonDTO insertUserByMsId(int msId);
+
+    Boolean memberTypeExists(int memberType, int msid);
 //    List<PersonDTO> getActiveAuxBoats();
 //    List<PersonDTO> getAllSailBoats();
 //    List<PersonDTO> getAllAuxBoats();
