@@ -1,14 +1,12 @@
 package com.ecsail.views.tabs.membership.people.person;
 
 import com.ecsail.dto.PersonDTO;
-import com.ecsail.sql.SqlPerson;
 import com.ecsail.views.tabs.membership.people.HBoxPerson;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;

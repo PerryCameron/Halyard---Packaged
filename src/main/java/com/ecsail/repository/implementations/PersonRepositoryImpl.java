@@ -18,6 +18,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PersonRepositoryImpl implements PersonRepository {
@@ -216,6 +217,19 @@ public class PersonRepositoryImpl implements PersonRepository {
             return false;
         }
     }
-
-
+    @Override
+    public List<PersonDTO> getAllPersons() {
+        String sql = "SELECT * FROM person";
+        try {
+            return template.query(sql, new PersonRowMapper());
+        } catch (Exception e) {
+            logger.error("Error fetching all persons", e);
+            // Handle exception as required
+            // Return an empty list or handle the exception otherwise
+            return Collections.emptyList();
+        }
+    }
 }
+
+
+

@@ -1,16 +1,17 @@
 package com.ecsail.views.tabs.people;
 
 import com.ecsail.Launcher;
+import com.ecsail.dto.PersonDTO;
 import com.ecsail.enums.MemberType;
 import com.ecsail.repository.implementations.MembershipIdRepositoryImpl;
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.implementations.PersonRepositoryImpl;
 import com.ecsail.repository.interfaces.MembershipIdRepository;
 import com.ecsail.repository.interfaces.MembershipRepository;
-import com.ecsail.sql.SqlPerson;
-import com.ecsail.dto.MembershipListDTO;
-import com.ecsail.dto.PersonDTO;
+import com.ecsail.repository.interfaces.PersonRepository;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,7 +25,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-import java.time.Year;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,12 +45,15 @@ public class TabPeople extends Tab {
 
 	MembershipRepository membershipRepository;
 	MembershipIdRepository membershipIdRepository;
+	PersonRepository personRepository;
 
 	public TabPeople(String text) {
 		super(text);
-		TabPeople.people = SqlPerson.getPeople();
+
 		this.membershipRepository = new MembershipRepositoryImpl();
 		this.membershipIdRepository = new MembershipIdRepositoryImpl();
+		this.personRepository = new PersonRepositoryImpl();
+		TabPeople.people = FXCollections.observableArrayList(personRepository.getAllPersons());
 		
 		VBox vboxBlue = new VBox(); // main vbox
 		VBox vbox2 = new VBox(); // sepearates box search and box people
@@ -61,7 +64,6 @@ public class TabPeople extends Tab {
 		vboxBlue.setPadding(new Insets(12,12,15,12));
 		hboxPink.setPadding(new Insets(3,3,5,3));
 		vboxBlue.setAlignment(Pos.TOP_CENTER);
-		//vbox1.setPrefHeight(768);
 		VBox.setVgrow(vboxBlue, Priority.ALWAYS);
 		VBox.setVgrow(hboxPink, Priority.ALWAYS);
 		hboxPink.setSpacing(10);
@@ -74,10 +76,10 @@ public class TabPeople extends Tab {
 		personTableView.setPrefHeight(680);
 		
 		Col1 = new TableColumn<>("P ID");
-		Col1.setCellValueFactory(new PropertyValueFactory<>("p_id"));
+		Col1.setCellValueFactory(new PropertyValueFactory<>("pId"));
 		
 		Col2 = new TableColumn<>("MSID");
-		Col2.setCellValueFactory(new PropertyValueFactory<>("ms_id"));
+		Col2.setCellValueFactory(new PropertyValueFactory<>("msId"));
 		
 		Col3 = new TableColumn<>("Member Type");
 		Col3.setPrefWidth(120);
@@ -90,10 +92,10 @@ public class TabPeople extends Tab {
 		});
 			
 		Col4 = new TableColumn<>("First Name");
-		Col4.setCellValueFactory(new PropertyValueFactory<>("fname"));
+		Col4.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 		
 		Col5 = new TableColumn<>("Last Name");
-		Col5.setCellValueFactory(new PropertyValueFactory<>("lname"));
+		Col5.setCellValueFactory(new PropertyValueFactory<>("lastName"));
 
 		Col6 = new TableColumn<>("Occupation");
 		Col6.setCellValueFactory(new PropertyValueFactory<>("occupation"));
@@ -129,13 +131,13 @@ public class TabPeople extends Tab {
 	// creates array list of people objects populated from SQL database
 
 	private void createPersonBox(PersonDTO person)  {
-		MembershipListDTO membership = null;
-		if(membershipIdRepository.currentMembershipIdExists(person.getMsId())) {
-		membership = membershipRepository.getMembershipByMsIdAndYear(person.getMsId(), String.valueOf(Year.now().getValue()));
-		} else {
-		membership = membershipRepository.getMembershipFromListWithoutMembershipId(person.getMsId());
-		}
-		personHBox.getChildren().clear();  // remove if exists
+//		MembershipListDTO membership = null;
+//		if(membershipIdRepository.currentMembershipIdExists(person.getMsId())) {
+//		membership = membershipRepository.getMembershipByMsIdAndYear(person.getMsId(), String.valueOf(Year.now().getValue()));
+//		} else {
+//		membership = membershipRepository.getMembershipFromListWithoutMembershipId(person.getMsId());
+//		}
+//		personHBox.getChildren().clear();  // remove if exists
 	}
 
 	public PersonDTO getPersonByPid(int pid) {
