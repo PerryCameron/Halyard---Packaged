@@ -47,7 +47,6 @@ public class HalyardPaths {
 	      //      listFilesForFolder(fileEntry);
 	      //  } else {
 	        	imageFiles.add(fileEntry.getName());
-	      //      System.out.println(fileEntry.getName());
 	      //  }
 	    }
 		return imageFiles;    
@@ -66,7 +65,6 @@ public class HalyardPaths {
 		if(f.exists() && !f.isDirectory()) { 
 		    return true;
 		}
-		System.out.println(file);
 		return false;
 	}
 

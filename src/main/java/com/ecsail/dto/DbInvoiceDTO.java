@@ -72,7 +72,6 @@ public class DbInvoiceDTO {
     }
 
     public DbInvoiceDTO clone(DbInvoiceDTO dbInvoiceDTO) {
-        System.out.println(dbInvoiceDTO.getFiscalYear());
         dbInvoiceDTO.setFieldName(this.getFieldName());
         dbInvoiceDTO.setWidgetType(this.getWidgetType());
         dbInvoiceDTO.setWidth(this.getWidth());

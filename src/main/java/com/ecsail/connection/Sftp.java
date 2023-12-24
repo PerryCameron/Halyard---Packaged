@@ -16,9 +16,13 @@ package com.ecsail.connection;
 import com.ecsail.BaseApplication;
 import com.ecsail.views.tabs.boatview.AppProgressMonitor;
 import com.jcraft.jsch.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class Sftp {
+
+    public static Logger logger = LoggerFactory.getLogger(Sftp.class);
     private ChannelSftp c;
     public Sftp() {
         try{
@@ -28,14 +32,13 @@ public class Sftp {
             this.c=(ChannelSftp)channel;
         }
         catch(Exception e){
-            System.out.println(e);
+            logger.error(e.getMessage());
         }
     }
 
     public void changeRemoteDirectory(String path) {
         try {
             c.cd(path);
-            System.out.println("Directory is now: " + c.pwd());
         } catch (SftpException e) {
             throw new RuntimeException(e);
         }
@@ -44,7 +47,6 @@ public class Sftp {
     public void changeLocalDirectory(String path) {
         try {
             c.lcd(path);
-            System.out.println("Directory is now:" + c.lpwd());
         } catch (SftpException e) {
             throw new RuntimeException(e);
         }

@@ -78,13 +78,11 @@ public class LabelPrinter {
 
         @Override
         public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
-            System.out.println(pageIndex);
             int result = NO_SUCH_PAGE;
             if (pageIndex < 1) {
                 Graphics2D g2d = (Graphics2D) graphics;
                 double width = pageFormat.getImageableWidth();
                 double height = pageFormat.getImageableHeight();
-                System.out.println("width=" + width + " height=" + height);
                 g2d.translate((int) pageFormat.getImageableX(),
                         (int) pageFormat.getImageableY());
                 g2d.draw(new Rectangle2D.Double(2, 22, width - 20, height - 23));

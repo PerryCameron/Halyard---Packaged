@@ -8,6 +8,8 @@ import com.ecsail.views.common.SaveFileChooser;
 import javafx.collections.ObservableList;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,7 +20,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class Xls_roster {
-    ArrayList<DbRosterSettingsDTO> rosterSettings;
+	public static Logger logger = LoggerFactory.getLogger(Xls_roster.class);
+	ArrayList<DbRosterSettingsDTO> rosterSettings;
 	String selectedYear = "";
 	
 	public Xls_roster(ObservableList<MembershipListDTO> rosters, ArrayList<DbRosterSettingsDTO> rosterSettings, String rosterType) {
@@ -116,7 +119,7 @@ public class Xls_roster {
 		FileOutputStream fileOut = null;
 		try {
 			fileOut = new FileOutputStream(file);
-			System.out.println("Creating " + file);
+			logger.info("Creating " + file);
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -127,14 +130,9 @@ public class Xls_roster {
 	private Object getField(MembershipListDTO m, DbRosterSettingsDTO dto) {
 		Object obj;
 		try {
-			System.out.println(dto.getGetter());
 			Method method = m.getClass().getMethod(dto.getGetter());
 			obj = method.invoke(m);
-		} catch (NoSuchMethodException e) {
-			throw new RuntimeException(e);
-		} catch (InvocationTargetException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
+		} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
 		return obj;
@@ -146,8 +144,7 @@ public class Xls_roster {
 		for(DbRosterSettingsDTO dto: rosterSettings) {
 			if(dto.isExportable()) {
 				Object result = getField(m, dto);
-				if (result instanceof String) {
-					String strResult = (String) result;
+				if (result instanceof String strResult) {
 					row.createCell(cellNumber).setCellValue(strResult);
 				} else if (result instanceof Integer) {
 					int intResult = (int) result;

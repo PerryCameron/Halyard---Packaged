@@ -45,7 +45,6 @@ public class MainModel {
         if(currentLogon.isSshForward()) {
             BaseApplication.logger.info("SSH tunnel enabled");
             BaseApplication.logger.info("Attempting to connect to " + host.get());
-            System.out.println("Time to port forward");
             setSshConnection(new PortForwardingL(currentLogon));
             BaseApplication.logger.info("Server Alive interval: " + sshConnection.getSession().getServerAliveInterval());
         } else {

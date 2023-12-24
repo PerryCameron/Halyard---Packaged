@@ -65,7 +65,6 @@ public class PDF_BoatReport {
         }
 
         document.close();
-        System.out.println("destination=" + dest);
         File file = new File(dest);
         Desktop desktop = Desktop.getDesktop(); // Gui_Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()
 
@@ -80,7 +79,6 @@ public class PDF_BoatReport {
     public void membershipTable(MembershipListDTO ml, Document document) {
         List<BoatDTO> boats = boatRepository.getOnlySailboatsByMsId(ml.getMsId());
         if(boats.size() > 0) {
-            System.out.println("Creating Entry for mebership " + ml.getMsId() + " " + ml.getLastName());
             Table detailTable = new Table(6);
             // mainTable.setKeepTogether(true);
             Cell cell;

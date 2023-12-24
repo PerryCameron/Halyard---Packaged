@@ -10,6 +10,13 @@
     </root>
 
     <logger name="org.ecsail.Halyard" level="info" />
+
+    <logger name="org.springframework.jdbc.core" level="info"/>
+
+    <!-- Suppress debug logs from MariaDB JDBC driver and Spring DataSource utilities -->
+    <logger name="org.mariadb.jdbc" level="info"/>
+    <logger name="org.springframework.jdbc.datasource" level="info"/>
+
 </configuration>
 
 

@@ -132,7 +132,6 @@ public class TableViewNewMembership {
                 if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     // int rowIndex = row.getIndex();
                     JotFormSubmissionListDTO clickedRow = row.getItem();
-                    System.out.println(clickedRow.getAddress());
                 }
             });
             return row;

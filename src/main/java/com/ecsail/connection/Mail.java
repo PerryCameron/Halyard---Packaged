@@ -13,7 +13,6 @@ public class Mail {
         //Create OS-specific run command
         String cmd = "";
         String os = System.getProperty("os.name").toLowerCase();
-//        System.out.println(os);
         if (os.contains("win")){
             cmd = "cmd.exe /c start " + mailto;
         }

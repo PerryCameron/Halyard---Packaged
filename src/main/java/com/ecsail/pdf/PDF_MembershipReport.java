@@ -68,7 +68,6 @@ public class PDF_MembershipReport {
 //        }
 
         document.close();
-        System.out.println("destination=" + dest);
         File file = new File(dest);
         Desktop desktop = Desktop.getDesktop(); // Gui_Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()
 
@@ -78,7 +77,6 @@ public class PDF_MembershipReport {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Table height= " + tableHeight);
     }
 
     public Table testTable(Document doc) {
@@ -107,7 +105,6 @@ public class PDF_MembershipReport {
         }
 
 
-        System.out.println("count=" + count);
         return testTable;
     }
 
@@ -164,7 +161,6 @@ public class PDF_MembershipReport {
             if(stat.getNewMemberships() > largestSize)
                 largestSize = stat.getNewMemberships();
         }
-        System.out.println("Largest number found= " + largestSize);
         return largestSize;
     }
 

@@ -3,23 +3,23 @@ package com.ecsail.connection;
 import com.ecsail.BaseApplication;
 import com.ecsail.dto.LoginDTO;
 import com.jcraft.jsch.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 // https://dentrassi.de/2015/07/13/programmatically-adding-a-host-key-with-jsch/
 public class PortForwardingL {
+
+    public static Logger logger = LoggerFactory.getLogger(PortForwardingL.class);
     static String passwd;
     private Session session;
     private JSch jsch = new JSch();
+    private static final boolean usePublicKey = true;
 
-    private static boolean usePublicKey = true;
 
-//	private Sftp ftp;
-
-//    public PortForwardingL(String host, String rhost, int lport, int rport, String user, String knownHosts, String key) {
     public PortForwardingL(LoginDTO login) {
         BaseApplication.logger.info("Connecting with public key..");
         try {
@@ -29,12 +29,6 @@ public class PortForwardingL {
             HostKey[] hks = hkr.getHostKey();
             if (hks != null) {
                 BaseApplication.logger.info("Host keys exist");
-                // This will print out the keys
-                for (int i = 0; i < hks.length; i++) {
-                    HostKey hk = hks[i];
-                    System.out.println(hk.getHost() + " " + hk.getType() + " " + hk.getFingerPrint(jsch));
-                }
-                System.out.println("");
             }
             session = jsch.getSession(login.getSshUser(), login.getHost(), login.getSshPort());
             UserInfo ui = new MyUserInfo();
@@ -42,12 +36,11 @@ public class PortForwardingL {
             try {
                 session.connect();
             } catch (JSchException e) {
-                System.out.println(e);
+                logger.error(e.getMessage());
             }
 
             int assingedPort = 0;
             // this prevents exception from filling log if mysql is running locally for testing
-            System.out.println("");
             try {
                 BaseApplication.logger.info("Attempting to bind SQL port");
                 assingedPort = session.setPortForwardingL(login.getLocalSqlPort(), "127.0.0.1", login.getRemoteSqlPort());
@@ -104,10 +97,8 @@ public class PortForwardingL {
                 socket.close();
                 return true;
             }
-        } catch (UnknownHostException e) {
-            // nothing special
         } catch (IOException e) {
-            // nothing special
+            logger.error(e.getMessage());
         }
         return false;
     }

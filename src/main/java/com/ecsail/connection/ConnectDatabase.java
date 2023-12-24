@@ -28,6 +28,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -37,6 +39,7 @@ import java.util.Objects;
 
 public class ConnectDatabase {
 
+	public static Logger logger = LoggerFactory.getLogger(ConnectDatabase.class);
 	private MainModel mainModel = new MainModel();
 	private double titleBarHeight;
 	private int localSqlPort;
@@ -241,7 +244,6 @@ public class ConnectDatabase {
 		
 		// when host name combo box changes
 		hostName.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-			System.out.println(mainModel.getLogins().get(FileIO.getSelectedHost(options.getValue(),mainModel.getLogins())));
 			mainModel.setCurrentLogon(mainModel.getLogins().get(FileIO.getSelectedHost(options.getValue(),mainModel.getLogins())));
 			populateFields();
         });
@@ -312,7 +314,6 @@ public class ConnectDatabase {
 		});
 
 		loginButton.setOnAction((event) -> {
-			System.out.println("Starting thread");
 			rotateTransition.play();
 			connectToServer();
         });
@@ -327,7 +328,7 @@ public class ConnectDatabase {
 					// should probably set combo box to default here
 	            	cancelButton2.fire(); // refresh login back to original
 				} else {
-					System.out.println("need to build error for removing element");
+					logger.error("Failed to delete login: " + element);
 				}
 			});
 		
@@ -544,44 +545,11 @@ public class ConnectDatabase {
       } catch (SQLException e) {
 			e.printStackTrace();
 		}
-//		 Retrieving the data
 	}
 
 	private void closeConnection() {
 		getMainModel().closeDatabaseConnection();
 		primaryStage.setTitle("Halyard (not connected)");
-	}
-
-	public ResultSet executeSelectQuery(String query) throws SQLException {
-		Statement stmt = mainModel.getSqlConnection().createStatement();
-		if (mainModel.getCurrentLogon().isSshForward()) {
-			if (!mainModel.getSshConnection().getSession().isConnected()) {
-				BaseApplication.logger.error("SSH Connection is no longer connected");
-				closeConnection();
-			}
-		}
-		return stmt.executeQuery(query);
-	}
-
-	public void executeQuery(String query) throws SQLException {
-		if(!query.startsWith("UPDATE db_table_changes")) // lets remove noise
-		System.out.println(query);
-		Statement stmt = mainModel.getSqlConnection().createStatement();
-		if (mainModel.getCurrentLogon().isSshForward()) {
-			if (!mainModel.getSshConnection().getSession().isConnected()) {
-				BaseApplication.logger.error("SSH Connection is no longer connected");
-				closeConnection();
-			}
-		}
-		stmt.execute(query);
-		stmt.close();
-	}
-
-	public void closeResultSet(ResultSet rs) throws SQLException {
-		if (rs.getStatement() != null) {
-			rs.getStatement().close();
-		}
-		rs.close();
 	}
 
 	public Sftp getScp() {

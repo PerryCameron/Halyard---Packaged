@@ -62,7 +62,6 @@ public class MembershipDTO {
 	
 
 	public final void setMsId(final int msId) {
-		System.out.println("Setting property= " + msId);
 		this.msIdProperty().set(msId);
 	}
 

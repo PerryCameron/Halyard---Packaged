@@ -2,9 +2,9 @@ package com.ecsail.pdf.directory;
 
 
 import com.ecsail.HalyardPaths;
+import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
 import com.ecsail.repository.interfaces.MembershipRepository;
-import com.ecsail.dto.MembershipListDTO;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -14,6 +14,8 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.properties.AreaBreakType;
 import javafx.concurrent.Task;
 import javafx.scene.control.TextArea;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
@@ -21,24 +23,25 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Year;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class PDF_Directory {
-	private ArrayList<MembershipListDTO> rosters;
+
+	public static Logger logger = LoggerFactory.getLogger(PDF_Directory.class);
+	private final ArrayList<MembershipListDTO> rosters;
 	static PDF_Object_Settings set;
 	TextArea textArea;
-	String message = "";
+	String message;
 	static Document doc;
-	private MembershipRepository membershipRepository = new MembershipRepositoryImpl();
-	
+
 	public PDF_Directory(String year, TextArea textArea) {
 		PDF_Directory.set = new PDF_Object_Settings(year);
 		this.textArea = textArea;
-		this.message = new String();
+		this.message = "";
 
+		MembershipRepository membershipRepository = new MembershipRepositoryImpl();
 		this.rosters = (ArrayList<MembershipListDTO>) membershipRepository.getRoster(year, true);
 		HalyardPaths.checkPath(HalyardPaths.DIRECTORIES);
 		textArea.setText("Creating " + year + " directory");
@@ -51,6 +54,7 @@ public class PDF_Directory {
 			e.printStackTrace();
 		}
 		// Initialize PDF document
+		assert writer != null;
 		PdfDocument pdf = new PdfDocument(writer);
 		//PageSize A5v = new PageSize(PageSize.A5.getWidth(), PageSize.A5.getHeight());
 		PDF_Directory.doc = new Document(pdf, new PageSize(set.getPageSize()));
@@ -59,20 +63,19 @@ public class PDF_Directory {
 		doc.setTopMargin(1f);
 		doc.setBottomMargin(0.5f);
 		
-		Collections.sort(rosters , Comparator.comparing(MembershipListDTO::getLastName));
+		rosters.sort(Comparator.comparing(MembershipListDTO::getLastName));
 		
 		createDirectoryTask();
 	}
 	
 	private void createDirectoryTask() {
 
-	    Task<String> task = new Task<String>(){
-	        @Override
-	        protected String call() {
-				System.out.println("Started task");
-	    		doc.add(new PDF_Cover(1, set));
-	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-	    		textArea.appendText("Created Cover\n");
+	    Task<String> task = new Task<>() {
+			@Override
+			protected String call() {
+				doc.add(new PDF_Cover(1, set));
+				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+				textArea.appendText("Created Cover\n");
 
 				doc.add(new PDF_CommodoreMessage(1, set));
 				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
@@ -81,59 +84,59 @@ public class PDF_Directory {
 				doc.add(new PDF_BoardOfDirectors(1, set));
 				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 				textArea.appendText("Created Board of Directors\n");
-	    		
-	    		doc.add(new PDF_TableOfContents(1,set));
-	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-	    		textArea.appendText("Created Table of Contents\n");
-	    		
-	    		doc.add(new PDF_ChapterPage(1, "Membership Information",set));
-	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-	    		textArea.appendText("Created Membership Information Chapter Page\n");
-	    		
-	    		createMemberInfoPages(doc);  // creates info pages
-	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+
+				doc.add(new PDF_TableOfContents(1, set));
+				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+				textArea.appendText("Created Table of Contents\n");
+
+				doc.add(new PDF_ChapterPage(1, "Membership Information", set));
+				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+				textArea.appendText("Created Membership Information Chapter Page\n");
+
+				createMemberInfoPages(doc);  // creates info pages
+				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 //				 this one below added in if book needs an extra page (should be even number of pages)
 //				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 
 				new PDF_MembersByNumber(set, doc, rosters);
 
 
-	    		doc.add(new PDF_SlipPageL(2,set));
-	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-	    		textArea.appendText("Created D and A dock page\n");
-	    		
-	    		doc.add(new PDF_SlipPageR(2,set));
-	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-	    		textArea.appendText("Created B and C dock page\n");
-	    		
-	    		doc.add(new PDF_SportsmanAward(2,set));
-	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-	    		textArea.appendText("Created sportsman award page\n");
+				doc.add(new PDF_SlipPageL(2, set));
+				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+				textArea.appendText("Created D and A dock page\n");
 
-				doc.add(new PDF_CommodoreList(2,set));
-	    		doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-	    		textArea.appendText("Created directory page\n");
-	    		doc.close();
-	    		
-	    		System.out.println("destination=" + HalyardPaths.DIRECTORIES + "/" + Year.now() + "_ECSC_directory.pdf");
-	    		File file = new File(HalyardPaths.DIRECTORIES + "/" + Year.now() + "_ECSC_directory.pdf");
-	    		Desktop desktop = Desktop.getDesktop(); // Gui_Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()
+				doc.add(new PDF_SlipPageR(2, set));
+				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+				textArea.appendText("Created B and C dock page\n");
 
-	    		// Open the document
-	    		try {
-	    			desktop.open(file);
-	    		} catch (IOException e) {
-	    			// TODO Auto-generated catch block
-	    			e.printStackTrace();
-	    		}
-				return "Directory Sucessfully Created!";
-	        }
-	    };
-	    task.setOnScheduled(e -> { System.out.println("scheduled");});
+				doc.add(new PDF_SportsmanAward(2, set));
+				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+				textArea.appendText("Created sportsman award page\n");
+
+				doc.add(new PDF_CommodoreList(2, set));
+				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+				textArea.appendText("Created directory page\n");
+				doc.close();
+
+				logger.info("destination=" + HalyardPaths.DIRECTORIES + "/" + Year.now() + "_ECSC_directory.pdf");
+				File file = new File(HalyardPaths.DIRECTORIES + "/" + Year.now() + "_ECSC_directory.pdf");
+				Desktop desktop = Desktop.getDesktop(); // Gui_Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()
+
+				// Open the document
+				try {
+					desktop.open(file);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return "Directory Successfully Created!";
+			}
+		};
+	    task.setOnScheduled(e -> System.out.println("scheduled"));
 	    task.setOnSucceeded(e -> { 
 	    	textArea.setText((String) e.getSource().getValue()); 
-	    	System.out.println("Finished making directory");});
-	    task.setOnFailed(e -> { System.out.println("This failed" + e.getSource().getMessage()); });
+	    	logger.info("Finished making directory");});
+	    task.setOnFailed(e -> System.out.println("This failed" + e.getSource().getMessage()));
 	    exec.execute(task);
 
 	}
@@ -154,9 +157,8 @@ public class PDF_Directory {
 			if(count % 6 == 0) {
 				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 				textArea.appendText("<----New Page---->");
-				System.out.println("count =" + count + " size=" + rosters.size());
 				if(count < rosters.size()) // prevents adding a return for after this section
-				doc.add(new Paragraph("\n")); // I think this is screwing up
+					doc.add(new Paragraph("\n")); // I think this is screwing up
 			}
 			//if(count == 60) break;  // this reduces pages made for testing
 		}

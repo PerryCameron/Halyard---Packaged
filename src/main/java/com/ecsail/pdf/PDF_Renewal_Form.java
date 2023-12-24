@@ -110,7 +110,6 @@ public class PDF_Renewal_Form {
 	}
 	
 	private void openDocumentToView(Document document) {
-			System.out.println("destination=" + filenm);
 			File file = new File(filenm);
 			Desktop desktop = Desktop.getDesktop(); // Gui_Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()
 			// Open the document
@@ -1427,9 +1426,7 @@ public class PDF_Renewal_Form {
 	public Table boatsPdfTable() {
 		Table mainTable = new Table(9);
 		mainTable.setWidth(590);
-		//System.out.println("boats size is " + boats.size());
 		for(BoatDTO b: boats) {
-			//System.out.println(b);
 			createBoatTableRow(mainTable, b);
 		}
 		Cell cell;
