@@ -1,8 +1,9 @@
 package com.ecsail.pdf.directory;
 
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.implementations.SlipRepositoryImpl;
 import com.ecsail.repository.interfaces.MembershipRepository;
-import com.ecsail.sql.select.SqlSlip;
+import com.ecsail.repository.interfaces.SlipRepository;
 import com.ecsail.dto.MembershipListDTO;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.geom.PageSize;
@@ -29,10 +30,11 @@ public class PDF_Dock extends Table {
     boolean inColor;
 
     MembershipRepository membershipRepository = new MembershipRepositoryImpl();
+    SlipRepository slipRepository = new SlipRepositoryImpl();
 
     public PDF_Dock(int numColumns, String dock, int lDocks, int rDocks, PDF_Object_Settings set, boolean inColor) {
         super(numColumns);
-        this.slips = SqlSlip.getSlipsForDock(dock);
+        this.slips = (ArrayList<Object_SlipInfo>) slipRepository.getSlipsForDock(dock);
         this.lDocks = lDocks;
         this.rDocks = rDocks;
         this.dock = dock;

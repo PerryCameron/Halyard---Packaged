@@ -2,7 +2,8 @@ package com.ecsail.views.dialogues;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.Launcher;
-import com.ecsail.sql.select.SqlMembership_Id;
+import com.ecsail.repository.implementations.MembershipIdRepositoryImpl;
+import com.ecsail.repository.interfaces.MembershipIdRepository;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -18,6 +19,8 @@ import java.time.Year;
 import java.util.Objects;
 
 public class Dialogue_MembershipIdSearch extends Stage {
+
+	MembershipIdRepository membershipIdRepository = new MembershipIdRepositoryImpl();
 
 	public Dialogue_MembershipIdSearch() {
 		double centerXPosition = BaseApplication.stage.getX() + BaseApplication.stage.getWidth() / 2d;
@@ -57,7 +60,7 @@ public class Dialogue_MembershipIdSearch extends Stage {
 		/////////////// Listener ///////////////////
 
 		submitButton.setOnAction((event) -> {
-			int msid = SqlMembership_Id.getMsidFromYearAndMembershipId(comboBox.getValue(), msidTextField.getText());
+			int msid = membershipIdRepository.getMsidFromYearAndMembershipId(comboBox.getValue(), msidTextField.getText());
 			System.out.println(msid);
 			Launcher.createMembershipTabForRoster(Integer.parseInt(msidTextField.getText()), msid);
 		});

@@ -96,8 +96,15 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
     }
 
     @Override
-    public boolean isRenewedByMsidAndYear(int msId, String year) {
-        return false;
+    public boolean isRenewedByMsidAndYear(int ms_id, String year) {
+        String query = "SELECT renew FROM membership_id WHERE fiscal_year = ? AND ms_id = ?";
+        try {
+            Boolean renew = template.queryForObject(query, new Object[]{year, ms_id}, Boolean.class);
+            return renew != null && renew;
+        } catch (DataAccessException e) {
+            logger.error("membership id record does not exist for ms_id " + ms_id + " for year " + year, e);
+            return false; // Default to false in case of an error
+        }
     }
 
     @Override
@@ -121,12 +128,24 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
 
     @Override
     public int getNonRenewNumber(int year) {
-        return 0;
+        String query = "SELECT COUNT(*) FROM membership_id WHERE fiscal_year = ? AND renew = false";
+        try {
+            return template.queryForObject(query, new Object[]{year}, Integer.class);
+        } catch (DataAccessException e) {
+            logger.error("Unable to retrieve information", e);
+            return 0; // Return 0 in case of an error or no records found
+        }
     }
 
     @Override
     public int getMsidFromYearAndMembershipId(int year, String membershipId) {
-        return 0;
+        String query = "SELECT ms_id FROM membership_id WHERE fiscal_year = ? AND membership_id = ?";
+        try {
+            return template.queryForObject(query, new Object[]{year, membershipId}, Integer.class);
+        } catch (DataAccessException e) {
+            logger.error("Unable to retrieve information", e);
+            return 0; // Return 0 in case of an error or no records found
+        }
     }
 
     @Override

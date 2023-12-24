@@ -1,8 +1,8 @@
 package com.ecsail.views.tabs.welcome;
 
-import com.ecsail.HalyardPaths;
 import com.ecsail.dto.StatsDTO;
-import com.ecsail.sql.select.SqlStats;
+import com.ecsail.repository.implementations.StatRepositoryImpl;
+import com.ecsail.repository.interfaces.StatRepository;
 import com.ecsail.views.dialogues.Dialogue_LoadNewStats;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -30,15 +30,16 @@ public class VBoxCharts extends VBox {
     int defaultNumbOfYears = 20;
     int totalNumbOfYears;
     BooleanProperty dataBaseStatisticsRefreshed = new SimpleBooleanProperty(false);
+    private StatRepository statRepository = new StatRepositoryImpl();
 
     public VBoxCharts() {
         this.currentYear = Year.now().getValue();
         this.defaultStartYear = currentYear - 20;
         // todo I think this needs to be changed to reload stats
-        this.stats = SqlStats.getStatistics(defaultStartYear, defaultStartYear + defaultNumbOfYears);
+        this.stats = (ArrayList<StatsDTO>) statRepository.getStatistics(defaultStartYear, defaultStartYear + defaultNumbOfYears);
         // problem is that the object hasn't been created yet
 //        reloadStats();
-        this.totalNumbOfYears = SqlStats.getNumberOfStatYears();
+        this.totalNumbOfYears = statRepository.getNumberOfStatYears();
 //        final CategoryAxis xAxis = new CategoryAxis();
 //        final NumberAxis yAxis = new NumberAxis();
         var membershipsByYearChart = new MembershipStackedBarChart(stats);
@@ -125,7 +126,7 @@ public class VBoxCharts extends VBox {
         int endYear = defaultStartYear + defaultNumbOfYears;
         if(endYear > currentYear) endYear = currentYear;
         this.stats.clear();
-        this.stats.addAll(SqlStats.getStatistics(defaultStartYear, endYear));
+        this.stats.addAll(statRepository.getStatistics(defaultStartYear, endYear));
     }
 
     private void populateComboBoxWithYears(ComboBox<Integer> comboBox) {

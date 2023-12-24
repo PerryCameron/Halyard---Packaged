@@ -1,12 +1,12 @@
 package com.ecsail.views.tabs;
 
 
-import com.ecsail.BaseApplication;
 import com.ecsail.Launcher;
 import com.ecsail.pdf.PDF_SlipChart;
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.implementations.SlipRepositoryImpl;
 import com.ecsail.repository.interfaces.MembershipRepository;
-import com.ecsail.sql.select.SqlSlip;
+import com.ecsail.repository.interfaces.SlipRepository;
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.dto.SlipDTO;
 import javafx.beans.value.ObservableValue;
@@ -26,7 +26,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 
-import java.time.LocalDate;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +36,8 @@ public class TabSlips extends Tab {
 	private final ObservableList<MembershipListDTO> slipmemberships;
 	private final ObservableList<MembershipListDTO> subleaserMemberships;
 	private final MembershipRepository membershipRepository = new MembershipRepositoryImpl();
-	private final ArrayList<SlipDTO> slips;
+	private final SlipRepository slipRepository = new SlipRepositoryImpl();
+	private final ArrayList<SlipDTO> slipDTOS;
 	private final HashMap<String,Text> slipsHash = new HashMap<>();
 
 	// starting point for each colume x-axis
@@ -49,7 +49,7 @@ public class TabSlips extends Tab {
 		this.slipmemberships = FXCollections.observableArrayList(membershipRepository.getSlipRoster(String.valueOf(Year.now().getValue())));
 		this.subleaserMemberships = FXCollections.observableArrayList();
 		// gets all slips
-		this.slips = SqlSlip.getSlips();
+		this.slipDTOS = (ArrayList<SlipDTO>) slipRepository.getSlips();
 
 
 		Pane screenPane = new Pane();
@@ -108,7 +108,7 @@ public class TabSlips extends Tab {
 	}
 
 	private void assignTextObjectsToHashMapWithSlipNumberAsKey() {
-		for(SlipDTO s: slips) {
+		for(SlipDTO s: slipDTOS) {
 			slipsHash.put(s.getSlipNumber(),new Text(s.getSlipNumber() + " " + s.getAltText()));
 		}
 	}
@@ -206,7 +206,7 @@ public class TabSlips extends Tab {
 	}
 
 	private void createSlipsAsTextObjects() {
-		for (SlipDTO mem : slips) {
+		for (SlipDTO mem : slipDTOS) {
 			switch (mem.getSlipNumber()) {
 				case "D40" -> placeText(col[0], row[0], "D40");
 				case "D39" -> placeText(col[1], row[0], "D39");

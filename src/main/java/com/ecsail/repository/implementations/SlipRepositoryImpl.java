@@ -4,7 +4,9 @@ import com.ecsail.BaseApplication;
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.dto.SlipDTO;
 import com.ecsail.dto.WaitListDTO;
+import com.ecsail.pdf.directory.Object_SlipInfo;
 import com.ecsail.repository.interfaces.SlipRepository;
+import com.ecsail.repository.rowmappers.SlipInfoRowMapper;
 import com.ecsail.repository.rowmappers.SlipRowMapper;
 import com.ecsail.repository.rowmappers.WaitListRowMapper;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
@@ -13,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.util.List;
 
 public class SlipRepositoryImpl implements SlipRepository {
 
@@ -163,4 +167,31 @@ public class SlipRepositoryImpl implements SlipRepository {
             return false; // Or rethrow the exception as per your application's requirements
         }
     }
+    @Override
+    public List<Object_SlipInfo> getSlipsForDock(String dock) {
+        String query = """
+            SELECT slip_num, subleased_to, f_name, l_name
+            FROM slip s
+            LEFT JOIN membership m ON s.ms_id = m.ms_id
+            LEFT JOIN person p ON m.p_id = p.p_id
+            WHERE slip_num LIKE ?
+            """;
+        try {
+            return template.query(query, new Object[]{dock + "%"}, new SlipInfoRowMapper());
+        } catch (DataAccessException e) {
+            logger.error("Unable to retrieve information", e);
+            return List.of(); // Return an empty list in case of failure
+        }
+    }
+    @Override
+    public List<SlipDTO> getSlips() {
+        String query = "SELECT * FROM slip";
+        try {
+            return template.query(query, new SlipRowMapper());
+        } catch (Exception e) {
+            logger.error("Unable to retrieve information", e);
+            return List.of(); // Return an empty list in case of failure
+        }
+    }
+
 }

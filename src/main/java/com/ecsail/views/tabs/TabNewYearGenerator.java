@@ -4,10 +4,11 @@ import com.ecsail.dto.*;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.implementations.MembershipIdRepositoryImpl;
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.implementations.SlipRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.repository.interfaces.MembershipIdRepository;
 import com.ecsail.repository.interfaces.MembershipRepository;
-import com.ecsail.sql.select.SqlSlip;
+import com.ecsail.repository.interfaces.SlipRepository;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
@@ -26,6 +27,7 @@ public class TabNewYearGenerator extends Tab {
     private static MembershipRepository membershipRepository = new MembershipRepositoryImpl();
     private static InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
     private static MembershipIdRepository membershipIdRepository = new MembershipIdRepositoryImpl();
+    private static SlipRepository slipRepository = new SlipRepositoryImpl();
 
     public static Logger logger = LoggerFactory.getLogger(TabNewYearGenerator.class);
     int yearToAdd = 2024;
@@ -33,7 +35,7 @@ public class TabNewYearGenerator extends Tab {
 
     public TabNewYearGenerator(String text) {
         super(text);
-        this.slips.addAll(SqlSlip.getSlips());
+        this.slips.addAll(slipRepository.getSlips());
         VBox vboxGrey = new VBox();  // this is the vbox for organizing all the widgets
         VBox vboxBlue = new VBox();
         VBox vboxPink = new VBox(); // this creates a pink border around the table

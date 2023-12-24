@@ -3,6 +3,9 @@ package com.ecsail.repository.interfaces;
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.dto.SlipDTO;
 import com.ecsail.dto.WaitListDTO;
+import com.ecsail.pdf.directory.Object_SlipInfo;
+
+import java.util.List;
 
 public interface SlipRepository {
     void updateWaitList(int ms_id, String field, Boolean attribute);
@@ -34,4 +37,8 @@ public interface SlipRepository {
     void updateSlipMsIdToZero(int msId);
 
     boolean existsSlipWithMsId(int msId);
+
+    List<Object_SlipInfo> getSlipsForDock(String dock);
+
+    List<SlipDTO> getSlips();
 }

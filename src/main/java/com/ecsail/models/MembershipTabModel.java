@@ -4,7 +4,6 @@ import com.ecsail.dto.*;
 import com.ecsail.repository.implementations.*;
 import com.ecsail.repository.interfaces.*;
 import com.ecsail.views.common.Note;
-import com.ecsail.sql.select.SqlMembership_Id;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

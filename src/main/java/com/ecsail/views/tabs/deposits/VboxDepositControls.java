@@ -5,7 +5,6 @@ import com.ecsail.HalyardPaths;
 import com.ecsail.dto.InvoiceItemDTO;
 import com.ecsail.views.dialogues.Dialogue_DepositPDF;
 import com.ecsail.pdf.PDF_DepositReport;
-import com.ecsail.sql.select.*;
 import com.ecsail.dto.DepositDTO;
 import com.ecsail.dto.DepositPDFDTO;
 import com.ecsail.dto.DepositTotalDTO;
@@ -452,7 +451,7 @@ public class VboxDepositControls extends VBox {
     }
 
     private void refreshNonRenewed() {
-        nonRenewed.setText(SqlMembership_Id.getNonRenewNumber(selectedYear) + "");
+        nonRenewed.setText(parent.getMembershipIdRepository().getNonRenewNumber(selectedYear) + "");
     }
 
     public int getSelectedYear() {

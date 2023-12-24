@@ -1,9 +1,7 @@
 package com.ecsail.pdf;
 
 
-import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
-import com.ecsail.sql.select.SqlStats;
 import com.ecsail.dto.StatsDTO;
 import com.itextpdf.kernel.colors.DeviceCmyk;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -42,7 +40,7 @@ public class PDF_MembershipReport {
     public PDF_MembershipReport() {
         this.currentYear = Year.now().getValue();
         this.defaultStartYear = currentYear - 20;
-        this.stats = SqlStats.getStatistics(defaultStartYear, defaultStartYear + defaultNumbOfYears);
+//        this.stats = SqlStats.getStatistics(defaultStartYear, defaultStartYear + defaultNumbOfYears);
         this.tableHeight = getTableHeight(getLargestStat());
         this.scaleWidth = tableHeight / 6;
 

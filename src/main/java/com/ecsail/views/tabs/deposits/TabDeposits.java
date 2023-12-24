@@ -4,8 +4,10 @@ import com.ecsail.BaseApplication;
 import com.ecsail.dto.DepositDTO;
 import com.ecsail.repository.implementations.DepositRepositoryImpl;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
+import com.ecsail.repository.implementations.MembershipIdRepositoryImpl;
 import com.ecsail.repository.interfaces.DepositRepository;
 import com.ecsail.repository.interfaces.InvoiceRepository;
+import com.ecsail.repository.interfaces.MembershipIdRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -20,6 +22,7 @@ import java.util.List;
 public class TabDeposits extends Tab {
 	private InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
 	private DepositRepository depositRepository = new DepositRepositoryImpl();
+	private MembershipIdRepository membershipIdRepository= new MembershipIdRepositoryImpl();
 	private final ObservableList<InvoiceWithMemberInfoDTO> invoices;
 	private final String selectedYear;
 	private final InvoicesTableView tableView;
@@ -82,8 +85,7 @@ public class TabDeposits extends Tab {
 		return depositRepository;
 	}
 
-	public void setDepositRepository(DepositRepository depositRepository) {
-		this.depositRepository = depositRepository;
+	public MembershipIdRepository getMembershipIdRepository() {
+		return membershipIdRepository;
 	}
-
 }

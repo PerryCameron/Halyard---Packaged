@@ -1,6 +1,7 @@
 package com.ecsail.pdf.directory;
 
-import com.ecsail.sql.select.SqlSportsMan;
+import com.ecsail.repository.implementations.AwardRepositoryImpl;
+import com.ecsail.repository.interfaces.AwardRepository;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;
@@ -21,11 +22,13 @@ public class PDF_SportsmanAward extends Table {
 	ArrayList<Integer> matched = new ArrayList<Integer>();
 	ArrayList<Object_Sportsmen> duplicates = new ArrayList<Object_Sportsmen>();
 	PDF_Object_Settings set;
+
+	AwardRepository awardRepository = new AwardRepositoryImpl();
 	
 	public PDF_SportsmanAward(int numColumns, PDF_Object_Settings set) {
 		super(numColumns);
 		this.set = set;
-		this.sportsman = SqlSportsMan.getSportsManAwardNames();
+		this.sportsman = (ArrayList<Object_Sportsmen>) awardRepository.getSportsManAwardNames();
 		Collections.sort(sportsman , Comparator.comparing(Object_Sportsmen::getYear));
 		popCoWinners();
 		setWidth(PageSize.A5.getWidth() * 0.8f);  // makes table 90% of page width

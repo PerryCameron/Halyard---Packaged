@@ -1,6 +1,8 @@
 package com.ecsail;
 
+import com.ecsail.repository.implementations.MembershipIdRepositoryImpl;
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
+import com.ecsail.repository.interfaces.MembershipIdRepository;
 import com.ecsail.repository.interfaces.MembershipRepository;
 import com.ecsail.views.tabs.boatlist.TabBoatList;
 import com.ecsail.views.tabs.boatview.TabBoatView;
@@ -16,7 +18,6 @@ import com.ecsail.views.tabs.roster.TabRoster;
 import com.ecsail.views.tabs.welcome.TabWelcome;
 import com.ecsail.jotform.TabJotForm;
 import com.ecsail.pdf.PDF_BoatReport;
-import com.ecsail.sql.select.SqlMembership_Id;
 import com.ecsail.dto.BoatDTO;
 import com.ecsail.dto.MembershipListDTO;
 import javafx.scene.control.Tab;
@@ -34,6 +35,7 @@ public class Launcher extends VBox {
     }
 
     public static MembershipRepository membershipRepository = new MembershipRepositoryImpl();
+    public static MembershipIdRepository membershipIdRepository = new MembershipIdRepositoryImpl();
 
     public Launcher() {
         tabPane = new TabPane();
@@ -114,7 +116,7 @@ public class Launcher extends VBox {
     // used in BoxSlip
     public static void createTabForBoxSlip(int ms_id) {
         MembershipListDTO membership;
-        if (SqlMembership_Id.isRenewedByMsidAndYear(ms_id, String.valueOf(Year.now().getValue()))) { // membership is active and in our object tree
+        if (membershipIdRepository.isRenewedByMsidAndYear(ms_id, String.valueOf(Year.now().getValue()))) { // membership is active and in our object tree
             membership = getMembership(ms_id);
         } else { // membership is not active and needs to be pulled from the SQL Database
             membership = membershipRepository.getMembershipByMsIdAndYear(ms_id, String.valueOf(Year.now().getValue()));
