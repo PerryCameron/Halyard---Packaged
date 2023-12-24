@@ -1,18 +1,21 @@
 package com.ecsail.connection;
+import com.ecsail.BaseApplication;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 
 public class AppConfig {
     private DataSource dataSource;
+
+    String dbParam = BaseApplication.getPropertyValue("database.parameters");
+    String dbType = BaseApplication.getPropertyValue("database.type");
     public void createDataSource(String ip, int port, String user, String pass, String database) throws ClassNotFoundException {
         Class.forName("org.mariadb.jdbc.Driver");
         dataSource = new DriverManagerDataSource(
-                "jdbc:mariadb://" + ip + ":" + port + "/"+database+"?autoReconnect=true&useSSL=false&serverTimezone=UTC",
+                dbType + "://" + ip + ":" + port + "/"+database+ dbParam,
                 user,
                 pass
         );
-        System.out.println("ip=" + ip + " port=" + port + " user=" +user + " pass=" + pass + " database=" + database);
     }
 
     public DataSource getDataSource() {

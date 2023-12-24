@@ -29,6 +29,7 @@ import javax.sql.DataSource;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Properties;
 
 import static com.ecsail.HalyardPaths.LOGFILEDIR;
 
@@ -63,8 +64,40 @@ public class BaseApplication extends Application implements Log {
     public static void main(String[] args) {
         setUpForFirstTime();
 //        startFileLogger();
-        logger.info("Starting application...");
+
+        logger.info("Starting Halyard: Version " + getAppVersion());
+        loadProperties();
         launch(args);
+    }
+
+    public static String getAppVersion() {
+        try (InputStream input = BaseApplication.class.getClassLoader().getResourceAsStream("app.properties")) {
+            Properties prop = new Properties();
+            if (input == null) {
+                logger.error("Sorry, unable to find app.properties");
+                return null;
+            }
+            prop.load(input);
+            return prop.getProperty("app.version");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    private static Properties properties = new Properties();
+    private static void loadProperties() {
+        try (InputStream input = BaseApplication.class.getClassLoader().getResourceAsStream("app.properties")) {
+            if (input == null) {
+                throw new IllegalStateException("Unable to find app.properties");
+            }
+            properties.load(input);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static String getPropertyValue(String key) {
+        return properties.getProperty(key);
     }
 
     private static void startFileLogger() {
