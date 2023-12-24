@@ -3,7 +3,10 @@ package com.ecsail.repository.implementations;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.dto.DepositDTO;
+import com.ecsail.dto.DepositTotalDTO;
 import com.ecsail.repository.interfaces.DepositRepository;
+import com.ecsail.repository.rowmappers.DepositRowMapper;
+import com.ecsail.repository.rowmappers.DepositTotalRowMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -104,6 +107,45 @@ public class DepositRepositoryImpl implements DepositRepository {
             return 0; // Return 0 in case of an error
         }
     }
-
-
+    @Override
+    public DepositDTO getDeposit(int year, int batch) {
+        String query = """
+            SELECT * FROM deposit WHERE fiscal_year = ? AND batch = ?
+            """;
+        try {
+            return template.queryForObject(query, new Object[]{year, batch}, new DepositRowMapper());
+        } catch (Exception e) {
+            logger.error("Unable to retrieve deposit information", e);
+            return null; // Return null in case of failure
+        }
+    }
+    @Override
+    public DepositTotalDTO getTotals(DepositDTO d, boolean getAll) {
+        String query;
+        Object[] params;
+        if (getAll) {
+            query = "SELECT SUM(TOTAL) AS TOTAL, SUM(CREDIT) AS CREDIT, SUM(PAID) AS PAID FROM invoice WHERE FISCAL_YEAR = ? AND COMMITTED = TRUE";
+            params = new Object[]{d.getFiscalYear()};
+        } else {
+            query = "SELECT SUM(TOTAL) AS TOTAL, SUM(CREDIT) AS CREDIT, SUM(PAID) AS PAID FROM invoice WHERE FISCAL_YEAR = ? AND COMMITTED = TRUE AND BATCH = ?";
+            params = new Object[]{d.getFiscalYear(), d.getBatch()};
+        }
+        try {
+            return template.queryForObject(query, params, new DepositTotalRowMapper());
+        } catch (Exception e) {
+            logger.error("Unable to retrieve information", e);
+            return null; // Return null in case of failure
+        }
+    }
+    @Override
+    public int getNumberOfDepositBatches(String year) {
+        String query = "SELECT MAX(batch) FROM deposit WHERE fiscal_year = ?";
+        try {
+            Integer maxBatch = template.queryForObject(query, new Object[]{year}, Integer.class);
+            return maxBatch != null ? maxBatch : 0;
+        } catch (Exception e) {
+            logger.error("Unable to retrieve information", e);
+            return 0; // Return 0 in case of failure
+        }
+    }
 }

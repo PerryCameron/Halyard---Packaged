@@ -43,12 +43,12 @@ public class InvoicesTableView extends TableView {
                     invoiceM.setBatch(depositDTO.getBatch()); // updates tableview batch
                     invoiceDTO.setBatch(depositDTO.getBatch()); // sets batch to invoice for saving to db
                     invoiceDTO.setClosed(true);
-                    tabParent.invoiceRepository.updateInvoice(invoiceDTO);
+                    tabParent.getInvoiceRepository().updateInvoice(invoiceDTO);
                 } else { // if unchecked
                     invoiceM.setBatch(0);  // updates tableview batch
                     invoiceDTO.setBatch(0); // sets batch to invoice for saving to db
                     invoiceDTO.setClosed(false);
-                    tabParent.invoiceRepository.updateInvoice(invoiceDTO);
+                    tabParent.getInvoiceRepository().updateInvoice(invoiceDTO);
                 }
             });
             return booleanProp;

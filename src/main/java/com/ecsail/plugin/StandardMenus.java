@@ -74,10 +74,9 @@ public class StandardMenus implements Plugin {
         MenuItem fees = Configure("Fees", (event) -> Launcher.openFeeTab2(), null);
         MenuItem notes = Configure("Notes", (event) -> Launcher.openNotesTab(), null);
         MenuItem jotform = Configure("Jotform", (event) -> Launcher.openJotFormTab(), null);
-        MenuItem dataBase = Configure("DataBase", (event) -> Launcher.openTabDataBase(), null);
         MenuItem newYear = Configure("New Year Wizard", (event) -> Launcher.launchNewYearWizard(),null);
 //        MenuItem tabStub = Configure("TabStub", (event) -> Launcher.launchTabStub(),null);
-        subMenuTabs.getItems().addAll(rosters,bod,people,boats,slips,deposits,fees,notes,jotform,dataBase,newYear);
+        subMenuTabs.getItems().addAll(rosters,bod,people,boats,slips,deposits,fees,notes,jotform,newYear);
         membership.getItems().addAll(subMenuMembershipCreate, subMenuTabs);
         menuBar.getMenus().addAll(file, membership, reports);
     }

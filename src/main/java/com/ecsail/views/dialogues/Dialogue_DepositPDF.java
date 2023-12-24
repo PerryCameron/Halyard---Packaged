@@ -2,12 +2,9 @@ package com.ecsail.views.dialogues;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.repository.implementations.DepositRepositoryImpl;
-import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
 import com.ecsail.repository.interfaces.DepositRepository;
-import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.views.tabs.deposits.TabDeposits;
 import com.ecsail.pdf.PDF_DepositReport;
-import com.ecsail.sql.select.SqlDeposit;
 import com.ecsail.dto.DepositDTO;
 import com.ecsail.dto.DepositPDFDTO;
 import javafx.geometry.Insets;
@@ -91,7 +88,7 @@ public class Dialogue_DepositPDF extends Stage {
         ////////////  Check to see if batch exists first////////////
 
         if (depositDTO == null) { // deposit does not exist
-            depositDTO = SqlDeposit.getDeposit(Integer.parseInt(selectedYear), 1);
+            depositDTO = depositRepository.getDeposit(Integer.parseInt(selectedYear), 1);
             batchSpinner.getValueFactory().setValue(1);
         } else {
             batchSpinner.getValueFactory().setValue(depositDTO.getBatch());

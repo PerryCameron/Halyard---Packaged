@@ -365,7 +365,11 @@ public class VboxDepositControls extends VBox {
                 comboBox.setValue("Show Current");
             }
             depositDTO.setBatch(depositDTO.getBatch());
-            SqlDeposit.getDeposit(depositDTO);
+            // lets modify it then update it
+            DepositDTO tempDeposit = parent.getDepositRepository()
+                    .getDeposit(Integer.parseInt(depositDTO.getFiscalYear()), depositDTO.getBatch());
+            depositDTO.setDeposit_id(tempDeposit.getDeposit_id());
+            depositDTO.setDepositDate(tempDeposit.getDepositDate());
     }
 
     private void cleanDeposit() {
@@ -425,9 +429,9 @@ public class VboxDepositControls extends VBox {
         DepositTotalDTO depositTotal;
         vBoxSumItemsInner.getChildren().add(new HboxInvoiceSectionHead("Totals"));
         // total batch only
-        if(getCorrectBatch() > 0) depositTotal = SqlDeposit.getTotals(depositDTO, false);
+        if(getCorrectBatch() > 0) depositTotal = parent.getDepositRepository().getTotals(depositDTO, false);
         // total all invoice summary
-        else depositTotal = SqlDeposit.getTotals(depositDTO, true);
+        else depositTotal = parent.getDepositRepository().getTotals(depositDTO, true);
         for(int i = 0; i < depositTotal.getValues().length; i++) {
             vBoxSumItemsInner.getChildren().add(
                     new HboxInvoiceFooter(depositTotal.getLabels()[i],depositTotal.getValues()[i]));

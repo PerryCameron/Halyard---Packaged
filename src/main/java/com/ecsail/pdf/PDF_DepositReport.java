@@ -3,13 +3,14 @@ package com.ecsail.pdf;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
+import com.ecsail.repository.implementations.DepositRepositoryImpl;
 import com.ecsail.repository.implementations.InvoiceRepositoryImpl;
+import com.ecsail.repository.interfaces.DepositRepository;
 import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.views.tabs.deposits.InvoiceWithMemberInfoDTO;
 import com.ecsail.views.tabs.deposits.TabDeposits;
 import com.ecsail.repository.implementations.MemoRepositoryImpl;
 import com.ecsail.repository.interfaces.MemoRepository;
-import com.ecsail.sql.select.SqlDeposit;
 import com.ecsail.sql.select.SqlInvoiceItem;
 import com.ecsail.dto.*;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class PDF_DepositReport {
-	protected MemoRepository memoRepository = new MemoRepositoryImpl();
+
 	private final ObservableList<InvoiceItemDTO> invoiceItems;
 	private final ArrayList<InvoiceItemDTO> invoiceSummedItems = new ArrayList<>();
 	private final ObservableList<InvoiceWithMemberInfoDTO> invoices;
@@ -43,11 +44,14 @@ public class PDF_DepositReport {
 	Boolean includeDollarSigns = false;
 	static String[] TDRHeaders = {"Date", "Deposit Number", "Fee", "Records", "Amount"};
 	private InvoiceRepository invoiceRepository;
-
+	private MemoRepository memoRepository;
+	private DepositRepository depositRepository;
 	public PDF_DepositReport(TabDeposits td, DepositPDFDTO pdfOptions) {
 		this.depositDTO = td.getDepositDTO();
 		this.invoices = td.getInvoices();
 		this.invoiceRepository = new InvoiceRepositoryImpl();
+		this.memoRepository  = new MemoRepositoryImpl();
+		this.depositRepository = new DepositRepositoryImpl();
 		this.invoiceItems = SqlInvoiceItem.getAllInvoiceItemsByYearAndBatch(depositDTO);
 		BaseApplication.logger.info("Creating Deposit Report "
 				+ depositDTO.getBatch() + " for " + depositDTO.getFiscalYear());
@@ -91,7 +95,7 @@ public class PDF_DepositReport {
 		if (pdfOptions.isSingleDeposit()) { // are we only creating a report of a single deposit
 			createDepositTable(document);
 		} else { // we are creating a report for the entire year
-			int numberOfBatches = SqlDeposit.getNumberOfDepositBatches(depositDTO.getFiscalYear()) + 1;
+			int numberOfBatches = depositRepository.getNumberOfDepositBatches(depositDTO.getFiscalYear()) + 1;
 			for (int i = 1; i < numberOfBatches; i++) {
 				createDepositTable(document);
 				document.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
@@ -277,12 +281,11 @@ public class PDF_DepositReport {
 			sumItemsForCategories(item);
 
 			if (!item.getValue().equals("0.00")) {
-				System.out.println(item.getFieldName() + " " + item.getQty() + " " + item.getValue());
 				addSummaryRow(mainTable, item);
 			}
 		}
 		RemoveBorder(mainTable);
-		DepositTotalDTO depositTotal = SqlDeposit.getTotals(depositDTO, false); // gets count of totals
+		DepositTotalDTO depositTotal = depositRepository.getTotals(depositDTO, false); // gets count of totals
 		for(int i = 0; i < 3; i++) {
 			addTotalsFooter(mainTable, depositTotal.getFullLabels()[i],depositTotal.getValues()[i],i == 2);
 		}
