@@ -11,7 +11,6 @@ import com.ecsail.views.tabs.deposits.InvoiceWithMemberInfoDTO;
 import com.ecsail.views.tabs.deposits.TabDeposits;
 import com.ecsail.repository.implementations.MemoRepositoryImpl;
 import com.ecsail.repository.interfaces.MemoRepository;
-import com.ecsail.sql.select.SqlInvoiceItem;
 import com.ecsail.dto.*;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.ColorConstants;
@@ -36,7 +35,7 @@ import java.util.Objects;
 
 public class PDF_DepositReport {
 
-	private final ObservableList<InvoiceItemDTO> invoiceItems;
+	private final ArrayList<InvoiceItemDTO> invoiceItems;
 	private final ArrayList<InvoiceItemDTO> invoiceSummedItems = new ArrayList<>();
 	private final ObservableList<InvoiceWithMemberInfoDTO> invoices;
 	private final DepositDTO depositDTO;
@@ -52,7 +51,7 @@ public class PDF_DepositReport {
 		this.invoiceRepository = new InvoiceRepositoryImpl();
 		this.memoRepository  = new MemoRepositoryImpl();
 		this.depositRepository = new DepositRepositoryImpl();
-		this.invoiceItems = SqlInvoiceItem.getAllInvoiceItemsByYearAndBatch(depositDTO);
+		this.invoiceItems = (ArrayList<InvoiceItemDTO>) invoiceRepository.getAllInvoiceItemsByYearAndBatch(depositDTO);
 		BaseApplication.logger.info("Creating Deposit Report "
 				+ depositDTO.getBatch() + " for " + depositDTO.getFiscalYear());
 		this.fiscalYear = depositDTO.getFiscalYear();
@@ -62,9 +61,15 @@ public class PDF_DepositReport {
 		ArrayList<String> invoiceItemTypes = new ArrayList<>(
 				invoiceRepository.getInvoiceCategoriesByYear(Integer.parseInt(depositDTO.getFiscalYear())));
 		// get our summed items
+		InvoiceItemDTO invoiceItemDTO;
 		for (String type : invoiceItemTypes) {
-			invoiceSummedItems.add(SqlInvoiceItem.getInvoiceItemSumByYearAndType(
-					Integer.parseInt(depositDTO.getFiscalYear()), type, depositDTO.getBatch()));
+			if(depositDTO.getBatch() > 0)
+				invoiceItemDTO = invoiceRepository.getInvoiceItemByYearTypeAndBatch(
+						Integer.parseInt(depositDTO.getFiscalYear()), type, depositDTO.getBatch());
+			else
+				invoiceItemDTO = invoiceRepository.getInvoiceItemByYearAndType(
+					Integer.parseInt(depositDTO.getFiscalYear()), type);
+			invoiceSummedItems.add(invoiceItemDTO);
 		}
 		
 		////////////// CHOOSE SORT //////////////

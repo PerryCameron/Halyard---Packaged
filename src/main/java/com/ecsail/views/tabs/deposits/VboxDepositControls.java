@@ -2,6 +2,7 @@ package com.ecsail.views.tabs.deposits;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
+import com.ecsail.dto.InvoiceItemDTO;
 import com.ecsail.views.dialogues.Dialogue_DepositPDF;
 import com.ecsail.pdf.PDF_DepositReport;
 import com.ecsail.sql.select.*;
@@ -415,14 +416,26 @@ public class VboxDepositControls extends VBox {
 
     private void getInvoiceItemRows() {
             for (String e : invoiceItemTypes) {
-                HboxInvoiceSumItem item = new HboxInvoiceSumItem(
-                        SqlInvoiceItem.getInvoiceItemSumByYearAndType(selectedYear, e, getCorrectBatch()));
+                HboxInvoiceSumItem item =
+                        new HboxInvoiceSumItem(getInvoicedSummedItem(selectedYear, e, getCorrectBatch()));
                 if (itemHasAValue(item)) { // let's not bother with 0 value line items
                     vBoxSumItemsInner.getChildren().add(item);  // adds an invoice item row
                 }
             }
             addFooter();
     }
+
+    private InvoiceItemDTO getInvoicedSummedItem(int year, String type, int batch) {
+            InvoiceItemDTO invoiceItemDTO;
+        if(depositDTO.getBatch() > 0)
+            invoiceItemDTO = parent.getInvoiceRepository().getInvoiceItemByYearTypeAndBatch(year, type, depositDTO.getBatch());
+        else
+            invoiceItemDTO = parent.getInvoiceRepository().getInvoiceItemByYearAndType(year, type);
+        return invoiceItemDTO;
+    }
+
+
+
 
     // adds the footer with totals
     private void addFooter() {

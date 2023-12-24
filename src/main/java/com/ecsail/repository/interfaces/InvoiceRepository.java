@@ -63,4 +63,10 @@ public interface InvoiceRepository {
     int updateFee(FeeDTO feeDTO);
 
     List<String> getInvoiceCategoriesByYear(int year);
+
+    List<InvoiceItemDTO> getAllInvoiceItemsByYearAndBatch(DepositDTO d);
+
+    InvoiceItemDTO getInvoiceItemByYearAndType(int year, String type);
+
+    InvoiceItemDTO getInvoiceItemByYearTypeAndBatch(int year, String type, int batch);
 }

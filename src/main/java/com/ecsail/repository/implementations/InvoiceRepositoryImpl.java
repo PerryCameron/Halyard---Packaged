@@ -632,4 +632,75 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
             return List.of(); // Return an empty list in case of failure
         }
     }
+
+    @Override
+    public List<InvoiceItemDTO> getAllInvoiceItemsByYearAndBatch(DepositDTO d) {
+        String query = """
+            SELECT ii.* FROM invoice i
+            LEFT JOIN invoice_item ii ON i.ID = ii.INVOICE_ID
+            WHERE i.FISCAL_YEAR = ? AND ii.FISCAL_YEAR = ? AND i.BATCH = ?
+            """;
+
+        try {
+            return template.query(query, new Object[]{d.getFiscalYear(), d.getFiscalYear(), d.getBatch()}, new InvoiceItemRowMapper());
+        } catch (Exception e) {
+            logger.error("Unable to retrieve invoice items", e);
+            return List.of(); // Return an empty list in case of failure
+        }
+    }
+    @Override
+    public InvoiceItemDTO getInvoiceItemByYearAndType(int year, String type) {
+        InvoiceItemDTO invoiceItemDTO = new InvoiceItemDTO(year, type);
+        String query = """
+            SELECT SUM(ii.value) AS VALUE, SUM(ii.QTY) AS QTY, IF(SUM(ii.IS_CREDIT) > 0, true, false) AS IS_CREDIT
+            FROM invoice_item ii
+            LEFT JOIN invoice i ON ii.INVOICE_ID = i.ID
+            WHERE i.FISCAL_YEAR = ? AND ii.FISCAL_YEAR = ? AND ii.FIELD_NAME = ? AND COMMITTED = true
+            """;
+        try {
+            Map<String, Object> result = template.queryForMap(query, year, year, type);
+            invoiceItemDTO.setCredit(convertIntegerToBoolean(result));
+            invoiceItemDTO.setValue(convertBigDecimalToString(result));
+            invoiceItemDTO.setQty(convertNumberToInteger(result));
+            return invoiceItemDTO;
+        } catch (DataAccessException e) {
+            logger.error("Unable to retrieve information", e);
+            return null; // Return null in case of failure
+        }
+    }
+    @Override
+    public InvoiceItemDTO getInvoiceItemByYearTypeAndBatch(int year, String type, int batch) {
+        InvoiceItemDTO invoiceItemDTO = new InvoiceItemDTO(year, type);
+        String query = """
+            SELECT SUM(ii.value) AS VALUE, SUM(ii.QTY) AS QTY, IF(SUM(ii.IS_CREDIT) > 0, true, false) AS IS_CREDIT
+            FROM invoice_item ii 
+            LEFT JOIN invoice i ON ii.INVOICE_ID = i.ID
+            WHERE i.FISCAL_YEAR = ? AND ii.FISCAL_YEAR = ? AND ii.FIELD_NAME = ? AND i.BATCH = ?
+            """;
+        try {
+            Map<String, Object> result = template.queryForMap(query, year, year, type, batch);
+            invoiceItemDTO.setCredit(convertIntegerToBoolean(result));
+            invoiceItemDTO.setValue(convertBigDecimalToString(result));
+            invoiceItemDTO.setQty(convertNumberToInteger(result));
+            return invoiceItemDTO;
+        } catch (DataAccessException e) {
+            logger.error("Unable to retrieve information", e);
+            return null; // Return null in case of failure
+        }
+    }
+
+    private static int convertNumberToInteger(Map<String, Object> result) {
+        int qty = result.get("QTY") != null ? ((Number) result.get("QTY")).intValue() : 0;
+        return qty;
+    }
+
+    private static boolean convertIntegerToBoolean(Map<String, Object> result) {
+        boolean isCredit = result.get("IS_CREDIT") != null && ((Integer) result.get("IS_CREDIT")) > 0;
+        return isCredit;
+    }
+
+    private static String convertBigDecimalToString(Map<String, Object> result) {
+        String value = result.get("VALUE") != null ? result.get("VALUE").toString() : "0";
+        return value;
+    }
 }

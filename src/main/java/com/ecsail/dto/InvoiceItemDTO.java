@@ -46,6 +46,19 @@ public class InvoiceItemDTO {
         this.qty = new SimpleIntegerProperty(0);
     }
 
+    public InvoiceItemDTO(Integer year, String fieldName) {
+        this.id = new SimpleIntegerProperty(0);
+        this.invoiceId = new SimpleIntegerProperty(0);
+        this.msId = new SimpleIntegerProperty(0);
+        this.year = new SimpleIntegerProperty(year);
+        this.fieldName = new SimpleStringProperty(fieldName);
+        this.credit = new SimpleBooleanProperty(false);
+        this.value = new SimpleStringProperty("0.00");
+        this.qty = new SimpleIntegerProperty(0);
+    }
+
+
+
 //    (0, invoiceId, msid, year, dbInvoiceDTO.getFieldName()
 //            , dbInvoiceDTO.isCredit(), "0.00", 0);
 
