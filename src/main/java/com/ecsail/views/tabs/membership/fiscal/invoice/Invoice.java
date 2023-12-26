@@ -90,7 +90,6 @@ public class Invoice extends HBox {
             membershipIdRepository.updateMembershipId(membership.getMsId(),invoice.getYear(),footer.getRenewCheckBox().isSelected());
         });
 
-
 		// take list of DBInvoiceDTOs, insert appropriate fee into widget, insert reference to invoice items
 		// the put an HBOX with all this attached into a hash map
 		for (DbInvoiceDTO dbInvoiceDTO : dbInvoiceDTOs) {
@@ -119,25 +118,34 @@ public class Invoice extends HBox {
         vboxGrey.getChildren().addAll(mainVbox);
         getChildren().addAll(vboxGrey);
         updateAllowed = true; // may write to database
-        if (getOfficerCredit()) { // has an officer
+
+        InvoiceItemRow invoiceItemRow = invoiceItemMap.get("Position Credit");
+        if (hasPositionCredit()) { // has an officer
+            logger.info("Membership MSID=" + invoice.getMsId() + " has an officer");
             //if position doesn't already exist then add it
-            if(!invoiceRepository.invoiceItemPositionCreditExistsWithValue(invoice.getYear(),invoice.getMsId())) {
-                invoiceItemMap.get("Position Credit").getRowTotal().setText(invoiceItemMap.get("Dues").getRowTotal().getText());
-                // TODO this needs to be tested ( added so that deposit reports will show qty)
-                invoiceItemMap.get("Position Credit").invoiceItemDTO.setQty(1);
-                updateInvoiceItem(invoiceItemMap.get("Position Credit").invoiceItemDTO);
+            if(!invoiceRepository.invoiceItemExistsByYearAndMsId(
+                    invoice.getYear(),invoice.getMsId(),"Position Credit")) {
+                logger.info("A Position Credit invoice does not exist");
+                invoiceItemRow.getRowTotal().setText(invoiceItemMap.get("Dues").getRowTotal().getText());
+                invoiceItemRow.invoiceItemDTO.setQty(1);
+                invoiceItemRow.invoiceItemDTO.setValue(invoiceItemMap.get("Dues").getRowTotal().getText());
+                updateInvoiceItem(invoiceItemRow.invoiceItemDTO);
             }
         } else { // has no officer
+            logger.info("Membership MSID=" + invoice.getMsId() + " has no officer");
             // has no officer but was once set as officer, will remove position credit // TODO need to test
-            if(invoiceRepository.invoiceItemPositionCreditExistsWithValue(invoice.getYear(),invoice.getMsId())) {
-                invoiceItemMap.get("Position Credit").invoiceItemDTO.setQty(0);
-                invoiceItemMap.get("Position Credit").invoiceItemDTO.setValue("0.00");
-                updateInvoiceItem(invoiceItemMap.get("Position Credit").invoiceItemDTO);
+            if(invoiceRepository.invoiceItemExistsByYearAndMsId(
+                    invoice.getYear(),invoice.getMsId(),"Position Credit")) {
+                logger.info("A position credit exists that needs to be removed");
+                invoiceItemRow.invoiceItemDTO.setQty(0);
+                invoiceItemRow.invoiceItemDTO.setValue("0.00");
+                updateInvoiceItem(invoiceItemRow.invoiceItemDTO);
             }
         }
+        invoiceItemRow.updateBalance("Loading of invoice is now complete");
     }
 
-    private boolean getOfficerCredit() {
+    private boolean hasPositionCredit() {
         boolean hasOfficer = invoiceRepository.membershipHasOfficerForYear(invoice.getMsId(), invoice.getYear());
         logger.info("Membership has officer: " + hasOfficer);
         return hasOfficer && !invoice.isSupplemental();
@@ -145,6 +153,7 @@ public class Invoice extends HBox {
 
     public void updateInvoiceItem(InvoiceItemDTO invoiceItemDTO) {
         if(updateAllowed)
+            logger.info("Updating invoice item for membership MSID=" + invoice.getMsId());
             invoiceRepository.updateInvoiceItem(invoiceItemDTO);
     }
     public void updateInvoice(InvoiceDTO invoice) {
@@ -161,7 +170,6 @@ public class Invoice extends HBox {
         return selectedFee;
     }
 
-    //////////////////////  CLASS METHODS ///////////////////////////
 
     private ObservableList<PaymentDTO> getPayment() {
         // check to see if invoice record exists

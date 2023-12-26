@@ -28,7 +28,7 @@ public interface InvoiceRepository {
     String getTotalAmount(int invoiceId);
     List<PaymentDTO> getPaymentsWithInvoiceId(int invoiceId);
     List<InvoiceItemDTO> getInvoiceItemsByInvoiceId(int invoiceId);
-    Boolean invoiceItemPositionCreditExistsWithValue(int year, int msId);
+    Boolean invoiceItemExistsByYearAndMsId(int year, int msId, String fieldName);
     Boolean membershipHasOfficerForYear(int msid, int year);
 
     int updateInvoiceItem(InvoiceItemDTO item);

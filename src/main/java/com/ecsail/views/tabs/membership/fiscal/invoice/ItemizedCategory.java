@@ -24,7 +24,7 @@ public class ItemizedCategory extends VBox {
             getChildren().add(row);
         }
         parent.rowTotal.setText(calculateAllLines());
-        parent.updateBalance();
+//        parent.updateBalance("Itemized categories created ");
         setId("box-background-light");
     }
 

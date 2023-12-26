@@ -67,7 +67,7 @@ public class ItemizedCategoryRow extends HBox {
             invoiceItemDTO.setQty((Integer) newValue);
             // calculates lineTotal for all sub items and gives total
             parent.parent.invoiceItemDTO.setValue(parent.calculateAllLines());
-            parent.parent.updateBalance();
+            parent.parent.updateBalance("Spinner for " + feeDTO.getFieldValue());
         });
 
         spinner.focusedProperty().addListener((observable, oldValue, focused) -> {

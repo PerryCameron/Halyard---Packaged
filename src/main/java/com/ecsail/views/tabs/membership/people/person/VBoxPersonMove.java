@@ -32,7 +32,7 @@ public class VBoxPersonMove extends VBox {
         try {
             if (Class.forName(Thread.currentThread().getStackTrace()[4].getClassName()).equals(TabMembership.class)) {
                 calledFromMembershipTab = true;
-                BaseApplication.logger.info("Calling Class for HBoxPerson.class is TabMembership.class ");
+//                BaseApplication.logger.info("Calling Class for HBoxPerson.class is TabMembership.class ");
             }
         } catch (ClassNotFoundException e) {
             BaseApplication.logger.error("Unable to determine calling class: " + e.getMessage());

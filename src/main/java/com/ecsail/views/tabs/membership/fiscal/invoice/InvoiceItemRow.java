@@ -135,12 +135,6 @@ public class InvoiceItemRow extends HBox {
                 textField.setPrefWidth(dbInvoiceDTO.getWidth());
                 textField.setText(invoiceItemDTO.getValue());
                 setTextFieldListener();
-                // below if statement added because it needed to update dues.
-                if (!invoiceItemDTO.getValue().equals("0.00")) {
-                    invoiceItemDTO.setQty(1);
-                    updateBalance();
-                    checkIfNotCommittedAndUpdateSql();
-                }
                 return textField;
             }
             case "spinner" -> {
@@ -230,7 +224,7 @@ public class InvoiceItemRow extends HBox {
             rowTotal.setText(calculatedTotal);
             invoiceItemDTO.setValue(calculatedTotal);
             invoiceItemDTO.setQty(newValue);
-            updateBalance();
+            updateBalance("Updating " + fee.getFieldValue());
         });
 
         // no need to write to database everytime we click a spinner, lets write when done.
@@ -240,7 +234,8 @@ public class InvoiceItemRow extends HBox {
         });
     }
 
-    protected void updateBalance() {
+    protected void updateBalance(String updateFrom) {
+        parent.logger.info("updatingBalance " + updateFrom);
         if (!invoice.isCommitted()) {  // this prevents it from being updated if committed.
             BigDecimal fees = new BigDecimal("0.00");
             BigDecimal credit = new BigDecimal("0.00");
@@ -268,7 +263,7 @@ public class InvoiceItemRow extends HBox {
             rowTotal.setText(calculatedTotal);
             invoiceItemDTO.setQty(newValue);
             checkIfNotCommittedAndUpdateSql();
-            updateBalance();
+            updateBalance("Updating " + fee.getFieldValue());
         });
     }
 
@@ -282,7 +277,7 @@ public class InvoiceItemRow extends HBox {
                 textField.setText(String.valueOf(item.setScale(2, RoundingMode.HALF_UP)));
                 invoiceItemDTO.setQty(1);
                 invoiceItemDTO.setValue(textField.getText());
-                updateBalance();
+                updateBalance("Updating " + fee.getFieldValue());
                 checkIfNotCommittedAndUpdateSql();
             }
         });
@@ -316,7 +311,7 @@ public class InvoiceItemRow extends HBox {
                 price.setText(stringValue);
                 String value = String.valueOf(new BigDecimal(price.getText()).multiply(BigDecimal.valueOf(spinner.getValue())));
                 rowTotal.setText(value);
-                updateBalance();
+                updateBalance("Price changed");
                 checkIfNotCommittedAndUpdateSql();
                 vBox4.getChildren().clear();
                 vBox4.getChildren().add(price);

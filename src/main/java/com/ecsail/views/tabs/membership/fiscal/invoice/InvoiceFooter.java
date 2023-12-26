@@ -16,6 +16,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 
@@ -33,6 +35,7 @@ public class InvoiceFooter extends VBox {
 
     protected final Invoice parent;
     private final InvoiceRepository invoiceRepository;
+    public static Logger logger = LoggerFactory.getLogger(InvoiceFooter.class);
 
     public InvoiceFooter(Invoice hboxInvoice) {
         this.parent = hboxInvoice;
@@ -49,12 +52,7 @@ public class InvoiceFooter extends VBox {
 
         setPadding(new Insets(15, 0, 15, 0));
         setSpacing(15);
-        ///// TODO TEMP //////
-//        renewCheckBox.selectedProperty().addListener(
-//                (ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) -> {
-//                parent.items.forEach(invoiceItemDTO -> System.out.println(invoiceItemDTO.getFieldName() + " " + invoiceItemDTO.getValue()));
-//                });
-        ///// TODO TEMP /////
+
 
         buttonAdd.setOnAction(e -> {
             PaymentDTO paymentDTO = invoiceRepository.insertPayment(new PaymentDTO(parent.invoice.getId()));
@@ -157,6 +155,7 @@ public class InvoiceFooter extends VBox {
     }
 
     public void updateTotals() {
+        logger.info("Updating totals for MSID=" + parent.invoice.getMsId());
         BigDecimal payment = new BigDecimal(parent.invoice.getPaid());
         BigDecimal fees = new BigDecimal(parent.invoice.getTotal());
         BigDecimal credit = new BigDecimal(parent.invoice.getCredit());
@@ -164,6 +163,7 @@ public class InvoiceFooter extends VBox {
     }
 
     private void updateItemsAndSave(BigDecimal fees, BigDecimal credit, BigDecimal payment) {
+        logger.info("Updating items and Saving");
         BigDecimal balance = fees.subtract(credit).subtract(payment);
         String feesString = String.valueOf(fees);
         String creditString = String.valueOf(credit);

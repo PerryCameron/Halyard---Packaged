@@ -318,18 +318,18 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
         }
     }
     @Override
-    public Boolean invoiceItemPositionCreditExistsWithValue(int year, int msId) {
+    public Boolean invoiceItemExistsByYearAndMsId(int year, int msId, String fieldName) {
         String query = """
                    SELECT EXISTS(
                        SELECT * FROM invoice_item 
                        WHERE FISCAL_YEAR = ? 
                        AND MS_ID = ? 
-                       AND field_name = 'Position Credit' 
+                       AND field_name = ? 
                        AND VALUE > 0
                    ) AS ITEM_EXISTS
                    """;
         try {
-            return template.queryForObject(query, Boolean.class, year, msId);
+            return template.queryForObject(query, Boolean.class, year, msId, fieldName);
         } catch (Exception e) {
             logger.error("Unable to check if 'Position Credit' item exists", e);
             return false;
