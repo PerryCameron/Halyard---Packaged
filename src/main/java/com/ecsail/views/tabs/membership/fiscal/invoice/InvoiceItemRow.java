@@ -262,8 +262,9 @@ public class InvoiceItemRow extends HBox {
             String calculatedTotal = String.valueOf(BigDecimal.valueOf(newValue).multiply(new BigDecimal(fee.getFieldValue())));
             rowTotal.setText(calculatedTotal);
             invoiceItemDTO.setQty(newValue);
+            invoiceItemDTO.setValue(calculatedTotal);
             checkIfNotCommittedAndUpdateSql();
-            updateBalance("Updating " + fee.getFieldValue());
+            updateBalance("Updating " + invoiceItemDTO.getFieldName());
         });
     }
 
@@ -277,7 +278,7 @@ public class InvoiceItemRow extends HBox {
                 textField.setText(String.valueOf(item.setScale(2, RoundingMode.HALF_UP)));
                 invoiceItemDTO.setQty(1);
                 invoiceItemDTO.setValue(textField.getText());
-                updateBalance("Updating " + fee.getFieldValue());
+                updateBalance("Updating " + invoiceItemDTO.getFieldName());
                 checkIfNotCommittedAndUpdateSql();
             }
         });
