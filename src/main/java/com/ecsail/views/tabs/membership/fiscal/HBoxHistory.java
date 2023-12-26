@@ -100,12 +100,14 @@ public class HBoxHistory extends HBox {
             MembershipIdDTO membershipIdDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
             String savedValue = membershipIdDTO.getFiscalYear();
             membershipIdDTO.setFiscalYear(StringTools.changeEmptyStringToZero(t.getNewValue()));
-            if (parent.getModel().getMembershipIdRepository().rowExists(membershipIdDTO) == 0)
-                parent.getModel().getMembershipIdRepository().update(membershipIdDTO);
-            else {
-                new DialogueError(true, "An entry for " + membershipIdDTO.getFiscalYear()
-                        + " already exists with the membership Id of " + membershipIdDTO.getMembershipId(), 500, 100);
-                membershipIdDTO.setFiscalYear(savedValue);
+            if (!membershipIdDTO.getFiscalYear().equals(savedValue)) {  // if we changed the value
+                if (parent.getModel().getMembershipIdRepository().rowExists(membershipIdDTO) == 0)
+                    parent.getModel().getMembershipIdRepository().update(membershipIdDTO);
+                else {
+                    new DialogueError(true, "An entry for " + membershipIdDTO.getFiscalYear()
+                            + " already exists with the membership Id of " + membershipIdDTO.getMembershipId(), 500, 100);
+                    membershipIdDTO.setFiscalYear(savedValue);
+                }
             }
         });
 
@@ -115,12 +117,14 @@ public class HBoxHistory extends HBox {
             MembershipIdDTO membershipIdDTO = t.getTableView().getItems().get(t.getTablePosition().getRow());
             String savedValue = membershipIdDTO.getMembershipId();
             membershipIdDTO.setMembershipId(StringTools.changeEmptyStringToZero(t.getNewValue()));
-            if (parent.getModel().getMembershipIdRepository().rowExists(membershipIdDTO) == 0)
-                parent.getModel().getMembershipIdRepository().update(membershipIdDTO);
-            else { // if it ain't right, but it back right
-                new DialogueError(true, "An entry for " + membershipIdDTO.getFiscalYear()
-                        + " already exists with the membership Id of " + membershipIdDTO.getMembershipId(), 500, 100);
-                membershipIdDTO.setMembershipId(savedValue);
+            if (!membershipIdDTO.getMembershipId().equals(savedValue)) { // if we changed the value
+                if (parent.getModel().getMembershipIdRepository().rowExists(membershipIdDTO) == 0)
+                    parent.getModel().getMembershipIdRepository().update(membershipIdDTO);
+                else { // if it ain't right, but it back right
+                    new DialogueError(true, "An entry for " + membershipIdDTO.getFiscalYear()
+                            + " already exists with the membership Id of " + membershipIdDTO.getMembershipId(), 500, 100);
+                    membershipIdDTO.setMembershipId(savedValue);
+                }
             }
         });
 
@@ -201,7 +205,7 @@ public class HBoxHistory extends HBox {
         // Apparently datepicker was broken after java 8 and then fixed in java 18
         // this is a work-around until I upgrade this to java 18+
         joinDatePicker.setConverter(new StringConverter<>() {
-            private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+            private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
             @Override
             public String toString(LocalDate localDate) {
