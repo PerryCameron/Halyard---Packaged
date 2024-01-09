@@ -3,7 +3,6 @@ package com.ecsail.repository.implementations;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.dto.StatsDTO;
-import com.ecsail.repository.interfaces.MembershipIdRepository;
 import com.ecsail.repository.interfaces.StatRepository;
 import com.ecsail.repository.rowmappers.StatsRowMapper;
 import com.ecsail.repository.rowmappers.StatsSpecialRowMapper;

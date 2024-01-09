@@ -11,7 +11,6 @@ import com.itextpdf.layout.properties.AreaBreakType;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.VerticalAlignment;
-import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,12 +18,12 @@ import java.util.Comparator;
 
 public class PDF_MembersByNumber {
 	ArrayList<MembershipListDTO> rosters;
-	PDF_Object_Settings set;
+	PDF_Object_Settings model;
 	ArrayList<Table> tables = new ArrayList<Table>(); // Stores the column tables
 	ArrayList<Object_StoreMemberPosition> position;
 	
-	public PDF_MembersByNumber(PDF_Object_Settings set, Document doc, ArrayList<MembershipListDTO> rosters) {
-		this.set = set;
+	public PDF_MembersByNumber(PDF_Object_Settings model, Document doc, ArrayList<MembershipListDTO> rosters) {
+		this.model = model;
 		this.rosters = rosters;
 		this.position = new ArrayList<>();
 		Collections.sort(this.rosters , Comparator.comparing(MembershipListDTO::getMembershipId));
@@ -32,7 +31,7 @@ public class PDF_MembersByNumber {
 		// used to know where we are in iterations
 		int count = 0;
 		// determines number of people we will put in a column
-		int columnLength = this.set.getNumberOfRowsByNumber();
+		int columnLength = this.model.getNumberOfRowsByNumber();
 		// determines number of people left that won't perfectly fill a column, the straglers
 		int remainder = rosters.size() % columnLength;
 		// determines the total number of columns we have not including one needed for any straglers
@@ -68,12 +67,10 @@ public class PDF_MembersByNumber {
 			doc.add(new Paragraph("\n\n"));
 			table = new Table(1);
 			cell = new Cell();
-			System.out.println(i + " position.size()=" + position.size());
-			System.out.println("Memberships " + position.get(i).getPersonStart() + " through " + position.get(i + 4).getPersonEnd());
 			p = new Paragraph("Memberships " + position.get(i).getPersonStart() + " through " + position.get(i + 4).getPersonEnd());
-			p.setFont(set.getColumnHead());
-			p.setFontColor(set.getMainColor());
-			p.setFontSize(set.getNormalFontSize() + 10);
+			p.setFont(model.getColumnHead());
+			p.setFontColor(model.getMainColor());
+			p.setFontSize(model.getNormalFontSize() + 10);
 			cell.add(p);
 			cell.setBorder(Border.NO_BORDER);
 			table.addCell(cell);
@@ -119,7 +116,7 @@ public class PDF_MembersByNumber {
 		cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
 		cell.setBorder(Border.NO_BORDER);
 		p = new Paragraph(m.getMembershipId() + "  " + m.getLastName());
-		p.setFontSize(set.getNormalFontSize() - 2);
+		p.setFontSize(model.getNormalFontSize() - 2);
 		p.setTextAlignment(TextAlignment.LEFT);
 		cell.add(p);
 		return cell;

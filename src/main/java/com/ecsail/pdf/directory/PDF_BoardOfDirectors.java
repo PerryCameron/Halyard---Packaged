@@ -17,16 +17,16 @@ import java.util.Comparator;
 public class PDF_BoardOfDirectors extends Table {
 
     PDF_Object_Settings set;
-    ArrayList<PDF_Object_Officer> officers;
+    ArrayList<PDF_Object_Officer> pdfObjectOfficers;
 
     PDFRepository pdfRepository = new PDFRepositoryImpl();
 
     public PDF_BoardOfDirectors(int numColumns, PDF_Object_Settings set) {
         super(numColumns);
         this.set = set;
-        officers = (ArrayList<PDF_Object_Officer>) pdfRepository.getOfficersByYear(set.getSelectedYear());
-        officers.forEach(System.out::println);
-        officers.sort(Comparator.comparing(PDF_Object_Officer::getLastName));
+        pdfObjectOfficers = (ArrayList<PDF_Object_Officer>) pdfRepository.getOfficersByYear(set.getSelectedYear());
+        pdfObjectOfficers.forEach(System.out::println);
+        pdfObjectOfficers.sort(Comparator.comparing(PDF_Object_Officer::getLastName));
         setWidth(set.getPageSize().getWidth() * 0.9f);  // makes table 90% of page width
         setHorizontalAlignment(HorizontalAlignment.CENTER);
         Cell cell = new Cell();
@@ -86,7 +86,7 @@ public class PDF_BoardOfDirectors extends Table {
         Paragraph p;
         cell = new Cell(1, 2);
         cell.setBorder(Border.NO_BORDER);
-        p = new Paragraph("Commitee Chairs");
+        p = new Paragraph("Committee Chairs");
         p.setFontSize(set.getNormalFontSize() + 4);
         p.setFont(set.getColumnHead());
         p.setFontColor(set.getMainColor());
@@ -102,7 +102,7 @@ public class PDF_BoardOfDirectors extends Table {
         addOfficerToTable(chairTable, "RA");
 
         addOfficerToTable(chairTable, "AR");
-		addOfficerToTable(chairTable, "AR");
+//		addOfficerToTable(chairTable, "AR");
         addOfficerToTable(chairTable, "SM");
         addOfficerToTable(chairTable, "JP");
         addOfficerToTable(chairTable, "AJ");
@@ -142,7 +142,7 @@ public class PDF_BoardOfDirectors extends Table {
         int nextYear = thisYear + 1;
         int afterNextYear = thisYear + 2;
 
-        for (PDF_Object_Officer o : officers) {
+        for (PDF_Object_Officer o : pdfObjectOfficers) {
             if (Integer.parseInt(o.getBoardTermEndYear()) == thisYear)
                 currentYearList.add(o.firstName + " " + o.lastName);
             if (Integer.parseInt(o.getBoardTermEndYear()) == nextYear)
@@ -216,18 +216,16 @@ public class PDF_BoardOfDirectors extends Table {
             mainTable.addCell(cell);
     }
 
-	public PDF_Object_Officer getOfficer(String type) {
-        for (PDF_Object_Officer o : officers) {
-            if (!o.getOfficerPlaced()) {
-                if (o.getOfficerType().equals(type)) {
+    public PDF_Object_Officer getOfficer(String type) {
+        return pdfObjectOfficers.stream()
+                .filter(o -> !o.getOfficerPlaced() && o.getOfficerType().equals(type))
+                .findFirst()
+                .map(o -> {
                     o.setOfficerPlaced(true);
                     return o;
-                }
-            } else {
-                System.out.println("Not retuning object");
-            }
-        }
-		return null;
-	}
+                })
+                .orElse(null);
+    }
+
 
 }
