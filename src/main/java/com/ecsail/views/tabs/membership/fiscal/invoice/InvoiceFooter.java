@@ -73,6 +73,7 @@ public class InvoiceFooter extends VBox {
         buttonAddNote.setOnAction(e -> {
             parent.getNote().addMemoAndReturnId(new MemoDTO("Invoice Note: ", parent.invoice.getId(), "I"));
             parent.getTabMembership().selectTab("Notes");
+            parent.getTabMembership().editRow();
         });
 
         buttonAdd.setPrefWidth(60);

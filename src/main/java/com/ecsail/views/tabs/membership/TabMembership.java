@@ -15,7 +15,6 @@ import com.ecsail.models.MembershipTabModel;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -25,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class TabMembership extends Tab {
 	MembershipTabModel model;
+	HBoxMembershipNotes membershipNotes;
 	public TabMembership(MembershipListDTO me) {
 		super();
 		this.model = new MembershipTabModel(me);
@@ -88,7 +88,8 @@ public class TabMembership extends Tab {
 		model.getFiscalTabPane().getTabs().add(new Tab("History", new HBoxHistory(this)));
 		model.getFiscalTabPane().getTabs().add(new Tab("Invoices", new HBoxInvoiceList(this)));
 		model.getInformationTabPane().getTabs().add(new Tab("Boats", new HBoxBoat(this)));
-		model.getInformationTabPane().getTabs().add(new Tab("Notes", new HBoxMembershipNotes(this)));
+		this.membershipNotes = new HBoxMembershipNotes(this);
+		model.getInformationTabPane().getTabs().add(new Tab("Notes", membershipNotes));
 		model.getInformationTabPane().getTabs().add(new Tab("Properties", new HBoxProperties(this)));
 		model.getInformationTabPane().getTabs().add(new Tab("Attachments", new HBoxAttachment(this)));
 		model.getInformationTabPane().getTabs().add(new Tab("Address", new HBoxAddress(this)));
@@ -106,6 +107,10 @@ public class TabMembership extends Tab {
 				.filter(tab -> tabName.equals(tab.getText())) // Find the tab with the label "Notes"
 				.findFirst() // Get the first occurrence
 				.ifPresent(model.getInformationTabPane().getSelectionModel()::select);
+	}
+
+	public void editRow() {
+		membershipNotes.editNewRow();
 	}
 
 	private void addDependentTabs() {

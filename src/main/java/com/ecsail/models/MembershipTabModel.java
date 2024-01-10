@@ -57,35 +57,16 @@ public class MembershipTabModel {
         return informationTabPane;
     }
 
-    public void setInformationTabPane(TabPane informationTabPane) {
-        this.informationTabPane = informationTabPane;
-    }
-
     public OfficerRepository getOfficerRepository() {
         return officerRepository;
-    }
-
-    public void setOfficerRepository(OfficerRepository officerRepository) {
-        this.officerRepository = officerRepository;
-    }
-
-    public MembershipTabModel() {
     }
 
     public AwardRepository getAwardRepository() {
         return awardRepository;
     }
 
-    public void setAwardRepository(AwardRepository awardRepository) {
-        this.awardRepository = awardRepository;
-    }
-
     public PersonRepository getPersonRepository() {
         return personRepository;
-    }
-
-    public void setPersonRepository(PersonRepository personRepository) {
-        this.personRepository = personRepository;
     }
 
     public BoatRepository getBoatRepository() {
@@ -98,10 +79,6 @@ public class MembershipTabModel {
 
     public MemoRepository getMemoRepository() {
         return memoRepository;
-    }
-
-    public void setMemoRepository(MemoRepository memoRepository) {
-        this.memoRepository = memoRepository;
     }
 
     public InvoiceRepository getInvoiceRepository() {
@@ -132,16 +109,8 @@ public class MembershipTabModel {
         return fiscalTabPane;
     }
 
-    public void setFiscalTabPane(TabPane fiscalTabPane) {
-        this.fiscalTabPane = fiscalTabPane;
-    }
-
     public TabPane getPeopleTabPane() {
         return peopleTabPane;
-    }
-
-    public void setPeopleTabPane(TabPane peopleTabPane) {
-        this.peopleTabPane = peopleTabPane;
     }
 
     public Note getNote() {
@@ -156,25 +125,14 @@ public class MembershipTabModel {
         return labels;
     }
 
-    public void setLabels(MemLabelsDTO labels) {
-        this.labels = labels;
-    }
-
     public ObservableList<InvoiceDTO> getInvoices() {
         return invoices;
-    }
-
-    public void setInvoices(ObservableList<InvoiceDTO> invoices) {
-        this.invoices = invoices;
     }
 
     public ObservableList<MembershipIdDTO> getMembershipIdDTOS() {
         return membershipIdDTOS;
     }
 
-    public void setMembershipIdDTOS(ObservableList<MembershipIdDTO> membershipIdDTOS) {
-        this.membershipIdDTOS = membershipIdDTOS;
-    }
 
     public ObservableList<BoatDTO> getBoats() {
         return boats;
@@ -194,10 +152,6 @@ public class MembershipTabModel {
 
     public ObservableList<MemoDTO> getMemos() {
         return memos;
-    }
-
-    public void setMemos(ObservableList<MemoDTO> memos) {
-        this.memos = memos;
     }
 
     public MembershipRepository getMembershipRepository() {

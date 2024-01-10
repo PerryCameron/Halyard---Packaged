@@ -2,8 +2,8 @@ package com.ecsail.views.tabs.membership.information;
 
 
 import com.ecsail.EditCell;
-import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.dto.MemoDTO;
+import com.ecsail.views.tabs.membership.TabMembership;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -14,13 +14,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.function.Function;
 
 public class HBoxMembershipNotes extends HBox {
 	TabMembership parent;
+	TableView<MemoDTO> memoTableView;
+	TableColumn<MemoDTO, String> Col3;
 	
 	public HBoxMembershipNotes(TabMembership parent) {
 		this.parent = parent;
@@ -31,7 +31,7 @@ public class HBoxMembershipNotes extends HBox {
 		var buttonVBox = new VBox();
 		var add = new Button("Add");
 		var delete = new Button("Delete");
-		var memoTableView = new TableView<MemoDTO>();
+		this.memoTableView = new TableView<>();
 		
 		/////////////  ATTRIBUTES /////////////
 		add.setPrefWidth(60);
@@ -71,7 +71,7 @@ public class HBoxMembershipNotes extends HBox {
 		var Col2 = new TableColumn<MemoDTO, String>("Type");
 		Col2.setCellValueFactory(new PropertyValueFactory<>("category"));
         
-		TableColumn<MemoDTO, String> Col3 = createColumn("Note", MemoDTO::memoProperty);
+		this.Col3 = createColumn("Note", MemoDTO::memoProperty);
 		Col3.setPrefWidth(740);
         Col3.setOnEditCommit(
 				t -> {
@@ -87,13 +87,11 @@ public class HBoxMembershipNotes extends HBox {
 		Col3.setMaxWidth( 1f * Integer.MAX_VALUE * 85 );   // Note
 
         ////////////////  LISTENERS ///////////////////
-        
-        add.setOnAction(e -> {
-			String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
+
+		add.setOnAction(e -> {
 			int msId = parent.getModel().getMembership().getMsId();
-			parent.getModel().getNote().addMemoAndReturnId(new MemoDTO(msId,"new memo","N"));
-			memoTableView.layout();
-			memoTableView.edit(0,Col3);
+			parent.getModel().getNote().addMemoAndReturnId(new MemoDTO(msId, "new memo", "N"));
+			editNewRow();
 		});
         
 		delete.setOnAction(e -> {
@@ -103,7 +101,7 @@ public class HBoxMembershipNotes extends HBox {
 				memoTableView.getItems().remove(selectedIndex);
 			}
 		});
-        
+
         ///////////// SET CONTENT ////////////////////
         
 		memoTableView.getColumns().addAll(Arrays.asList(Col1,Col2,Col3));
@@ -119,4 +117,9 @@ public class HBoxMembershipNotes extends HBox {
         col.setCellFactory(column -> EditCell.createStringEditCell());
         return col ;
     }
+
+	public void editNewRow() {
+		memoTableView.layout();
+		memoTableView.edit(0,Col3);
+	}
 }
