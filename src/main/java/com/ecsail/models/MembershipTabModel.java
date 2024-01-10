@@ -23,6 +23,7 @@ public class MembershipTabModel {
     private ObservableList<PersonDTO> people;
     private TabPane fiscalTabPane;
     private TabPane peopleTabPane;
+    private TabPane informationTabPane;
     private Note note;
     private MemLabelsDTO labels;
     private ObservableList<InvoiceDTO> invoices;
@@ -48,8 +49,18 @@ public class MembershipTabModel {
         this.boats = FXCollections.observableArrayList(boatRepository.getBoatsByMsId(membership.getMsId()));
         this.fiscalTabPane  = new TabPane();
         this.peopleTabPane = new TabPane();
+        this.informationTabPane = new TabPane();
         this.labels = new MemLabelsDTO();
     }
+
+    public TabPane getInformationTabPane() {
+        return informationTabPane;
+    }
+
+    public void setInformationTabPane(TabPane informationTabPane) {
+        this.informationTabPane = informationTabPane;
+    }
+
     public OfficerRepository getOfficerRepository() {
         return officerRepository;
     }

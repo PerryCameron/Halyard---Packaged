@@ -42,13 +42,12 @@ public class TabMembership extends Tab {
 		var hbox2 = new HBox();  // holds PersonVBoxes (2 instances require a generic HBox
 		var hbox3 = new HBox();
 
-		var informationTabPane = new TabPane();
 
         //////////// PROPERTIES ///////////////
         
         model.getFiscalTabPane().setTabClosingPolicy(TabClosingPolicy.SELECTED_TAB);
         model.getPeopleTabPane().setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
-        informationTabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+        model.getInformationTabPane().setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 
         hbox1.setSpacing(100);  // membership HBox
         hbox2.setSpacing(10);   // holds PersonVBox
@@ -56,7 +55,7 @@ public class TabMembership extends Tab {
         vboxBlue.setId("box-frame-dark");
         containerVBox.setId("box-pink");
 		model.getPeopleTabPane().setId("custom-tab-pane");
-		informationTabPane.setId("custom-tab-pane");
+		model.getInformationTabPane().setId("custom-tab-pane");
 		model.getFiscalTabPane().setId("custom-tab-pane");
         hbox1.setAlignment(Pos.TOP_CENTER);
         hbox2.setAlignment(Pos.TOP_CENTER);
@@ -73,7 +72,7 @@ public class TabMembership extends Tab {
         VBox.setVgrow(hbox3, Priority.ALWAYS);
         VBox.setVgrow(containerVBox, Priority.ALWAYS);
         HBox.setHgrow(hbox3, Priority.ALWAYS);
-        HBox.setHgrow(informationTabPane, Priority.ALWAYS);
+        HBox.setHgrow(model.getInformationTabPane(), Priority.ALWAYS);
         VBox.setVgrow(vboxBlue, Priority.ALWAYS);
 		model.getPeopleTabPane().setPrefWidth(560);
 
@@ -88,19 +87,26 @@ public class TabMembership extends Tab {
 		model.getFiscalTabPane().getTabs().add(new Tab("Slip", new HBoxSlip(this)));
 		model.getFiscalTabPane().getTabs().add(new Tab("History", new HBoxHistory(this)));
 		model.getFiscalTabPane().getTabs().add(new Tab("Invoices", new HBoxInvoiceList(this)));
-		informationTabPane.getTabs().add(new Tab("Boats", new HBoxBoat(this)));
-		informationTabPane.getTabs().add(new Tab("Notes", new HBoxMembershipNotes(this)));
-		informationTabPane.getTabs().add(new Tab("Properties", new HBoxProperties(this)));
-		informationTabPane.getTabs().add(new Tab("Attachments", new HBoxAttachment(this)));
-		informationTabPane.getTabs().add(new Tab("Address", new HBoxAddress(this)));
+		model.getInformationTabPane().getTabs().add(new Tab("Boats", new HBoxBoat(this)));
+		model.getInformationTabPane().getTabs().add(new Tab("Notes", new HBoxMembershipNotes(this)));
+		model.getInformationTabPane().getTabs().add(new Tab("Properties", new HBoxProperties(this)));
+		model.getInformationTabPane().getTabs().add(new Tab("Attachments", new HBoxAttachment(this)));
+		model.getInformationTabPane().getTabs().add(new Tab("Address", new HBoxAddress(this)));
 		hbox2.getChildren().addAll(model.getPeopleTabPane(), model.getFiscalTabPane());  // new BoxInformation(membership)
-		hbox3.getChildren().addAll(informationTabPane);
+		hbox3.getChildren().addAll(model.getInformationTabPane());
 		containerVBox.getChildren().addAll(hbox1,hbox2,hbox3);
         vboxBlue.getChildren().addAll(containerVBox);  // box blue
         setContent(vboxBlue);
 	}
 	
 	///////////////////////// 	CLASS METHODS //////////////////////////////
+
+	public void selectTab(String tabName) {
+		model.getInformationTabPane().getTabs().stream()
+				.filter(tab -> tabName.equals(tab.getText())) // Find the tab with the label "Notes"
+				.findFirst() // Get the first occurrence
+				.ifPresent(model.getInformationTabPane().getSelectionModel()::select);
+	}
 
 	private void addDependentTabs() {
 		AtomicInteger i = new AtomicInteger();

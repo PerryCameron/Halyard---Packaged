@@ -6,6 +6,7 @@ import com.ecsail.repository.implementations.MembershipIdRepositoryImpl;
 import com.ecsail.repository.interfaces.InvoiceRepository;
 import com.ecsail.repository.interfaces.MembershipIdRepository;
 import com.ecsail.views.common.Note;
+import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.views.tabs.membership.fiscal.HBoxInvoiceList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -46,8 +47,11 @@ public class Invoice extends HBox {
     private InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
     private MembershipIdRepository membershipIdRepository = new MembershipIdRepositoryImpl();
 
+    private TabMembership tabMembership;
+
     public Invoice(HBoxInvoiceList parent, int index) {
-        this.invoice = parent.getTabMembership().getModel().getInvoices().get(index);
+        this.tabMembership = parent.getTabMembership();
+        this.invoice = tabMembership.getModel().getInvoices().get(index);
         this.membership = parent.getTabMembership().getModel().getMembership();
         this.note = parent.getTabMembership().getModel().getNote();
         ArrayList<DbInvoiceDTO> dbInvoiceDTOs =
@@ -212,4 +216,9 @@ public class Invoice extends HBox {
     public void setInvoiceRepository(InvoiceRepository invoiceRepository) {
         this.invoiceRepository = invoiceRepository;
     }
+
+    public TabMembership getTabMembership() {
+        return tabMembership;
+    }
+
 }
