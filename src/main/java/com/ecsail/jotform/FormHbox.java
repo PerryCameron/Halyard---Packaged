@@ -29,9 +29,7 @@ public class FormHbox extends HBox {
         var list = new VBox();
         var formTextObj = new Text();
         var checkBox = new CheckBox();
-        var checkBox1 = new RoundCheckBox();
 
-        checkBox1.setSelected(jotFormsDTO.isFavorite());
         checkBox.setSelected(jotFormsDTO.isFavorite());
 
         BaseApplication.logger.info("Form " + jotFormsDTO.getId() + " is favorite: " + jotFormsDTO.isFavorite());
@@ -44,17 +42,17 @@ public class FormHbox extends HBox {
         setAlignment(Pos.CENTER_LEFT);
         setId("form-hbox");
 
-        formTextObj.setOnMouseClicked(e -> {
+        this.setOnMouseClicked(e -> {
             if(e.getClickCount() == 1) {
                 BaseApplication.logger.info("clicked on the text");
             }
         });
 
-        imageView.setOnMouseClicked(e -> {
-            if(e.getClickCount() == 1) {
-                BaseApplication.logger.info("clicked on the image");
-            }
-        });
-        getChildren().addAll(checkBox,checkBox1,imageView, list);
+//        imageView.setOnMouseClicked(e -> {
+//            if(e.getClickCount() == 1) {
+//                BaseApplication.logger.info("clicked on the image");
+//            }
+//        });
+        getChildren().addAll(checkBox,imageView, list);
     }
 }

@@ -14,14 +14,14 @@ import java.util.List;
 public class CustomViewForms extends ScrollPane {
 
     public CustomViewForms(JotForm client) {
-        VBox vBoxMain = new VBox();
-        vBoxMain.setSpacing(10);
+        VBox vBox = new VBox();
+        vBox.setSpacing(10);
         JSONObject folders = client.getFolders();
         JsonNode neoJsonNode = Json.getJsonNodeFromJsonObject(folders);
         List<String> keys = new ArrayList<>();
         Iterator<String> iterator = neoJsonNode.get("content").get("forms").fieldNames();
         iterator.forEachRemaining(keys::add);
-        keys.forEach(e -> vBoxMain.getChildren().add(new FormHbox(new JotFormsDTO(
+        keys.forEach(e -> vBox.getChildren().add(new FormHbox(new JotFormsDTO(
                 Long.parseLong(neoJsonNode.get("content").get("forms").get(e).get("id").textValue()),
                 neoJsonNode.get("content").get("forms").get(e).get("username").textValue(),
                 neoJsonNode.get("content").get("forms").get(e).get("title").textValue(),
@@ -37,7 +37,7 @@ public class CustomViewForms extends ScrollPane {
                 Integer.parseInt(neoJsonNode.get("content").get("forms").get(e).get("archived").textValue()),
                 neoJsonNode.get("content").get("forms").get(e).get("url").textValue()
         ))));
-        setContent(vBoxMain);
+        setContent(vBox);
     }
 
     private boolean intToBoolean(String number) {
