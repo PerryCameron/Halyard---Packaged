@@ -29,8 +29,6 @@ public class TabJotForm extends Tab implements Builder {
 		this.appSettingsRepository = new AppSettingsRepositoryImpl();
 		this.client = new JotForm(appSettingsRepository.getApiKeyByName("Jotform API").getKey());
 		this.jotFormsDTOS = getForms();
-//		ObservableList<JotFormSubmissionListDTO> list = FXCollections.observableArrayList();
-//		JotFormECSC jotFormECSC = new JotFormECSC();
 		setContent(build());
 	}
 
@@ -38,8 +36,6 @@ public class TabJotForm extends Tab implements Builder {
 	public Node build() {
 		VBox vBox = new VBox();
 		HBox hBox = new HBox();
-//		vBox.setStyle("-fx-background-color: #1658e7;");
-//		hBox.setStyle("-fx-background-color: #ec1a1a;");
 		vBox.setPadding(new Insets(10,10,10,10));
 		hBox.setPadding(new Insets(3,3,3,3)); // spacing to make pink from around table
 		VBox.setVgrow(hBox, Priority.ALWAYS);
@@ -57,13 +53,8 @@ public class TabJotForm extends Tab implements Builder {
 	private Node rightDisplay() {
 		VBox vBox = new VBox();  // this is the vbox for organizing all the widgets
 		vBox.setStyle("-fx-background-color: #4d6955;");
-//		vBox.setPadding(new Insets(0,0,0,0));
 		HBox.setHgrow(vBox, Priority.ALWAYS);
 		vBox.setPrefHeight(688);
-
-//		ApiKeyDTO thisApi = appSettingsRepository.getApiKeyByName("Jotform API");
-//		JotForm client = new JotForm(thisApi.getKey());
-//		CustomViewForms customViewForms = new CustomViewForms(client);
 		vBox.getChildren().add(new FormsTableView(this));
 		return vBox;
 	}

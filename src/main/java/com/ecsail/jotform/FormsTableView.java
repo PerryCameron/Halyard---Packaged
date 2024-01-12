@@ -1,6 +1,7 @@
 package com.ecsail.jotform;
 
 import com.ecsail.jotform.structures.JotFormsDTO;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -9,6 +10,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.util.Builder;
 
 import java.util.Arrays;
@@ -50,14 +53,14 @@ public class FormsTableView extends TableView<JotFormsDTO> implements Builder {
 
     private TableColumn<JotFormsDTO, String> col1() {
         TableColumn<JotFormsDTO, String> column = new TableColumn<>("Form Name");
-        column.setMaxWidth(1f * Integer.MAX_VALUE * 60);  // Join Date 15%
+        column.setMaxWidth(1f * Integer.MAX_VALUE * 55);  // Join Date 15%
         column.setCellValueFactory(new PropertyValueFactory<>("title"));
         return column;
     }
 
     private TableColumn<JotFormsDTO, String> col2() {
         TableColumn<JotFormsDTO, String> column = new TableColumn<>("Submissions");
-        column.setMaxWidth(1f * Integer.MAX_VALUE * 10);  // Join Date 15%
+        column.setMaxWidth(1f * Integer.MAX_VALUE * 12);  // Join Date 15%
         column.setCellValueFactory(new PropertyValueFactory<>("count"));
         return column;
     }
@@ -76,12 +79,28 @@ public class FormsTableView extends TableView<JotFormsDTO> implements Builder {
         return column;
     }
 
-    private TableColumn<JotFormsDTO, String> col5 () {
-        TableColumn<JotFormsDTO, String> column = new TableColumn<>("Archive");
-        column.setMaxWidth(1f * Integer.MAX_VALUE * 5);  // Join Date 15%
+    private TableColumn<JotFormsDTO, Integer> col5() {
+        TableColumn<JotFormsDTO, Integer> column = new TableColumn<>("Status");
+        column.setMaxWidth(1f * Integer.MAX_VALUE * 8);  // Join Date 15%
+
+        // Use a CellFactory to determine how to display the value
         column.setCellValueFactory(new PropertyValueFactory<>("archived"));
+        column.setCellFactory(tc -> new TableCell<>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    Text text = new Text(item == 0 ? "Active" : "Archived");
+                    text.setFill(item == 0 ? Color.BLUE : Color.RED);
+                    setGraphic(text);
+                }
+            }
+        });
         return column;
     }
+
 }
 
-//archived
+//        column.setCellValueFactory(new PropertyValueFactory<>("archived"));
