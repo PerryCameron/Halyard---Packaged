@@ -38,8 +38,8 @@ public class TabJotForm extends Tab implements Builder {
 	public Node build() {
 		VBox vBox = new VBox();
 		HBox hBox = new HBox();
-		vBox.setStyle("-fx-background-color: #1658e7;");
-		hBox.setStyle("-fx-background-color: #ec1a1a;");
+//		vBox.setStyle("-fx-background-color: #1658e7;");
+//		hBox.setStyle("-fx-background-color: #ec1a1a;");
 		vBox.setPadding(new Insets(10,10,10,10));
 		hBox.setPadding(new Insets(3,3,3,3)); // spacing to make pink from around table
 		VBox.setVgrow(hBox, Priority.ALWAYS);
@@ -50,14 +50,14 @@ public class TabJotForm extends Tab implements Builder {
 
 	private Node leftDisplay() {
 		VBox vBox = new VBox();
-		vBox.setPrefWidth(300);
+		vBox.setPrefWidth(200);
 		return vBox;
 	}
 
 	private Node rightDisplay() {
 		VBox vBox = new VBox();  // this is the vbox for organizing all the widgets
 		vBox.setStyle("-fx-background-color: #4d6955;");
-		vBox.setPadding(new Insets(0,0,0,50));
+//		vBox.setPadding(new Insets(0,0,0,0));
 		HBox.setHgrow(vBox, Priority.ALWAYS);
 		vBox.setPrefHeight(688);
 
