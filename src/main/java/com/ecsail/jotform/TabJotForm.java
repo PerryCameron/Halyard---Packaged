@@ -21,6 +21,8 @@ import javafx.scene.layout.VBox;
 import javafx.util.Builder;
 import org.json.JSONObject;
 
+import java.awt.*;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -55,7 +57,7 @@ public class TabJotForm extends Tab implements Builder {
 
     private void updateLabels() {
         idLabel.setText(selectedForm.get().getId() + "");
-        titleLabel.setText("Title: " + selectedForm.get().getTitle());
+        titleLabel.setText(selectedForm.get().getTitle());
         statusLabel.setText("Status: " + selectedForm.get().getStatus());
         createdLabel.setText("Created: " + selectedForm.get().getCreated_at());
         updatedLabel.setText("Last Updated: " + selectedForm.get().getUpdated_at());
@@ -88,10 +90,18 @@ public class TabJotForm extends Tab implements Builder {
         idLabel.setBorder(null); // Removes the border
         idLabel.setStyle("-fx-background-color: transparent; -fx-focus-color: transparent; -fx-text-fill: white;"); // Makes the background transparent
         setFormChangeListener();
-		vBox.getChildren().addAll(titleLabel, createId() ,statusLabel, createLink() ,createdLabel,updatedLabel,lastSubmissionLabel,
+		vBox.getChildren().addAll(createTitle(), createId() ,statusLabel, createLink() ,createdLabel,updatedLabel,lastSubmissionLabel,
 				newLabel, favoriteLabel, archivedLabel,submissionsLabel, typeLabel);
         vBox.setPrefWidth(340);
         return vBox;
+    }
+
+    private Node createTitle() {
+        HBox hBox = new HBox();
+        hBox.setAlignment(Pos.CENTER_LEFT);
+        titleLabel.setStyle("-fx-text-fill: #ffff13");
+        hBox.getChildren().addAll(new Label("Title: "), titleLabel);
+        return hBox;
     }
 
     private Node createId() {
@@ -108,6 +118,14 @@ public class TabJotForm extends Tab implements Builder {
         HBox hBox = new HBox();
         hBox.setAlignment(Pos.CENTER_LEFT);
         hBox.getChildren().addAll(urlLabel, hyperlink);
+        hyperlink.setOnAction(event -> {
+            try {
+                Desktop desktop = Desktop.getDesktop();
+                desktop.browse(new URI(hyperlink.getText()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         return hBox;
     }
 
