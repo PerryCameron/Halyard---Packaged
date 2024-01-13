@@ -34,6 +34,9 @@ public class FormsTableView extends TableView<JotFormsDTO> implements Builder {
                     System.out.println(clickedRow.getId());
 //                    Launcher.createMembershipTabForRoster(clickedRow.getMembershipId(), clickedRow.getMsId());
                 }
+                if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+                    parent.setSelectedForm(row.getItem());
+                }
             });
             return row;
         });
@@ -53,14 +56,14 @@ public class FormsTableView extends TableView<JotFormsDTO> implements Builder {
 
     private TableColumn<JotFormsDTO, String> col1() {
         TableColumn<JotFormsDTO, String> column = new TableColumn<>("Form Name");
-        column.setMaxWidth(1f * Integer.MAX_VALUE * 55);  // Join Date 15%
+        column.setMaxWidth(1f * Integer.MAX_VALUE * 52);  // Join Date 15%
         column.setCellValueFactory(new PropertyValueFactory<>("title"));
         return column;
     }
 
     private TableColumn<JotFormsDTO, String> col2() {
         TableColumn<JotFormsDTO, String> column = new TableColumn<>("Submissions");
-        column.setMaxWidth(1f * Integer.MAX_VALUE * 12);  // Join Date 15%
+        column.setMaxWidth(1f * Integer.MAX_VALUE * 15);  // Join Date 15%
         column.setCellValueFactory(new PropertyValueFactory<>("count"));
         return column;
     }

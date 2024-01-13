@@ -37,6 +37,9 @@ public class JotFormsDTO {
         this.url = url;
     }
 
+    public JotFormsDTO() {
+    }
+
     public Long getId() {
         return id;
     }
