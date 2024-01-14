@@ -135,13 +135,13 @@ public class TabForm extends Tab implements Builder {
                     answers.fields().forEachRemaining(entry -> {
                         JsonNode value = entry.getValue();
                         if(value.has("prettyFormat")) {
-                            vBox.getChildren().add(coloredHBox(value.get("name").asText() + ": ", value.get("prettyFormat").asText(),"gray"));
+                            vBox.getChildren().add(coloredHBox(value.get("name").asText() + ": ", value.get("prettyFormat").asText(),"#d7f8fa"));
                         }
                         else if (value.has("answer")) {
                             if(isImageLink(value.get("answer").asText()))
                                 vBox.getChildren().add(imageBox(value.get("name").asText(), value.get("answer").asText()));
                             else
-                            vBox.getChildren().add(coloredHBox(value.get("name").asText() + ": ", value.get("answer").asText(),"gray"));
+                            vBox.getChildren().add(coloredHBox(value.get("name").asText() + ": ", value.get("answer").asText(),"#d7f8fa"));
                         }
                         else if (value.get("name").asText().equals("heading")) {
                             vBox.getChildren().add(coloredHBox("Title: ", value.get("text").asText(),"#ffff13"));
@@ -158,7 +158,9 @@ public class TabForm extends Tab implements Builder {
     }
 
     private Node imageBox(String title, String url) {
+        logger.info("Getting image: " + url);
         VBox vBox = new VBox();
+        vBox.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 2px;");
         vBox.setSpacing(10); // Set spacing between elements in the VBox
         vBox.getChildren().add(new Label(title));
         // Create an ImageView
@@ -166,12 +168,8 @@ public class TabForm extends Tab implements Builder {
 
         // Load image from URL
         try {
-            Image image = new Image(url, true); // The second argument is for background loading
+            Image image = new Image(url, false); // The second argument is for background loading
             imageView.setImage(image);
-
-//            // Optionally, set dimensions for the ImageView
-//            imageView.setFitWidth(100); // Set preferred width
-//            imageView.setFitHeight(100); // Set preferred height
             imageView.setPreserveRatio(true); // Preserve the aspect ratio
 
             vBox.getChildren().add(imageView); // Add ImageView to VBox
