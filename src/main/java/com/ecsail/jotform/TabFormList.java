@@ -11,9 +11,8 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Hyperlink;
+import javafx.scene.control.*;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -27,31 +26,33 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class TabJotForm extends Tab implements Builder {
+public class TabFormList extends Tab implements Builder {
 
-    AppSettingsRepository appSettingsRepository;
-    ObservableList<JotFormsDTO> jotFormsDTOS;
-    JotForm client;
-    ObjectProperty<JotFormsDTO> selectedForm = new SimpleObjectProperty<>();
-    TextField idLabel = new TextField("None");
-    Label titleLabel = new Label("Title: None");
-    Label statusLabel = new Label("Status: None");
-    Label createdLabel = new Label("Created: None");
-    Label updatedLabel = new Label("Last Updated: None");
-    Label lastSubmissionLabel = new Label("Last Submission: None");
-    Label newLabel = new Label("New: None");
-    Label submissionsLabel = new Label("Submissions: None");
-    Label typeLabel = new Label("Type: None");
-    Label favoriteLabel = new Label("Favorite: None");
-    Label archivedLabel = new Label("Archived: None");
-	Label urlLabel = new Label("URL: ");
-    Hyperlink hyperlink = new Hyperlink("URL: None");
+    private TabPane tabPane;
+    private AppSettingsRepository appSettingsRepository;
+    private ObservableList<JotFormsDTO> jotFormsDTOS;
+    private JotForm client;
+    private ObjectProperty<JotFormsDTO> selectedForm = new SimpleObjectProperty<>();
+    private TextField idLabel = new TextField("None");
+    private Label titleLabel = new Label("None");
+    private Label statusLabel = new Label("Status: None");
+    private Label createdLabel = new Label("Created: None");
+    private Label updatedLabel = new Label("Last Updated: None");
+    private Label lastSubmissionLabel = new Label("Last Submission: None");
+    private Label newLabel = new Label("New: None");
+    private Label submissionsLabel = new Label("Submissions: None");
+    private Label typeLabel = new Label("Type: None");
+    private Label favoriteLabel = new Label("Favorite: None");
+    private Label archivedLabel = new Label("Archived: None");
+    private Label urlLabel = new Label("URL: ");
+    private Hyperlink hyperlink = new Hyperlink("None");
 
-    public TabJotForm(String text) {
+    public TabFormList(String text, TabPane tabPane) {
         super(text);
         this.appSettingsRepository = new AppSettingsRepositoryImpl();
         this.client = new JotForm(appSettingsRepository.getApiKeyByName("Jotform API").getKey());
         this.jotFormsDTOS = getForms();
+        this.tabPane = tabPane;
         setContent(build());
     }
 
@@ -191,5 +192,13 @@ public class TabJotForm extends Tab implements Builder {
 
     public void setSelectedForm(JotFormsDTO selectedForm) {
         this.selectedForm.set(selectedForm);
+    }
+
+    public JotForm getClient() {
+        return client;
+    }
+
+    public TabPane getMainTabPane() {
+        return tabPane;
     }
 }

@@ -16,7 +16,7 @@ import com.ecsail.views.tabs.deposits.TabDeposits;
 import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.views.tabs.roster.TabRoster;
 import com.ecsail.views.tabs.welcome.TabWelcome;
-import com.ecsail.jotform.TabJotForm;
+import com.ecsail.jotform.TabFormList;
 import com.ecsail.pdf.PDF_BoatReport;
 import com.ecsail.dto.BoatDTO;
 import com.ecsail.dto.MembershipListDTO;
@@ -282,7 +282,7 @@ public class Launcher extends VBox {
     }
 
     public static void openJotFormTab() {
-        tabPane.getTabs().add(new TabJotForm("JotForm"));
+        tabPane.getTabs().add(new TabFormList("JotForm", tabPane));
         tabPane.getSelectionModel().select(getTabIndex("JotForm"));
     }
 

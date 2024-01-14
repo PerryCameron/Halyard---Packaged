@@ -196,6 +196,8 @@ public class JotForm {
     }
 
     private JSONObject executeGetRequest(String path, HashMap<String,String> params) {
+        System.out.println(path);
+        System.out.println(params);
         try {
             return executeHttpRequest(path, params, "GET");
         } catch (UnsupportedEncodingException e) {
@@ -443,9 +445,11 @@ public class JotForm {
      * @return Returns submissions of a specific form.
      */
     public JSONObject getFormSubmissions(long formID, String offset, String limit, HashMap<String, String> filter, String orderBy) {
-        HashMap<String, String> params = createConditions(offset, limit, filter, orderBy);
 
-        return executeGetRequest("/form/" + formID + "/submissions", params);
+        HashMap<String, String> params = createConditions(offset, limit, filter, orderBy);
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+        }        return executeGetRequest("/form/" + formID + "/submissions", params);
     }
 
     /**

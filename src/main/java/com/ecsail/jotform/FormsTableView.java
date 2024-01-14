@@ -1,6 +1,7 @@
 package com.ecsail.jotform;
 
 import com.ecsail.jotform.structures.JotFormsDTO;
+import com.ecsail.jotform.structures.TabForm;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -17,9 +18,9 @@ import javafx.util.Builder;
 import java.util.Arrays;
 
 public class FormsTableView extends TableView<JotFormsDTO> implements Builder {
-    TabJotForm parent;
+    TabFormList parent;
 
-    public FormsTableView(TabJotForm p) {
+    public FormsTableView(TabFormList p) {
         this.parent = p;
         build();
     }
@@ -29,10 +30,7 @@ public class FormsTableView extends TableView<JotFormsDTO> implements Builder {
             TableRow<JotFormsDTO> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                    // int rowIndex = row.getIndex();
-                    JotFormsDTO clickedRow = row.getItem();
-                    System.out.println(clickedRow.getId());
-//                    Launcher.createMembershipTabForRoster(clickedRow.getMembershipId(), clickedRow.getMsId());
+                    parent.getMainTabPane().getTabs().add(new TabForm(row.getItem()));
                 }
                 if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
                     parent.setSelectedForm(row.getItem());
