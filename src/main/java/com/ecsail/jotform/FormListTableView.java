@@ -2,10 +2,7 @@ package com.ecsail.jotform;
 
 import com.ecsail.jotform.structures.JotFormsDTO;
 import com.ecsail.jotform.structures.TabForm;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
@@ -17,10 +14,10 @@ import javafx.util.Builder;
 
 import java.util.Arrays;
 
-public class FormsTableView extends TableView<JotFormsDTO> implements Builder {
+public class FormListTableView extends TableView<JotFormsDTO> implements Builder {
     TabFormList parent;
 
-    public FormsTableView(TabFormList p) {
+    public FormListTableView(TabFormList p) {
         this.parent = p;
         build();
     }
@@ -30,7 +27,9 @@ public class FormsTableView extends TableView<JotFormsDTO> implements Builder {
             TableRow<JotFormsDTO> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                    parent.getMainTabPane().getTabs().add(new TabForm(row.getItem()));
+                    Tab tab = new TabForm(row.getItem());
+                    parent.getMainTabPane().getTabs().add(tab);
+                    parent.getMainTabPane().getSelectionModel().select(tab);
                 }
                 if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
                     parent.setSelectedForm(row.getItem());

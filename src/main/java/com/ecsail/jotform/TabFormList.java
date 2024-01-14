@@ -143,7 +143,7 @@ public class TabFormList extends Tab implements Builder {
         vBox.setStyle("-fx-background-color: #4d6955;");
         HBox.setHgrow(vBox, Priority.ALWAYS);
         vBox.setPrefHeight(688);
-        vBox.getChildren().add(new FormsTableView(this));
+        vBox.getChildren().add(new FormListTableView(this));
         return vBox;
     }
 

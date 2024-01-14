@@ -12,6 +12,10 @@ public class FormInfoDTO {
         this.info2 = info2;
     }
 
+    public boolean hasProfile() {
+        return info1 != null && !info1.isEmpty() && info2 != null && !info2.isEmpty();
+    }
+
     public Long getFormId() {
         return formId;
     }
@@ -34,5 +38,14 @@ public class FormInfoDTO {
 
     public void setInfo2(String info2) {
         this.info2 = info2;
+    }
+
+    @Override
+    public String toString() {
+        return "FormInfoDTO{" +
+                "formId=" + formId +
+                ", info1='" + info1 + '\'' +
+                ", info2='" + info2 + '\'' +
+                '}';
     }
 }
