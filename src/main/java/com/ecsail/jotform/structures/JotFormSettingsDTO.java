@@ -1,4 +1,4 @@
-package com.ecsail.dto;
+package com.ecsail.jotform.structures;
 
 import java.sql.Date;
 

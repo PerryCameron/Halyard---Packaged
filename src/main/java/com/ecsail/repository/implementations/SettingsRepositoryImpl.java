@@ -4,12 +4,10 @@ import com.ecsail.BaseApplication;
 import com.ecsail.dto.DbBoatSettingsDTO;
 import com.ecsail.dto.DbRosterSettingsDTO;
 import com.ecsail.dto.MembershipListRadioDTO;
+import com.ecsail.jotform.structures.JotFormSettingsDTO;
+import com.ecsail.repository.rowmappers.*;
 import com.ecsail.views.tabs.boatlist.BoatListRadioDTO;
 import com.ecsail.repository.interfaces.SettingsRepository;
-import com.ecsail.repository.rowmappers.BoatListRadioRowMapper;
-import com.ecsail.repository.rowmappers.DbBoatSettingsRowMapper;
-import com.ecsail.repository.rowmappers.DbMembershipListRadioRowMapper;
-import com.ecsail.repository.rowmappers.DbRosterSettingsRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
@@ -52,5 +50,11 @@ public class SettingsRepositoryImpl implements SettingsRepository {
         List<BoatListRadioDTO> dbBoatSettingsDTOS
                 = template.query(query,new BoatListRadioRowMapper());
         return dbBoatSettingsDTOS;
+    }
+
+    public List<JotFormSettingsDTO> getJotFormSettings(long id) {
+        String query = "select * from jotform_settings where form_number= ?";
+        List<JotFormSettingsDTO> jotFormSettingsDTOS = template.query(query, new JotFormsSettingsRowMapper(), id);
+        return jotFormSettingsDTOS;
     }
 }
