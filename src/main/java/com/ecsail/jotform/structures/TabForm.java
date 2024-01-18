@@ -6,13 +6,13 @@ import com.ecsail.jotform.JotForm;
 import com.ecsail.jotform.Json;
 import com.ecsail.repository.implementations.AppSettingsRepositoryImpl;
 import com.ecsail.repository.interfaces.AppSettingsRepository;
-import com.ecsail.repository.interfaces.MembershipIdRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -38,7 +38,8 @@ public class TabForm extends Tab implements Builder {
     private FormInfoDTO mainFormInfo;
     private JsonNode neoJsonNode;
     private HashMap<String, String> formHash = new HashMap();
-    private VBox detailsVBox;
+    private ScrollPane detailsScrollPane;
+    private VBox vBox;
 
     public TabForm(JotFormsDTO jotFormsDTO) {
         this.appSettingsRepository = new AppSettingsRepositoryImpl();
@@ -77,14 +78,18 @@ public class TabForm extends Tab implements Builder {
     }
 
     private Node details() {
-        this.detailsVBox = new VBox();
-        detailsVBox.setPadding(new Insets(0,0,0,15));
-        detailsVBox.getChildren().add(new Label("Testing"));
-        return detailsVBox;
+        this.detailsScrollPane = new ScrollPane();
+        this.vBox = new VBox();
+        vBox.setSpacing(10);
+        detailsScrollPane.setContent(vBox);
+        detailsScrollPane.setPadding(new Insets(0,0,0,15));
+        return detailsScrollPane;
     }
 
     private Node formList() {
         VBox vBox = new VBox();  // this is the vbox for organizing all the widgets
+        vBox.setPrefWidth(250);
+        vBox.setMinWidth(250);
         vBox.getChildren().add(new FormTableView(this));
         return vBox;
     }
@@ -119,12 +124,9 @@ public class TabForm extends Tab implements Builder {
         return formsDTOS;
     }
 
-    public Node fillFormHash(Long id) {
-        VBox vBox = new VBox();
-        vBox.setSpacing(10);
+    public void fillFormHash(Long id) {
         if (neoJsonNode == null || !neoJsonNode.has("content") || !neoJsonNode.get("content").isArray()) {
             vBox.getChildren().add(new Label("There is no content to display"));
-            return vBox;
         }
         for (JsonNode form : neoJsonNode.get("content")) {
             // Check if this is the form with the given ID
@@ -135,52 +137,93 @@ public class TabForm extends Tab implements Builder {
                     answers.fields().forEachRemaining(entry -> {
                         JsonNode value = entry.getValue();
                         if(value.has("prettyFormat")) {
-                            vBox.getChildren().add(coloredHBox(value.get("name").asText() + ": ", value.get("prettyFormat").asText(),"#d7f8fa"));
+                            vBox.getChildren().add(coloredHBox(value.get("text").asText() + ": ", value.get("prettyFormat").asText(),"#d7f8fa"));
                         }
                         else if (value.has("answer")) {
                             if(isImageLink(value.get("answer").asText()))
-                                vBox.getChildren().add(imageBox(value.get("name").asText(), value.get("answer").asText()));
+                                vBox.getChildren().add(imageBox(value.get("text").asText(), value.get("answer").asText()));
                             else
-                            vBox.getChildren().add(coloredHBox(value.get("name").asText() + ": ", value.get("answer").asText(),"#d7f8fa"));
+                            vBox.getChildren().add(coloredHBox(value.get("text").asText() + ": ", value.get("answer").asText(),"#d7f8fa"));
                         }
                         else if (value.get("name").asText().equals("heading")) {
                             vBox.getChildren().add(coloredHBox("Title: ", value.get("text").asText(),"#ffff13"));
                             vBox.getChildren().add(coloredHBox("Created: ", form.get("created_at").asText(),"gray"));
                             if(form.get("status").asText().equals("ACTIVE"))
-                            vBox.getChildren().add(coloredHBox("Status: ", form.get("status").asText(),"green"));
+                                vBox.getChildren().add(coloredHBox("Status: ", form.get("status").asText(),"green"));
+                            else
+                                vBox.getChildren().add(coloredHBox("Status: ", form.get("status").asText(),"red"));
+                            vBox.getChildren().add(coloredHBox("New: ", convertStringToBoolean(form.get("new").asText()),"#d7f8fa"));
+                            vBox.getChildren().add(coloredHBox("Flagged: ", convertStringToBoolean(form.get("flag").asText()),"#d7f8fa"));
+                            vBox.getChildren().add(coloredHBox("Notes: ", form.get("notes").asText(),"#d7f8fa"));
+                            vBox.getChildren().add(coloredHBox("Last Updated: ", form.get("updated_at").asText(),"#d7f8fa"));
                         }
                     });
                 }
                 break; // Break after processing the correct form
             }
         }
-        return vBox;
     }
 
+    public String convertStringToBoolean(String input) {
+        if ("1".equals(input)) {
+            return "true";
+        } else if ("0".equals(input)) {
+            return "false";
+        } else {
+            logger.error("Input must be \"1\" or \"0\"");
+            return "unknown";
+        }
+    }
+
+//    public String formatLabel(String input) {
+//        if (input == null || input.isEmpty()) {
+//            return input;
+//        }
+//
+//        StringBuilder result = new StringBuilder();
+//        char[] chars = input.toCharArray();
+//
+//        for (int i = 0; i < chars.length; i++) {
+//            if (i > 0 && Character.isUpperCase(chars[i])) {
+//                result.append(" ");
+//            }
+//            result.append(chars[i]);
+//        }
+//
+//        String[] words = result.toString().split(" ");
+//        StringBuilder finalResult = new StringBuilder();
+//
+//        for (String word : words) {
+//            if (!word.isEmpty()) {
+//                finalResult.append(Character.toUpperCase(word.charAt(0)))
+//                        .append(word.substring(1).toLowerCase())
+//                        .append(" ");
+//            }
+//        }
+//
+//        return finalResult.toString().trim();
+//    }
+
+
     private Node imageBox(String title, String url) {
-        logger.info("Getting image: " + url);
         VBox vBox = new VBox();
         vBox.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 2px;");
         vBox.setSpacing(10); // Set spacing between elements in the VBox
         vBox.getChildren().add(new Label(title));
         // Create an ImageView
         ImageView imageView = new ImageView();
-
         // Load image from URL
         try {
-            Image image = new Image(url, false); // The second argument is for background loading
+            Image image = new Image(url, true); // The second argument is for background loading
             imageView.setImage(image);
             imageView.setPreserveRatio(true); // Preserve the aspect ratio
 
             vBox.getChildren().add(imageView); // Add ImageView to VBox
         } catch (Exception e) {
-            System.out.println("Error loading image: " + e.getMessage());
-            // Handle error (e.g., image not found or invalid URL)
+            logger.error("Error loading image: " + e.getMessage());
         }
-
         return vBox;
     }
-
 
     public boolean isImageLink(String url) {
         if (url == null || url.isEmpty()) {
@@ -213,11 +256,15 @@ public class TabForm extends Tab implements Builder {
         return submissions;
     }
 
-    public VBox getDetailsVBox() {
-        return detailsVBox;
+    public ScrollPane getDetailsScrollPane() {
+        return detailsScrollPane;
     }
 
     public static Logger getLogger() {
         return logger;
+    }
+
+    public VBox getvBox() {
+        return vBox;
     }
 }
