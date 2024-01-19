@@ -1,5 +1,6 @@
 package com.ecsail.jotform.structures.submissions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FormSubmissionsPOJO {
@@ -11,6 +12,10 @@ public class FormSubmissionsPOJO {
         this.responseCode = responseCode;
         this.message = message;
         this.content = content;
+    }
+
+    public FormSubmissionsPOJO() {
+        this.content = new ArrayList<>();
     }
 
     public int getResponseCode() {
@@ -35,5 +40,14 @@ public class FormSubmissionsPOJO {
 
     public void setContent(List<ContentPOJO> content) {
         this.content = content;
+    }
+
+    @Override
+    public String toString() {
+        return "FormSubmissionsPOJO{" +
+                "responseCode=" + responseCode +
+                ", message='" + message + '\'' +
+                ", content=" + content +
+                '}';
     }
 }

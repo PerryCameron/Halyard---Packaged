@@ -1,9 +1,11 @@
 package com.ecsail.jotform.structures;
 
-import com.ecsail.dto.AppSettingsDTO;
 import com.ecsail.jotform.FormTableView;
 import com.ecsail.jotform.JotForm;
 import com.ecsail.jotform.Json;
+import com.ecsail.jotform.structures.submissions.AnswersDetailPOJO;
+import com.ecsail.jotform.structures.submissions.ContentPOJO;
+import com.ecsail.jotform.structures.submissions.FormSubmissionsPOJO;
 import com.ecsail.repository.implementations.AppSettingsRepositoryImpl;
 import com.ecsail.repository.implementations.SettingsRepositoryImpl;
 import com.ecsail.repository.interfaces.AppSettingsRepository;
@@ -26,6 +28,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -38,7 +42,7 @@ public class TabForm extends Tab implements Builder {
     private JotForm client;
     private HashMap<String,String> parameters = new HashMap<>();
     private JotFormsDTO jotFormsDTO;
-    private ObservableList<FormInfoDTO> submissions;
+    private ObservableList<AnswersDetailPOJO> submissionNames = FXCollections.observableArrayList();
     private FormInfoDTO mainFormInfo;
     private JsonNode neoJsonNode;
     private HashMap<String, String> formHash = new HashMap();
@@ -46,45 +50,32 @@ public class TabForm extends Tab implements Builder {
     private VBox vBox;
     private ArrayList<JotFormSettingsDTO> jotFormSettingsDTOS;
 
-//    +-----------------+----------------------+--------------------------------------------------------------------+---------+-------------------+----------+
-//            |setting_key      |setting_value         |description                                                         |data_type|updated_at         |group_name|
-//            +-----------------+----------------------+--------------------------------------------------------------------+---------+-------------------+----------+
-//            |221034257423042:1|answers 3 prettyFormat|One of the two settings shown on form submission list               |string   |2024-01-13 20:51:24|jotform   |
-//            |221034257423042:2|answers 4 answer      |The key number the person has: setting_value is how to traverse JSON|integer  |2024-01-13 21:18:00|jotform   |
-//            |221034257423042:3|Master Keys           |Title of the tab for this form                                      |string   |2024-01-13 21:18:00|jotform   |
-
-
+    private FormSubmissionsPOJO submissionsPOJO;
 
 
     public TabForm(JotFormsDTO jotFormsDTO) {
         this.appSettingsRepository = new AppSettingsRepositoryImpl();
         this.settingsRepository = new SettingsRepositoryImpl();
-        setText(jotFormsDTO.getId() + "");
-        this.client = new JotForm(appSettingsRepository.getApiKeyByName("Jotform API").getKey());
         this.jotFormsDTO = jotFormsDTO;  // this is DTO that hold general info for A form
         this.jotFormSettingsDTOS = (ArrayList<JotFormSettingsDTO>) settingsRepository.getJotFormSettings(jotFormsDTO.getId());  // setting for each choice in form
-        this.mainFormInfo = getProfile();
-        if(mainFormInfo.hasProfile()) {
-            this.submissions = getFormSubmissions();
-            this.setText(appSettingsRepository.getSettingFromKey(jotFormsDTO.getId()+":3").getValue());
-        }
-        else System.out.println("This form has no profile");
+        this.client = new JotForm(appSettingsRepository.getApiKeyByName("Jotform API").getKey());
+        this.submissionsPOJO = getSubmissionsPOJO();
+//        submissionsPOJO.getContent().forEach(System.out::println);
+        submissionNames.forEach(System.out::println);
+
+//        setText(jotFormsDTO.getId() + "");
+
+
+//        this.jotFormSettingsDTOS = (ArrayList<JotFormSettingsDTO>) settingsRepository.getJotFormSettings(jotFormsDTO.getId());  // setting for each choice in form
+//        this.mainFormInfo = getProfile();
+//        if(mainFormInfo.hasProfile()) {
+//            this.submissions = getSubmissionsPOJO();
+//            this.setText(appSettingsRepository.getSettingFromKey(jotFormsDTO.getId()+":3").getValue());
+//        }
+//        else System.out.println("This form has no profile");
         setContent(build());
     }
 
-    private FormInfoDTO getProfile() {
-       JotFormSettingsDTO first = getSetting("1");
-       JotFormSettingsDTO second = getSetting("2");
-       Optional<String> info1Optional = Optional.ofNullable("answers " + first.getAnswerNumber() + " " + first.getAnswerLocation());
-       Optional<String> info2Optional = Optional.ofNullable("answers " + second.getAnswerNumber() + " " + second.getAnswerLocation());
-        String info1 = info1Optional.orElse(""); // or any other default value
-        String info2 = info2Optional.orElse(""); // or any other default value
-        return new FormInfoDTO(jotFormsDTO.getId(), info1, info2);
-    }
-
-    private JotFormSettingsDTO getSetting(String dataType) {
-        return jotFormSettingsDTOS.stream().filter(setting -> setting.getDataType().equals(dataType)).findFirst().orElse(null);
-    }
 
     @Override
     public Node build() {
@@ -116,33 +107,47 @@ public class TabForm extends Tab implements Builder {
     }
 
 
-//    public JSONObject getFormSubmissions(long formID, String offset, String limit, HashMap<String, String> filter, String orderBy) {
-
-
-    private ObservableList<FormInfoDTO> getFormSubmissions() {
-        ObservableList<FormInfoDTO> formsDTOS = FXCollections.observableArrayList();
+    private FormSubmissionsPOJO getSubmissionsPOJO() {
+        FormSubmissionsPOJO formSubmissionsPOJO = new FormSubmissionsPOJO();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         parameters.put("status", "ACTIVE");
         JSONObject formSubmissions = client.getFormSubmissions(jotFormsDTO.getId(), "0", "350", parameters, "created_at");
         this.neoJsonNode = Json.getJsonNodeFromJsonObject(formSubmissions);
-        String infoMap1[] = mainFormInfo.getInfo1().split(" ");
-        String infoMap2[] = mainFormInfo.getInfo2().split(" ");
+        if(neoJsonNode.has("responseCode"))  formSubmissionsPOJO.setResponseCode(neoJsonNode.get("responseCode").asInt());
+        if(neoJsonNode.has("message"))  formSubmissionsPOJO.setMessage(neoJsonNode.get("message").asText());
         if (neoJsonNode.has("content") && neoJsonNode.get("content").isArray()) {
             for (JsonNode submission : neoJsonNode.get("content")) {
-                // will always be so
-                Long formId = submission.has("id") ? submission.get("id").asLong() : null;
-                // this will change depending on form - database tells what to look for depending on form
-                String info1 = submission.has(infoMap1[0]) && submission.get(infoMap1[0]).has(infoMap1[1])
-                        && submission.get(infoMap1[0]).get(infoMap1[1]).has(infoMap1[2])
-                        ? submission.get(infoMap1[0]).get(infoMap1[1]).get(infoMap1[2]).asText() : "";
-                // this will change depending on form - database tells what to look for depending on form
-                String info2 = submission.has(infoMap2[0]) && submission.get(infoMap2[0]).has(infoMap2[1])
-                        && submission.get(infoMap2[0]).get(infoMap2[1]).has(infoMap2[2])
-                        ? submission.get(infoMap2[0]).get(infoMap2[1]).get(infoMap2[2]).asText() : "";
-                FormInfoDTO formInfoDTO = new FormInfoDTO(formId, info1, info2);
-                formsDTOS.add(formInfoDTO);
+                if(submission.has("updated_at")) System.out.println(submission.get("updated_at"));
+                HashMap<String, AnswersDetailPOJO>  hashMap= new HashMap<>();
+                formSubmissionsPOJO.getContent().add(new ContentPOJO(
+                        submission.get("id").asLong(),
+                        submission.get("form_id").asLong(),
+                        submission.get("ip").asText(),
+                        LocalDateTime.parse(submission.get("created_at").asText(), formatter),
+                        submission.get("status").asText(),
+                        submission.get("new").asBoolean(),
+                        submission.get("flag").asBoolean(),
+                        submission.get("notes").asText(),
+                        LocalDateTime.parse("2022-04-28 18:33:45", formatter),
+                        hashMap));
+                JsonNode answers = submission.get("answers");
+                if (answers != null) {
+                    answers.fields().forEachRemaining(answerBlock -> {
+                        AnswersDetailPOJO answersDetailPOJO = new AnswersDetailPOJO();
+                        hashMap.put(answerBlock.getKey(), answersDetailPOJO);
+                        answerBlock.getValue().fields().forEachRemaining(answer -> {
+                            if(answer.getKey().equals("name")) answersDetailPOJO.setName(answer.getValue().asText());
+                            if(answer.getKey().equals("order")) answersDetailPOJO.setOrder(answer.getValue().asInt());
+                            if(answer.getKey().equals("text")) answersDetailPOJO.setText(answer.getValue().asText());
+                            if(answer.getKey().equals("type")) answersDetailPOJO.setType(answer.getValue().asText());
+                            if(answer.getKey().equals("prettyFormat")) answersDetailPOJO.setPrettyFormat(answer.getValue().asText());
+                        });
+                        if(answerBlock.getKey().equals("3")) submissionNames.add(answersDetailPOJO);
+                    });
+                }
             }
         }
-        return formsDTOS;
+        return formSubmissionsPOJO;
     }
 
     public void fillFormHash(Long id) {
@@ -274,8 +279,8 @@ public class TabForm extends Tab implements Builder {
         return client;
     }
 
-    public ObservableList<FormInfoDTO> getSubmissions() {
-        return submissions;
+    public ObservableList<AnswersDetailPOJO> getSubmissionNames() {
+        return submissionNames;
     }
 
     public ScrollPane getDetailsScrollPane() {

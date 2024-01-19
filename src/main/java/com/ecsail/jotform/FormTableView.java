@@ -1,7 +1,7 @@
 package com.ecsail.jotform;
 
-import com.ecsail.jotform.structures.FormInfoDTO;
 import com.ecsail.jotform.structures.TabForm;
+import com.ecsail.jotform.structures.submissions.AnswersDetailPOJO;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -14,7 +14,7 @@ import javafx.util.Builder;
 
 import java.util.Arrays;
 
-public class FormTableView extends TableView<FormInfoDTO> implements Builder {
+public class FormTableView extends TableView<AnswersDetailPOJO> implements Builder {
     TabForm parent;
 
     public FormTableView(TabForm p) {
@@ -24,11 +24,11 @@ public class FormTableView extends TableView<FormInfoDTO> implements Builder {
 
     private void setRosterRowFactory() {
         this.setRowFactory(tv -> {
-            TableRow<FormInfoDTO> row = new TableRow<>();
+            TableRow<AnswersDetailPOJO> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
                     parent.getvBox().getChildren().clear();
-                    parent.fillFormHash(row.getItem().getFormId());
+//                    parent.fillFormHash(row.getItem().getFormId());
                 }
             });
             return row;
@@ -39,27 +39,27 @@ public class FormTableView extends TableView<FormInfoDTO> implements Builder {
     public Object build() {
         VBox.setVgrow(this, Priority.ALWAYS);
         HBox.setHgrow(this, Priority.ALWAYS);
-        this.setItems(parent.getSubmissions());
+        this.setItems(parent.getSubmissionNames());
         this.setFixedCellSize(30);
         this.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        this.getColumns().addAll(Arrays.asList(col1(),col2()));
+        this.getColumns().addAll(Arrays.asList(col1()));
         setRosterRowFactory();
         return null;
     }
 
-    private TableColumn<FormInfoDTO, String> col1() {
-        TableColumn<FormInfoDTO, String> column = new TableColumn<>("Name");
+    private TableColumn<AnswersDetailPOJO, String> col1() {
+        TableColumn<AnswersDetailPOJO, String> column = new TableColumn<>("Name");
         column.setMaxWidth(1f * Integer.MAX_VALUE * 80);  // Join Date 15%
-        column.setCellValueFactory(new PropertyValueFactory<>("info1"));
+        column.setCellValueFactory(new PropertyValueFactory<>("prettyFormat"));
         return column;
     }
 
-    private TableColumn<FormInfoDTO, String> col2() {
-        TableColumn<FormInfoDTO, String> column = new TableColumn<>("Key");
-        column.setMaxWidth(1f * Integer.MAX_VALUE * 20);  // Join Date 15%
-        column.setCellValueFactory(new PropertyValueFactory<>("info2"));
-        return column;
-    }
+//    private TableColumn<AnswersDetailPOJO, String> col2() {
+//        TableColumn<AnswersDetailPOJO, String> column = new TableColumn<>("Key");
+//        column.setMaxWidth(1f * Integer.MAX_VALUE * 20);  // Join Date 15%
+//        column.setCellValueFactory(new PropertyValueFactory<>("info2"));
+//        return column;
+//    }
 }
 
 //        column.setCellValueFactory(new PropertyValueFactory<>("archived"));

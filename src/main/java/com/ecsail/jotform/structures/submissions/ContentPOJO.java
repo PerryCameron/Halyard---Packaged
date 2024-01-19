@@ -1,21 +1,22 @@
 package com.ecsail.jotform.structures.submissions;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 public class ContentPOJO {
     long id;
     long formId;
     String ip;
-    Date createdAt;
+    LocalDateTime createdAt;
     String status;
     boolean newForm;
     boolean flag;
     String notes;
-    Date updatedAt;
+    LocalDateTime updatedAt;
     private Map<String, AnswersDetailPOJO> answers;
 
-    public ContentPOJO(long id, long formId, String ip, Date createdAt, String status, boolean newForm, boolean flag, String notes, Date updatedAt, Map<String, AnswersDetailPOJO> answers) {
+    public ContentPOJO(long id, long formId, String ip, LocalDateTime createdAt, String status, boolean newForm, boolean flag, String notes, LocalDateTime updatedAt, Map<String, AnswersDetailPOJO> answers) {
         this.id = id;
         this.formId = formId;
         this.ip = ip;
@@ -26,6 +27,9 @@ public class ContentPOJO {
         this.notes = notes;
         this.updatedAt = updatedAt;
         this.answers = answers;
+    }
+
+    public ContentPOJO() {
     }
 
     public long getId() {
@@ -52,11 +56,11 @@ public class ContentPOJO {
         this.ip = ip;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -92,11 +96,11 @@ public class ContentPOJO {
         this.notes = notes;
     }
 
-    public Date getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -106,5 +110,21 @@ public class ContentPOJO {
 
     public void setAnswers(Map<String, AnswersDetailPOJO> answers) {
         this.answers = answers;
+    }
+
+    @Override
+    public String toString() {
+        return "ContentPOJO{" +
+                "id=" + id +
+                ", formId=" + formId +
+                ", ip='" + ip + '\'' +
+                ", createdAt=" + createdAt +
+                ", status='" + status + '\'' +
+                ", newForm=" + newForm +
+                ", flag=" + flag +
+                ", notes='" + notes + '\'' +
+                ", updatedAt=" + updatedAt +
+                ", answers=" + answers +
+                '}';
     }
 }

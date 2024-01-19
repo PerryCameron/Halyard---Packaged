@@ -1,8 +1,5 @@
 package com.ecsail.jotform.structures.submissions;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class AnswersDetailPOJO {
     private String name;
     private int order;
@@ -18,6 +15,9 @@ public class AnswersDetailPOJO {
         this.type = type;
         this.answer = answer;
         this.prettyFormat = prettyFormat;
+    }
+
+    public AnswersDetailPOJO() {
     }
 
     public String getName() {
@@ -66,5 +66,12 @@ public class AnswersDetailPOJO {
 
     public void setPrettyFormat(String prettyFormat) {
         this.prettyFormat = prettyFormat;
+    }
+
+    @Override
+    public String toString() {
+        return "AnswersDetailPOJO{" +
+                "prettyFormat='" + prettyFormat + '\'' +
+                '}';
     }
 }
