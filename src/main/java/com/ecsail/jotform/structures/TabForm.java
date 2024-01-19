@@ -124,8 +124,6 @@ public class TabForm extends Tab implements Builder {
         parameters.put("status", "ACTIVE");
         JSONObject formSubmissions = client.getFormSubmissions(jotFormsDTO.getId(), "0", "350", parameters, "created_at");
         this.neoJsonNode = Json.getJsonNodeFromJsonObject(formSubmissions);
-        System.out.println(mainFormInfo.getInfo1());
-        System.out.println(mainFormInfo.getInfo2());
         String infoMap1[] = mainFormInfo.getInfo1().split(" ");
         String infoMap2[] = mainFormInfo.getInfo2().split(" ");
         if (neoJsonNode.has("content") && neoJsonNode.get("content").isArray()) {
