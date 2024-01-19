@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javafx.beans.property.*;
 
 public class JotFormsDTO {
-    Long id;
-    String username;
-    String title;
-    Integer height;
-    String status;
-    String created_at;
-    String updated_at;
-    String last_submission;
+    private Long id;
+    private String username;
+    private String title;
+    private Integer height;
+    private String status;
+    private String created_at;
+    private String updated_at;
+    private String last_submission;
     @JsonProperty(value = "new")
     Integer newSubmission;
     Integer count;

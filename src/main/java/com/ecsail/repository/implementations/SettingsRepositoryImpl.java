@@ -52,6 +52,7 @@ public class SettingsRepositoryImpl implements SettingsRepository {
         return dbBoatSettingsDTOS;
     }
 
+    @Override
     public List<JotFormSettingsDTO> getJotFormSettings(long id) {
         String query = "select * from jotform_settings where form_number= ?";
         List<JotFormSettingsDTO> jotFormSettingsDTOS = template.query(query, new JotFormsSettingsRowMapper(), id);

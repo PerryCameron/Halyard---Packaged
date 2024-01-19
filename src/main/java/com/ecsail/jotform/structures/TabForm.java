@@ -5,7 +5,9 @@ import com.ecsail.jotform.FormTableView;
 import com.ecsail.jotform.JotForm;
 import com.ecsail.jotform.Json;
 import com.ecsail.repository.implementations.AppSettingsRepositoryImpl;
+import com.ecsail.repository.implementations.SettingsRepositoryImpl;
 import com.ecsail.repository.interfaces.AppSettingsRepository;
+import com.ecsail.repository.interfaces.SettingsRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,6 +26,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -31,6 +34,7 @@ public class TabForm extends Tab implements Builder {
 
     public static Logger logger = LoggerFactory.getLogger(TabForm.class);
     private AppSettingsRepository appSettingsRepository;
+    private SettingsRepository settingsRepository;
     private JotForm client;
     private HashMap<String,String> parameters = new HashMap<>();
     private JotFormsDTO jotFormsDTO;
@@ -40,12 +44,25 @@ public class TabForm extends Tab implements Builder {
     private HashMap<String, String> formHash = new HashMap();
     private ScrollPane detailsScrollPane;
     private VBox vBox;
+    private ArrayList<JotFormSettingsDTO> jotFormSettingsDTOS;
+
+//    +-----------------+----------------------+--------------------------------------------------------------------+---------+-------------------+----------+
+//            |setting_key      |setting_value         |description                                                         |data_type|updated_at         |group_name|
+//            +-----------------+----------------------+--------------------------------------------------------------------+---------+-------------------+----------+
+//            |221034257423042:1|answers 3 prettyFormat|One of the two settings shown on form submission list               |string   |2024-01-13 20:51:24|jotform   |
+//            |221034257423042:2|answers 4 answer      |The key number the person has: setting_value is how to traverse JSON|integer  |2024-01-13 21:18:00|jotform   |
+//            |221034257423042:3|Master Keys           |Title of the tab for this form                                      |string   |2024-01-13 21:18:00|jotform   |
+
+
+
 
     public TabForm(JotFormsDTO jotFormsDTO) {
         this.appSettingsRepository = new AppSettingsRepositoryImpl();
+        this.settingsRepository = new SettingsRepositoryImpl();
         setText(jotFormsDTO.getId() + "");
         this.client = new JotForm(appSettingsRepository.getApiKeyByName("Jotform API").getKey());
-        this.jotFormsDTO = jotFormsDTO;
+        this.jotFormsDTO = jotFormsDTO;  // this is DTO that hold general info for A form
+        this.jotFormSettingsDTOS = (ArrayList<JotFormSettingsDTO>) settingsRepository.getJotFormSettings(jotFormsDTO.getId());  // setting for each choice in form
         this.mainFormInfo = getProfile();
         if(mainFormInfo.hasProfile()) {
             this.submissions = getFormSubmissions();
@@ -56,13 +73,17 @@ public class TabForm extends Tab implements Builder {
     }
 
     private FormInfoDTO getProfile() {
-        Optional<String> info1Optional = Optional.ofNullable(appSettingsRepository.getSettingFromKey(jotFormsDTO.getId()+":1"))
-                .map(AppSettingsDTO::getValue);
-        Optional<String> info2Optional = Optional.ofNullable(appSettingsRepository.getSettingFromKey(jotFormsDTO.getId()+":2"))
-                .map(AppSettingsDTO::getValue);
+       JotFormSettingsDTO first = getSetting("1");
+       JotFormSettingsDTO second = getSetting("2");
+       Optional<String> info1Optional = Optional.ofNullable("answers " + first.getAnswerNumber() + " " + first.getAnswerLocation());
+       Optional<String> info2Optional = Optional.ofNullable("answers " + second.getAnswerNumber() + " " + second.getAnswerLocation());
         String info1 = info1Optional.orElse(""); // or any other default value
         String info2 = info2Optional.orElse(""); // or any other default value
         return new FormInfoDTO(jotFormsDTO.getId(), info1, info2);
+    }
+
+    private JotFormSettingsDTO getSetting(String dataType) {
+        return jotFormSettingsDTOS.stream().filter(setting -> setting.getDataType().equals(dataType)).findFirst().orElse(null);
     }
 
     @Override
@@ -103,6 +124,8 @@ public class TabForm extends Tab implements Builder {
         parameters.put("status", "ACTIVE");
         JSONObject formSubmissions = client.getFormSubmissions(jotFormsDTO.getId(), "0", "350", parameters, "created_at");
         this.neoJsonNode = Json.getJsonNodeFromJsonObject(formSubmissions);
+        System.out.println(mainFormInfo.getInfo1());
+        System.out.println(mainFormInfo.getInfo2());
         String infoMap1[] = mainFormInfo.getInfo1().split(" ");
         String infoMap2[] = mainFormInfo.getInfo2().split(" ");
         if (neoJsonNode.has("content") && neoJsonNode.get("content").isArray()) {
@@ -127,6 +150,7 @@ public class TabForm extends Tab implements Builder {
     public void fillFormHash(Long id) {
         if (neoJsonNode == null || !neoJsonNode.has("content") || !neoJsonNode.get("content").isArray()) {
             vBox.getChildren().add(new Label("There is no content to display"));
+            return;
         }
         for (JsonNode form : neoJsonNode.get("content")) {
             // Check if this is the form with the given ID

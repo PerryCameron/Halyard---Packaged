@@ -4,6 +4,7 @@ import com.ecsail.dto.DbBoatSettingsDTO;
 import com.ecsail.dto.DbRosterSettingsDTO;
 import com.ecsail.dto.MembershipListRadioDTO;
 import com.ecsail.jotform.structures.ApiKeyDTO;
+import com.ecsail.jotform.structures.JotFormSettingsDTO;
 import com.ecsail.views.tabs.boatlist.BoatListRadioDTO;
 
 import java.util.List;
@@ -15,4 +16,5 @@ public interface SettingsRepository {
     List<DbBoatSettingsDTO> getBoatSettings();
     List<BoatListRadioDTO> getBoatRadioChoices();
 
+    List<JotFormSettingsDTO> getJotFormSettings(long id);
 }
