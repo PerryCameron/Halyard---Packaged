@@ -1,6 +1,5 @@
 package com.ecsail.jotform.structures.submissions;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -14,9 +13,9 @@ public class ContentPOJO {
     boolean flag;
     String notes;
     LocalDateTime updatedAt;
-    private Map<String, AnswersDetailPOJO> answers;
+    private Map<Integer, AnswerBlockPOJO> answers;
 
-    public ContentPOJO(long id, long formId, String ip, LocalDateTime createdAt, String status, boolean newForm, boolean flag, String notes, LocalDateTime updatedAt, Map<String, AnswersDetailPOJO> answers) {
+    public ContentPOJO(long id, long formId, String ip, LocalDateTime createdAt, String status, boolean newForm, boolean flag, String notes, LocalDateTime updatedAt, Map<Integer, AnswerBlockPOJO> answers) {
         this.id = id;
         this.formId = formId;
         this.ip = ip;
@@ -104,11 +103,11 @@ public class ContentPOJO {
         this.updatedAt = updatedAt;
     }
 
-    public Map<String, AnswersDetailPOJO> getAnswers() {
+    public Map<Integer, AnswerBlockPOJO> getAnswers() {
         return answers;
     }
 
-    public void setAnswers(Map<String, AnswersDetailPOJO> answers) {
+    public void setAnswers(Map<Integer, AnswerBlockPOJO> answers) {
         this.answers = answers;
     }
 
@@ -124,7 +123,7 @@ public class ContentPOJO {
                 ", flag=" + flag +
                 ", notes='" + notes + '\'' +
                 ", updatedAt=" + updatedAt +
-                ", answers=" + answers +
+//                ", answers=" + answers +
                 '}';
     }
 }

@@ -3,7 +3,7 @@ package com.ecsail.jotform.structures;
 import com.ecsail.jotform.FormTableView;
 import com.ecsail.jotform.JotForm;
 import com.ecsail.jotform.Json;
-import com.ecsail.jotform.structures.submissions.AnswersDetailPOJO;
+import com.ecsail.jotform.structures.submissions.AnswerBlockPOJO;
 import com.ecsail.jotform.structures.submissions.ContentPOJO;
 import com.ecsail.jotform.structures.submissions.FormSubmissionsPOJO;
 import com.ecsail.repository.implementations.AppSettingsRepositoryImpl;
@@ -31,8 +31,8 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Optional;
 
 public class TabForm extends Tab implements Builder {
 
@@ -42,15 +42,12 @@ public class TabForm extends Tab implements Builder {
     private JotForm client;
     private HashMap<String,String> parameters = new HashMap<>();
     private JotFormsDTO jotFormsDTO;
-    private ObservableList<AnswersDetailPOJO> submissionNames = FXCollections.observableArrayList();
+    private ObservableList<AnswerBlockPOJO> submissionNames = FXCollections.observableArrayList();
     private FormInfoDTO mainFormInfo;
-    private JsonNode neoJsonNode;
-    private HashMap<String, String> formHash = new HashMap();
     private ScrollPane detailsScrollPane;
     private VBox vBox;
     private ArrayList<JotFormSettingsDTO> jotFormSettingsDTOS;
-
-    private FormSubmissionsPOJO submissionsPOJO;
+    private FormSubmissionsPOJO formSubmissionsPOJO;
 
 
     public TabForm(JotFormsDTO jotFormsDTO) {
@@ -59,23 +56,10 @@ public class TabForm extends Tab implements Builder {
         this.jotFormsDTO = jotFormsDTO;  // this is DTO that hold general info for A form
         this.jotFormSettingsDTOS = (ArrayList<JotFormSettingsDTO>) settingsRepository.getJotFormSettings(jotFormsDTO.getId());  // setting for each choice in form
         this.client = new JotForm(appSettingsRepository.getApiKeyByName("Jotform API").getKey());
-        this.submissionsPOJO = getSubmissionsPOJO();
-//        submissionsPOJO.getContent().forEach(System.out::println);
-        submissionNames.forEach(System.out::println);
-
-//        setText(jotFormsDTO.getId() + "");
-
-
-//        this.jotFormSettingsDTOS = (ArrayList<JotFormSettingsDTO>) settingsRepository.getJotFormSettings(jotFormsDTO.getId());  // setting for each choice in form
-//        this.mainFormInfo = getProfile();
-//        if(mainFormInfo.hasProfile()) {
-//            this.submissions = getSubmissionsPOJO();
-//            this.setText(appSettingsRepository.getSettingFromKey(jotFormsDTO.getId()+":3").getValue());
-//        }
-//        else System.out.println("This form has no profile");
+        this.formSubmissionsPOJO = getFormSubmissionsPOJO();
+        this.setText(getTabText());
         setContent(build());
     }
-
 
     @Override
     public Node build() {
@@ -106,88 +90,102 @@ public class TabForm extends Tab implements Builder {
         return vBox;
     }
 
-
-    private FormSubmissionsPOJO getSubmissionsPOJO() {
+    private FormSubmissionsPOJO getFormSubmissionsPOJO() {
         FormSubmissionsPOJO formSubmissionsPOJO = new FormSubmissionsPOJO();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         parameters.put("status", "ACTIVE");
         JSONObject formSubmissions = client.getFormSubmissions(jotFormsDTO.getId(), "0", "350", parameters, "created_at");
-        this.neoJsonNode = Json.getJsonNodeFromJsonObject(formSubmissions);
+        JsonNode neoJsonNode = Json.getJsonNodeFromJsonObject(formSubmissions);
         if(neoJsonNode.has("responseCode"))  formSubmissionsPOJO.setResponseCode(neoJsonNode.get("responseCode").asInt());
         if(neoJsonNode.has("message"))  formSubmissionsPOJO.setMessage(neoJsonNode.get("message").asText());
         if (neoJsonNode.has("content") && neoJsonNode.get("content").isArray()) {
             for (JsonNode submission : neoJsonNode.get("content")) {
                 if(submission.has("updated_at")) System.out.println(submission.get("updated_at"));
-                HashMap<String, AnswersDetailPOJO>  hashMap= new HashMap<>();
-                formSubmissionsPOJO.getContent().add(new ContentPOJO(
-                        submission.get("id").asLong(),
-                        submission.get("form_id").asLong(),
-                        submission.get("ip").asText(),
-                        LocalDateTime.parse(submission.get("created_at").asText(), formatter),
-                        submission.get("status").asText(),
-                        submission.get("new").asBoolean(),
-                        submission.get("flag").asBoolean(),
-                        submission.get("notes").asText(),
-                        LocalDateTime.parse("2022-04-28 18:33:45", formatter),
-                        hashMap));
+                HashMap<Integer, AnswerBlockPOJO>  hashMap= new HashMap<>();
+                ContentPOJO contentPOJO = new ContentPOJO();
+                contentPOJO.setAnswers(hashMap);
+                formSubmissionsPOJO.getContent().add(contentPOJO);
+                if(submission.has("id") && submission.get("id") != null)
+                    contentPOJO.setId(submission.get("id").asLong());
+                if(submission.has("form_id") && submission.get("form_id") != null)
+                    contentPOJO.setFormId(submission.get("form_id").asLong());
+                if(submission.has("ip") && submission.get("ip") != null)
+                    contentPOJO.setIp(submission.get("ip").asText());
+                if(submission.has("created_at") && submission.get("created_at") != null)
+                    contentPOJO.setCreatedAt(LocalDateTime.parse(submission.get("created_at").asText(), formatter));
+                if(submission.has("status") && submission.get("status") != null)
+                    contentPOJO.setStatus(submission.get("status").asText());
+                if(submission.has("new") && submission.get("new") != null)
+                    contentPOJO.setNewForm(submission.get("new").asBoolean());
+                if(submission.has("flag") && submission.get("flag") != null)
+                    contentPOJO.setFlag(submission.get("flag").asBoolean());
+                if(submission.has("notes") && submission.get("notes") != null)
+                    contentPOJO.setNotes(submission.get("notes").asText());
+                if(submission.has("updated_at") && submission.get("updated_at").asText() != null)
+                    contentPOJO.setUpdatedAt(LocalDateTime.parse("2022-08-26 18:59:41", formatter));
+//                LocalDateTime.parse(submission.get("updated_at").asText()
                 JsonNode answers = submission.get("answers");
                 if (answers != null) {
+                    // group of answers
                     answers.fields().forEachRemaining(answerBlock -> {
-                        AnswersDetailPOJO answersDetailPOJO = new AnswersDetailPOJO();
-                        hashMap.put(answerBlock.getKey(), answersDetailPOJO);
+                        AnswerBlockPOJO answerBlockPOJO = new AnswerBlockPOJO(contentPOJO);
                         answerBlock.getValue().fields().forEachRemaining(answer -> {
-                            if(answer.getKey().equals("name")) answersDetailPOJO.setName(answer.getValue().asText());
-                            if(answer.getKey().equals("order")) answersDetailPOJO.setOrder(answer.getValue().asInt());
-                            if(answer.getKey().equals("text")) answersDetailPOJO.setText(answer.getValue().asText());
-                            if(answer.getKey().equals("type")) answersDetailPOJO.setType(answer.getValue().asText());
-                            if(answer.getKey().equals("prettyFormat")) answersDetailPOJO.setPrettyFormat(answer.getValue().asText());
+                            if(answer.getKey().equals("name"))
+                                answerBlockPOJO.setName(answer.getValue().asText());
+                            if(answer.getKey().equals("order"))
+                                answerBlockPOJO.setOrder(answer.getValue().asInt());
+                            if(answer.getKey().equals("text"))
+                                answerBlockPOJO.setText(answer.getValue().asText());
+                            if(answer.getKey().equals("type"))
+                                answerBlockPOJO.setType(answer.getValue().asText());
+                            if(answer.getKey().equals("answer"))
+                                answerBlockPOJO.setAnswer(answer.getValue().asText());
+                            if(answer.getKey().equals("prettyFormat"))
+                                answerBlockPOJO.setPrettyFormat(answer.getValue().asText());
                         });
-                        if(answerBlock.getKey().equals("3")) submissionNames.add(answersDetailPOJO);
+                        hashMap.put(Integer.valueOf(answerBlock.getKey()), answerBlockPOJO);
+                        if(answerBlock.getKey().equals("3")) submissionNames.add(answerBlockPOJO);
                     });
                 }
             }
         }
+        formSubmissions.clear();
         return formSubmissionsPOJO;
     }
 
-    public void fillFormHash(Long id) {
-        if (neoJsonNode == null || !neoJsonNode.has("content") || !neoJsonNode.get("content").isArray()) {
-            vBox.getChildren().add(new Label("There is no content to display"));
-            return;
-        }
-        for (JsonNode form : neoJsonNode.get("content")) {
-            // Check if this is the form with the given ID
-            if (form.has("id") && form.get("id").asText().equals(Long.toString(id))) {
-                JsonNode answers = form.get("answers");
-                 // display form information
-                if (answers != null) {
-                    answers.fields().forEachRemaining(entry -> {
-                        JsonNode value = entry.getValue();
-                        if(value.has("prettyFormat")) {
-                            vBox.getChildren().add(coloredHBox(value.get("text").asText() + ": ", value.get("prettyFormat").asText(),"#d7f8fa"));
-                        }
-                        else if (value.has("answer")) {
-                            if(isImageLink(value.get("answer").asText()))
-                                vBox.getChildren().add(imageBox(value.get("text").asText(), value.get("answer").asText()));
-                            else
-                            vBox.getChildren().add(coloredHBox(value.get("text").asText() + ": ", value.get("answer").asText(),"#d7f8fa"));
-                        }
-                        else if (value.get("name").asText().equals("heading")) {
-                            vBox.getChildren().add(coloredHBox("Title: ", value.get("text").asText(),"#ffff13"));
-                            vBox.getChildren().add(coloredHBox("Created: ", form.get("created_at").asText(),"gray"));
-                            if(form.get("status").asText().equals("ACTIVE"))
-                                vBox.getChildren().add(coloredHBox("Status: ", form.get("status").asText(),"green"));
-                            else
-                                vBox.getChildren().add(coloredHBox("Status: ", form.get("status").asText(),"red"));
-                            vBox.getChildren().add(coloredHBox("New: ", convertStringToBoolean(form.get("new").asText()),"#d7f8fa"));
-                            vBox.getChildren().add(coloredHBox("Flagged: ", convertStringToBoolean(form.get("flag").asText()),"#d7f8fa"));
-                            vBox.getChildren().add(coloredHBox("Notes: ", form.get("notes").asText(),"#d7f8fa"));
-                            vBox.getChildren().add(coloredHBox("Last Updated: ", form.get("updated_at").asText(),"#d7f8fa"));
-                        }
-                    });
-                }
-                break; // Break after processing the correct form
-            }
+    private JotFormSettingsDTO getSetting(int order) {
+        return jotFormSettingsDTOS.stream().filter(setting -> setting.getAnswerOrder() == order).findFirst().orElse(null);
+    }
+
+    private String getTabText() {
+        JotFormSettingsDTO js = jotFormSettingsDTOS.stream().filter(setting ->
+                        setting.getAnswerType().equals("tab_text"))
+                .findFirst().orElse(null);
+        if(js == null) return "";
+        else return js.getAnswerText();
+    }
+
+    public void fillForm(long id) {
+        jotFormSettingsDTOS.sort(Comparator.comparingInt(JotFormSettingsDTO::getAnswerOrder));
+        ContentPOJO content = formSubmissionsPOJO.getContent().stream().filter(contentPOJO -> contentPOJO.getId() == id).findFirst().orElse(null);
+        jotFormSettingsDTOS.stream().forEach(setting -> {
+            int answerKey = 0;
+            if(setting.getAnswerOrder() != 0)
+            answerKey = setting.getAnswerNumber();
+            if(answerKey != 0)
+            printValue(content.getAnswers().get(answerKey), setting);
+        });
+    }
+
+    private void printValue(AnswerBlockPOJO answerBlock, JotFormSettingsDTO setting) {
+        switch (setting.getAnswerType()) {
+            case "control_head" ->
+                    vBox.getChildren().add(coloredHBox("Title: ", answerBlock.getText(),"#ffff13"));
+            case "control_fullname" ->
+                    vBox.getChildren().add(coloredHBox(answerBlock.getText() + ": ", answerBlock.getPrettyFormat(),"#d7f8fa"));
+            case "control_textbox" ->
+                vBox.getChildren().add(coloredHBox(answerBlock.getText() + ": ", answerBlock.getAnswer(),"#d7f8fa"));
+            case "control_signature" -> vBox.getChildren().add(imageBox(answerBlock.getText(), answerBlock.getAnswer()));
         }
     }
 
@@ -201,36 +199,6 @@ public class TabForm extends Tab implements Builder {
             return "unknown";
         }
     }
-
-//    public String formatLabel(String input) {
-//        if (input == null || input.isEmpty()) {
-//            return input;
-//        }
-//
-//        StringBuilder result = new StringBuilder();
-//        char[] chars = input.toCharArray();
-//
-//        for (int i = 0; i < chars.length; i++) {
-//            if (i > 0 && Character.isUpperCase(chars[i])) {
-//                result.append(" ");
-//            }
-//            result.append(chars[i]);
-//        }
-//
-//        String[] words = result.toString().split(" ");
-//        StringBuilder finalResult = new StringBuilder();
-//
-//        for (String word : words) {
-//            if (!word.isEmpty()) {
-//                finalResult.append(Character.toUpperCase(word.charAt(0)))
-//                        .append(word.substring(1).toLowerCase())
-//                        .append(" ");
-//            }
-//        }
-//
-//        return finalResult.toString().trim();
-//    }
-
 
     private Node imageBox(String title, String url) {
         VBox vBox = new VBox();
@@ -279,7 +247,7 @@ public class TabForm extends Tab implements Builder {
         return client;
     }
 
-    public ObservableList<AnswersDetailPOJO> getSubmissionNames() {
+    public ObservableList<AnswerBlockPOJO> getSubmissionNames() {
         return submissionNames;
     }
 

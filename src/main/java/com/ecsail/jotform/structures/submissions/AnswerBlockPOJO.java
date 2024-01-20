@@ -1,14 +1,15 @@
 package com.ecsail.jotform.structures.submissions;
 
-public class AnswersDetailPOJO {
+public class AnswerBlockPOJO {
     private String name;
     private int order;
     private String text;
     private String type;
     private String answer;
     private String prettyFormat;
+    private ContentPOJO formInfo;
 
-    public AnswersDetailPOJO(String name, int order, String text, String type, String answer, String prettyFormat) {
+    public AnswerBlockPOJO(String name, int order, String text, String type, String answer, String prettyFormat) {
         this.name = name;
         this.order = order;
         this.text = text;
@@ -17,7 +18,8 @@ public class AnswersDetailPOJO {
         this.prettyFormat = prettyFormat;
     }
 
-    public AnswersDetailPOJO() {
+    public AnswerBlockPOJO(ContentPOJO formInfo) {
+        this.formInfo = formInfo;
     }
 
     public String getName() {
@@ -68,10 +70,24 @@ public class AnswersDetailPOJO {
         this.prettyFormat = prettyFormat;
     }
 
+    public ContentPOJO getFormInfo() {
+        return formInfo;
+    }
+
+    public void setFormInfo(ContentPOJO formInfo) {
+        this.formInfo = formInfo;
+    }
+
     @Override
     public String toString() {
-        return "AnswersDetailPOJO{" +
-                "prettyFormat='" + prettyFormat + '\'' +
+        return "AnswerBlockPOJO{" +
+                "name='" + name + '\'' +
+                ", order=" + order +
+                ", text='" + text + '\'' +
+                ", type='" + type + '\'' +
+                ", answer='" + answer + '\'' +
+                ", prettyFormat='" + prettyFormat + '\'' +
+                ", formInfo=" + formInfo +
                 '}';
     }
 }

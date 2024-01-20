@@ -1,7 +1,7 @@
 package com.ecsail.jotform;
 
 import com.ecsail.jotform.structures.TabForm;
-import com.ecsail.jotform.structures.submissions.AnswersDetailPOJO;
+import com.ecsail.jotform.structures.submissions.AnswerBlockPOJO;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -14,7 +14,7 @@ import javafx.util.Builder;
 
 import java.util.Arrays;
 
-public class FormTableView extends TableView<AnswersDetailPOJO> implements Builder {
+public class FormTableView extends TableView<AnswerBlockPOJO> implements Builder {
     TabForm parent;
 
     public FormTableView(TabForm p) {
@@ -24,11 +24,11 @@ public class FormTableView extends TableView<AnswersDetailPOJO> implements Build
 
     private void setRosterRowFactory() {
         this.setRowFactory(tv -> {
-            TableRow<AnswersDetailPOJO> row = new TableRow<>();
+            TableRow<AnswerBlockPOJO> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
                     parent.getvBox().getChildren().clear();
-//                    parent.fillFormHash(row.getItem().getFormId());
+                    parent.fillForm(row.getItem().getFormInfo().getId());
                 }
             });
             return row;
@@ -47,8 +47,8 @@ public class FormTableView extends TableView<AnswersDetailPOJO> implements Build
         return null;
     }
 
-    private TableColumn<AnswersDetailPOJO, String> col1() {
-        TableColumn<AnswersDetailPOJO, String> column = new TableColumn<>("Name");
+    private TableColumn<AnswerBlockPOJO, String> col1() {
+        TableColumn<AnswerBlockPOJO, String> column = new TableColumn<>("Name");
         column.setMaxWidth(1f * Integer.MAX_VALUE * 80);  // Join Date 15%
         column.setCellValueFactory(new PropertyValueFactory<>("prettyFormat"));
         return column;
