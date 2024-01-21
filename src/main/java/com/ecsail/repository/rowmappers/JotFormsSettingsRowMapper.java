@@ -15,14 +15,9 @@ public class JotFormsSettingsRowMapper implements RowMapper<JotFormSettingsDTO> 
                 rs.getLong("jot_id"),
                 rs.getLong("form_number"),
                 rs.getInt("answer_number"),
-                rs.getString("answer_location"),
                 rs.getString("answer_text"),
                 rs.getString("answer_type"),
-                rs.getString("answer_name"),
                 rs.getInt("answer_order"),
-                rs.getInt("group_order"),
-                rs.getString("sub_labels"),
-                rs.getString("data_type"),
                 rs.getDate("updated_at"));
     }
 }

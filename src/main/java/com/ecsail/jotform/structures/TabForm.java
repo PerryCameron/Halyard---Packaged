@@ -14,14 +14,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tab;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Builder;
 import org.json.JSONObject;
@@ -77,7 +77,6 @@ public class TabForm extends Tab implements Builder {
     private Node details() {
         this.detailsScrollPane = new ScrollPane();
         this.vBox = new VBox();
-        vBox.setSpacing(30);
         vBox.setPrefWidth(700);  // why do I need this?
         HBox.setHgrow(vBox,Priority.ALWAYS);
         detailsScrollPane.setContent(vBox);
@@ -182,39 +181,44 @@ public class TabForm extends Tab implements Builder {
         vBox.getChildren().add(printFormHeader(content));
         jotFormSettingsDTOS.stream().forEach(setting -> {
             int answerKey = 0;
-            if(setting.getAnswerOrder() != 0)
-            answerKey = setting.getAnswerNumber();
-            if(answerKey != 0)
-            printValue(content.getAnswers().get(answerKey), setting);
+            if(setting.getAnswerOrder() != 0)  // if there is an order determined for this
+                answerKey = setting.getAnswerNumber();
+            if(answerKey != 0) // we want to print all that have an answer number
+                printValue(content.getAnswers().get(answerKey), setting);
+            else if (answerKey == 0 && setting.getAnswerType().equals("section_title")) // we also want to print headings
+                printValue(content.getAnswers().get(answerKey), setting);
         });
     }
 
     private Node printFormHeader(ContentPOJO content) {
         VBox vBox = new VBox();
-        vBox.setSpacing(10.0);
         vBox.setPadding(new Insets(5,5,5,5));
         HBox.setHgrow(vBox,Priority.ALWAYS);
         vBox.setStyle("-fx-background-color: #383732; -fx-border-color: black; -fx-border-width: 2px;");
-        vBox.getChildren().add(coloredHBox("Id: ", String.valueOf(content.getId()),"#d7f8fa"));
-        vBox.getChildren().add(coloredHBox("Created: ", String.valueOf(content.getCreatedAt()),"#d7f8fa"));
-        vBox.getChildren().add(coloredHBox("Status: ", content.getStatus(),"#d7f8fa"));
-        vBox.getChildren().add(coloredHBox("New: ", String.valueOf(content.isNewForm()),"#d7f8fa"));
-        vBox.getChildren().add(coloredHBox("Flagged: ", String.valueOf(content.isFlag()),"#d7f8fa"));
-        vBox.getChildren().add(coloredHBox("Updated At: ", String.valueOf(content.getUpdatedAt()),"#d7f8fa"));
-        vBox.getChildren().add(coloredHBox("Notes: ", String.valueOf(content.getNotes()),"#d7f8fa"));
+        vBox.getChildren().add(coloredHBox("Id: ", String.valueOf(content.getId()),"#d7f8fa",0));
+        vBox.getChildren().add(coloredHBox("Created: ", String.valueOf(content.getCreatedAt()),"#d7f8fa",0));
+        vBox.getChildren().add(coloredHBox("Status: ", content.getStatus(),"#d7f8fa",0));
+        vBox.getChildren().add(coloredHBox("New: ", String.valueOf(content.isNewForm()),"#d7f8fa",0));
+        vBox.getChildren().add(coloredHBox("Flagged: ", String.valueOf(content.isFlag()),"#d7f8fa",0));
+        vBox.getChildren().add(coloredHBox("Updated At: ", String.valueOf(content.getUpdatedAt()),"#d7f8fa",0));
+        vBox.getChildren().add(coloredHBox("Notes: ", String.valueOf(content.getNotes()),"#d7f8fa",0));
         return vBox;
     }
 
     private void printValue(AnswerBlockPOJO answerBlock, JotFormSettingsDTO setting) {
         switch (setting.getAnswerType()) {
             case "control_head" ->
-                    vBox.getChildren().add(coloredHBox("Title: ", answerBlock.getText(),"#ffff13"));
-            case "control_fullname" , "control_phone" ->
-                    vBox.getChildren().add(coloredHBox(answerBlock.getText() + ": ", answerBlock.getPrettyFormat(),"#d7f8fa"));
+                    vBox.getChildren().add(coloredHBox("Title: ", answerBlock.getText(),"#ffff13",20));
+            case "control_fullname" , "control_phone", "control_datetime" ->
+                    vBox.getChildren().add(coloredHBox(answerBlock.getText() + ": ", answerBlock.getPrettyFormat(),"#d7f8fa",0));
             case "control_email", "control_textbox", "control_radio" ->
-                    vBox.getChildren().add(coloredHBox(answerBlock.getText() + ": ", answerBlock.getAnswer(),"#d7f8fa"));
-            case "control_signature" -> vBox.getChildren().add(imageBox(answerBlock.getText(), answerBlock.getAnswer()));
-            case "control_address" -> vBox.getChildren().add(addressBox(answerBlock.getText(), answerBlock.getPrettyFormat()));
+                    vBox.getChildren().add(coloredHBox(answerBlock.getText() + ": ", answerBlock.getAnswer(),"#d7f8fa",0));
+            case "control_signature" ->
+                    vBox.getChildren().add(imageBox(answerBlock.getText(), answerBlock.getAnswer()));
+            case "control_address" ->
+                    vBox.getChildren().add(addressBox(answerBlock.getText(), answerBlock.getPrettyFormat()));
+            case "section_title" ->
+                    vBox.getChildren().add(sectionTitleHBox(setting.getAnswerText(), "#faebc0"));
         }
     }
 
@@ -268,12 +272,30 @@ public class TabForm extends Tab implements Builder {
         return hBox;
     }
 
-    private Node coloredHBox(String key, String value, String color) {
+    private Node coloredHBox(String key, String value, String color, double top) {
+            if(value != null) {
+                HBox hBox = new HBox();
+                hBox.setPadding(new Insets(top, 0, 10, 0));
+                hBox.setAlignment(Pos.CENTER_LEFT);
+                Label keyLabel = new Label(key);
+                TextField textField = new TextField(value);
+                textField.setPrefWidth(400);
+                textField.setEditable(false); // Makes it non-editable
+                textField.setBorder(null); // Removes the border
+                textField.setStyle("-fx-background-color: transparent; -fx-focus-color: transparent; -fx-text-fill: " + color + ";"); // Makes the background transparent
+                hBox.getChildren().addAll(keyLabel, textField);
+                return hBox;
+            }
+            else return new Region();
+    }
+
+    private Node sectionTitleHBox(String title, String color) {
         HBox hBox = new HBox();
-        Label keyLabel = new Label(key);
-        Label valueLabel = new Label(value);
-        valueLabel.setStyle("-fx-text-fill: " + color);
-        hBox.getChildren().addAll(keyLabel, valueLabel);
+        hBox.setAlignment(Pos.CENTER_LEFT);
+        hBox.setPadding(new Insets(15, 0, 5, 0));
+        Label label = new Label(title);
+        label.setStyle("-fx-text-fill: " + color + "; -fx-font-size: 14pt;");
+        hBox.getChildren().add(label);
         return hBox;
     }
 
