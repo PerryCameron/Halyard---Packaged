@@ -181,12 +181,16 @@ public class TabForm extends Tab implements Builder {
         vBox.getChildren().add(printFormHeader(content));
         jotFormSettingsDTOS.stream().forEach(setting -> {
             int answerKey = 0;
-            if(setting.getAnswerOrder() != 0)  // if there is an order determined for this
+            if (setting.getAnswerOrder() != 0)  // if there is an order determined for this
                 answerKey = setting.getAnswerNumber();
-            if(answerKey != 0) // we want to print all that have an answer number
+            if (answerKey != 0) // we want to print all that have an answer number
                 printValue(content.getAnswers().get(answerKey), setting);
-            else if (answerKey == 0 && setting.getAnswerType().equals("section_title")) // we also want to print headings
-                printValue(content.getAnswers().get(answerKey), setting);
+            else {
+                if (setting.getAnswerType().equals("section_title")) // we also want to print headings
+                    printValue(null, setting);
+                if (setting.getAnswerType().equals("sub_section_title")) // we also want to print sub-headings
+                    printValue(null, setting);
+            }
         });
     }
 
@@ -208,7 +212,7 @@ public class TabForm extends Tab implements Builder {
     private void printValue(AnswerBlockPOJO answerBlock, JotFormSettingsDTO setting) {
         switch (setting.getAnswerType()) {
             case "control_head" ->
-                    vBox.getChildren().add(coloredHBox("Title: ", answerBlock.getText(),"#ffff13",20));
+                    vBox.getChildren().add(coloredHBox("-", answerBlock.getText(),"#ffff13",20));
             case "control_fullname" , "control_phone", "control_datetime" ->
                     vBox.getChildren().add(coloredHBox(answerBlock.getText() + ": ", answerBlock.getPrettyFormat(),"#d7f8fa",0));
             case "control_email", "control_textbox", "control_radio" ->
@@ -219,21 +223,27 @@ public class TabForm extends Tab implements Builder {
                     vBox.getChildren().add(addressBox(answerBlock.getText(), answerBlock.getPrettyFormat()));
             case "section_title" ->
                     vBox.getChildren().add(sectionTitleHBox(setting.getAnswerText(), "#faebc0"));
+            case "sub_section_title" -> {
+                System.out.println("Getting sub section in printValue");
+                vBox.getChildren().add(subSectionTitleHBox(setting.getAnswerText(), "#faebc0"));
+            }
         }
     }
 
     private Node addressBox(String text, String answer) {
         VBox containerVBox = new VBox();
-        Label label = new Label(text + ":");
-        containerVBox.getChildren().add(label);
         VBox vBox = new VBox();
         containerVBox.setSpacing(10);
         vBox.setSpacing(5);
         String[] address = answer.split("<br>");
         for (String addressPart : address) {
-            Label label1 = new Label(addressPart);
-            label1.setStyle("-fx-text-fill: #d7f8fa");
-            vBox.getChildren().add(label1);
+            HBox lineHbox = new HBox();
+            String[] parts = addressPart.split(":");
+            Label label1 = new Label(parts[0] + ": ");
+            Label label2 = new Label(parts[1]);
+            label2.setStyle("-fx-text-fill: #d7f8fa");
+            lineHbox.getChildren().addAll(label1,label2);
+            vBox.getChildren().add(lineHbox);
         }
         containerVBox.getChildren().add(vBox);
         return containerVBox;
@@ -295,6 +305,16 @@ public class TabForm extends Tab implements Builder {
         hBox.setPadding(new Insets(15, 0, 5, 0));
         Label label = new Label(title);
         label.setStyle("-fx-text-fill: " + color + "; -fx-font-size: 14pt;");
+        hBox.getChildren().add(label);
+        return hBox;
+    }
+
+    private Node subSectionTitleHBox(String title, String color) {
+        HBox hBox = new HBox();
+        hBox.setAlignment(Pos.CENTER_LEFT);
+        hBox.setPadding(new Insets(10, 0, 5, 0));
+        Label label = new Label(title);
+        label.setStyle("-fx-text-fill: " + color + "; -fx-font-size: 10pt;");
         hBox.getChildren().add(label);
         return hBox;
     }
