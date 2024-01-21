@@ -12,6 +12,9 @@ public class FormInfoDTO {
         this.info2 = info2;
     }
 
+    public FormInfoDTO() {
+    }
+
     public boolean hasProfile() {
         return info1 != null && !info1.isEmpty() && info2 != null && !info2.isEmpty();
     }

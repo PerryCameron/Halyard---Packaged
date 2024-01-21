@@ -42,7 +42,7 @@ public class TabForm extends Tab implements Builder {
     private JotForm client;
     private HashMap<String,String> parameters = new HashMap<>();
     private JotFormsDTO jotFormsDTO;
-    private ObservableList<AnswerBlockPOJO> submissionNames = FXCollections.observableArrayList();
+    private ObservableList<FormInfoDTO> submissionNames = FXCollections.observableArrayList();
     private FormInfoDTO mainFormInfo;
     private ScrollPane detailsScrollPane;
     private VBox vBox;
@@ -56,7 +56,7 @@ public class TabForm extends Tab implements Builder {
         this.jotFormsDTO = jotFormsDTO;  // this is DTO that hold general info for A form
         this.jotFormSettingsDTOS = (ArrayList<JotFormSettingsDTO>) settingsRepository.getJotFormSettings(jotFormsDTO.getId());  // setting for each choice in form
         this.client = new JotForm(appSettingsRepository.getApiKeyByName("Jotform API").getKey());
-        this.formSubmissionsPOJO = getFormSubmissionsPOJO();
+        this.formSubmissionsPOJO = convertJsonToPojo();
         this.setText(getTabText());
         setContent(build());
     }
@@ -68,6 +68,7 @@ public class TabForm extends Tab implements Builder {
         vBox.setPadding(new Insets(10, 10, 10, 10));
         hBox.setPadding(new Insets(3, 3, 3, 3)); // spacing to make pink from around table
         VBox.setVgrow(hBox, Priority.ALWAYS);
+        HBox.setHgrow(vBox,Priority.ALWAYS);
         hBox.getChildren().addAll(formList(), details());
         vBox.getChildren().add(hBox);
         return vBox;
@@ -76,8 +77,11 @@ public class TabForm extends Tab implements Builder {
     private Node details() {
         this.detailsScrollPane = new ScrollPane();
         this.vBox = new VBox();
-        vBox.setSpacing(10);
+        vBox.setSpacing(30);
+        vBox.setPrefWidth(700);  // why do I need this?
+        HBox.setHgrow(vBox,Priority.ALWAYS);
         detailsScrollPane.setContent(vBox);
+        HBox.setHgrow(detailsScrollPane,Priority.ALWAYS);
         detailsScrollPane.setPadding(new Insets(0,0,0,15));
         return detailsScrollPane;
     }
@@ -90,8 +94,9 @@ public class TabForm extends Tab implements Builder {
         return vBox;
     }
 
-    private FormSubmissionsPOJO getFormSubmissionsPOJO() {
+    private FormSubmissionsPOJO convertJsonToPojo() {
         FormSubmissionsPOJO formSubmissionsPOJO = new FormSubmissionsPOJO();
+        String[] displayItems = getSelectedItems();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         parameters.put("status", "ACTIVE");
         JSONObject formSubmissions = client.getFormSubmissions(jotFormsDTO.getId(), "0", "350", parameters, "created_at");
@@ -100,13 +105,16 @@ public class TabForm extends Tab implements Builder {
         if(neoJsonNode.has("message"))  formSubmissionsPOJO.setMessage(neoJsonNode.get("message").asText());
         if (neoJsonNode.has("content") && neoJsonNode.get("content").isArray()) {
             for (JsonNode submission : neoJsonNode.get("content")) {
-                if(submission.has("updated_at")) System.out.println(submission.get("updated_at"));
                 HashMap<Integer, AnswerBlockPOJO>  hashMap= new HashMap<>();
-                ContentPOJO contentPOJO = new ContentPOJO();
+                ContentPOJO contentPOJO = new ContentPOJO(); // content root for a membership
+                FormInfoDTO formInfoDTO = new FormInfoDTO(); // listing for a membership
+                submissionNames.add(formInfoDTO);
                 contentPOJO.setAnswers(hashMap);
                 formSubmissionsPOJO.getContent().add(contentPOJO);
-                if(submission.has("id") && submission.get("id") != null)
+                if(submission.has("id") && submission.get("id") != null) {
                     contentPOJO.setId(submission.get("id").asLong());
+                    formInfoDTO.setFormId(submission.get("id").asLong());
+                }
                 if(submission.has("form_id") && submission.get("form_id") != null)
                     contentPOJO.setFormId(submission.get("form_id").asLong());
                 if(submission.has("ip") && submission.get("ip") != null)
@@ -130,21 +138,22 @@ public class TabForm extends Tab implements Builder {
                     answers.fields().forEachRemaining(answerBlock -> {
                         AnswerBlockPOJO answerBlockPOJO = new AnswerBlockPOJO(contentPOJO);
                         answerBlock.getValue().fields().forEachRemaining(answer -> {
-                            if(answer.getKey().equals("name"))
-                                answerBlockPOJO.setName(answer.getValue().asText());
-                            if(answer.getKey().equals("order"))
-                                answerBlockPOJO.setOrder(answer.getValue().asInt());
-                            if(answer.getKey().equals("text"))
-                                answerBlockPOJO.setText(answer.getValue().asText());
-                            if(answer.getKey().equals("type"))
-                                answerBlockPOJO.setType(answer.getValue().asText());
-                            if(answer.getKey().equals("answer"))
-                                answerBlockPOJO.setAnswer(answer.getValue().asText());
-                            if(answer.getKey().equals("prettyFormat"))
-                                answerBlockPOJO.setPrettyFormat(answer.getValue().asText());
+                            switch (answer.getKey()) {
+                                case "name" -> answerBlockPOJO.setName(answer.getValue().asText());
+                                case "order" -> answerBlockPOJO.setOrder(answer.getValue().asInt());
+                                case "text" -> answerBlockPOJO.setText(answer.getValue().asText());
+                                case "type" -> answerBlockPOJO.setType(answer.getValue().asText());
+                                case "answer" -> answerBlockPOJO.setAnswer(answer.getValue().asText());
+                                case "prettyFormat" -> answerBlockPOJO.setPrettyFormat(answer.getValue().asText());
+                            }
                         });
                         hashMap.put(Integer.valueOf(answerBlock.getKey()), answerBlockPOJO);
-                        if(answerBlock.getKey().equals("3")) submissionNames.add(answerBlockPOJO);
+                        if(answerBlock.getKey().equals(displayItems[0])) {
+                            formInfoDTO.setInfo1(answerBlockPOJO.getAnswer());
+                        }
+                        if(answerBlock.getKey().equals(displayItems[1])) {
+                            formInfoDTO.setInfo2(answerBlockPOJO.getPrettyFormat());
+                        }
                     });
                 }
             }
@@ -153,8 +162,10 @@ public class TabForm extends Tab implements Builder {
         return formSubmissionsPOJO;
     }
 
-    private JotFormSettingsDTO getSetting(int order) {
-        return jotFormSettingsDTOS.stream().filter(setting -> setting.getAnswerOrder() == order).findFirst().orElse(null);
+    private String[] getSelectedItems() {
+        JotFormSettingsDTO js = jotFormSettingsDTOS.stream().filter(setting -> setting.getAnswerType().equals("selection_values")).findFirst().orElse(null);
+        String[] parts = js.getAnswerText().split(" ");
+        return parts;
     }
 
     private String getTabText() {
@@ -168,6 +179,7 @@ public class TabForm extends Tab implements Builder {
     public void fillForm(long id) {
         jotFormSettingsDTOS.sort(Comparator.comparingInt(JotFormSettingsDTO::getAnswerOrder));
         ContentPOJO content = formSubmissionsPOJO.getContent().stream().filter(contentPOJO -> contentPOJO.getId() == id).findFirst().orElse(null);
+        vBox.getChildren().add(printFormHeader(content));
         jotFormSettingsDTOS.stream().forEach(setting -> {
             int answerKey = 0;
             if(setting.getAnswerOrder() != 0)
@@ -177,16 +189,50 @@ public class TabForm extends Tab implements Builder {
         });
     }
 
+    private Node printFormHeader(ContentPOJO content) {
+        VBox vBox = new VBox();
+        vBox.setSpacing(10.0);
+        vBox.setPadding(new Insets(5,5,5,5));
+        HBox.setHgrow(vBox,Priority.ALWAYS);
+        vBox.setStyle("-fx-background-color: #383732; -fx-border-color: black; -fx-border-width: 2px;");
+        vBox.getChildren().add(coloredHBox("Id: ", String.valueOf(content.getId()),"#d7f8fa"));
+        vBox.getChildren().add(coloredHBox("Created: ", String.valueOf(content.getCreatedAt()),"#d7f8fa"));
+        vBox.getChildren().add(coloredHBox("Status: ", content.getStatus(),"#d7f8fa"));
+        vBox.getChildren().add(coloredHBox("New: ", String.valueOf(content.isNewForm()),"#d7f8fa"));
+        vBox.getChildren().add(coloredHBox("Flagged: ", String.valueOf(content.isFlag()),"#d7f8fa"));
+        vBox.getChildren().add(coloredHBox("Updated At: ", String.valueOf(content.getUpdatedAt()),"#d7f8fa"));
+        vBox.getChildren().add(coloredHBox("Notes: ", String.valueOf(content.getNotes()),"#d7f8fa"));
+        return vBox;
+    }
+
     private void printValue(AnswerBlockPOJO answerBlock, JotFormSettingsDTO setting) {
         switch (setting.getAnswerType()) {
             case "control_head" ->
                     vBox.getChildren().add(coloredHBox("Title: ", answerBlock.getText(),"#ffff13"));
-            case "control_fullname" ->
+            case "control_fullname" , "control_phone" ->
                     vBox.getChildren().add(coloredHBox(answerBlock.getText() + ": ", answerBlock.getPrettyFormat(),"#d7f8fa"));
-            case "control_textbox" ->
-                vBox.getChildren().add(coloredHBox(answerBlock.getText() + ": ", answerBlock.getAnswer(),"#d7f8fa"));
+            case "control_email", "control_textbox", "control_radio" ->
+                    vBox.getChildren().add(coloredHBox(answerBlock.getText() + ": ", answerBlock.getAnswer(),"#d7f8fa"));
             case "control_signature" -> vBox.getChildren().add(imageBox(answerBlock.getText(), answerBlock.getAnswer()));
+            case "control_address" -> vBox.getChildren().add(addressBox(answerBlock.getText(), answerBlock.getPrettyFormat()));
         }
+    }
+
+    private Node addressBox(String text, String answer) {
+        VBox containerVBox = new VBox();
+        Label label = new Label(text + ":");
+        containerVBox.getChildren().add(label);
+        VBox vBox = new VBox();
+        containerVBox.setSpacing(10);
+        vBox.setSpacing(5);
+        String[] address = answer.split("<br>");
+        for (String addressPart : address) {
+            Label label1 = new Label(addressPart);
+            label1.setStyle("-fx-text-fill: #d7f8fa");
+            vBox.getChildren().add(label1);
+        }
+        containerVBox.getChildren().add(vBox);
+        return containerVBox;
     }
 
     public String convertStringToBoolean(String input) {
@@ -201,6 +247,7 @@ public class TabForm extends Tab implements Builder {
     }
 
     private Node imageBox(String title, String url) {
+        HBox hBox = new HBox();
         VBox vBox = new VBox();
         vBox.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 2px;");
         vBox.setSpacing(10); // Set spacing between elements in the VBox
@@ -217,17 +264,9 @@ public class TabForm extends Tab implements Builder {
         } catch (Exception e) {
             logger.error("Error loading image: " + e.getMessage());
         }
-        return vBox;
+        hBox.getChildren().add(vBox);
+        return hBox;
     }
-
-    public boolean isImageLink(String url) {
-        if (url == null || url.isEmpty()) {
-            return false;
-        }
-        String imagePattern = "^(https?://.*\\.(?:png|jpg|jpeg|gif|bmp))$";
-        return url.matches(imagePattern);
-    }
-
 
     private Node coloredHBox(String key, String value, String color) {
         HBox hBox = new HBox();
@@ -238,16 +277,7 @@ public class TabForm extends Tab implements Builder {
         return hBox;
     }
 
-    private boolean intToBoolean(String number) {
-        if (number.equals("0")) return false;
-        return true;
-    }
-
-    public JotForm getClient() {
-        return client;
-    }
-
-    public ObservableList<AnswerBlockPOJO> getSubmissionNames() {
+    public ObservableList<FormInfoDTO> getSubmissionNames() {
         return submissionNames;
     }
 
