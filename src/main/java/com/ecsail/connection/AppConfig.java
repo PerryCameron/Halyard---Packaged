@@ -42,6 +42,7 @@ public class AppConfig {
             logger.error("Driver class not found", e);
             throw new RuntimeException(e);
         } catch (SQLException e) {
+            logger.error("Unable to make a database connection");
             logger.error("SQL Exception", e);
             throw new RuntimeException(e);
         }

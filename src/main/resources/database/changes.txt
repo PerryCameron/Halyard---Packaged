@@ -7,3 +7,7 @@
 - added ability to control membership return address from database settings
 - added ability to make envelopes from membership
 - added dialogue in deleting membership, also added more robust deletion process
+
+1.1.15
+- Improved logging for start up of application
+- Key Codes removed

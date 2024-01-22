@@ -11,6 +11,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.lang.System.getProperty;
 
@@ -18,6 +20,7 @@ public class StandardMenus implements Plugin {
 
     private MenuBar menuBar;
 
+    public static Logger logger = LoggerFactory.getLogger(StandardMenus.class);
     public static boolean isMac() {
         return getProperty("os.name").contains("Mac");
     }
@@ -25,8 +28,8 @@ public class StandardMenus implements Plugin {
     public static MenuItem Configure(String name, EventHandler<ActionEvent> action, KeyCode keyCode) {
         MenuItem item = new MenuItem(name);
         item.setOnAction(action);
-        if (keyCode != null)
-            item.setAccelerator(new KeyCodeCombination(keyCode, KeyCombination.SHORTCUT_DOWN));
+//        if (keyCode != null)
+//            item.setAccelerator(new KeyCodeCombination(keyCode, KeyCombination.SHORTCUT_DOWN));
         return item;
     }
 
@@ -34,8 +37,6 @@ public class StandardMenus implements Plugin {
 
         Menu file = new Menu("File");
         MenuItem createScript = Configure("Close Connection", x -> closeConnection(BaseApplication.stage), KeyCode.J);
-//        MenuItem closeConnection = Configure("Back Up Database", (event) -> SqlScriptMaker.createSql(), KeyCode.B);
-//        file.getItems().addAll(createScript, closeConnection);
         file.getItems().addAll(createScript);
 
         if (!isMac()) {
@@ -82,7 +83,9 @@ public class StandardMenus implements Plugin {
     }
 
     private void closeConnection(Stage primaryStage) {
-        BaseApplication.getModel().closeDatabaseConnection();
+        logger.info("Closing Database connection");
+        Platform.runLater(BaseApplication.getModel().closeDatabaseConnection());
+//        BaseApplication.getModel().closeDatabaseConnection();
         Launcher.closeTabs();
         primaryStage.setTitle("ECSC Membership Database (not connected)");
         BaseApplication.connectDatabase();

@@ -80,14 +80,17 @@ public class MainModel {
     public Runnable closeDatabaseConnection() {
         return () -> {
             try {
+                BaseApplication.logger.info("Attempting to close SQL connection");
                 sqlConnection.close();
                 BaseApplication.logger.info("SQL: Connection closed");
             } catch (SQLException e) {
+                BaseApplication.logger.error("Can not close database connection: " + e.getMessage());
                 e.printStackTrace();
             }
             // if ssh is connected then disconnect
             if (sshConnection != null && sshConnection.getSession().isConnected()) {
                 try {
+                    BaseApplication.logger.info("Attempting to close ip-tunnel");
                     sshConnection.getSession().delPortForwardingL(3306);
                     sshConnection.getSession().disconnect();
                     BaseApplication.logger.info("SSH: port forwarding closed");
