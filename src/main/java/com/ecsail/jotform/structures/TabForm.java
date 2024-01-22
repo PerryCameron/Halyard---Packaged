@@ -212,10 +212,11 @@ public class TabForm extends Tab implements Builder {
     private void printValue(AnswerBlockPOJO answerBlock, JotFormSettingsDTO setting) {
         switch (setting.getAnswerType()) {
             case "control_head" ->
-                    vBox.getChildren().add(coloredHBox("-", answerBlock.getText(),"#ffff13",20));
+//                    vBox.getChildren().add(coloredHBox("-", answerBlock.getText(),"#faebc0",20));
+                    vBox.getChildren().add(subSectionTitleHBox(answerBlock.getText(), "#faebc0"));
             case "control_fullname" , "control_phone", "control_datetime" ->
                     vBox.getChildren().add(coloredHBox(answerBlock.getText() + ": ", answerBlock.getPrettyFormat(),"#d7f8fa",0));
-            case "control_email", "control_textbox", "control_radio" ->
+            case "control_email", "control_textbox", "control_radio","control_dropdown" ->
                     vBox.getChildren().add(coloredHBox(answerBlock.getText() + ": ", answerBlock.getAnswer(),"#d7f8fa",0));
             case "control_signature" ->
                     vBox.getChildren().add(imageBox(answerBlock.getText(), answerBlock.getAnswer()));
@@ -224,7 +225,6 @@ public class TabForm extends Tab implements Builder {
             case "section_title" ->
                     vBox.getChildren().add(sectionTitleHBox(setting.getAnswerText(), "#faebc0"));
             case "sub_section_title" -> {
-                System.out.println("Getting sub section in printValue");
                 vBox.getChildren().add(subSectionTitleHBox(setting.getAnswerText(), "#faebc0"));
             }
         }

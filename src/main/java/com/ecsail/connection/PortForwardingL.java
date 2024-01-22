@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Arrays;
 
 // https://dentrassi.de/2015/07/13/programmatically-adding-a-host-key-with-jsch/
 public class PortForwardingL {
@@ -34,7 +35,10 @@ public class PortForwardingL {
             UserInfo ui = new MyUserInfo();
             session.setUserInfo(ui);
             try {
+                logger.info("Attempting to connect using client: " + session.getClientVersion());
                 session.connect();
+                logger.info("ip-tunnel created: " + session.isConnected() + " on port: " + session.getPort());
+                logger.info("Remote server version and OS: " + session.getServerVersion());
             } catch (JSchException e) {
                 logger.error(e.getMessage());
             }
@@ -42,12 +46,15 @@ public class PortForwardingL {
             int assingedPort = 0;
             // this prevents exception from filling log if mysql is running locally for testing
             try {
-                BaseApplication.logger.info("Attempting to bind SQL port");
+                logger.info("Attempting to bind SQL port on " + session.getHost() + " to local client");
                 assingedPort = session.setPortForwardingL(login.getLocalSqlPort(), "127.0.0.1", login.getRemoteSqlPort());
+                logger.info("Port Forwarding successful");
+                Arrays.stream(session.getPortForwardingL()).forEach(pf -> logger.info("Active Port Forwarding: " + pf));
             } catch (JSchException e) {
-                BaseApplication.logger.error(e.getMessage() + " Check to see if database is running locally");
+                logger.error(e.getMessage());
+                e.printStackTrace();
             }
-            BaseApplication.logger.info("localhost:" + assingedPort + " -> " + "127.0.0.1" + ":" + login.getRemoteSqlPort());
+
 //			this.ftp = new Sftp(jsch, session);
         } catch (Exception e) {
             e.printStackTrace();

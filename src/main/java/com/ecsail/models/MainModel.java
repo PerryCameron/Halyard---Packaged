@@ -50,6 +50,7 @@ public class MainModel {
         } else {
             BaseApplication.logger.info("SSH connection is not being used");
         }
+        // this code calls the connection code
         if(createConnection(user.get(), pass.get(), loopback, Integer.parseInt(localSqlPort.get()), currentLogon.getDatabase())) {
             this.membershipRepository = new MembershipRepositoryImpl();
             BaseApplication.activeMemberships =

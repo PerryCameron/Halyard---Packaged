@@ -42,7 +42,7 @@ public class ConnectDatabase {
 	public static Logger logger = LoggerFactory.getLogger(ConnectDatabase.class);
 	private MainModel mainModel = new MainModel();
 	private double titleBarHeight;
-	private int localSqlPort;
+	private final int localSqlPort;
 	private ObservableList<String> choices = FXCollections.observableArrayList();
 	// used in class methods
 	private CheckBox defaultCheck;
@@ -57,8 +57,8 @@ public class ConnectDatabase {
 	private TextField privateKey;
 	private TextField userName;
 	private TextField passWord;
-	public static final String BLUE = "\033[0;34m";    // BLUE
 
+	public static final String BLUE = "\033[0;34m";    // BLUE
 	public static Stage logonStage;
 	Stage primaryStage;
 
@@ -465,7 +465,7 @@ public class ConnectDatabase {
 			}
 		});
 		connectTask.setOnFailed(event -> {
-			BaseApplication.logger.error(connectTask.getException().getMessage());
+			logger.error(connectTask.getException().getMessage());
 		});
 		Thread thread = new Thread(connectTask);
 		thread.start();
@@ -538,7 +538,7 @@ public class ConnectDatabase {
 			stmt = mainModel.getSqlConnection().createStatement();
 			ResultSet rs = stmt.executeQuery("select @@hostname;");
 		while (rs.next()) {
-			BaseApplication.logger.info("Connected to " + rs.getString(1));
+			logger.info("Connected to " + rs.getString(1));
 			BaseApplication.statusLabel.setText("(Connected) " + rs.getString(1));
 		}
 		stmt.close();
