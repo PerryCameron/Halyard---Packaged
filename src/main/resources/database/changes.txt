@@ -9,5 +9,18 @@
 - added dialogue in deleting membership, also added more robust deletion process
 
 1.1.15
+-Massive changes to Jotform tab
+-Added parameters file
+-Cleaned up logs, removed a bunch of print test statements
+-Corrected several Invoice issues
+-Fixed bug in history tab
+-Updated schema
+-Updated 3 stickers
+-Now opens notes tab when adding an invoice
+
+
+1.1.21
 - Improved logging for start up of application
-- Key Codes removed
+- Key Codes disabled
+- Bug fix: Now has ability to disconnect, and reconnect to another server without closing program.
+-
