@@ -71,7 +71,7 @@ public class InvoiceFooter extends VBox {
 		});
 
         buttonAddNote.setOnAction(e -> {
-            parent.getNote().addMemoAndReturnId(new MemoDTO("Invoice Note: ", parent.invoice.getId(), "I"));
+            parent.getNote().addMemoAndReturnId(new MemoDTO("Invoice Note: ", parent.invoice.getMsId(), parent.invoice.getId(), "I"));
             parent.getTabMembership().selectTab("Notes");
             parent.getTabMembership().editRow();
         });
@@ -132,7 +132,7 @@ public class InvoiceFooter extends VBox {
         buttonCommit.setText("Commit");
         this.requestFocus(); // removes focus from button
         vboxCommitButton.getChildren().clear();
-        vboxCommitButton.getChildren().addAll(renewCheckBox, buttonCommit);
+        vboxCommitButton.getChildren().addAll(renewCheckBox, buttonCommit,buttonAddNote);
         getChildren().addAll(hboxTop,hboxBottom);
     }
 

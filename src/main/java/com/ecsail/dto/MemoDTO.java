@@ -44,10 +44,10 @@ public class MemoDTO {
 	}
 
 	// for invoice memos
-	public MemoDTO(String memo, Integer invoice_id, String category) {
+	public MemoDTO(String memo, Integer msId, Integer invoice_id, String category) {
 		super();
 		this.memo_id = new SimpleIntegerProperty(0);
-		this.msid = new SimpleIntegerProperty(0);
+		this.msid = new SimpleIntegerProperty(msId);
 		this.memo_date = new SimpleStringProperty(generateDate());
 		this.memo = new SimpleStringProperty(memo);
 		this.invoice_id = new SimpleIntegerProperty(invoice_id);
@@ -175,4 +175,16 @@ public class MemoDTO {
 		this.boat_idProperty().set(boat_id);
 	}
 
+	@Override
+	public String toString() {
+		return "MemoDTO{" +
+				"memo_id=" + memo_id +
+				", msid=" + msid +
+				", memo_date=" + memo_date +
+				", memo=" + memo +
+				", invoice_id=" + invoice_id +
+				", category=" + category +
+				", boat_id=" + boat_id +
+				'}';
+	}
 }
