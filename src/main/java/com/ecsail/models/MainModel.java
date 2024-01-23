@@ -10,10 +10,11 @@ import com.ecsail.enums.Officer;
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
 import com.ecsail.repository.interfaces.MembershipRepository;
 import com.jcraft.jsch.JSchException;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Year;
@@ -25,13 +26,12 @@ public class MainModel {
     private PortForwardingL sshConnection;
     private Sftp scp;
     private LoginDTO currentLogon;
-    private  List<LoginDTO> logins;
-    private StringProperty user = new SimpleStringProperty();
-    private StringProperty pass = new SimpleStringProperty();
-    private StringProperty host = new SimpleStringProperty();
-    private StringProperty localSqlPort = new SimpleStringProperty();
+    private List<LoginDTO> logins;
     private AppConfig appConfig;
     private MembershipRepository membershipRepository;
+    
+    public static Logger logger = LoggerFactory.getLogger(MainModel.class);
+
 
     public MainModel() {
         this.logins = setLogins();
@@ -39,19 +39,18 @@ public class MainModel {
     }
 
     public Boolean connect()  {
-        BaseApplication.logger.info("Host is " + host.get());
-        String loopback = "127.0.0.1";
+        logger.info("Host is " + currentLogon.getHost());
         // create ssh tunnel
         if(currentLogon.isSshForward()) {
-            BaseApplication.logger.info("SSH tunnel enabled");
-            BaseApplication.logger.info("Attempting to connect to " + host.get());
+            logger.info("SSH tunnel enabled");
+            logger.info("Attempting to connect to " + currentLogon.getHost());
             setSshConnection(new PortForwardingL(currentLogon));
-            BaseApplication.logger.info("Server Alive interval: " + sshConnection.getSession().getServerAliveInterval());
+            logger.info("Server Alive interval: " + sshConnection.getSession().getServerAliveInterval());
         } else {
-            BaseApplication.logger.info("SSH connection is not being used");
+            logger.info("SSH connection is not being used");
         }
         // this code calls the connection code
-        if(createConnection(user.get(), pass.get(), loopback, Integer.parseInt(localSqlPort.get()), currentLogon.getDatabase())) {
+        if(createConnection(currentLogon)) {
             this.membershipRepository = new MembershipRepositoryImpl();
             BaseApplication.activeMemberships =
                     FXCollections.observableArrayList(membershipRepository.getRoster(String.valueOf(Year.now().getValue()), true));
@@ -59,41 +58,46 @@ public class MainModel {
             BaseApplication.boardPositions = Officer.getPositionList();
             this.scp = new Sftp();
         } else {
-            BaseApplication.logger.error("Can not connect to SQL server");
+            logger.error("Can not connect to SQL server");
         }
         return sshConnection.getSession().isConnected();
     };
 
-    protected Boolean createConnection(String user, String password, String ip, int port, String database) {
+    protected Boolean createConnection(LoginDTO loginDTO) {
         boolean successful = false;
         try {
             this.appConfig = new AppConfig();
-            this.appConfig.createDataSource(ip,port,user,password,database);
+            this.appConfig.createDataSource(loginDTO);
             setSqlConnection(appConfig.getDataSource().getConnection());
             successful = true;
-            // Creating a Statement object
+            logger.info("SQL: Datasource active: " + !appConfig.getDataSource().getConnection().isClosed());
         } catch (Exception e) {
-            BaseApplication.logger.error(String.valueOf(e));
+            logger.error(String.valueOf(e));
         }
         return successful;
     }
-    public Runnable closeDatabaseConnection() {
+    public Runnable closeConnections() {
         return () -> {
             try {
-                BaseApplication.logger.info("Attempting to close SQL connection");
-                sqlConnection.close();
-                BaseApplication.logger.info("SQL: Connection closed");
+                if(!sqlConnection.isClosed()) {
+                    logger.info("Attempting to close SQL connection");
+                    sqlConnection.close();
+                    logger.info("SQL: Datasource active: " + !appConfig.getDataSource().getConnection().isClosed());
+                    sqlConnection = null;
+                } else logger.info("SQL: No active connection to disconnect from");
             } catch (SQLException e) {
-                BaseApplication.logger.error("Can not close database connection: " + e.getMessage());
+                logger.error("SQL: Can not close connection: " + e.getMessage());
                 e.printStackTrace();
             }
             // if ssh is connected then disconnect
             if (sshConnection != null && sshConnection.getSession().isConnected()) {
                 try {
-                    BaseApplication.logger.info("Attempting to close ip-tunnel");
-                    sshConnection.getSession().delPortForwardingL(3306);
-                    sshConnection.getSession().disconnect();
-                    BaseApplication.logger.info("SSH: port forwarding closed");
+                    if(sshConnection.getSession().isConnected()) {
+                        logger.info("SSH: Attempting to close ip-tunnel");
+                        sshConnection.getSession().delPortForwardingL(3306);
+                        sshConnection.getSession().disconnect();
+                        logger.info("SSH: ip-tunnel closed");
+                    } else logger.info("SSH: There is no active ip-tunnel to disconnect from");
                 } catch (JSchException e) {
                     e.printStackTrace();
                 }
@@ -147,54 +151,6 @@ public class MainModel {
 
     public void setAppConfig(AppConfig appConfig) {
         this.appConfig = appConfig;
-    }
-
-    public String getUser() {
-        return user.get();
-    }
-
-    public StringProperty userProperty() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user.set(user);
-    }
-
-    public String getPass() {
-        return pass.get();
-    }
-
-    public StringProperty passProperty() {
-        return pass;
-    }
-
-    public void setPass(String pass) {
-        this.pass.set(pass);
-    }
-
-    public String getHost() {
-        return host.get();
-    }
-
-    public StringProperty hostProperty() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host.set(host);
-    }
-
-    public String getLocalSqlPort() {
-        return localSqlPort.get();
-    }
-
-    public StringProperty localSqlPortProperty() {
-        return localSqlPort;
-    }
-
-    public void setLocalSqlPort(String localSqlPort) {
-        this.localSqlPort.set(localSqlPort);
     }
 
     public List<LoginDTO> setLogins() {

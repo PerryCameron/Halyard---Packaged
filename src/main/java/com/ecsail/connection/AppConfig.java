@@ -1,5 +1,6 @@
 package com.ecsail.connection;
 import com.ecsail.BaseApplication;
+import com.ecsail.dto.LoginDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -15,27 +16,18 @@ public class AppConfig {
     String dbParam = BaseApplication.getPropertyValue("database.parameters");
     String dbType = BaseApplication.getPropertyValue("database.type");
 
-//    public void createDataSource(String ip, int port, String user, String pass, String database) throws ClassNotFoundException {
-//        Class.forName("org.mariadb.jdbc.Driver");
-//        try {
-//            dataSource = new DriverManagerDataSource(
-//                    dbType + "://" + ip + ":" + port + "/" + database + dbParam,
-//                    user,
-//                    pass
-//            );
-//            logger.info(String.valueOf("Connecting to schema: " + dataSource.getConnection().getCatalog()));
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
-    public void createDataSource(String ip, int port, String user, String pass, String database) {
+    public void createDataSource(LoginDTO loginDTO) {
+        logger.info("user: " + loginDTO.getSqlUser());
+        logger.info("pass: " + loginDTO.getSqlPasswd());
+        logger.info("db: " + loginDTO.getDatabase());
+        String info = dbType + "://127.0.0.1" + ":" + "3306" + "/" + loginDTO.getDatabase() + dbParam;
+        logger.info(info);
         try {
             Class.forName("org.mariadb.jdbc.Driver");
             dataSource = new DriverManagerDataSource(
-                    dbType + "://" + ip + ":" + port + "/" + database + dbParam,
-                    user,
-                    pass
+                    dbType + "://127.0.0.1" + ":" + "3306" + "/" + loginDTO.getDatabase() + dbParam,
+                    loginDTO.getSqlUser(),
+                    loginDTO.getSqlPasswd()
             );
             logger.info("Connecting to schema: " + dataSource.getConnection().getCatalog());
         } catch (ClassNotFoundException e) {

@@ -142,7 +142,7 @@ public class BaseApplication extends Application implements Log {
         Scene scene = new Scene(borderPane, 1028, 830);
 
         // closing program with x button
-        stage.setOnHiding(event -> Platform.runLater(getModel().closeDatabaseConnection()));
+        stage.setOnHiding(event -> Platform.runLater(getModel().closeConnections()));
         Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));
         stage.getIcons().add(mainIcon);
         stage.setTitle("Halyard");

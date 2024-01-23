@@ -42,7 +42,6 @@ public class ConnectDatabase {
 	public static Logger logger = LoggerFactory.getLogger(ConnectDatabase.class);
 	private MainModel mainModel = new MainModel();
 	private double titleBarHeight;
-	private final int localSqlPort;
 	private ObservableList<String> choices = FXCollections.observableArrayList();
 	// used in class methods
 	private CheckBox defaultCheck;
@@ -69,7 +68,6 @@ public class ConnectDatabase {
 
 	public ConnectDatabase(Stage primaryStage) {
 		this.primaryStage = primaryStage;
-		this.localSqlPort = mainModel.getCurrentLogon().getLocalSqlPort();
 		loadHostsInComboBox();
 		// makes it look nice, tab not for anything useful
 			BaseApplication.tabPane.getTabs().add(new TabLogin("Log in"));
@@ -160,17 +158,13 @@ public class ConnectDatabase {
 
 		this.useSshTunnel = new CheckBox("SSH tunnel");
 		this.localSqlPortText = new TextField();
-		localSqlPortText.textProperty().bindBidirectional(mainModel.localSqlPortProperty());
 		this.sshPortText = new TextField();
 		this.hostNameField = new TextField();
-		hostNameField.textProperty().bindBidirectional(mainModel.hostProperty());
 		this.sshUser = new TextField();
 		this.knownHost = new TextField();
 		this.dataBase = new TextField();
 		this.userName = new TextField();
-		userName.textProperty().bindBidirectional(mainModel.userProperty());
 		this.passWord = new PasswordField();
-		passWord.textProperty().bindBidirectional(mainModel.passProperty());
 		this.privateKey = new TextField();
 		Button loginButton = new Button("Login");
 		Button cancelButton1 = new Button("Cancel");
@@ -244,7 +238,9 @@ public class ConnectDatabase {
 		
 		// when host name combo box changes
 		hostName.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
-			mainModel.setCurrentLogon(mainModel.getLogins().get(FileIO.getSelectedHost(options.getValue(),mainModel.getLogins())));
+			LoginDTO loginDTO = mainModel.getLogins().get(FileIO.getSelectedHost(options.getValue(),mainModel.getLogins()));
+			mainModel.setCurrentLogon(loginDTO);
+			System.out.println(loginDTO);
 			populateFields();
         });
 		
@@ -339,7 +335,7 @@ public class ConnectDatabase {
 						3306,
 						Integer.parseInt(sshPortText.getText()) ,
 						hostNameField.getText(),
-						mainModel.getUser(),
+						userName.getText(),
 						passWord.getText(),
 						sshUser.getText(),
 						knownHost.getText(),
@@ -367,7 +363,7 @@ public class ConnectDatabase {
             	if(element >= 0) {  // the element exists, why wouldn't it exist
             		// change the specific login in the login list
             		mainModel.getLogins().get(element).setHost(hostNameField.getText());
-					mainModel.getLogins().get(element).setSqlUser(mainModel.getUser());
+					mainModel.getLogins().get(element).setSqlUser(userName.getText());
 					mainModel.getLogins().get(element).setSqlPasswd(passWord.getText());
 					mainModel.getLogins().get(element).setLocalSqlPort(Integer.parseInt(localSqlPortText.getText()));
 					mainModel.getLogins().get(element).setSshPort(Integer.parseInt(sshPortText.getText()));
@@ -389,7 +385,11 @@ public class ConnectDatabase {
             });
         
         // exits program 
-        cancelButton1.setOnAction((event) -> System.exit(0));
+        cancelButton1.setOnAction((event) -> {
+			logger.info("Closing all connections and exiting program...");
+			Platform.runLater(mainModel.closeConnections());
+			System.exit(0);
+		});
 
         /////////////// SET CONTENT /////////////////////
 		Image mainIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/title_bar_icon.png")));
@@ -443,7 +443,7 @@ public class ConnectDatabase {
 	///////////////  CLASS METHODS ///////////////////
 
 	private void connectToServer() {
-		Task<Boolean> connectTask = new Task<Boolean>() {
+		Task<Boolean> connectTask = new Task<>() {
 			@Override
 			protected Boolean call() throws Exception {
 				// Perform database connection here
@@ -465,7 +465,11 @@ public class ConnectDatabase {
 			}
 		});
 		connectTask.setOnFailed(event -> {
-			logger.error(connectTask.getException().getMessage());
+			Throwable exception = connectTask.getException();
+//			logger.error(connectTask.getException().getMessage());
+			if (exception != null) {
+				logger.error("An error occurred: ", exception);
+			}
 		});
 		Thread thread = new Thread(connectTask);
 		thread.start();
@@ -545,11 +549,6 @@ public class ConnectDatabase {
       } catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
-
-	private void closeConnection() {
-		getMainModel().closeDatabaseConnection();
-		primaryStage.setTitle("Halyard (not connected)");
 	}
 
 	public Sftp getScp() {

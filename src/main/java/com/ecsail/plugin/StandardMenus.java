@@ -8,8 +8,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +82,7 @@ public class StandardMenus implements Plugin {
 
     private void closeConnection(Stage primaryStage) {
         logger.info("Closing Database connection");
-        Platform.runLater(BaseApplication.getModel().closeDatabaseConnection());
+        Platform.runLater(BaseApplication.getModel().closeConnections());
 //        BaseApplication.getModel().closeDatabaseConnection();
         Launcher.closeTabs();
         primaryStage.setTitle("ECSC Membership Database (not connected)");
