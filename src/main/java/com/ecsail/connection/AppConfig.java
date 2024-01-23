@@ -17,11 +17,6 @@ public class AppConfig {
     String dbType = BaseApplication.getPropertyValue("database.type");
 
     public void createDataSource(LoginDTO loginDTO) {
-        logger.info("user: " + loginDTO.getSqlUser());
-        logger.info("pass: " + loginDTO.getSqlPasswd());
-        logger.info("db: " + loginDTO.getDatabase());
-        String info = dbType + "://127.0.0.1" + ":" + "3306" + "/" + loginDTO.getDatabase() + dbParam;
-        logger.info(info);
         try {
             Class.forName("org.mariadb.jdbc.Driver");
             dataSource = new DriverManagerDataSource(

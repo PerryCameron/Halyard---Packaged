@@ -240,7 +240,6 @@ public class ConnectDatabase {
 		hostName.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
 			LoginDTO loginDTO = mainModel.getLogins().get(FileIO.getSelectedHost(options.getValue(),mainModel.getLogins()));
 			mainModel.setCurrentLogon(loginDTO);
-			System.out.println(loginDTO);
 			populateFields();
         });
 		

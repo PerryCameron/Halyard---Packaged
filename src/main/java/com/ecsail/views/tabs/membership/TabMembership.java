@@ -19,21 +19,25 @@ import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TabMembership extends Tab {
+
+	public static Logger logger = LoggerFactory.getLogger(TabMembership.class);
 	MembershipTabModel model;
 	HBoxMembershipNotes membershipNotes;
 	public TabMembership(MembershipListDTO me) {
 		super();
 		this.model = new MembershipTabModel(me);
 		this.setText(setTabLabel());
-		BaseApplication.logger.info("Opening Membership tab for "
+		logger.info("Opening Membership tab for "
 				+ model.getMembership().getMembershipInfo()
 				+ getPerson(MemberType.PRIMARY.getCode()).getNameWithInfo()
 		);
-
+		System.out.println("---test---");
 		////////// OBJECTS /////////////
 
 		var containerVBox = new VBox();

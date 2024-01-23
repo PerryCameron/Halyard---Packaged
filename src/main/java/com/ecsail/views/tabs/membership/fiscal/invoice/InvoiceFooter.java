@@ -49,10 +49,8 @@ public class InvoiceFooter extends VBox {
         this.buttonCommit = parent.getButtonCommit();
         Button buttonAdd = new Button("Add");
         Button buttonDelete = new Button("Delete");
-
         setPadding(new Insets(15, 0, 15, 0));
         setSpacing(15);
-
 
         buttonAdd.setOnAction(e -> {
             PaymentDTO paymentDTO = invoiceRepository.insertPayment(new PaymentDTO(parent.invoice.getId()));
