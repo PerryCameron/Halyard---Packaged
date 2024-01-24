@@ -376,7 +376,6 @@ public class ConnectDatabase {
             		FileIO.saveLoginObjects(mainModel.getLogins());
             		updateHostInComboBox(oldHost, hostNameField.getText());
             		hostName.setValue(hostNameField.getText());
-					mainModel.getLogins().forEach(System.out::println);
             		cancelButton2.fire(); // refresh login back to original
             	} else {
             		System.out.println("need to build error for non matching host here");

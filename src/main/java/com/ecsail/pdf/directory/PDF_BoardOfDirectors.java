@@ -25,7 +25,6 @@ public class PDF_BoardOfDirectors extends Table {
         super(numColumns);
         this.set = set;
         pdfObjectOfficers = (ArrayList<PDF_Object_Officer>) pdfRepository.getOfficersByYear(set.getSelectedYear());
-        pdfObjectOfficers.forEach(System.out::println);
         pdfObjectOfficers.sort(Comparator.comparing(PDF_Object_Officer::getLastName));
         setWidth(set.getPageSize().getWidth() * 0.9f);  // makes table 90% of page width
         setHorizontalAlignment(HorizontalAlignment.CENTER);

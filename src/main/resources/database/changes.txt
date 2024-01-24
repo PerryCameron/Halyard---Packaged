@@ -23,4 +23,4 @@
 - Improved logging for start up of application
 - Key Codes disabled
 - Bug fix: Now has ability to disconnect, and reconnect to another server without closing program.
--
+- Added AddNote button to uncommitted side and fixed to record msId properly
