@@ -37,7 +37,6 @@ public class TabMembership extends Tab {
 				+ model.getMembership().getMembershipInfo()
 				+ getPerson(MemberType.PRIMARY.getCode()).getNameWithInfo()
 		);
-		System.out.println("---test---");
 		////////// OBJECTS /////////////
 
 		var containerVBox = new VBox();

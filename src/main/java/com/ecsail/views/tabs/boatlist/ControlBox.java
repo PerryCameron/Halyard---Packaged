@@ -160,7 +160,6 @@ public class ControlBox extends VBox {
                 Field[] allFields = new Field[fields1.length + fields2.length];
                 Arrays.setAll(allFields, i -> (i < fields1.length ? fields1[i] : fields2[i - fields1.length]));
                 for(Field field: allFields) {
-                    System.out.println(field.getName());
                     field.setAccessible(true);
                     String value = StringTools.returnFieldValueAsString(field, boatListDTO).toLowerCase();
                     if(value.contains(text)) hasMatch = true;

@@ -25,7 +25,6 @@ public class Note {
 	}
 
 	public int addMemoAndReturnId(MemoDTO memoDTOIn) {
-		System.out.println(memoDTOIn);
 		MemoDTO memoDTO = memoRepository.insertMemo(memoDTOIn);
 		memos.add(memoDTO); // add in observable list
 		Collections.sort(memos, Comparator.comparing(MemoDTO::getMemo_id).reversed());

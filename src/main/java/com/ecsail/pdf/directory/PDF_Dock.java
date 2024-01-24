@@ -88,7 +88,6 @@ public class PDF_Dock extends Table {
     }
 
     public void buildDocksClockWise() {
-        //System.out.println("lDocks=" +lDocks);
         for (int i = 0; i < (4 * lDocks); i += 4) {
             addCell(createLeftDock(i));
             addCell(createCenterDock());
@@ -99,7 +98,6 @@ public class PDF_Dock extends Table {
     }
 
     public void buildDocksCounterClockWise() {
-        //System.out.println("lDocks=" +lDocks);
         for (int i = 0; i < (4 * lDocks); i += 4) {
             addCell(createLeftDock(i + 1));
             addCell(createCenterDock());

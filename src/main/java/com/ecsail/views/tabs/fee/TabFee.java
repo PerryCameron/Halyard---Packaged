@@ -146,13 +146,9 @@ public class TabFee extends Tab {
 
         previousYearsFees.forEach(feeDTO -> feeDTO.setFeeYear(Integer.parseInt(selectedYear)));
         feeDTOS.addAll(previousYearsFees);
-//        previousYearsFees.forEach(System.out::println);
         dbInvoiceDTOS.forEach(dbInvoiceDTO -> {
             dbInvoiceDTO.clone(new DbInvoiceDTO(selectedYear));
-            System.out.println(dbInvoiceDTO);
         });
-
-
     }
 
     private void setNewYear(Object newValue) {
@@ -168,11 +164,9 @@ public class TabFee extends Tab {
         if(rows.size() != 0)  // is it a new year with no rows yet?
         selectDesiredFeeRow(fieldName);
         okToWriteToDataBase = true;
-        System.out.println(selectedYear);
     }
     // when switching years this will keep it selected on correct one.
     private void selectDesiredFeeRow(String fieldName) {
-        System.out.println(fieldName);
         boolean rowSelected = false;
         for(FeeRow row: rows) {
             if(row.label.getText().equals(fieldName)) {

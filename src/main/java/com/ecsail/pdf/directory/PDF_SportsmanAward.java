@@ -37,7 +37,6 @@ public class PDF_SportsmanAward extends Table {
 		// removes the duplicates by reference
 		for(Object_Sportsmen m: duplicates) {
 			sportsman.remove(m);
-			//System.out.println(m);
 		}
 
 		
@@ -133,7 +132,6 @@ public class PDF_SportsmanAward extends Table {
 						/////// Found a Match !!  ////////	
 						if(matched.size() == 0) {  // make sure we have put in entries first
 							matched.add(a);  // put in first number
-							//System.out.println("Count A:" + a + " matches " + "Count B:" + b);
 							// change first name to be both the first and last name
 							sportsman.get(a).setfName(sportsman.get(a).getfName() + " " + sportsman.get(a).getlName() + "/" + sportsman.get(b).getfName() + " " + sportsman.get(b).getlName());
 							// change last name to be second person
@@ -143,12 +141,10 @@ public class PDF_SportsmanAward extends Table {
 								if(m == b) matchedPair = true;  // ok we found a duplicate
 							}
 							if(matchedPair) {
-								//System.out.println("we found a duplicate and will remove Count " + a);
 								duplicates.add(sportsman.get(a));
 								matchedPair = false;  // set the flag back to false				
 							} else {
 								matched.add(a);
-								//System.out.println("Count A:" + a + " matches " + "Count B:" + b);
 								// change first name to be both the first and last name
 								sportsman.get(a).setfName(sportsman.get(a).getfName() + " " + sportsman.get(a).getlName() + "/" + sportsman.get(b).getfName() + " " + sportsman.get(b).getlName());
 								// change last name to be second person

@@ -30,12 +30,6 @@ public class JotFormECSC {
                 "","","","","","","","");
         JSONObject answerObject = (JSONObject) formSubmission.get("answers");
 
-//        answerObject.keySet().stream()
-//                .map(key ->  answerObject.get((String) key))
-//                .filter(jsonObj -> jsonObj.keySet).forEach(System.out::println);
-
-
-
         boolean hasAnswer = false;
         for (Object key : answerObject.keySet()) {
             JSONObject x = (JSONObject) answerObject.get((String) key);

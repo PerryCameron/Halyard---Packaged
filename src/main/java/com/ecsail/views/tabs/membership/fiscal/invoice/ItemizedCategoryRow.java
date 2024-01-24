@@ -62,7 +62,6 @@ public class ItemizedCategoryRow extends HBox {
             lineTotal = getLineTotal(feeDTO.getFieldValue(), (Integer) newValue);
             // saves line total as the value
             invoiceItemDTO.setValue(String.valueOf(lineTotal));
-            System.out.println("Item1 " + invoiceItemDTO.getFieldName() + " Is set to " + invoiceItemDTO.getValue());
             // saves value of spinner as QTY
             invoiceItemDTO.setQty((Integer) newValue);
             // calculates lineTotal for all sub items and gives total

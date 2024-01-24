@@ -12,10 +12,7 @@ import javafx.stage.Stage;
 import java.awt.*;
 import java.io.IOException;
 
-import static com.ecsail.HalyardPaths.LOGFILEDIR;
 import static java.awt.Desktop.getDesktop;
-import static java.lang.System.out;
-import static java.util.Calendar.getInstance;
 
 public class LogFile implements Plugin {
     @Override

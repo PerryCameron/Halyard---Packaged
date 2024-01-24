@@ -61,7 +61,6 @@ public class Dialogue_MembershipIdSearch extends Stage {
 
 		submitButton.setOnAction((event) -> {
 			int msid = membershipIdRepository.getMsidFromYearAndMembershipId(comboBox.getValue(), msidTextField.getText());
-			System.out.println(msid);
 			Launcher.createMembershipTabForRoster(Integer.parseInt(msidTextField.getText()), msid);
 		});
 		

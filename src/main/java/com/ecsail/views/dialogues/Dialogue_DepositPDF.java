@@ -105,7 +105,6 @@ public class Dialogue_DepositPDF extends Stage {
 			if (r2.isSelected()) pdfOptions.setSingleDeposit(true);
 			if (!r2.isSelected()) pdfOptions.setSingleDeposit(false);
 			pdfOptions.setDepositNumber(depositDTO.getBatch());
-            System.out.println(pdfOptions);
 			new PDF_DepositReport(td, pdfOptions);  // makes the PDF
 		});
 

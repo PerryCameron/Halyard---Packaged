@@ -64,7 +64,6 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
 			public void onChanged(ListChangeListener.Change<? extends PersonDTO> change) {
 				while (change.next()) {
 					setComboBoxItems();
-					System.out.println("PeopleList changed");
 				}
 			}
 		});

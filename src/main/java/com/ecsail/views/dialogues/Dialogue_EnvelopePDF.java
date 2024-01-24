@@ -77,7 +77,6 @@ public class Dialogue_EnvelopePDF extends Stage implements Builder {
 	private Node createPDFButton() {
 		Button button = new Button("Create Envelope PDF");
 		button.setOnAction(e -> {
-			System.out.println("printOne=" + printOne + " printCatalogue" + printCatalogue);
 			try {
 				new PDF_Envelope(printOne, printCatalogue, membershipId.get());
 			} catch (IOException e1) {

@@ -60,7 +60,6 @@ public class HBoxAddress extends HBox {
         var titledPane2 = new TitledPane();
 
         ///////////////// ATTRIBUTES //////////////////////////
-        System.out.println(parent.getModel().getMembership().getState());
         stateComboBox.setValue(parent.getModel().getMembership().getState());
         hbox1.setSpacing(5);
         hbox2.setSpacing(5);
@@ -147,7 +146,6 @@ public class HBoxAddress extends HBox {
 
         stateComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             MembershipListDTO membershipListDTO = parent.getModel().getMembership();
-            System.out.println(newValue);
             membershipListDTO.setState(newValue);
             parent.getModel().getMembershipRepository().updateMembership(membershipListDTO);
         });

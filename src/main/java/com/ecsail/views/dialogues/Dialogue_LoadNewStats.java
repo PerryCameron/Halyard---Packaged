@@ -47,10 +47,8 @@ public class Dialogue_LoadNewStats extends Stage {
 		
 		vboxBlue.setPadding(new Insets(10, 10, 10, 10));
 		vboxPink.setPadding(new Insets(3, 3, 3, 3)); // spacing to make pink from around table
-//		vboxPink.setId("box-pink");
 		vboxBlue.setId("box-frame-dark");
-		// vboxGrey.setId("slip-box");
-		
+
 		pb.setPrefSize(300, 30);
 		vboxGrey.setPrefHeight(688);
 		vboxGrey.setAlignment(Pos.CENTER);
@@ -86,7 +84,6 @@ public class Dialogue_LoadNewStats extends Stage {
 	    };
 
 	    task.setOnSucceeded(e -> {
-	    	System.out.println("Finished updating Statistics");
 			dataBaseStatisticsRefreshed.set(true);
 			this.close();
 		});

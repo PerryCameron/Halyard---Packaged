@@ -32,7 +32,6 @@ public class InvoiceFooter extends VBox {
     private final CheckBox renewCheckBox = new CheckBox("Renew");
     private final Button buttonCommit;
     private final Button buttonAddNote = new Button("Add Note");
-
     protected final Invoice parent;
     private final InvoiceRepository invoiceRepository;
     public static Logger logger = LoggerFactory.getLogger(InvoiceFooter.class);

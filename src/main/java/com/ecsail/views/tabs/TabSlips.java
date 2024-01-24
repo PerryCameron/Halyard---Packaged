@@ -1,6 +1,7 @@
 package com.ecsail.views.tabs;
 
 
+import com.ecsail.BaseApplication;
 import com.ecsail.Launcher;
 import com.ecsail.pdf.PDF_SlipChart;
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
@@ -25,6 +26,8 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Year;
 import java.util.ArrayList;
@@ -39,6 +42,8 @@ public class TabSlips extends Tab {
 	private final SlipRepository slipRepository = new SlipRepositoryImpl();
 	private final ArrayList<SlipDTO> slipDTOS;
 	private final HashMap<String,Text> slipsHash = new HashMap<>();
+	public static Logger logger = LoggerFactory.getLogger(TabSlips.class);
+
 
 	// starting point for each colume x-axis
 	private final int[] col = { 20,125,280,385,540,643,800,902 };
@@ -415,7 +420,7 @@ public class TabSlips extends Tab {
 
 	private void placeText(int col, int row, String slip) {
 		if(slipsHash.get(slip) == null) {
-			System.out.println("There is no entry in the hash for slip " + slip);
+			logger.info("There is no entry in the hash for slip " + slip);
 		} else {
 			slipsHash.get(slip).setX(col);
 			slipsHash.get(slip).setY(row);

@@ -116,7 +116,6 @@ public class TabPeople extends Tab {
 	            if (! row.isEmpty() && event.getButton()==MouseButton.PRIMARY 
 		                 && event.getClickCount() == 1) {
 		                PersonDTO clickedRow = row.getItem();
-		                createPersonBox(clickedRow);
 		        }
 	        });
 	        return row ;
@@ -128,25 +127,15 @@ public class TabPeople extends Tab {
 		setContent(vboxBlue);
 		
 	}
-	// creates array list of people objects populated from SQL database
 
-	private void createPersonBox(PersonDTO person)  {
-//		MembershipListDTO membership = null;
-//		if(membershipIdRepository.currentMembershipIdExists(person.getMsId())) {
-//		membership = membershipRepository.getMembershipByMsIdAndYear(person.getMsId(), String.valueOf(Year.now().getValue()));
-//		} else {
-//		membership = membershipRepository.getMembershipFromListWithoutMembershipId(person.getMsId());
-//		}
-//		personHBox.getChildren().clear();  // remove if exists
-	}
+
 
 	public PersonDTO getPersonByPid(int pid) {
 		int index = 0;
 		int count = 0;
 		for(PersonDTO person : people) {
 			if(person.getpId() == pid) {
-				//System.out.println("Found pid " + pid);
-				index = count; 
+				index = count;
 			}
 			count++;
 		}
@@ -158,8 +147,7 @@ public class TabPeople extends Tab {
 		int count = 0;
 		for(PersonDTO person : people) {
 			if(person.getpId() == pid) {
-				//System.out.println("Found pid " + pid);
-				index = count; 
+				index = count;
 			}
 			count++;
 		}
@@ -174,14 +162,12 @@ public class TabPeople extends Tab {
 		Matcher m = p.matcher(o.getLastName().toLowerCase());
 		
 			while(m.find()) {
-				//System.out.println(m.group() + " found on row " + count);
 				if(flag) {
 					pick = count;
 					flag = false;
 				}
 			}
 		count++;
-			  //System.out.println(Col5.getCellData(o));
 		}
 		Platform.runLater(() -> {
 			personTableView.requestFocus();
