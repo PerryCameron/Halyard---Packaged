@@ -216,7 +216,7 @@ public class TabForm extends Tab implements Builder {
                     vBox.getChildren().add(subSectionTitleHBox(answerBlock.getText(), "#faebc0"));
             case "control_fullname" , "control_phone", "control_datetime" ->
                     vBox.getChildren().add(coloredHBox(answerBlock.getText() + ": ", answerBlock.getPrettyFormat(),"#d7f8fa",0));
-            case "control_email", "control_textbox", "control_radio","control_dropdown" ->
+            case "control_email", "control_textbox", "control_radio","control_dropdown","control_calculation","control_number" ->
                     vBox.getChildren().add(coloredHBox(answerBlock.getText() + ": ", answerBlock.getAnswer(),"#d7f8fa",0));
             case "control_signature" ->
                     vBox.getChildren().add(imageBox(answerBlock.getText(), answerBlock.getAnswer()));
@@ -238,11 +238,12 @@ public class TabForm extends Tab implements Builder {
         String[] address = answer.split("<br>");
         for (String addressPart : address) {
             HBox lineHbox = new HBox();
+            lineHbox.setAlignment(Pos.CENTER_LEFT);
             String[] parts = addressPart.split(":");
             Label label1 = new Label(parts[0] + ": ");
-            Label label2 = new Label(parts[1]);
-            label2.setStyle("-fx-text-fill: #d7f8fa");
-            lineHbox.getChildren().addAll(label1,label2);
+            TextField textField = new TextField(parts[1]);
+            textField.setStyle("-fx-background-color: transparent; -fx-focus-color: transparent; -fx-text-fill: #d7f8fa;"); // Makes the background transparent
+            lineHbox.getChildren().addAll(label1,textField);
             vBox.getChildren().add(lineHbox);
         }
         containerVBox.getChildren().add(vBox);

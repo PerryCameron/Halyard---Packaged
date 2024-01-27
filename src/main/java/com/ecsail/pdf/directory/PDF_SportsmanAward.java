@@ -38,13 +38,6 @@ public class PDF_SportsmanAward extends Table {
 		for(Object_Sportsmen m: duplicates) {
 			sportsman.remove(m);
 		}
-
-		
-		
-		// sort commodore list by year
-		//Collections.sort(sportsman , Comparator.comparing(Object_Sportsmen::getYear));
-		// remove the current commodore
-
 		// used to know where we are in iterations
 		int count = 0;
 		// number of columns set in settings
@@ -95,7 +88,6 @@ public class PDF_SportsmanAward extends Table {
 		cell.add(tables.get(1));
 		addCell(cell);
 		setHorizontalAlignment(HorizontalAlignment.CENTER);
-		
 	}
 	
 	
