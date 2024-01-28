@@ -100,7 +100,9 @@ public class TabFormList extends Tab implements Builder {
 
     private Node getControls() {
         HBox hBox = new HBox();
-        String[] items = {"Active", "Archive", "All"};
+        Label label = new Label("Display Results: ");
+        hBox.setAlignment(Pos.CENTER_LEFT);
+        String[] items = {"Active", "Archive", "Deleted", "All"};
         ComboBox<String> comboBox = new ComboBox<>();
         comboBox.getItems().addAll(items);
         comboBox.setValue("Active");
@@ -110,11 +112,12 @@ public class TabFormList extends Tab implements Builder {
                 case "Archive" -> filter="ARCHIVED";
                 case "All" -> filter="ALL";
                 case "Active" -> filter="ACTIVE";
+                case "Deleted" -> filter="DELETED";
             }
             System.out.println("Selected Item: " + selectedItem);
             // Add additional actions you want to perform when an item is selected
         });
-        hBox.getChildren().add(comboBox);
+        hBox.getChildren().addAll(label, comboBox);
         return hBox;
     }
 
