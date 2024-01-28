@@ -37,6 +37,8 @@ import java.util.HashMap;
 public class TabForm extends Tab implements Builder {
 
     public static Logger logger = LoggerFactory.getLogger(TabForm.class);
+
+    private final String filter;
     private AppSettingsRepository appSettingsRepository;
     private SettingsRepository settingsRepository;
     private JotForm client;
@@ -50,13 +52,15 @@ public class TabForm extends Tab implements Builder {
     private FormSubmissionsPOJO formSubmissionsPOJO;
 
 
-    public TabForm(JotFormsDTO jotFormsDTO) {
+    public TabForm(JotFormsDTO jotFormsDTO, String filter) {
         this.appSettingsRepository = new AppSettingsRepositoryImpl();
         this.settingsRepository = new SettingsRepositoryImpl();
         this.jotFormsDTO = jotFormsDTO;  // this is DTO that hold general info for A form
+        this.filter = filter;
         this.jotFormSettingsDTOS = (ArrayList<JotFormSettingsDTO>) settingsRepository.getJotFormSettings(jotFormsDTO.getId());  // setting for each choice in form
         this.client = new JotForm(appSettingsRepository.getApiKeyByName("Jotform API").getKey());
         this.formSubmissionsPOJO = convertJsonToPojo();
+
         this.setText(getTabText());
         setContent(build());
     }
@@ -97,7 +101,7 @@ public class TabForm extends Tab implements Builder {
         FormSubmissionsPOJO formSubmissionsPOJO = new FormSubmissionsPOJO();
         String[] displayItems = getSelectedItems();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        parameters.put("status", "ACTIVE");
+        setParameters();
         JSONObject formSubmissions = client.getFormSubmissions(jotFormsDTO.getId(), "0", "350", parameters, "created_at");
         JsonNode neoJsonNode = Json.getJsonNodeFromJsonObject(formSubmissions);
         if(neoJsonNode.has("responseCode"))  formSubmissionsPOJO.setResponseCode(neoJsonNode.get("responseCode").asInt());
@@ -159,6 +163,11 @@ public class TabForm extends Tab implements Builder {
         }
         formSubmissions.clear();
         return formSubmissionsPOJO;
+    }
+
+    private void setParameters() {
+        if(!filter.equals("ALL"))
+        parameters.put("status", filter);
     }
 
     private String[] getSelectedItems() {

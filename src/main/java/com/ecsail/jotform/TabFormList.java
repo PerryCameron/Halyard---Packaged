@@ -46,6 +46,7 @@ public class TabFormList extends Tab implements Builder {
     private Label archivedLabel = new Label("Archived: None");
     private Label urlLabel = new Label("URL: ");
     private Hyperlink hyperlink = new Hyperlink("None");
+    private String filter;
 
     public TabFormList(String text, TabPane tabPane) {
         super(text);
@@ -92,9 +93,29 @@ public class TabFormList extends Tab implements Builder {
         idLabel.setStyle("-fx-background-color: transparent; -fx-focus-color: transparent; -fx-text-fill: white;"); // Makes the background transparent
         setFormChangeListener();
 		vBox.getChildren().addAll(createTitle(), createId() ,statusLabel, createLink() ,createdLabel,updatedLabel,lastSubmissionLabel,
-				newLabel, favoriteLabel, archivedLabel,submissionsLabel, typeLabel);
+				newLabel, favoriteLabel, archivedLabel,submissionsLabel, typeLabel, getControls());
         vBox.setPrefWidth(340);
         return vBox;
+    }
+
+    private Node getControls() {
+        HBox hBox = new HBox();
+        String[] items = {"Active", "Archive", "All"};
+        ComboBox<String> comboBox = new ComboBox<>();
+        comboBox.getItems().addAll(items);
+        comboBox.setValue("Active");
+        comboBox.setOnAction(event -> {
+            String selectedItem = comboBox.getValue();
+            switch (selectedItem) {
+                case "Archive" -> filter="ARCHIVED";
+                case "All" -> filter="ALL";
+                case "Active" -> filter="ACTIVE";
+            }
+            System.out.println("Selected Item: " + selectedItem);
+            // Add additional actions you want to perform when an item is selected
+        });
+        hBox.getChildren().add(comboBox);
+        return hBox;
     }
 
     private Node createTitle() {
@@ -200,5 +221,9 @@ public class TabFormList extends Tab implements Builder {
 
     public TabPane getMainTabPane() {
         return tabPane;
+    }
+
+    public String getFilter() {
+        return filter;
     }
 }

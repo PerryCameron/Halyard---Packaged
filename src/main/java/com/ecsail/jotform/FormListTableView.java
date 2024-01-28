@@ -26,7 +26,7 @@ public class FormListTableView extends TableView<JotFormsDTO> implements Builder
             TableRow<JotFormsDTO> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                    Tab tab = new TabForm(row.getItem());
+                    Tab tab = new TabForm(row.getItem(), parent.getFilter());
                     parent.getMainTabPane().getTabs().add(tab);
                     parent.getMainTabPane().getSelectionModel().select(tab);
                 }
