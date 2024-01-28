@@ -1,7 +1,6 @@
 package com.ecsail.jotform;
 
 import com.ecsail.jotform.structures.FormInfoDTO;
-import com.ecsail.jotform.structures.TabForm;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;

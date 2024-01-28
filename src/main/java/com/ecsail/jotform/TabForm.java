@@ -1,8 +1,8 @@
-package com.ecsail.jotform.structures;
+package com.ecsail.jotform;
 
-import com.ecsail.jotform.FormTableView;
-import com.ecsail.jotform.JotForm;
-import com.ecsail.jotform.Json;
+import com.ecsail.jotform.structures.FormInfoDTO;
+import com.ecsail.jotform.structures.JotFormSettingsDTO;
+import com.ecsail.jotform.structures.JotFormsDTO;
 import com.ecsail.jotform.structures.submissions.AnswerBlockPOJO;
 import com.ecsail.jotform.structures.submissions.ContentPOJO;
 import com.ecsail.jotform.structures.submissions.FormSubmissionsPOJO;

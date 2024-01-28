@@ -1,7 +1,6 @@
 package com.ecsail.jotform;
 
 import com.ecsail.jotform.structures.JotFormsDTO;
-import com.ecsail.jotform.structures.TabForm;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
