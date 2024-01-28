@@ -1,6 +1,6 @@
 package com.ecsail.jotform.structures;
 
-public class ResultSetPOJO {
+public class ResultSetDTO {
           int offset;
           int limit;
           int count;

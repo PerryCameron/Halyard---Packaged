@@ -2,9 +2,7 @@ package com.ecsail.jotform.structures;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
-
-public class ContentPOJO {
+public class ContentDTO {
         private long id;
         @JsonProperty(value = "form_id")
         String formId;

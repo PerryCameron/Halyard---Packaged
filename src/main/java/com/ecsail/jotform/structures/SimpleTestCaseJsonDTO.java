@@ -1,6 +1,6 @@
 package com.ecsail.jotform.structures;
 
-public class SimpleTestCaseJsonPOJO {
+public class SimpleTestCaseJsonDTO {
 
     private String title;
 

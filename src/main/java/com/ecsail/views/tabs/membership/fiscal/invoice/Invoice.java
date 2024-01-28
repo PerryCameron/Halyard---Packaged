@@ -46,7 +46,6 @@ public class Invoice extends HBox {
     protected ObservableList<InvoiceItemDTO> items;
     private InvoiceRepository invoiceRepository = new InvoiceRepositoryImpl();
     private MembershipIdRepository membershipIdRepository = new MembershipIdRepositoryImpl();
-
     private TabMembership tabMembership;
 
     public Invoice(HBoxInvoiceList parent, int index) {
@@ -173,7 +172,6 @@ public class Invoice extends HBox {
         }
         return selectedFee;
     }
-
 
     private ObservableList<PaymentDTO> getPayment() {
         // check to see if invoice record exists

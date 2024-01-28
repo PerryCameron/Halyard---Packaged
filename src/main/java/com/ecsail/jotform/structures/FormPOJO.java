@@ -9,8 +9,8 @@ public class FormPOJO {
     @JsonProperty(value = "limit-left")
     int limitLeft;
     private String message;
-    List<ContentPOJO> content;
-    ResultSetPOJO resultSet;
+    List<ContentDTO> content;
+    ResultSetDTO resultSet;
     int responseCode;
 
     public String getDuration() {
@@ -37,19 +37,19 @@ public class FormPOJO {
         this.message = message;
     }
 
-    public List<ContentPOJO> getContent() {
+    public List<ContentDTO> getContent() {
         return content;
     }
 
-    public void setContent(List<ContentPOJO> content) {
+    public void setContent(List<ContentDTO> content) {
         this.content = content;
     }
 
-    public ResultSetPOJO getResultSet() {
+    public ResultSetDTO getResultSet() {
         return resultSet;
     }
 
-    public void setResultSet(ResultSetPOJO resultSet) {
+    public void setResultSet(ResultSetDTO resultSet) {
         this.resultSet = resultSet;
     }
 
