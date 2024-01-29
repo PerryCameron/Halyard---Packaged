@@ -46,7 +46,7 @@ public class TabFormList extends Tab implements Builder {
     private Label archivedLabel = new Label("Archived: None");
     private Label urlLabel = new Label("URL: ");
     private Hyperlink hyperlink = new Hyperlink("None");
-    private String filter;
+    private String filter = "ACTIVE";
 
     public TabFormList(String text, TabPane tabPane) {
         super(text);
@@ -114,8 +114,6 @@ public class TabFormList extends Tab implements Builder {
                 case "Active" -> filter="ACTIVE";
                 case "Deleted" -> filter="DELETED";
             }
-            System.out.println("Selected Item: " + selectedItem);
-            // Add additional actions you want to perform when an item is selected
         });
         hBox.getChildren().addAll(label, comboBox);
         return hBox;

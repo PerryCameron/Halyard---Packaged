@@ -111,6 +111,7 @@ public class JotForm {
 
                     for (String key : keys) {
                         parameters.add(new BasicNameValuePair(key, params.get(key)));
+                        System.out.println("key=" + key + " value=" + params.get(key));
                     }
 
                     UrlEncodedFormEntity entity = new UrlEncodedFormEntity(parameters, "UTF-8");
@@ -611,6 +612,7 @@ public class JotForm {
                 parameters.put("submission[" + key.substring(0, key.indexOf("_")) + "][" + key.substring(key.indexOf("_") + 1) + "]", submission.get(key));
             } else {
                 parameters.put("submission[" + key + "]", submission.get(key));
+                System.out.println("Creating submission[" + key + "]");
             }
         }
 

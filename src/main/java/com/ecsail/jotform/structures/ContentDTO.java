@@ -33,4 +33,12 @@ public class ContentDTO {
         public void setAnswers(AnswersDTO answers) {
                 this.answers = answers;
         }
+
+        public String getStatus() {
+                return status;
+        }
+
+        public void setStatus(String status) {
+                this.status = status;
+        }
 }

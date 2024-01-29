@@ -11,6 +11,7 @@ import com.ecsail.repository.implementations.SettingsRepositoryImpl;
 import com.ecsail.repository.interfaces.AppSettingsRepository;
 import com.ecsail.repository.interfaces.SettingsRepository;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -51,11 +52,15 @@ public class TabForm extends Tab implements Builder {
     private ArrayList<JotFormSettingsDTO> jotFormSettingsDTOS;
     private FormSubmissionsPOJO formSubmissionsPOJO;
 
+    private ContentPOJO formContent;
+
 
     public TabForm(JotFormsDTO jotFormsDTO, String filter) {
         this.appSettingsRepository = new AppSettingsRepositoryImpl();
         this.settingsRepository = new SettingsRepositoryImpl();
         this.jotFormsDTO = jotFormsDTO;  // this is DTO that hold general info for A form
+        System.out.println(jotFormsDTO.getId());
+        System.out.println(jotFormsDTO.getStatus());
         this.filter = filter;
         this.jotFormSettingsDTOS = (ArrayList<JotFormSettingsDTO>) settingsRepository.getJotFormSettings(jotFormsDTO.getId());  // setting for each choice in form
         this.client = new JotForm(appSettingsRepository.getApiKeyByName("Jotform API").getKey());
@@ -186,14 +191,14 @@ public class TabForm extends Tab implements Builder {
 
     public void fillForm(long id) {
         jotFormSettingsDTOS.sort(Comparator.comparingInt(JotFormSettingsDTO::getAnswerOrder));
-        ContentPOJO content = formSubmissionsPOJO.getContent().stream().filter(contentPOJO -> contentPOJO.getId() == id).findFirst().orElse(null);
-        vBox.getChildren().add(printFormHeader(content));
+        this.formContent = formSubmissionsPOJO.getContent().stream().filter(contentPOJO -> contentPOJO.getId() == id).findFirst().orElse(null);
+        vBox.getChildren().add(printFormHeader(formContent));
         jotFormSettingsDTOS.stream().forEach(setting -> {
             int answerKey = 0;
             if (setting.getAnswerOrder() != 0)  // if there is an order determined for this
                 answerKey = setting.getAnswerNumber();
             if (answerKey != 0) // we want to print all that have an answer number
-                printValue(content.getAnswers().get(answerKey), setting);
+                printValue(formContent.getAnswers().get(answerKey), setting);
             else {
                 if (setting.getAnswerType().equals("section_title")) // we also want to print headings
                     printValue(null, setting);
@@ -208,13 +213,13 @@ public class TabForm extends Tab implements Builder {
         vBox.setPadding(new Insets(5,5,5,5));
         HBox.setHgrow(vBox,Priority.ALWAYS);
         vBox.setStyle("-fx-background-color: #383732; -fx-border-color: black; -fx-border-width: 2px;");
-        vBox.getChildren().add(coloredHBox("Id: ", String.valueOf(content.getId()),"#d7f8fa",0));
-        vBox.getChildren().add(coloredHBox("Created: ", String.valueOf(content.getCreatedAt()),"#d7f8fa",0));
-        vBox.getChildren().add(coloredHBox("Status: ", content.getStatus(),"#d7f8fa",0));
-        vBox.getChildren().add(coloredHBox("New: ", String.valueOf(content.isNewForm()),"#d7f8fa",0));
-        vBox.getChildren().add(coloredHBox("Flagged: ", String.valueOf(content.isFlag()),"#d7f8fa",0));
-        vBox.getChildren().add(coloredHBox("Updated At: ", String.valueOf(content.getUpdatedAt()),"#d7f8fa",0));
-        vBox.getChildren().add(coloredHBox("Notes: ", String.valueOf(content.getNotes()),"#d7f8fa",0));
+        vBox.getChildren().add(coloredHBox("Id: ", String.valueOf(content.getId()),"#d7f8fa",0, false));
+        vBox.getChildren().add(coloredHBox("Created: ", String.valueOf(content.getCreatedAt()),"#d7f8fa",0, false));
+        vBox.getChildren().add(coloredHBox("Status: ", content.getStatus(),"#d7f8fa",0, true));
+        vBox.getChildren().add(coloredHBox("New: ", String.valueOf(content.isNewForm()),"#d7f8fa",0, false));
+        vBox.getChildren().add(coloredHBox("Flagged: ", String.valueOf(content.isFlag()),"#d7f8fa",0, false));
+        vBox.getChildren().add(coloredHBox("Updated At: ", String.valueOf(content.getUpdatedAt()),"#d7f8fa",0, false));
+        vBox.getChildren().add(coloredHBox("Notes: ", String.valueOf(content.getNotes()),"#d7f8fa",0, false));
         return vBox;
     }
 
@@ -224,9 +229,9 @@ public class TabForm extends Tab implements Builder {
 //                    vBox.getChildren().add(coloredHBox("-", answerBlock.getText(),"#faebc0",20));
                     vBox.getChildren().add(subSectionTitleHBox(answerBlock.getText(), "#faebc0"));
             case "control_fullname" , "control_phone", "control_datetime" ->
-                    vBox.getChildren().add(coloredHBox(answerBlock.getText() + ": ", answerBlock.getPrettyFormat(),"#d7f8fa",0));
+                    vBox.getChildren().add(coloredHBox(answerBlock.getText() + ": ", answerBlock.getPrettyFormat(),"#d7f8fa",0, false));
             case "control_email", "control_textbox", "control_radio","control_dropdown","control_calculation","control_number" ->
-                    vBox.getChildren().add(coloredHBox(answerBlock.getText() + ": ", answerBlock.getAnswer(),"#d7f8fa",0));
+                    vBox.getChildren().add(coloredHBox(answerBlock.getText() + ": ", answerBlock.getAnswer(),"#d7f8fa",0, false));
             case "control_signature" ->
                     vBox.getChildren().add(imageBox(answerBlock.getText(), answerBlock.getAnswer()));
             case "control_address" ->
@@ -292,7 +297,7 @@ public class TabForm extends Tab implements Builder {
         return hBox;
     }
 
-    private Node coloredHBox(String key, String value, String color, double top) {
+    private Node coloredHBox(String key, String value, String color, double top, boolean addControl) {
             if(value != null) {
                 HBox hBox = new HBox();
                 hBox.setPadding(new Insets(top, 0, 10, 0));
@@ -304,10 +309,69 @@ public class TabForm extends Tab implements Builder {
                 textField.setBorder(null); // Removes the border
                 textField.setStyle("-fx-background-color: transparent; -fx-focus-color: transparent; -fx-text-fill: " + color + ";"); // Makes the background transparent
                 hBox.getChildren().addAll(keyLabel, textField);
+                if(addControl) hBox.getChildren().add(setButton(textField));
                 return hBox;
             }
             else return new Region();
     }
+
+    private Node setButton(TextField textField) {
+        System.out.println("New form" + formContent.getId());
+        System.out.println("status: " + formContent.getStatus());
+        boolean changed = false;
+        Button button = new Button();
+        switch (formContent.getStatus()) {
+            case "ACTIVE" -> {
+                button.setText("Set to Archived");
+                formContent.setStatus("ARCHIVED");
+                changed = true;
+            }
+            case "ARCHIVED" -> {
+                button.setText("Set to Active");
+                formContent.setStatus("ACTIVE");
+                changed = true;
+            }
+        }
+        button.setOnAction(event -> {
+            HashMap<String, String> hashMap = new HashMap<>();
+            if(formContent.getStatus().equals("ACTIVE")) hashMap.put("status", "ARCHIVED");
+            else hashMap.put("status", "ACTIVE");
+
+            if(updateSuccessful(client.editSubmission(formContent.getId(), hashMap))) {
+                if(formContent.getStatus().equals("ARCHIVED")) {
+                    button.setText("Set to Active");
+                } else {
+                    button.setText("Set to Archive");
+                }
+                textField.setText(formContent.getStatus());
+            } else {
+                if(formContent.getStatus().equals("ARCHIVED")) formContent.setStatus("ACTIVE");
+                logger.error("Unable to update form status");
+            }
+        });
+        if(changed) return button;
+        else return new Label("No Action available");
+    }
+
+    private boolean updateSuccessful(JSONObject jsonObject) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            // Convert JSONObject to JsonNode
+            JsonNode rootNode = mapper.readTree(jsonObject.toString());
+            // Get the responseCode
+            int responseCode = rootNode.path("responseCode").asInt();
+            String message = rootNode.path("message").asText();
+            logger.info(responseCode + " " + message);
+            if(responseCode == 200)
+            return true;
+            else return false;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     private Node sectionTitleHBox(String title, String color) {
         HBox hBox = new HBox();

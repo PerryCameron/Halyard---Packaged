@@ -245,7 +245,9 @@ public class InvoiceItemRow extends HBox {
              * all the rows using this for loop -> for (InvoiceItemDTO i : parent.items) {
              * There is a binding in invoice that relates closely to how this works.
              */
+            System.out.println("updating balance");
             for (String key : parent.invoiceItemMap.keySet()) {  // This only adds the invoiceItem that are categories
+                System.out.println("key=" + key + " " + "value=" + parent.invoiceItemMap.get(key));
                 // check if is a category (has a matching dbInvoiceDTO)
                 if (parent.invoiceItemMap.get(key).invoiceItemDTO.isCredit()) {
                     credit = credit.add(new BigDecimal(parent.invoiceItemMap.get(key).invoiceItemDTO.getValue()));
@@ -350,4 +352,19 @@ public class InvoiceItemRow extends HBox {
         return dbInvoiceDTO;
     }
 
+    @Override
+    public String toString() {
+        String value = "";
+        value += "InvoiceItemRow{";
+        if (price != null)
+            value += "price=" + price.getText();
+        if (rowTotal != null)
+            value += ", rowTotal=" + rowTotal.getText();
+        if (textField != null)
+            value += ", textField=" + textField.getText();
+        if(spinner != null)
+            value += ", spinner=" + spinner.getValue();
+        value += "} ";
+        return value;
+    }
 }

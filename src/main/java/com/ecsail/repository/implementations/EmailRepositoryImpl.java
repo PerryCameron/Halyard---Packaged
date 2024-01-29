@@ -146,7 +146,6 @@ public class EmailRepositoryImpl implements EmailRepository {
                 "INNER JOIN membership_id id ON id.ms_id = m.ms_id " +
                 "WHERE id.fiscal_year = ? AND id.renew = true " +
                 "ORDER BY id.membership_id";
-
         return template.query(sql, new EmailInformationRowMapper(), String.valueOf(Year.now().getValue()));
     }
 
