@@ -88,7 +88,6 @@ public class FeeTableView extends TableView<FeeDTO> {
                     FeeDTO clickedRow = row.getItem();
                     parent.parent.selectedFeeRow.selectedFee = clickedRow;
                     parent.getTabFee().getDuesLineChart().refreshChart(clickedRow.getDescription());
-                    System.out.println(clickedRow);
                 }
             });
             return row;

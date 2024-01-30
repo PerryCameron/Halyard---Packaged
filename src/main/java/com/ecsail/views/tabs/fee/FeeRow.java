@@ -41,14 +41,11 @@ public class FeeRow extends HBox {
     private void setRadioButtonListener() {
         radioButton.selectedProperty().addListener((obs, wasPreviouslySelected, isNowSelected) -> {
             if (isNowSelected) {
-//                System.out.println(dbInvoiceDTO);
                 parent.okToWriteToDataBase = false;
                 parent.selectedFeeRow = this;
                 parent.feeEditControls.refreshData();
                 parent.okToWriteToDataBase = true;
                 this.selectedFee = deriveSelectedFee();
-//                System.out.println("selectedFee= " + selectedFee);
-//                System.out.println("fees.size()= " + fees.size());
             }
         });
     }

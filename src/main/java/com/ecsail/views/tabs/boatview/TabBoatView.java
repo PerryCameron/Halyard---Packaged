@@ -183,7 +183,6 @@ public class TabBoatView extends Tab {
             boolean success = false;
             if (db.hasFiles()) {
                 String srcPath = db.getFiles().get(0).getAbsolutePath();
-                System.out.println("Saving image");
                 saveImage(srcPath);
             }
             event.setDropCompleted(success);

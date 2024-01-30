@@ -59,8 +59,6 @@ public class TabForm extends Tab implements Builder {
         this.appSettingsRepository = new AppSettingsRepositoryImpl();
         this.settingsRepository = new SettingsRepositoryImpl();
         this.jotFormsDTO = jotFormsDTO;  // this is DTO that hold general info for A form
-        System.out.println(jotFormsDTO.getId());
-        System.out.println(jotFormsDTO.getStatus());
         this.filter = filter;
         this.jotFormSettingsDTOS = (ArrayList<JotFormSettingsDTO>) settingsRepository.getJotFormSettings(jotFormsDTO.getId());  // setting for each choice in form
         this.client = new JotForm(appSettingsRepository.getApiKeyByName("Jotform API").getKey());
@@ -192,8 +190,6 @@ public class TabForm extends Tab implements Builder {
     public void fillForm(long id) {
         jotFormSettingsDTOS.sort(Comparator.comparingInt(JotFormSettingsDTO::getAnswerOrder));
         this.formContent = formSubmissionsPOJO.getContent().stream().filter(contentPOJO -> contentPOJO.getId() == id).findFirst().orElse(null);
-        System.out.println("content size " + formSubmissionsPOJO.getContent().size());
-        System.out.println(formContent);
         vBox.getChildren().add(printFormHeader(formContent));
         jotFormSettingsDTOS.stream().forEach(setting -> {
             int answerKey = 0;

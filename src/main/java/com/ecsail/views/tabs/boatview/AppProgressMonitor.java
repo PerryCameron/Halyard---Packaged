@@ -29,7 +29,6 @@ public class AppProgressMonitor implements SftpProgressMonitor {
                 return true;
             }
             percent = this.count * 100 / max;
-            System.out.println((int) this.count);
 //            monitor.setNote("Completed " + this.count + "(" + percent + "%) out of " + max + ".");
 //            monitor.setProgress((int) this.count);
 //            return !(monitor.isCanceled());
