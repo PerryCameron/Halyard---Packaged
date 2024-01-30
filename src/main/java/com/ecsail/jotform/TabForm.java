@@ -192,6 +192,8 @@ public class TabForm extends Tab implements Builder {
     public void fillForm(long id) {
         jotFormSettingsDTOS.sort(Comparator.comparingInt(JotFormSettingsDTO::getAnswerOrder));
         this.formContent = formSubmissionsPOJO.getContent().stream().filter(contentPOJO -> contentPOJO.getId() == id).findFirst().orElse(null);
+        System.out.println("content size " + formSubmissionsPOJO.getContent().size());
+        System.out.println(formContent);
         vBox.getChildren().add(printFormHeader(formContent));
         jotFormSettingsDTOS.stream().forEach(setting -> {
             int answerKey = 0;
@@ -316,41 +318,50 @@ public class TabForm extends Tab implements Builder {
     }
 
     private Node setButton(TextField textField) {
-        System.out.println("New form" + formContent.getId());
-        System.out.println("status: " + formContent.getStatus());
         boolean changed = false;
         Button button = new Button();
         switch (formContent.getStatus()) {
             case "ACTIVE" -> {
                 button.setText("Set to Archived");
-                formContent.setStatus("ARCHIVED");
+                setActiveListener(button, textField);
                 changed = true;
             }
             case "ARCHIVED" -> {
                 button.setText("Set to Active");
-                formContent.setStatus("ACTIVE");
+                setArchivedListener(button, textField);
                 changed = true;
             }
         }
+        if(changed) return button;
+        else return new Label("No Action available");
+    }
+
+    private void setArchivedListener(Button button, TextField textField) {
         button.setOnAction(event -> {
             HashMap<String, String> hashMap = new HashMap<>();
-            if(formContent.getStatus().equals("ACTIVE")) hashMap.put("status", "ARCHIVED");
-            else hashMap.put("status", "ACTIVE");
-
+            hashMap.put("status", "ACTIVE");
             if(updateSuccessful(client.editSubmission(formContent.getId(), hashMap))) {
-                if(formContent.getStatus().equals("ARCHIVED")) {
-                    button.setText("Set to Active");
-                } else {
-                    button.setText("Set to Archive");
-                }
+                button.setText("Set to Archived");
+                formContent.setStatus("ACTIVE");
                 textField.setText(formContent.getStatus());
             } else {
-                if(formContent.getStatus().equals("ARCHIVED")) formContent.setStatus("ACTIVE");
                 logger.error("Unable to update form status");
             }
         });
-        if(changed) return button;
-        else return new Label("No Action available");
+    }
+
+    private void setActiveListener(Button button, TextField textField) {
+        button.setOnAction(event -> {
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("status", "ARCHIVED");
+            if(updateSuccessful(client.editSubmission(formContent.getId(), hashMap))) {
+                button.setText("Set to Active");
+                formContent.setStatus("ARCHIVED");
+                textField.setText(formContent.getStatus());
+            } else {
+                logger.error("Unable to update form status");
+            }
+        });
     }
 
     private boolean updateSuccessful(JSONObject jsonObject) {

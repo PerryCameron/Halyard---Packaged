@@ -28,6 +28,7 @@ public class FormTableView extends TableView<FormInfoDTO> implements Builder {
                 if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
                     parent.getvBox().getChildren().clear();
                     parent.fillForm(row.getItem().getFormId());
+                    System.out.println("row.getItem().getFormId(): " + row.getItem().getFormId());
                 }
             });
             return row;

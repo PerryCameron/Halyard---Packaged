@@ -24,3 +24,8 @@
 - Key Codes disabled
 - Bug fix: Now has ability to disconnect, and reconnect to another server without closing program.
 - Added AddNote button to uncommitted side and fixed to record msId properly
+
+1.1.25
+- Cleaned up a bunch of System.out test statements
+- Added more jotform functionality
+- Added comboBox to jotform to view by status
