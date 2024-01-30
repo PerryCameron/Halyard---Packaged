@@ -318,22 +318,20 @@ public class TabForm extends Tab implements Builder {
     }
 
     private Node setButton(TextField textField) {
-        boolean changed = false;
         Button button = new Button();
         switch (formContent.getStatus()) {
             case "ACTIVE" -> {
                 button.setText("Set to Archived");
                 setActiveListener(button, textField);
-                changed = true;
+                return button;
             }
             case "ARCHIVED" -> {
                 button.setText("Set to Active");
                 setArchivedListener(button, textField);
-                changed = true;
+                return button;
             }
         }
-        if(changed) return button;
-        else return new Label("No Action available");
+        return new Label("No Action available");
     }
 
     private void setArchivedListener(Button button, TextField textField) {

@@ -29,3 +29,4 @@
 - Cleaned up a bunch of System.out test statements
 - Added more jotform functionality
 - Added comboBox to jotform to view by status
+- Can move a formed from Active to Archived
