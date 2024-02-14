@@ -43,6 +43,7 @@ public class VboxDepositControls extends VBox {
     private final HBox hboxDepositRecords = new HBox();
     private final Button newDepositButton = new Button("New Deposit");
     private final Button insertInvoicesButton = new Button("Insert New Invoices");
+    private final Button printPdfButton = new Button("Print PDF");
 
     public VboxDepositControls(TabDeposits tabDeposits) {
         this.parent = tabDeposits;
@@ -74,7 +75,7 @@ public class VboxDepositControls extends VBox {
                 ,"Show Last");
         this.comboBox = new ComboBox<>(options);
 
-        var printPdfButton = new Button("Print PDF");
+
         batchSpinner = new Spinner<>();
 
         controlsHBox.setPadding(new Insets(5, 5, 5, 5));
@@ -230,12 +231,12 @@ public class VboxDepositControls extends VBox {
         });
 
         printPdfButton.setOnAction((event) -> {
-            switch (comboBox.getValue()) {
-                case "Show All" -> new Dialogue_DepositPDF(tabDeposits, true);
-                case "Show Current" -> // Show Last always comes back to Show Current after the switch
+//            switch (comboBox.getValue()) {
+//                case "Show All" -> new Dialogue_DepositPDF(tabDeposits, true);
+//                case "Show Current" -> // Show Last always comes back to Show Current after the switch
                         new PDF_DepositReport(parent, new DepositPDFDTO(true,
                                 true,true, getCorrectBatch()));
-            }
+//            }
         });
 
         VBox.setVgrow(vboxBlue, Priority.ALWAYS);
@@ -295,6 +296,8 @@ public class VboxDepositControls extends VBox {
                 newDepositButton.setManaged(true);
                 insertInvoicesButton.setVisible(false);
                 insertInvoicesButton.setManaged(false);
+                printPdfButton.setVisible(false);
+                printPdfButton.setManaged(false);
             }
             case "Show Current" -> { // Show Last always comes back to Show Current after the switch
                 hboxDepositRecords.setVisible(false);
@@ -302,6 +305,8 @@ public class VboxDepositControls extends VBox {
                 newDepositButton.setManaged(false);
                 insertInvoicesButton.setVisible(true);
                 insertInvoicesButton.setManaged(true);
+                printPdfButton.setVisible(true);
+                printPdfButton.setManaged(true);
             }
         }
         refreshInvoiceNumber();
