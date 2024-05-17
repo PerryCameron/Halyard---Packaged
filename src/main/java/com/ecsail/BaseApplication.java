@@ -63,7 +63,7 @@ public class BaseApplication extends Application implements Log {
 
     public static void main(String[] args) {
         setUpForFirstTime();
-        startFileLogger();
+//        startFileLogger();
         logger.info("Starting Halyard: Version " + getAppVersion());
         loadProperties();
         launch(args);

@@ -220,7 +220,6 @@ public class ControlBox extends VBox {
             parent.rosterTableView.sort();
         });
     }
-    
 
     protected void makeListByRadioButtonChoice()  {
         parent.rosters.clear();
