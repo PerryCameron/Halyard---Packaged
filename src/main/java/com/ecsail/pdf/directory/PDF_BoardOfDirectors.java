@@ -39,7 +39,7 @@ public class PDF_BoardOfDirectors extends Table {
         addCell(cell);
 
         cell = new Cell();
-        cell.add(new Paragraph("\n\n\n"));
+        cell.add(new Paragraph("\n"));
         cell.setBorder(Border.NO_BORDER);
         addCell(cell);
 
@@ -47,6 +47,7 @@ public class PDF_BoardOfDirectors extends Table {
         cell.setBorder(Border.NO_BORDER);
         Paragraph p = new Paragraph("©Eagle Creek Sailing club 1969-" + set.getSelectedYear() + " - This directory may not be used for commercial purposes");
         p.setTextAlignment(TextAlignment.CENTER);
+        p.setFontSize(8);  // Set the desired font size here
         cell.add(p);
         addCell(cell);
     }
@@ -101,13 +102,17 @@ public class PDF_BoardOfDirectors extends Table {
         addOfficerToTable(chairTable, "RA");
 
         addOfficerToTable(chairTable, "AR");
+        addOfficerToTable(chairTable, "SK");
 //		addOfficerToTable(chairTable, "AR");
         addOfficerToTable(chairTable, "SM");
         addOfficerToTable(chairTable, "JP");
-        addOfficerToTable(chairTable, "AJ");
+//        addOfficerToTable(chairTable, "AJ");
         addOfficerToTable(chairTable, "SO");
         addOfficerToTable(chairTable, "SA");
-
+        addOfficerToTable(chairTable, "GC");
+        addOfficerToTable(chairTable, "AG");
+        addOfficerToTable(chairTable, "TE");
+        addOfficerToTable(chairTable, "AT");
         return chairTable;
     }
 

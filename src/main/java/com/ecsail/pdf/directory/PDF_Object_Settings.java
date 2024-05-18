@@ -54,7 +54,7 @@ public class PDF_Object_Settings {
 		this.mainColor = new DeviceCmyk(0.18f, .5f, 0f, 0.24f);  // blue color in document 2024
 		this.dockColor  = new DeviceRgb(237, 237, 237);
 		this.emailColor = new Style().setFontColor(ColorConstants.BLUE);
-		this.numberOfRowsByNumber = 29;
+		this.numberOfRowsByNumber = 28; // this needs to go up to 29 when you get more memberships
 		this.numberOfCommodoreColumes = 2;
 		this.width = 5.5f;
 		this.height = 8.5f;

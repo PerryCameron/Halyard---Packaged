@@ -42,7 +42,7 @@ public class PDF_MembersByNumber {
 		int numberOfPdfPages = numberOfColumnTables / 5;
 		// if there are any straggler columns then we will create another page
 //		if(numberOfColumnTables % 5 > 0) numberOfPdfPages++;  // commented this out because filled membership caused issue 10/31/2023
-		
+
 		
 		Table columnTable;
 		/// creates many column tables
@@ -77,6 +77,7 @@ public class PDF_MembersByNumber {
 			table.setHorizontalAlignment(HorizontalAlignment.CENTER);
 			doc.add(table);
 			doc.add(createPage(i));
+			System.out.println("created page " + i);
 			doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 		}
 	}
