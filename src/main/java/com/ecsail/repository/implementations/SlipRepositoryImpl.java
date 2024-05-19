@@ -3,11 +3,13 @@ package com.ecsail.repository.implementations;
 import com.ecsail.BaseApplication;
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.dto.SlipDTO;
+import com.ecsail.dto.SlipStructureDTO;
 import com.ecsail.dto.WaitListDTO;
 import com.ecsail.pdf.directory.Object_SlipInfo;
 import com.ecsail.repository.interfaces.SlipRepository;
 import com.ecsail.repository.rowmappers.SlipInfoRowMapper;
 import com.ecsail.repository.rowmappers.SlipRowMapper;
+import com.ecsail.repository.rowmappers.SlipStructureRowMapper;
 import com.ecsail.repository.rowmappers.WaitListRowMapper;
 import com.ecsail.views.dialogues.Dialogue_ErrorSQL;
 import org.slf4j.Logger;
@@ -192,6 +194,12 @@ public class SlipRepositoryImpl implements SlipRepository {
             logger.error("Unable to retrieve information", e);
             return List.of(); // Return an empty list in case of failure
         }
+    }
+
+    @Override
+    public List<SlipStructureDTO> getSlipStructure() {
+        String query = "SELECT * FROM slip_structure";
+        return template.query(query, new SlipStructureRowMapper());
     }
 
 }

@@ -100,7 +100,6 @@ public class PDF_Directory {
 
 				new PDF_MembersByNumber(set, doc, rosters);
 
-
 				doc.add(new PDF_SlipPageL(2, set));
 				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 				textArea.appendText("Created D and A dock page\n");

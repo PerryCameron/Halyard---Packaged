@@ -2,6 +2,7 @@ package com.ecsail.repository.interfaces;
 
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.dto.SlipDTO;
+import com.ecsail.dto.SlipStructureDTO;
 import com.ecsail.dto.WaitListDTO;
 import com.ecsail.pdf.directory.Object_SlipInfo;
 
@@ -41,4 +42,6 @@ public interface SlipRepository {
     List<Object_SlipInfo> getSlipsForDock(String dock);
 
     List<SlipDTO> getSlips();
+
+    List<SlipStructureDTO> getSlipStructure();
 }
