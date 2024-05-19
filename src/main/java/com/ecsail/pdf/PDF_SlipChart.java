@@ -27,7 +27,7 @@ public class PDF_SlipChart {
 
 	public PDF_SlipChart(String year) {
 		this.set = new PDF_Object_Settings(year);
-		File fileToOpen = null;
+		File fileToOpen;
 		fileToOpen = createChart();
 		if (fileToOpen != null) {  // if we didn't cancel
 			Desktop desktop = Desktop.getDesktop(); // Gui_Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()
