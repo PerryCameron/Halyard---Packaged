@@ -44,7 +44,12 @@ public class PDF_Dock extends Table {
         setWidth(PageSize.A5.getWidth() * 0.40f);  // makes table 45% of page width
         this.dockWidth = this.getWidth().getValue() * 0.45f;
         setHorizontalAlignment(HorizontalAlignment.CENTER);
+        // Remove elements where slipNum starts with "BR"
+        slips.removeIf(slip -> slip.getSlipNum().startsWith("BR"));
         Collections.sort(slips, Comparator.comparing(Object_SlipInfo::getSlipNum).reversed());
+
+
+        slips.forEach(System.out::println);
         //setBackgroundColor(ColorConstants.ORANGE);
 
         if (dock.equals("A")) {
@@ -247,7 +252,8 @@ public class PDF_Dock extends Table {
     }
 
     private String returnInitial(String originalWord) {
-        String initial = originalWord.charAt(0) + ".";
+        String initial = "";
+        if(originalWord != null) initial = originalWord.charAt(0) + ".";
         return initial;
     }
 
@@ -402,7 +408,6 @@ public class PDF_Dock extends Table {
         addCell(cell);
 
         cell = new Cell();
-        ;
         Paragraph p = new Paragraph(dock);
         p.setFontSize(set.getSlipFontSize())
                 .setTextAlignment(TextAlignment.CENTER);
