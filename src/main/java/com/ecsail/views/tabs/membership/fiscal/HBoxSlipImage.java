@@ -13,8 +13,8 @@ public class HBoxSlipImage extends HBox {
 
 	public HBoxSlipImage(String filename) {
 		
-//	Image slipImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/slips/" + filename + "_icon.png")));
-        Image slipImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/slips/none_icon.png")));
+	Image slipImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/slips/" + filename + "_icon.png")));
+//        Image slipImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/slips/none_icon.png")));
 
         ImageView imageView = new ImageView(slipImage);
 	VBox vboxOuter = new VBox(); // allows stretch from other side so the vboxPink doesn't stretch

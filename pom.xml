@@ -6,7 +6,7 @@
 
     <groupId>com.ecsail</groupId>
     <artifactId>halyard-package</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <!-- This description text is included in the Windows installer by default, see windows-jpackage.txt -->
     <description>Sailing Membership Database Application</description>
@@ -23,7 +23,7 @@
          https://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/text/SimpleDateFormat.html
          -->
 
-        <app.version>1.1.28</app.version>
+        <app.version>1.1.29</app.version>
 
         <!-- This property is used to specify the modules included in the (custom) JVM image. -->
         <!-- Reminder: javafx.web (the embedded browser component) is not included in this project by default due
