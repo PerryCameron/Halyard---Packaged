@@ -45,28 +45,26 @@ public class PDF_Dock extends Table {
         this.dockWidth = this.getWidth().getValue() * 0.45f;
         setHorizontalAlignment(HorizontalAlignment.CENTER);
         // Remove elements where slipNum starts with "BR"
-        slips.removeIf(slip -> slip.getSlipNum().startsWith("BR"));
+        slips.removeIf(slip -> slip.getSlipNum().startsWith("CR"));
         Collections.sort(slips, Comparator.comparing(Object_SlipInfo::getSlipNum).reversed());
 
 
         slips.forEach(System.out::println);
         //setBackgroundColor(ColorConstants.ORANGE);
-
         if (dock.equals("A")) {
             addBlankSpace();
             buildTopRow();
             buildDocksClockWise();
-            buildSingleADock(rowSpot);
-            buildBlankRowDock();
-            buildADockBottom();
-            buildBlankRowDock();
             buildBottomRow();
+            addBlankSpace();
         }
         if (dock.equals("B")) {
             addBlankSpace();
             buildTopRow();
-            buildDocksCounterClockWise();
-            buildClubDock("Racing");
+            buildDocksClockWise();
+            buildSingleBDock(rowSpot);
+            buildBlankRowDock();
+            buildADockBottom();
             buildBlankRowDock();
             buildBottomRow();
         }
@@ -74,6 +72,7 @@ public class PDF_Dock extends Table {
             addBlankSpace();
             buildTopRow();
             buildDocksClockWise();
+            buildClubDock("Racing");
             buildBlankRowDock();
             buildBottomRow();
         }
@@ -81,8 +80,8 @@ public class PDF_Dock extends Table {
             addBlankSpace();
             buildTopRow();
             buildDocksClockWise();
+            buildBlankRowDock();
             buildBottomRow();
-            addBlankSpace();
         }
         if (dock.equals("F")) {
             buildTopRow();
@@ -94,32 +93,37 @@ public class PDF_Dock extends Table {
 
     public void buildDocksClockWise() {
         for (int i = 0; i < (4 * lDocks); i += 4) {
-            addCell(createLeftDock(i));
-            addCell(createCenterDock());
-            addCell(createRightDock(i + 1));
-            buildBlankRowDock();
-            rowSpot = i;
-        }
-    }
-
-    public void buildDocksCounterClockWise() {
-        for (int i = 0; i < (4 * lDocks); i += 4) {
+//            addCell(createLeftDock(i));
+//            addCell(createCenterDock());
+//            addCell(createRightDock(i + 1));
             addCell(createLeftDock(i + 1));
             addCell(createCenterDock());
             addCell(createRightDock(i));
+
+
             buildBlankRowDock();
             rowSpot = i;
         }
     }
 
-    public void buildSingleADock(int i) {
-        addCell(createLeftADock(i));
+//    public void buildDocksCounterClockWise() {
+//        for (int i = 0; i < (4 * lDocks); i += 4) {
+//            addCell(createRightDock(i + 1));
+//            addCell(createCenterDock());
+//            addCell(createLeftDock(i));
+//            buildBlankRowDock();
+//            rowSpot = i;
+//        }
+//    }
+
+    public void buildSingleBDock(int i) {
+        addCell(createLeftBDock(i));
         addCell(createCenterDock());
-        addCell(createRightADock(i + 1));
+        addCell(createRightBDock(i + 1));
     }
 
     // this is for creating the right dock were the slips change on A dock to one side
-    private Cell createRightADock(int element) {
+    private Cell createRightBDock(int element) {
         Cell cell;
         Paragraph p;
 
@@ -144,8 +148,8 @@ public class PDF_Dock extends Table {
         return cell;
     }
 
-    // this is for creating the left dock were the slips change on A dock to one side
-    public Cell createLeftADock(int element) {
+    // this is for creating the left dock were the slips change on B dock to one side
+    public Cell createLeftBDock(int element) {
         Cell cell;
         cell = new Cell();
         cell.setBorder(Border.NO_BORDER);
@@ -186,7 +190,7 @@ public class PDF_Dock extends Table {
     }
 
     public void buildFDocks() {
-        addCell(createRightDockOnly(rowSpot + 0));
+        addCell(createRightDockOnly(rowSpot));
         buildBlankRowDock();
         addCell(createRightDockOnly(rowSpot + 2));
         buildBlankRowDock();
@@ -199,32 +203,7 @@ public class PDF_Dock extends Table {
     }
 
 
-    public Cell createLeftDock(int element) {
-        Cell cell;
-        cell = new Cell();
-        cell.setBorder(Border.NO_BORDER);
-        cell.setBorderLeft(new SolidBorder(1f));
-        cell.setBorderBottom(new SolidBorder(1f));
-        cell.setBorderTop(new SolidBorder(1f));
-        cell.setBackgroundColor(set.getDockColor());
-        cell.setWidth(dockWidth);
-        Paragraph p;
-        p = getName(element, 0, false);
-        p.setFontSize(set.getSlipFontSize())
-                .setTextAlignment(TextAlignment.RIGHT)
-                .setBackgroundColor(getStrokeColor())
-                .setFixedLeading(set.getFixedLeadingNarrow() - 3);
 
-        cell.add(p);
-
-        p = getName(element, 2, false);
-        p.setFontSize(set.getSlipFontSize())
-                .setTextAlignment(TextAlignment.RIGHT)
-                .setFixedLeading(set.getFixedLeadingNarrow() - 3);
-        cell.add(p);
-
-        return cell;
-    }
 
     private Paragraph getName(int element, int offset, boolean setLeft) {
         String name = slips.get(element + offset).getlName() + ", " + returnInitial(slips.get(element + offset).getfName());
@@ -257,25 +236,51 @@ public class PDF_Dock extends Table {
         return initial;
     }
 
-    private Cell createRightDock(int element) {
+    public Cell createRightDock(int element) {
         Cell cell;
-        Paragraph p;
         cell = new Cell();
-        cell.setWidth(dockWidth);
         cell.setBorder(Border.NO_BORDER);
         cell.setBorderRight(new SolidBorder(1f));
         cell.setBorderBottom(new SolidBorder(1f));
         cell.setBorderTop(new SolidBorder(1f));
         cell.setBackgroundColor(set.getDockColor());
+        cell.setWidth(dockWidth);
+        Paragraph p;
         p = getName(element, 0, true);
         p.setFontSize(set.getSlipFontSize())
                 .setTextAlignment(TextAlignment.LEFT)
+                .setBackgroundColor(getStrokeColor())
                 .setFixedLeading(set.getFixedLeadingNarrow() - 3);
+
         cell.add(p);
 
         p = getName(element, 2, true);
         p.setFontSize(set.getSlipFontSize())
                 .setTextAlignment(TextAlignment.LEFT)
+                .setFixedLeading(set.getFixedLeadingNarrow() - 3);
+        cell.add(p);
+
+        return cell;
+    }
+    private Cell createLeftDock(int element) {
+        Cell cell;
+        Paragraph p;
+        cell = new Cell();
+        cell.setWidth(dockWidth);
+        cell.setBorder(Border.NO_BORDER);
+        cell.setBorderLeft(new SolidBorder(1f));
+        cell.setBorderBottom(new SolidBorder(1f));
+        cell.setBorderTop(new SolidBorder(1f));
+        cell.setBackgroundColor(set.getDockColor());
+        p = getName(element, 0, false);
+        p.setFontSize(set.getSlipFontSize())
+                .setTextAlignment(TextAlignment.RIGHT)
+                .setFixedLeading(set.getFixedLeadingNarrow() - 3);
+        cell.add(p);
+
+        p = getName(element, 2, false);
+        p.setFontSize(set.getSlipFontSize())
+                .setTextAlignment(TextAlignment.RIGHT)
                 .setFixedLeading(set.getFixedLeadingNarrow() - 3);
         cell.add(p);
         return cell;

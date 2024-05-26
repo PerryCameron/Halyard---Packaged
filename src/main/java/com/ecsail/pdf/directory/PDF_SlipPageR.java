@@ -14,12 +14,12 @@ public class PDF_SlipPageR extends Table {
 		setHorizontalAlignment(HorizontalAlignment.CENTER);
 		Cell cell;
 		cell = new Cell();
-		cell.add(new PDF_Dock(3,"B",11,11,set,true));
+		cell.add(new PDF_Dock(3,"C",11,11,set,true));
 		cell.setBorder(Border.NO_BORDER);
 		addCell(cell);
 		
 		cell = new Cell();
-		cell.add(new PDF_Dock(3,"C",11,11,set,true));
+		cell.add(new PDF_Dock(3,"D",11,11,set,true));
 		cell.setBorder(Border.NO_BORDER);
 		addCell(cell);
 	}

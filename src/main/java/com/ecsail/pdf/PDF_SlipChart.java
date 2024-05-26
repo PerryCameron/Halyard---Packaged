@@ -65,17 +65,17 @@ public class PDF_SlipChart {
 
 			Cell cell;
 			cell = new Cell();
-			cell.add(new PDF_Dock(3, "D", 10, 10, set, false));
+			cell.add(new PDF_Dock(3, "A", 10, 10, set, false));
 			cell.setBorder(Border.NO_BORDER);
 			mainTable.addCell(cell);
 
 			cell = new Cell(2, 1);
-			cell.add(new PDF_Dock(3, "A", 6, 11, set, false));
+			cell.add(new PDF_Dock(3, "B", 6, 11, set, false));
 			cell.setBorder(Border.NO_BORDER);
 			mainTable.addCell(cell);
 
 			cell = new Cell(2, 1);
-			cell.add(new PDF_Dock(3, "B", 11, 11, set, false));
+			cell.add(new PDF_Dock(3, "C", 11, 11, set, false));
 			cell.setBorder(Border.NO_BORDER);
 			mainTable.addCell(cell);
 
@@ -96,7 +96,7 @@ public class PDF_SlipChart {
 			//////// LEGEND END //////
 
 			cell = new Cell(2, 1);
-			cell.add(new PDF_Dock(3, "C", 11, 11, set, false));
+			cell.add(new PDF_Dock(3, "D", 11, 11, set, false));
 			cell.setBorder(Border.NO_BORDER);
 			mainTable.addCell(cell);
 
