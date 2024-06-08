@@ -191,7 +191,7 @@ public class HBoxProperties extends HBox implements Builder {
             @Override
             protected Object call() throws Exception {
                 setMessage("Deleting boats", dialogue);
-                boatRepository.deleteBoatOwner(msId);
+                boatRepository.deleteBoatOwner(msId); // done
                 setMessage("Deleting notes", dialogue);
                 memoRepository.deleteMemos(msId);
                 setMessage("Deleting Invoices and Payments", dialogue);

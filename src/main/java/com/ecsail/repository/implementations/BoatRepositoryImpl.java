@@ -276,6 +276,7 @@ public class BoatRepositoryImpl implements BoatRepository {
             return 0; // Indicating that the insertion failed
         }
     }
+
     @Override
     public void deleteBoatOwner(int msId) {
         String sql = "DELETE FROM boat_owner WHERE MS_ID = ?";
