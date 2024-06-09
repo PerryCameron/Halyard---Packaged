@@ -191,7 +191,6 @@ public class ConnectDatabase {
 //		Insets fivePad = new Insets(5,5,5,5);
 
 
-
 		userName.setPromptText("Username");
 		passWord.setPromptText("Password");
 

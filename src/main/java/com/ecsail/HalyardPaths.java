@@ -68,7 +68,6 @@ public class HalyardPaths {
 		return false;
 	}
 
-	
 	public static int getYear() {
 		return Year.now().getValue();
 	}
