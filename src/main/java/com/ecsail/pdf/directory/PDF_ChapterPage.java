@@ -70,7 +70,7 @@ public class PDF_ChapterPage extends Table {
 		cell = new Cell();
 		cell.setBorder(Border.NO_BORDER);
 		cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
-		p = new Paragraph("membership@ecsc.org");
+		p = new Paragraph("membership@ecsail.org");
 		p.setFontSize(set.getNormalFontSize());
 		//p.setFont(set.getColumnHead());
 		p.setFontColor(ColorConstants.BLUE);

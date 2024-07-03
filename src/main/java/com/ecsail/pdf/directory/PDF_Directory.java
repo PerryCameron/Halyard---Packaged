@@ -96,7 +96,7 @@ public class PDF_Directory {
 				createMemberInfoPages(doc);  // creates info pages
 				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 //				 this one below added in if book needs an extra page (should be even number of pages)
-//				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 
 				new PDF_MembersByNumber(set, doc, rosters);
 

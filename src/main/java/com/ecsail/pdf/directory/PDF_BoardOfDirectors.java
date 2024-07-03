@@ -106,6 +106,7 @@ public class PDF_BoardOfDirectors extends Table {
 //		addOfficerToTable(chairTable, "AR");
         addOfficerToTable(chairTable, "SM");
         addOfficerToTable(chairTable, "JP");
+        addOfficerToTable(chairTable, "AJ");
 //        addOfficerToTable(chairTable, "AJ");
         addOfficerToTable(chairTable, "SO");
         addOfficerToTable(chairTable, "SA");
