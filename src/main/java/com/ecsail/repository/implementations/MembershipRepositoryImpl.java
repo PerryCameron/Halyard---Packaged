@@ -1,8 +1,10 @@
 package com.ecsail.repository.implementations;
 
 import com.ecsail.BaseApplication;
+import com.ecsail.dto.JsonDTO;
 import com.ecsail.dto.MembershipDTO;
 import com.ecsail.repository.interfaces.MembershipRepository;
+import com.ecsail.repository.rowmappers.JsonRowMapper;
 import com.ecsail.repository.rowmappers.MembershipListRowMapper;
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.repository.rowmappers.MembershipRowMapper;
@@ -418,5 +420,128 @@ public class MembershipRepositoryImpl implements MembershipRepository {
         }
     }
 
-
+    @Override
+    public List<JsonDTO> getMembershipsAsJson() {
+        String query = """
+                SELECT
+                    JSON_OBJECT(
+                            'MID', mi.MID,
+                            'FISCAL_YEAR', mi.FISCAL_YEAR,
+                            'MS_ID', mi.MS_ID,
+                            'MEMBERSHIP_ID', mi.MEMBERSHIP_ID,
+                            'RENEW', mi.RENEW,
+                            'MEM_TYPE', mi.MEM_TYPE,
+                            'SELECTED', mi.SELECTED,
+                            'LATE_RENEW', mi.LATE_RENEW,
+                            'P_ID', m.P_ID,
+                            'JOIN_DATE', m.JOIN_DATE,
+                            'membership_MEM_TYPE', m.MEM_TYPE,
+                            'ADDRESS', m.ADDRESS,
+                            'CITY', m.CITY,
+                            'STATE', m.STATE,
+                            'ZIP', m.ZIP,
+                            'persons', JSON_ARRAYAGG(
+                                    JSON_OBJECT(
+                                            'P_ID', p.P_ID,
+                                            'MEMBER_TYPE', p.MEMBER_TYPE,
+                                            'F_NAME', p.F_NAME,
+                                            'L_NAME', p.L_NAME,
+                                            'BIRTHDAY', p.BIRTHDAY,
+                                            'OCCUPATION', p.OCCUPATION,
+                                            'BUSINESS', p.BUSINESS,
+                                            'IS_ACTIVE', p.IS_ACTIVE,
+                                            'NICK_NAME', p.NICK_NAME,
+                                            'OLD_MSID', p.OLD_MSID,
+                                            'emails', (
+                                                SELECT JSON_ARRAYAGG(
+                                                               JSON_OBJECT(
+                                                                       'EMAIL_ID', e.EMAIL_ID,
+                                                                       'PRIMARY_USE', e.PRIMARY_USE,
+                                                                       'EMAIL', e.EMAIL,
+                                                                       'EMAIL_LISTED', e.EMAIL_LISTED
+                                                                   )
+                                                           )
+                                                FROM email e
+                                                WHERE e.P_ID = p.P_ID
+                                            ),
+                                            'phones', (
+                                                SELECT JSON_ARRAYAGG(
+                                                               JSON_OBJECT(
+                                                                       'PHONE_ID', ph.PHONE_ID,
+                                                                       'PHONE', ph.PHONE,
+                                                                       'PHONE_TYPE', ph.PHONE_TYPE,
+                                                                       'PHONE_LISTED', ph.PHONE_LISTED
+                                                                   )
+                                                           )
+                                                FROM phone ph
+                                                WHERE ph.P_ID = p.P_ID
+                                            ),
+                                            'awards', (
+                                                SELECT JSON_ARRAYAGG(
+                                                               JSON_OBJECT(
+                                                                       'AWARD_ID', a.AWARD_ID,
+                                                                       'AWARD_YEAR', a.AWARD_YEAR,
+                                                                       'AWARD_TYPE', a.AWARD_TYPE
+                                                                   )
+                                                           )
+                                                FROM awards a
+                                                WHERE a.P_ID = p.P_ID
+                                            ),
+                                            'officers', (
+                                                SELECT JSON_ARRAYAGG(
+                                                               JSON_OBJECT(
+                                                                       'O_ID', o.O_ID,
+                                                                       'BOARD_YEAR', o.BOARD_YEAR,
+                                                                       'OFF_TYPE', o.OFF_TYPE,
+                                                                       'OFF_YEAR', o.OFF_YEAR
+                                                                   )
+                                                           )
+                                                FROM officer o
+                                                WHERE o.P_ID = p.P_ID
+                                            )
+                                        )
+                                ),
+                            'boats', (
+                                SELECT JSON_ARRAYAGG(
+                                               JSON_OBJECT(
+                                                       'BOAT_ID', b.BOAT_ID,
+                                                       'MANUFACTURER', b.MANUFACTURER,
+                                                       'MANUFACTURE_YEAR', b.MANUFACTURE_YEAR,
+                                                       'REGISTRATION_NUM', b.REGISTRATION_NUM,
+                                                       'MODEL', b.MODEL,
+                                                       'BOAT_NAME', b.BOAT_NAME,
+                                                       'SAIL_NUMBER', b.SAIL_NUMBER,
+                                                       'HAS_TRAILER', b.HAS_TRAILER,
+                                                       'LENGTH', b.LENGTH,
+                                                       'WEIGHT', b.WEIGHT,
+                                                       'KEEL', b.KEEL,
+                                                       'PHRF', b.PHRF,
+                                                       'DRAFT', b.DRAFT,
+                                                       'BEAM', b.BEAM,
+                                                       'LWL', b.LWL,
+                                                       'AUX', b.AUX
+                                                   )
+                                           )
+                                FROM boat_owner bo
+                                         JOIN boat b ON bo.BOAT_ID = b.BOAT_ID
+                                WHERE bo.MS_ID = mi.MS_ID
+                            )
+                        ) as membership_info
+                FROM
+                    membership_id mi
+                        JOIN membership m ON mi.MS_ID = m.MS_ID
+                        LEFT JOIN person p ON m.MS_ID = p.MS_ID
+                WHERE
+                        mi.RENEW = 1
+                  AND mi.FISCAL_YEAR = 2024
+                GROUP BY
+                    mi.MID, mi.FISCAL_YEAR, mi.MS_ID, mi.MEMBERSHIP_ID, mi.RENEW, mi.MEM_TYPE, mi.SELECTED, mi.LATE_RENEW,
+                    m.P_ID, m.JOIN_DATE, m.MEM_TYPE, m.ADDRESS, m.CITY, m.STATE, m.ZIP
+                ORDER BY
+                    mi.MID;
+                                """;
+        List<JsonDTO> memberships
+                = template.query(query, new JsonRowMapper());
+        return memberships;
+    }
 }

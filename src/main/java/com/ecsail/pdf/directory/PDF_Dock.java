@@ -64,7 +64,7 @@ public class PDF_Dock extends Table {
             buildDocksClockWise();
             buildSingleBDock(rowSpot);
             buildBlankRowDock();
-            buildADockBottom();
+            buildBDockBottom();
             buildBlankRowDock();
             buildBottomRow();
         }
@@ -177,7 +177,7 @@ public class PDF_Dock extends Table {
         return cell;
     }
 
-    public void buildADockBottom() {
+    public void buildBDockBottom() {
         //if(lDocks < rDocks) {
         addCell(createRightDockOnly(rowSpot + 7));
         buildBlankRowDock();

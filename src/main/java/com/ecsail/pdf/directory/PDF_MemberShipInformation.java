@@ -134,8 +134,4 @@ public class PDF_MemberShipInformation extends Table {
 		}
 
 	}
-
-
-
-
 }

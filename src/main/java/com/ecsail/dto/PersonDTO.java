@@ -2,6 +2,8 @@ package com.ecsail.dto;
 
 import javafx.beans.property.*;
 
+import java.util.List;
+
 public class PersonDTO {
     private IntegerProperty pId;
     private IntegerProperty msId;
@@ -14,6 +16,12 @@ public class PersonDTO {
     private BooleanProperty active;
     private StringProperty nickName;
     private IntegerProperty oldMsid;
+	List<PhoneDTO> phones;
+	List<EmailDTO> email;
+	List<AwardDTO> awards;
+	List<OfficerDTO> positions;
+
+
 
     public PersonDTO(Integer pid, Integer msId, Integer memberType, String firstName, String lastName,
                      String birthday, String occupation, String business, Boolean isActive, String nickName,
@@ -206,6 +214,38 @@ public class PersonDTO {
 
 	public void setOldMsid(int oldMsid) {
 		this.oldMsid.set(oldMsid);
+	}
+
+	public List<PhoneDTO> getPhones() {
+		return phones;
+	}
+
+	public void setPhones(List<PhoneDTO> phones) {
+		this.phones = phones;
+	}
+
+	public List<EmailDTO> getEmail() {
+		return email;
+	}
+
+	public void setEmail(List<EmailDTO> email) {
+		this.email = email;
+	}
+
+	public List<AwardDTO> getAwards() {
+		return awards;
+	}
+
+	public void setAwards(List<AwardDTO> awards) {
+		this.awards = awards;
+	}
+
+	public List<OfficerDTO> getPositions() {
+		return positions;
+	}
+
+	public void setPositions(List<OfficerDTO> positions) {
+		this.positions = positions;
 	}
 
 	@Override

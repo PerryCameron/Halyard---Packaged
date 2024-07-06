@@ -116,7 +116,10 @@ public class Object_MembershipInformation {
 				count++;
 				memberBoats += b.getModel();
 				if (b.getRegistrationNum() != null) {  // this boat has registration
-					memberBoats += "(" + b.getRegistrationNum() + ")";
+					memberBoats += " (" + b.getRegistrationNum() + ")";
+				}
+				if (b.getBoatName() != null) {
+					memberBoats += " " + b.getBoatName();
 				}
 				if (count < boats.size()) memberBoats += ", ";
 			}

@@ -93,7 +93,7 @@ public class PDF_Directory {
 				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 				textArea.appendText("Created Membership Information Chapter Page\n");
 
-				createMemberInfoPages(doc);  // creates info pages
+//				createMemberInfoPages(doc);  // creates info pages
 				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
 //				 this one below added in if book needs an extra page (should be even number of pages)
 				doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));

@@ -1,5 +1,6 @@
 package com.ecsail.repository.interfaces;
 
+import com.ecsail.dto.JsonDTO;
 import com.ecsail.dto.MembershipDTO;
 import com.ecsail.dto.MembershipListDTO;
 
@@ -42,4 +43,6 @@ public interface MembershipRepository {
     MembershipListDTO insertMembership(MembershipListDTO nm);
 
     void updateMembership(MembershipListDTO dto);
+
+    List<JsonDTO> getMembershipsAsJson();
 }
