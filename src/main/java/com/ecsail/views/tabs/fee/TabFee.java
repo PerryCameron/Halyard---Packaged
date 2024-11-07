@@ -141,14 +141,18 @@ public class TabFee extends Tab {
     private void copyPreviousYearsFees() {
         // previous years fees
         ArrayList<FeeDTO> previousYearsFees = (ArrayList<FeeDTO>) invoiceRepository.getFeesFromYear(Integer.parseInt(selectedYear) - 1);
+        System.out.println("previousYearsFees: " + previousYearsFees.size());
         // previous years dbInvoices
         ArrayList<DbInvoiceDTO> dbInvoiceDTOS = (ArrayList<DbInvoiceDTO>) invoiceRepository.getDbInvoiceByYear(Integer.parseInt(selectedYear) - 1);
+        System.out.println("dbInvoiceDTOS: " + dbInvoiceDTOS.size());
 
         previousYearsFees.forEach(feeDTO -> feeDTO.setFeeYear(Integer.parseInt(selectedYear)));
         feeDTOS.addAll(previousYearsFees);
         dbInvoiceDTOS.forEach(dbInvoiceDTO -> {
             dbInvoiceDTO.clone(new DbInvoiceDTO(selectedYear));
         });
+        previousYearsFees.forEach(System.out::println);
+        dbInvoiceDTOS.forEach(System.out::println);
     }
 
     private void setNewYear(Object newValue) {

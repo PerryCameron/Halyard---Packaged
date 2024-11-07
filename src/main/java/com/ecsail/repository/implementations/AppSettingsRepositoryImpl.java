@@ -30,6 +30,16 @@ public class AppSettingsRepositoryImpl implements AppSettingsRepository {
         }
     }
     @Override
+    public AppSettingsDTO getSettingByGroup(String group) {
+        String sql = "SELECT * FROM app_settings WHERE group_name = ?";
+        try {
+            return template.queryForObject(sql, new AppSettingsRowMapper(), group);
+        } catch (EmptyResultDataAccessException e) {
+            logger.error(e.getMessage());
+            return null;
+        }
+    }
+    @Override
     public ApiKeyDTO getApiKeyByName(String name) {
         String query = "SELECT * FROM api_key WHERE NAME = ?";
         try {

@@ -14,4 +14,9 @@ public class JsonDTO {
     public void setJson(String json) {
         this.json = json;
     }
+
+    @Override
+    public String toString() {
+        return json;
+    }
 }

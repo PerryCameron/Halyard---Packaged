@@ -18,7 +18,7 @@ import java.util.Comparator;
 
 
 public class PDF_CommodoreList extends Table {
-	ArrayList<OfficerWithNameDTO> commodores = new ArrayList<OfficerWithNameDTO>();
+	ArrayList<OfficerWithNameDTO> commodores;
 	ArrayList<Table> tables = new ArrayList<Table>(); // Stores the column tables
 	PDF_Object_Settings set;
 

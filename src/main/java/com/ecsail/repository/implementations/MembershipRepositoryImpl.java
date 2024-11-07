@@ -533,7 +533,7 @@ public class MembershipRepositoryImpl implements MembershipRepository {
                         LEFT JOIN person p ON m.MS_ID = p.MS_ID
                 WHERE
                         mi.RENEW = 1
-                  AND mi.FISCAL_YEAR = 2024
+                  AND mi.FISCAL_YEAR = YEAR(NOW())
                 GROUP BY
                     mi.MID, mi.FISCAL_YEAR, mi.MS_ID, mi.MEMBERSHIP_ID, mi.RENEW, mi.MEM_TYPE, mi.SELECTED, mi.LATE_RENEW,
                     m.P_ID, m.JOIN_DATE, m.MEM_TYPE, m.ADDRESS, m.CITY, m.STATE, m.ZIP

@@ -21,11 +21,11 @@ public class PDF_MemberShipInformation extends Table {
 		setWidth(set.getPageSize().getWidth() * 0.9f);  // makes table 90% of page width
 		setHorizontalAlignment(HorizontalAlignment.CENTER);
 		
-		Cell cell;
+		Cell cell = null;
 		Paragraph p;
 		String slip;
 		
-		cell = new Cell();
+		
 		if (m.getSlip() != null)
 			slip = "Slip: " + m.getSlip();
 		else

@@ -51,7 +51,7 @@ public class PDF_Object_Settings {
 //		this.mainColor = new DeviceCmyk(.93f, 0, 0.7f, 0.62f);  // green color in document 2021
 //		this.mainColor = new DeviceCmyk(0f, .24f, .60f, 0f);  // yellow color in document 2022
 //		this.mainColor = new DeviceCmyk(0.52f, .34f, 0f, 0f);  // blue color in document 2023
-		this.mainColor = new DeviceCmyk(0.18f, .5f, 0f, 0.24f);  // blue color in document 2024
+		this.mainColor = new DeviceCmyk(0.18f, .5f, 0f, 0.24f);  // purple color in document 2024
 		this.dockColor  = new DeviceRgb(237, 237, 237);
 		this.emailColor = new Style().setFontColor(ColorConstants.BLUE);
 		this.numberOfRowsByNumber = 28; // this needs to go up to 29 when you get more memberships

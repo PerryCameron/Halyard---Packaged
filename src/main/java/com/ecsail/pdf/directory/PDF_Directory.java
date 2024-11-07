@@ -2,9 +2,12 @@ package com.ecsail.pdf.directory;
 
 
 import com.ecsail.HalyardPaths;
+import com.ecsail.dto.JsonDTO;
+import com.ecsail.dto.MembershipInfoDTO;
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.repository.implementations.MembershipRepositoryImpl;
 import com.ecsail.repository.interfaces.MembershipRepository;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -17,31 +20,52 @@ import javafx.scene.control.TextArea;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 
 public class PDF_Directory {
 
 	public static Logger logger = LoggerFactory.getLogger(PDF_Directory.class);
 	private final ArrayList<MembershipListDTO> rosters;
+	private final ArrayList<JsonDTO> memberships;
 	static PDF_Object_Settings set;
 	TextArea textArea;
 	String message;
 	static Document doc;
+
 
 	public PDF_Directory(String year, TextArea textArea) {
 		PDF_Directory.set = new PDF_Object_Settings(year);
 		this.textArea = textArea;
 		this.message = "";
 
+
 		MembershipRepository membershipRepository = new MembershipRepositoryImpl();
+		memberships = (ArrayList<JsonDTO>) membershipRepository.getMembershipsAsJson();
+		List<MembershipInfoDTO> membershipInfoDTOList = new ArrayList<>();
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule()); // Register the JavaTimeModule for LocalDate
+//		for (JsonDTO jsonDTO : memberships) {
+//			try {
+//				MembershipInfoDTO membershipInfoDTO = objectMapper.readValue(jsonDTO.getJson(), MembershipInfoDTO.class);
+//				membershipInfoDTOList.add(membershipInfoDTO);
+//			} catch (IOException e) {
+//				e.printStackTrace(); // Handle the exception as needed
+//			}
+//		}
+//		membershipInfoDTOList.forEach(System.out::println);
+
 		this.rosters = (ArrayList<MembershipListDTO>) membershipRepository.getRoster(year, true);
 		HalyardPaths.checkPath(HalyardPaths.DIRECTORIES);
 		textArea.setText("Creating " + year + " directory");

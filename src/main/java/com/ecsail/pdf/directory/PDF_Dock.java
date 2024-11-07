@@ -48,8 +48,6 @@ public class PDF_Dock extends Table {
         slips.removeIf(slip -> slip.getSlipNum().startsWith("CR"));
         Collections.sort(slips, Comparator.comparing(Object_SlipInfo::getSlipNum).reversed());
 
-
-        slips.forEach(System.out::println);
         //setBackgroundColor(ColorConstants.ORANGE);
         if (dock.equals("A")) {
             addBlankSpace();
