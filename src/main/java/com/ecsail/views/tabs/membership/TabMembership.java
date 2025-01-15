@@ -142,7 +142,6 @@ public class TabMembership extends Tab {
 		HBoxPerson primaryMember = new HBoxPerson(getPerson(MemberType.PRIMARY.getCode()), this); // load the primary member
 		return primaryMember;
 	}
-
 	
 	private String setTabLabel() {
 		String tabLabel;

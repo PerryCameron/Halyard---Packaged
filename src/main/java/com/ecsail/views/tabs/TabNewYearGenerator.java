@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class TabNewYearGenerator extends Tab {
     private static final ArrayList<SlipDTO> slips = new ArrayList<>();
@@ -30,8 +31,8 @@ public class TabNewYearGenerator extends Tab {
     private static SlipRepository slipRepository = new SlipRepositoryImpl();
 
     public static Logger logger = LoggerFactory.getLogger(TabNewYearGenerator.class);
-    int yearToAdd = 2024;
-
+    int yearToAdd = 2025;
+    int id = 1;
 
     public TabNewYearGenerator(String text) {
         super(text);
@@ -66,47 +67,61 @@ public class TabNewYearGenerator extends Tab {
     }
 
     private void createInvoices() {
+        // get a list of active memberships for previous year.
         ArrayList<MembershipListDTO> rosters = (ArrayList<MembershipListDTO>) membershipRepository.getRoster(String.valueOf(yearToAdd - 1), true);
         rosters.forEach(membershipListDTO -> {
 						InvoiceDTO invoiceDTO = invoiceRepository.insertInvoice(new InvoiceDTO(membershipListDTO.getMsId(), yearToAdd));
 						logger.info("Added invoice for " + membershipListDTO.getFirstName() + " " + membershipListDTO.getLastName());
-						// insert items for the invoice
-//						createInvoiceItems(invoiceDTO.getId(), yearToAdd, membershipListDTO.getMsId());
+            createInvoiceItems(invoiceDTO.getId(), yearToAdd, invoiceDTO.getMsId());
         });
         logger.info("Invoice creation complete");
+    }
+
+    private void createInvoiceItems(int invoiceId, Integer year, int msid) {
+        // gets db_invoices for selected year
+        ArrayList<DbInvoiceDTO> categories = (ArrayList<DbInvoiceDTO>) invoiceRepository.getDbInvoiceByYear(year);
+        for (DbInvoiceDTO dbInvoiceDTO : categories) {
+            if (dbInvoiceDTO.isItemized()) {
+                createItemizedCategories(dbInvoiceDTO, invoiceId, msid, year);
+            } else {
+                createNonItemizedCategories(invoiceId, year, msid, dbInvoiceDTO);
+            }
+        }
+    }
+
+    private static void createNonItemizedCategories(int invoiceId, Integer year, int msid, DbInvoiceDTO dbInvoiceDTO) {
+        invoiceRepository.insertInvoiceItem(new InvoiceItemDTO(invoiceId, msid, year, dbInvoiceDTO.getFieldName()
+                , dbInvoiceDTO.isCredit()));
+    }
+
+    // creates itemized invoice items
+    private static void createItemizedCategories(DbInvoiceDTO dbInvoiceDTO, int invoiceId, int msid, int year) {
+        Set<FeeDTO> fees = invoiceRepository.getRelatedFeesAsInvoiceItems(dbInvoiceDTO);
+        fees.forEach(feeDTO -> {
+            invoiceRepository.insertInvoiceItem(
+                    new InvoiceItemDTO(invoiceId, msid, year, feeDTO.getDescription(), dbInvoiceDTO.isCredit()));
+        });
     }
 
     private void createIds() {
         logger.info("Starting invoice creation");
                 ArrayList<MembershipListDTO> rosters = (ArrayList<MembershipListDTO>) membershipRepository.getRoster(String.valueOf(yearToAdd - 1), true);
+                boolean compactIds = true;
                 rosters.forEach(membershipListDTO -> {
-                    // TODO Add ability to compact records
-                    // create a new membershipID for user
-                    var newMembershipIdDTO = new MembershipIdDTO(String.valueOf(yearToAdd), membershipListDTO.getMsId(),
-                            String.valueOf(membershipListDTO.getMembershipId()), membershipListDTO.getMemType());
-                    // create invoice for a specified year for this membership
-                    logger.info("Added MembershipId for:" + membershipListDTO.getFullName());
+                    if(membershipListDTO.getMsId() != 466) {
+                        var newMembershipIdDTO = new MembershipIdDTO(String.valueOf(yearToAdd), membershipListDTO.getMsId(),
+                                String.valueOf(membershipListDTO.getMembershipId()), membershipListDTO.getMemType());
+                        if (compactIds) {
+                            newMembershipIdDTO.setMembershipId(String.valueOf(id));
+                            id++;
+                            if(id == 29) id++;
+                        }
+                        // create invoice for a specified year for this membership
+                        logger.info("Added MembershipId for:" + newMembershipIdDTO.getMembershipId() + " " + membershipListDTO.getFullName());
                     membershipIdRepository.insert(newMembershipIdDTO);
+                    }
                 });
     }
-
-//						var newInvoice = new InvoiceDTO(membershipListDTO.getMsId(), yearToAdd);
-//						// insert the new record into the SQL database
-//						SqlInsert.addInvoiceRecord(newInvoice);
-//						logger.info("Added invoice for " + membershipListDTO.getFirstName() + " " + membershipListDTO.getLastName());
-//						// insert items for the invoice
-//						// TODO change dues for each record
-//						createInvoiceItems(newInvoice.getId(), yearToAdd, membershipListDTO.getMsId());
-
-
-
-    private static void createNonItemizedCategories(int invoiceId, Integer year, int msid, DbInvoiceDTO dbInvoiceDTO) {
-        InvoiceItemDTO invoiceItemDTO = invoiceRepository.insertInvoiceItem(
-                new InvoiceItemDTO(0, invoiceId, msid, year, dbInvoiceDTO.getFieldName()
-                , dbInvoiceDTO.isCredit(), "0.00", 0));
-    }
-
-    // creates itemized invoice items
 
     private static String getFieldName(String description, InvoiceItemDTO item) {
         if (description.equals("Wet Slip")) {
