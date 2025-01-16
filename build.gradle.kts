@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -85,14 +86,14 @@ tasks.withType<JavaCompile> {
 }
 
 // Create the fat JAR using shadowJar
-//tasks.named<ShadowJar>("shadowJar") {
-//    archiveBaseName.set("Halyard")
-//    archiveVersion.set("")  // Remove version from file name
-//    archiveClassifier.set("all")  // Add "all" to indicate a fat JAR
-//    manifest {
-//        attributes["Main-Class"] = "com.ecsail.BaseApplication"
-//    }
-//}
+tasks.withType<ShadowJar> {
+    archiveBaseName.set("Halyard")  // Set the base name of the JAR
+    archiveVersion.set("")          // Remove version from file name
+    archiveClassifier.set("all")    // Add "all" to indicate a fat JAR
+    manifest {
+        attributes["Main-Class"] = "com.ecsail.BaseApplication"
+    }
+}
 
 // Create the runtime using `jlink`
 tasks.register<Exec>("generateRuntime") {
