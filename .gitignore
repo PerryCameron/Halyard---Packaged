@@ -32,5 +32,25 @@ target/
 
 # OS
 .DS_Store
+Thumbs.db
+
+# Gradle build output
+/build/
+/out/
+/.gradle/
+
+# Gradle cache and wrapper
+.gradle/cache/
+/.gradle/wrapper/dists/
+/.gradle/wrapper/gradle-wrapper.jar
+
+# Ignore local configurations
+gradle.properties
+
+# Local runtime and distribution
+distributions/
+libs/
+
+# Project-specific files
 /src/main/resources/test_json/submissions.json
 /src/main/java/com/ecsail/jotform/TestJSONProcess.java
