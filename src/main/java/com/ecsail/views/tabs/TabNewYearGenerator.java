@@ -133,7 +133,4 @@ public class TabNewYearGenerator extends Tab {
         }
         return "";
     }
-
-
-
 }

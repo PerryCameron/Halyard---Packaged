@@ -1,0 +1,36 @@
+
+.dialog {
+    -fx-base:#25292D;
+    -fx-font-size: 9pt;
+    -fx-font-family: "Verdana";
+}
+
+.dialog:header *.header-panel {
+    -fx-background-color: #6c7179;
+}
+
+.dialog > *.content.label {
+    -fx-font-size: 15px;
+}
+
+.dialog-pane:header .header-panel .label{
+
+    -fx-background-radius:10px;
+    -fx-text-fill:black;
+    -fx-font-size:20px;
+}
+
+    /**Costumization of Buttons**/
+.dialog-pane .button{
+    -fx-background-color:black;
+    -fx-text-fill:white;
+    -fx-wrap-text: true;
+    -fx-effect: dropshadow( three-pass-box, #1658e7, 2.0, 0.0, 0.0, 0.0);
+    -fx-cursor:hand;
+}
+
+.dialog-pane .button:hover{
+    -fx-background-color:#1658e7;
+    -fx-text-fill:white;
+    -fx-font-weight:bold;
+}

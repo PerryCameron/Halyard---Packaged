@@ -1,0 +1,59 @@
+#invoice-text-light
+{
+    -fx-fill:white;
+}
+
+#invoice-text-credit
+{
+    -fx-fill: #921111;
+}
+
+#invoice-text-fee
+{
+    -fx-fill:green
+}
+
+#invoice-text-black
+{
+    -fx-fill:black;
+}
+
+#invoice-header
+{
+    -fx-fill:white;
+    -fx-font-weight: bold;
+}
+
+#invoice-text-number
+{
+    -fx-fill:white;
+    -fx-font-weight: bold;
+}
+
+#invoice-text-label
+{
+    -fx-fill:black;
+    -fx-font-weight: bold;
+}
+
+#invoice-warning-text-label
+{
+    -fx-fill: #820d0d;
+    -fx-font-weight: bold;
+}
+
+.custom-titlepane .content {
+    -fx-border-width: 0;
+}
+
+.custom-titlepane > .title {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 3 3 0 0, 2 2 0 0, 1 1 0 0;
+    -fx-padding: 0.3333em 0.75em 0.3333em 0.75em; /* 4 9 4 9 */
+}
+
+.custom-titlepane > .title:hover {
+    -fx-background-color: #1658e7;
+}
+

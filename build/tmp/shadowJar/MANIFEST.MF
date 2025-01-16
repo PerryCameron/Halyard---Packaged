@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Implementation-Version: 5ab513d.dirty
+Main-Class: com.ecsail.BaseApplication
+
