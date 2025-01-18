@@ -3,6 +3,7 @@ package com.ecsail.views.dialogues;
 
 import com.ecsail.BaseApplication;
 import com.ecsail.pdf.PDF_Envelope;
+import com.ecsail.pdf.PDF_Envelope_many;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
@@ -21,18 +22,18 @@ import javafx.util.Builder;
 import java.io.IOException;
 import java.util.Objects;
 
-public class Dialogue_EnvelopePDF extends Stage implements Builder {
+public class Dialogue_EnvelopePDF extends Stage implements Builder<Scene> {
 
 	private boolean printOne = true;
 	private boolean printCatalogue = false;
-	private StringProperty membershipId = new SimpleStringProperty();
+	private final StringProperty membershipId = new SimpleStringProperty();
 
 	public Dialogue_EnvelopePDF() {
 		this.setScene((Scene) build());
 	}
 
 	@Override
-	public Object build() {
+	public Scene build() {
 		VBox vboxBlue = new VBox();
 		vboxBlue.setId("box-frame-dark");
 		vboxBlue.setPadding(new Insets(10, 10, 10, 10));
@@ -78,7 +79,10 @@ public class Dialogue_EnvelopePDF extends Stage implements Builder {
 		Button button = new Button("Create Envelope PDF");
 		button.setOnAction(e -> {
 			try {
-				new PDF_Envelope(printOne, printCatalogue, membershipId.get());
+				if(printOne)
+					new PDF_Envelope(printCatalogue, membershipId.get());
+				else
+					new PDF_Envelope_many(printCatalogue);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -123,9 +127,9 @@ public class Dialogue_EnvelopePDF extends Stage implements Builder {
 		r2.setSelected(true);
 		tg.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
-				printCatalogue = (boolean) newValue.getUserData();
+				printOne = (boolean) newValue.getUserData(); // Use userData for true/false
 			}
-		});
+		});;
 		vBox.getChildren().addAll(r1,r2);
 		return vBox;
 	}

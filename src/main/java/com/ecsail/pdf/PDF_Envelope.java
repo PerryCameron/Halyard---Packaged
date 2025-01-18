@@ -50,14 +50,15 @@ public class PDF_Envelope {
 	PdfFont font;
 	private boolean isOneMembership;
 	
-	public PDF_Envelope(boolean iom, boolean isCatalog, String membershipId) throws IOException {
+	public PDF_Envelope(boolean isCatalog, String membershipId) throws IOException {
 		this.year= LocalDate.now().getYear();
 		this.appSettingsRepository = new AppSettingsRepositoryImpl();
 		this.membershipRepository = new MembershipRepositoryImpl();
 		this.membershipIdRepository = new MembershipIdRepositoryImpl();
 		HalyardPaths.checkPath(HalyardPaths.ECSC_HOME);
+		if(!membershipId.isEmpty())
 		this.current_membership_id = Integer.parseInt(membershipId);
-		this.isOneMembership = iom;
+//		this.isOneMembership = iom;
 		this.membershipChair = membershipRepository.getCurrentMembershipChair();
 
 		if(System.getProperty("os.name").equals("Windows 10"))
@@ -102,14 +103,14 @@ public class PDF_Envelope {
 		Document doc = new Document(pdf, new PageSize(envelope));
 		doc.setTopMargin(0);
 		doc.setLeftMargin(0.25f);
-		if(isOneMembership) {
+//		if(isOneMembership) {
 			membershipListDTO = membershipRepository.getMembershipListByIdAndYear(current_membership_id, year);
 		doc.add(createReturnAddress());
 		doc.add(new Paragraph(new Text("\n\n\n\n\n")));
 		doc.add(createAddress());
-		} else {
-			buildAddress(doc);
-		}
+//		} else {
+//			buildAddress(doc);
+//		}
 		doc.close();
 	}
 	
@@ -125,14 +126,14 @@ public class PDF_Envelope {
 		Document doc = new Document(pdf, new PageSize(envelope));
 		doc.setTopMargin(0);
 		doc.setLeftMargin(0.25f);
-		if(isOneMembership) {
+//		if(isOneMembership) {
 			membershipListDTO = membershipRepository.getMembershipListByIdAndYear(current_membership_id, year);
 		doc.add(createReturnAddress());
 		doc.add(new Paragraph(new Text("\n\n\n\n\n\n\n\n\n")));
 		doc.add(createAddress());
-		} else {
-			buildAddress(doc);
-		}
+//		} else {
+//			buildAddress(doc);
+//		}
 		doc.close();
 	}
 

@@ -89,7 +89,7 @@ public class HBoxProperties extends HBox implements Builder {
         hBox.getChildren().addAll(new Label("Print Envelope"), button, r1, r2);
         button.setOnAction(e -> {
             try {
-                new PDF_Envelope(true, r2.isSelected(), String.valueOf(parent.getModel().getMembership().getMembershipId()));
+                new PDF_Envelope(r2.isSelected(), String.valueOf(parent.getModel().getMembership().getMembershipId()));
             } catch (IOException e1) {
                 e1.printStackTrace();
             } catch (java.io.IOException ex) {
