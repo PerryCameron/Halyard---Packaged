@@ -134,7 +134,7 @@ tasks.register<Exec>("packageAppMac") {
         "--type", "dmg",  // Type of package: "dmg" for macOS
         "--runtime-image", "build/runtime",  // Path to custom runtime image
         "--dest", "build/jpackage",  // Output directory
-        "--icon", "src/main/resources/images/TSELogo.icns"  // macOS .icns icon
+        "--icon", "src/main/resources/images/app-icon.icns"  // macOS .icns icon
     )
 }
 
@@ -157,30 +157,32 @@ tasks.register<Exec>("packageAppWindows") {
         "--runtime-image", "/Users/parrishcameron/.sdkman/candidates/java/17.0.11.fx-librca",
         "--dest", "build/jpackage/HalyardInstaller",
         "--install-dir", System.getenv("UserProfile") + "/Halyard",
-        "--icon", "src/main/resources/images/TSELogo.ico",
+        "--icon", "src/main/resources/images/app-icon.ico",
         "--win-menu",
         "--win-shortcut",
         "--win-console"
     )
 }
 
-        tasks.register("generateBuildInfoProperties") {
-            doLast {
-                // Create timestamp
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                val buildTimestamp = dateFormat.format(Date())
-                val javaVersion = System.getProperty("java.version") ?: "Unknown"
+tasks.register("generateBuildInfoProperties") {
+    doLast {
+        // Create timestamp
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val buildTimestamp = dateFormat.format(Date())
+        val javaVersion = System.getProperty("java.version") ?: "Unknown"
 
-                // Generate the properties file
-                val propertiesFile = file("src/main/resources/version.properties")
-                propertiesFile.parentFile.mkdirs()
-                propertiesFile.writeText("""
+        // Generate the properties file
+        val propertiesFile = file("src/main/resources/version.properties")
+        propertiesFile.parentFile.mkdirs()
+        propertiesFile.writeText(
+            """
            version=${project.version}
            build.timestamp=$buildTimestamp
            java.version=$javaVersion
-       """.trimIndent())
-            }
-        }
+       """.trimIndent()
+        )
+    }
+}
 
 // Ensure build info is generated during the build
 tasks.processResources {
