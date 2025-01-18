@@ -9,6 +9,7 @@ import com.ecsail.plugin.FileDrop;
 import com.ecsail.plugin.LogFile;
 import com.ecsail.plugin.SearchToolBar;
 import com.ecsail.plugin.StandardMenus;
+import com.ecsail.static_check.VersionUtil;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -64,25 +65,11 @@ public class BaseApplication extends Application implements Log {
     public static void main(String[] args) {
         setUpForFirstTime();
 //        startFileLogger(); // comment out for testing
-        logger.info("Starting Halyard: Version " + getAppVersion());
+        logger.info("Starting Halyard: Version " + VersionUtil.getVersion());
         loadProperties();
         launch(args);
     }
 
-    public static String getAppVersion() {
-        try (InputStream input = BaseApplication.class.getClassLoader().getResourceAsStream("app.properties")) {
-            Properties prop = new Properties();
-            if (input == null) {
-                logger.error("Sorry, unable to find app.properties");
-                return null;
-            }
-            prop.load(input);
-            return prop.getProperty("app.version");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
     private static Properties properties = new Properties();
     private static void loadProperties() {
         try (InputStream input = BaseApplication.class.getClassLoader().getResourceAsStream("app.properties")) {
