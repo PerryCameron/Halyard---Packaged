@@ -6,4 +6,13 @@ see it again.  If you reboot the fee tab it is gone.
 In Dialogue_DepositPDF, if deposit is empty it will throw an exception - low priority
 
 
+./gradlew clean
+./gradlew build
+./gradlew shadowJar
+./gradlew generateRuntime
+./gradlew packageAppMac
+
+
+
+
 

@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.palantir.gradle.gitversion.VersionDetails
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -12,8 +13,14 @@ plugins {
 group = "com.ecsail"
 
 // Retrieve the Git version directly from the project object
-val gitVersion: groovy.lang.Closure<String> by extra
-version = gitVersion()
+//val gitVersion: String by extra { versionDetails().version }
+//val gitVersion: groovy.lang.Closure<String> by extra
+//version = gitVersion()
+
+val versionDetails: groovy.lang.Closure<VersionDetails> by extra
+val gitVersion: String = versionDetails().version
+println("Git Version: $gitVersion")
+version = gitVersion
 
 application {
     // Main class for the application
@@ -133,6 +140,7 @@ tasks.register<Exec>("packageAppMac") {
         "--name", "Halyard",  // Name of the app
         "--type", "dmg",  // Type of package: "dmg" for macOS
         "--runtime-image", "build/runtime",  // Path to custom runtime image
+        "--app-version", project.version.toString(),  // Use dynamically set version
         "--dest", "build/jpackage",  // Output directory
         "--icon", "src/main/resources/images/app-icon.icns"  // macOS .icns icon
     )

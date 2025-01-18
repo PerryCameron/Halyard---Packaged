@@ -67,7 +67,7 @@ public class BaseApplication extends Application implements Log {
     @Override
     public void init() {
         setUpForFirstTime();
-//        startFileLogger(); // comment out for testing
+        startFileLogger();
         logger.info("Starting Halyard: Version " + VersionUtil.getVersion());
         loadProperties();
     }
