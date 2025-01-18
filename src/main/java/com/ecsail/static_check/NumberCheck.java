@@ -1,4 +1,4 @@
-package com.ecsail.datacheck;
+package com.ecsail.static_check;
 
 import java.math.BigDecimal;
 
