@@ -57,14 +57,14 @@ public class CreateMembership {
                 }
             };
             task.setOnSucceeded(succeed -> {
-                        MembershipListDTO membershipListDTO = ((Task<MembershipListDTO>) succeed.getSource()).getValue();
-                        logger.info("Membership with msId=" + membershipListDTO.getMsId() + " Created");
-                        BaseApplication.activeMemberships.add(membershipListDTO);
-                        Launcher.createMembershipTabForRoster(membershipListDTO.getMembershipId(), membershipListDTO.getMsId());
-                        BaseApplication.logger.info("Created membership");
-                        dialogue.closeDialogue();
-                    }
-            );
+                @SuppressWarnings("unchecked")
+                MembershipListDTO membershipListDTO = ((Task<MembershipListDTO>) succeed.getSource()).getValue();
+                logger.info("Membership with msId=" + membershipListDTO.getMsId() + " Created");
+                BaseApplication.activeMemberships.add(membershipListDTO);
+                Launcher.createMembershipTabForRoster(membershipListDTO.getMembershipId(), membershipListDTO.getMsId());
+                BaseApplication.logger.info("Created membership");
+                dialogue.closeDialogue();
+            });
             task.setOnFailed(fail -> {
                 setMessage("Membership Creation failed", dialogue);
                 dialogue.addCloseButton();

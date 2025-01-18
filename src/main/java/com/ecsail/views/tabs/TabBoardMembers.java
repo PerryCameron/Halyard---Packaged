@@ -187,7 +187,7 @@ public class TabBoardMembers extends Tab {
 	private void addOfficers() {
 		BaseApplication.boardPositions.stream()
 				.filter(p -> p.isOfficer())
-				.map(offType -> new Pair(offType.identifier(), getOfficer(offType.identifier())))
+				.map(offType -> new Pair<>(offType.identifier(), getOfficer(offType.identifier())))
 				.filter(pair -> !pair.value.equals(""))
 				.forEach(pair -> {
 					Text officerTitle = new Text(Officer.getByCode(pair.key.toString()));

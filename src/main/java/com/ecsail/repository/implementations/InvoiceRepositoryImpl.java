@@ -648,6 +648,10 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
             return List.of(); // Return an empty list in case of failure
         }
     }
+//    warning: [deprecation] <T>query(String,Object[],RowMapper<T>) in JdbcTemplate has been deprecated
+//            return template.query(query, new Object[]{d.getFiscalYear(), d.getFiscalYear(), d.getBatch()}, new InvoiceItemRowMapper());
+
+
     @Override
     public InvoiceItemDTO getInvoiceItemByYearAndType(int year, String type) {
         InvoiceItemDTO invoiceItemDTO = new InvoiceItemDTO(year, type);

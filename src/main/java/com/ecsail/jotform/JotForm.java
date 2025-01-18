@@ -721,11 +721,12 @@ public class JotForm {
      */
     public JSONObject createForm(Map form) {
         HashMap<String, String> params = new HashMap<>();
-
+        @SuppressWarnings("unchecked")
         Set<String> formKeys = form.keySet();
 
         for(String formKey: formKeys) {
             if(formKey.equals("properties")) {
+                @SuppressWarnings("unchecked")
                 HashMap<String, String> properties = (HashMap<String, String>) form.get(formKey);
                 Set<String> propertyKeys = properties.keySet();
                 for(String propertyKey: propertyKeys) {
@@ -734,9 +735,11 @@ public class JotForm {
             }
             else {
                 Map formItem = (Map) form.get(formKey);
+                @SuppressWarnings("unchecked")
                 Set<String> formItemKeys = formItem.keySet();
 
                 for(String formItemKey: formItemKeys) {
+                    @SuppressWarnings("unchecked")
                     HashMap<String, String> fi = (HashMap<String, String>) formItem.get(formItemKey);
                     Set<String> fiKeys = fi.keySet();
 

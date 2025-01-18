@@ -42,11 +42,9 @@ public class BaseApplication extends Application implements Log {
      */
     private final Plugin[] plugins = new Plugin[]{
             new StandardMenus(),
-//            new HelloWorld(),
             new FileDrop(),
             new SearchToolBar(),
             new LogFile()
-//            new DarkMode()
     };
 
     public static TabPane tabPane;
@@ -63,11 +61,15 @@ public class BaseApplication extends Application implements Log {
 
 
     public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void init() {
         setUpForFirstTime();
 //        startFileLogger(); // comment out for testing
         logger.info("Starting Halyard: Version " + VersionUtil.getVersion());
         loadProperties();
-        launch(args);
     }
 
     private static Properties properties = new Properties();

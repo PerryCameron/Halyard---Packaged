@@ -20,6 +20,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
@@ -154,8 +155,8 @@ public class HBoxOfficer extends HBox {
         /////////////////// SET CONTENT //////////////////
 
         vboxButton.getChildren().addAll(officerAdd, officerDelete);
-        officerTableView.getColumns().addAll(Col1, Col2, Col3);
-        officerTableView.getSortOrder().addAll(Col1);
+        Collections.addAll(officerTableView.getColumns(), Col1, Col2, Col3);
+        officerTableView.getSortOrder().add(Col1);
         vboxPink.getChildren().add(officerTableView);
         officerTableView.sort();
         hboxGrey.getChildren().addAll(vboxPink, vboxButton);
