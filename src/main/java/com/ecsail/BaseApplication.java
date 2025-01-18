@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Properties;
 
-import static com.ecsail.HalyardPaths.LOGFILEDIR;
+import static com.ecsail.HalyardPaths.LOG_FILE_DIR;
 
 public class BaseApplication extends Application implements Log {
 
@@ -101,7 +101,7 @@ public class BaseApplication extends Application implements Log {
 
     private static void startFileLogger() {
         try {
-            outputFile = File.createTempFile("debug", ".log", new File(LOGFILEDIR));
+            outputFile = File.createTempFile("debug", ".log", new File(LOG_FILE_DIR));
             PrintStream output = new PrintStream(new BufferedOutputStream(new FileOutputStream(outputFile)), true);
             System.setOut(output);
             System.setErr(output);

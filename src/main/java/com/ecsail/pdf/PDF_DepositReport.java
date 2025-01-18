@@ -78,11 +78,11 @@ public class PDF_DepositReport {
 		// Initialize PDF writer
 		PdfWriter writer = null;
 		// Check to make sure directory exists and if not create it
-		HalyardPaths.checkPath(HalyardPaths.DEPOSITREPORTPATH + "/" + depositDTO.getFiscalYear());
+		HalyardPaths.checkPath(HalyardPaths.DEPOSIT_REPORT_PATH + "/" + depositDTO.getFiscalYear());
 		if (pdfOptions.isSingleDeposit()) { // are we only creating a report of a single deposit
-			dest = HalyardPaths.DEPOSITREPORTPATH + "/" + depositDTO.getFiscalYear() + "/Deposit_Report_" + depositDTO.getBatch() + "_" + depositDTO.getFiscalYear() + ".pdf";
+			dest = HalyardPaths.DEPOSIT_REPORT_PATH + "/" + depositDTO.getFiscalYear() + "/Deposit_Report_" + depositDTO.getBatch() + "_" + depositDTO.getFiscalYear() + ".pdf";
 		} else { // we are creating a report for the entire year
-			dest = HalyardPaths.DEPOSITREPORTPATH + "/" + depositDTO.getFiscalYear() + "/Deposit_Report_Fiscal_Year_" + depositDTO.getFiscalYear() + ".pdf";
+			dest = HalyardPaths.DEPOSIT_REPORT_PATH + "/" + depositDTO.getFiscalYear() + "/Deposit_Report_Fiscal_Year_" + depositDTO.getFiscalYear() + ".pdf";
 		}
 
 		try {

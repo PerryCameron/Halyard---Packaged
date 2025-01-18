@@ -301,7 +301,7 @@ public class HBoxPerson extends HBox {
 
 
     private ImageView getMemberPhoto() {
-        Image memberPhoto = new Image(Objects.requireNonNull(getClass().getResourceAsStream(HalyardPaths.DEFAULTPHOTO)));
+        Image memberPhoto = new Image(Objects.requireNonNull(getClass().getResourceAsStream(HalyardPaths.DEFAULT_PHOTO)));
         return new ImageView(memberPhoto);
     }
 

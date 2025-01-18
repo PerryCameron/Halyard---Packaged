@@ -1,7 +1,6 @@
 package com.ecsail.pdf;
 
 
-import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.repository.implementations.BoatRepositoryImpl;
 import com.ecsail.repository.implementations.MembershipIdRepositoryImpl;
@@ -44,8 +43,8 @@ public class PDF_BoatReport {
         // Initialize PDF writer
         PdfWriter writer = null;
         // Check to make sure directory exists and if not create it
-        HalyardPaths.checkPath(HalyardPaths.BOATLISTS + "/" + String.valueOf(Year.now().getValue()));
-        String dest = HalyardPaths.BOATLISTS+ "/" + Year.now().getValue() + "/BoatList_" + HalyardPaths.getDate() + ".pdf";
+        HalyardPaths.checkPath(HalyardPaths.BOAT_LISTS + "/" + String.valueOf(Year.now().getValue()));
+        String dest = HalyardPaths.BOAT_LISTS + "/" + Year.now().getValue() + "/BoatList_" + HalyardPaths.getDate() + ".pdf";
 
         try {
             writer = new PdfWriter(dest);

@@ -56,7 +56,7 @@ public class PDF_Renewal_Form {
 		PDF_Renewal_Form.year = y;
 		PDF_Renewal_Form.current_membership_id = membershipId;
 		// Check if our path exists, if not create it
-		HalyardPaths.checkPath(HalyardPaths.RENEWALFORM + "/" + year);
+		HalyardPaths.checkPath(HalyardPaths.RENEWAL_FORM + "/" + year);
 
 		// add tables here
 		if (isOneMembership) { // we are only printing one membership
@@ -81,7 +81,7 @@ public class PDF_Renewal_Form {
 	}
 	
 	private void makeManyMembershipsIntoOnePDF() throws IOException {
-		filenm = HalyardPaths.RENEWALFORM + "/" + year + "/" + year + "_Renewal_Forms.pdf";
+		filenm = HalyardPaths.RENEWAL_FORM + "/" + year + "/" + year + "_Renewal_Forms.pdf";
 		Document document = createDocument(filenm);
 		ids = membershipIdRepository.getAllMembershipIdsByYear(Integer.parseInt(year));
 		ids.sort(Comparator.comparing(MembershipIdDTO::getMembershipId));
@@ -151,7 +151,7 @@ public class PDF_Renewal_Form {
 	private Document makeRenewPdf() throws IOException {
 		gatherMembershipInformation();  // gets all relevant info for membership obviously
 		// create a custom file name with gathered information
-		filenm = HalyardPaths.RENEWALFORM + "/" + year + "/" + year + "_Renewal_Form_"
+		filenm = HalyardPaths.RENEWAL_FORM + "/" + year + "/" + year + "_Renewal_Form_"
 				+ primary.getLastName() + "_" + membership.getMembershipId() + ".pdf";
 		// create the document
 		Document document = createDocument(filenm);

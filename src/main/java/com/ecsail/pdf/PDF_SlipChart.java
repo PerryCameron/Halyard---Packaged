@@ -41,8 +41,8 @@ public class PDF_SlipChart {
 	}
 
 	public File createChart() {
-		HalyardPaths.checkPath(HalyardPaths.SLIPCHART);
-		File file = new SaveFileChooser(HalyardPaths.SLIPCHART + "/", "SlipChart_" + HalyardPaths.getDate() + ".pdf", "PDF files",
+		HalyardPaths.checkPath(HalyardPaths.SLIP_CHART);
+		File file = new SaveFileChooser(HalyardPaths.SLIP_CHART + "/", "SlipChart_" + HalyardPaths.getDate() + ".pdf", "PDF files",
 				"*.pdf").getFile();
 		if (file != null) {
 			PdfWriter writer = null;

@@ -47,7 +47,7 @@ public class PDF_MembershipReport {
         // Initialize PDF writer
         PdfWriter writer = null;
         // Check to make sure directory exists and if not create it
-        HalyardPaths.checkPath(HalyardPaths.BOATLISTS + "/" + String.valueOf(Year.now().getValue()));
+        HalyardPaths.checkPath(HalyardPaths.BOAT_LISTS + "/" + String.valueOf(Year.now().getValue()));
         String dest = HalyardPaths.ECSC_HOME + "/MembershipReport_" + HalyardPaths.getDate() + ".pdf";
 
         try {
