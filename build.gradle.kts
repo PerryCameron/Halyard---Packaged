@@ -128,6 +128,9 @@ tasks.register<Exec>("packageAppMac") {
     group = "build"
     description = "Packages the application with a bundled JRE for macOS using jpackage"
 
+    val sanitizedVersion = sanitizeVersion(project.version.toString())  // For jpackage compliance
+    val fileNameVersion = fileNameVersion(project.version.toString())  // Full version for the final filename
+
     doFirst {
         delete(file("build/jpackage/Halyard"))
     }
@@ -140,10 +143,35 @@ tasks.register<Exec>("packageAppMac") {
         "--name", "Halyard",  // Name of the app
         "--type", "dmg",  // Type of package: "dmg" for macOS
         "--runtime-image", "build/runtime",  // Path to custom runtime image
-        "--app-version", project.version.toString(),  // Use dynamically set version
+        "--app-version", sanitizedVersion,  // Sanitized version
         "--dest", "build/jpackage",  // Output directory
         "--icon", "src/main/resources/images/app-icon.icns"  // macOS .icns icon
     )
+
+    doLast {
+        val dmgFile = file("build/jpackage/Halyard-$sanitizedVersion.dmg")
+        val renamedFile = file("build/jpackage/Halyard-$fileNameVersion.dmg")
+        if (dmgFile.exists()) {
+            dmgFile.renameTo(renamedFile)
+            println("Packaged application: ${renamedFile.name}")
+        } else {
+            println("DMG file not found!")
+        }
+    }
+
+    doLast {
+        println("Packaged Halyard version: $sanitizedVersion")
+    }
+}
+
+fun sanitizeVersion(version: String): String {
+    val regex = Regex("""(\d+)\.(\d+)\.(\d+)""") // Matches the first valid X.Y.Z format
+    return regex.find(version)?.value ?: "1.0.0" // Default to "1.0.0" if no match
+}
+
+fun fileNameVersion(version: String): String {
+    val regex = Regex("""(\d+)\.(\d+)\.(\d+)-(\d+)""") // Matches X.Y.Z-x format
+    return regex.find(version)?.value ?: "1.0.0-0" // Default to "1.0.0-0" if no match
 }
 
 // Task for Windows (adjusted for app name "Halyard")
