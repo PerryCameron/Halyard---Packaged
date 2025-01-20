@@ -25,6 +25,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -102,9 +103,14 @@ public class TabPeople extends Tab {
 		
 		Col8 = new TableColumn<>("Active");
 		Col8.setCellValueFactory(new PropertyValueFactory<>("active"));
-		
-		personTableView.getColumns().addAll(Col1, Col2, Col3, Col4, Col5, Col6, Col8);
-		
+
+		personTableView.getColumns().add(Col1);
+		personTableView.getColumns().add(Col2);
+		personTableView.getColumns().add(Col3);
+		personTableView.getColumns().add(Col4);
+		personTableView.getColumns().add(Col5);
+		personTableView.getColumns().add(Col6);
+		personTableView.getColumns().add(Col8);
 		personTableView.setRowFactory(tv -> {
 	        TableRow<PersonDTO> row = new TableRow<>();
 	        row.setOnMouseClicked(event -> {

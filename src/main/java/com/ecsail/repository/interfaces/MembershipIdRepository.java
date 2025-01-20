@@ -26,10 +26,6 @@ public interface MembershipIdRepository {
     boolean membershipIdBlankRowExists(String msid);
     void deleteBlankMembershipIdRow();
     void deleteMembershipId(int msId);
-
     int rowExists(MembershipIdDTO membershipIdDTO);
-
     void updateMembershipId(int msId, int year, boolean value);
-
-    Boolean currentMembershipIdExists(int msId);
 }

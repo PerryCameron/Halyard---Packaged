@@ -158,33 +158,37 @@ public class SlipRepositoryImpl implements SlipRepository {
             logger.error("Unable to update slip MS_ID: " + e.getMessage());
         }
     }
+
     @Override
     public boolean existsSlipWithMsId(int msId) {
         String sql = "SELECT EXISTS (SELECT 1 FROM slip WHERE MS_ID = ?)";
         try {
-            Integer count = template.queryForObject(sql, new Object[]{msId}, Integer.class);
-            return count != null && count > 0;
+            return Boolean.TRUE.equals(
+                    template.queryForObject(sql, (rs, rowNum) -> rs.getBoolean(1), msId)
+            );
         } catch (DataAccessException e) {
-            logger.error("Error while checking existence of slip with MS_ID: " + e.getMessage());
-            return false; // Or rethrow the exception as per your application's requirements
+            logger.error("Error while checking existence of slip with MS_ID: {}", e.getMessage());
+            return false; // Return false in case of an error
         }
     }
+
     @Override
     public List<Object_SlipInfo> getSlipsForDock(String dock) {
         String query = """
-            SELECT slip_num, subleased_to, f_name, l_name
-            FROM slip s
-            LEFT JOIN membership m ON s.ms_id = m.ms_id
-            LEFT JOIN person p ON m.p_id = p.p_id
-            WHERE slip_num LIKE ?
-            """;
+        SELECT slip_num, subleased_to, f_name, l_name
+        FROM slip s
+        LEFT JOIN membership m ON s.ms_id = m.ms_id
+        LEFT JOIN person p ON m.p_id = p.p_id
+        WHERE slip_num LIKE ?
+        """;
         try {
-            return template.query(query, new Object[]{dock + "%"}, new SlipInfoRowMapper());
+            return template.query(query, new SlipInfoRowMapper(), dock + "%");
         } catch (DataAccessException e) {
             logger.error("Unable to retrieve information", e);
             return List.of(); // Return an empty list in case of failure
         }
     }
+
     @Override
     public List<SlipDTO> getSlips() {
         String query = "SELECT * FROM slip";

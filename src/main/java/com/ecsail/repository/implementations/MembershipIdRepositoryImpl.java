@@ -99,10 +99,10 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
     public boolean isRenewedByMsidAndYear(int ms_id, String year) {
         String query = "SELECT renew FROM membership_id WHERE fiscal_year = ? AND ms_id = ?";
         try {
-            Boolean renew = template.queryForObject(query, new Object[]{year, ms_id}, Boolean.class);
+            Boolean renew = template.queryForObject(query, (rs, rowNum) -> rs.getBoolean("renew"), year, ms_id);
             return renew != null && renew;
         } catch (DataAccessException e) {
-            logger.error("membership id record does not exist for ms_id " + ms_id + " for year " + year, e);
+            logger.error("membership id record does not exist for ms_id {} for year {}", ms_id, year, e);
             return false; // Default to false in case of an error
         }
     }
@@ -130,7 +130,7 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
     public int getNonRenewNumber(int year) {
         String query = "SELECT COUNT(*) FROM membership_id WHERE fiscal_year = ? AND renew = false";
         try {
-            return template.queryForObject(query, new Object[]{year}, Integer.class);
+            return template.queryForObject(query, (rs, rowNum) -> rs.getInt(1), year);
         } catch (DataAccessException e) {
             logger.error("Unable to retrieve information", e);
             return 0; // Return 0 in case of an error or no records found
@@ -141,12 +141,13 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
     public int getMsidFromYearAndMembershipId(int year, String membershipId) {
         String query = "SELECT ms_id FROM membership_id WHERE fiscal_year = ? AND membership_id = ?";
         try {
-            return template.queryForObject(query, new Object[]{year, membershipId}, Integer.class);
+            return template.queryForObject(query, (rs, rowNum) -> rs.getInt("ms_id"), year, membershipId);
         } catch (DataAccessException e) {
-            logger.error("Unable to retrieve information", e);
+            logger.error("Unable to retrieve information for year: {} and membershipId: {}", year, membershipId, e);
             return 0; // Return 0 in case of an error or no records found
         }
     }
+
 
     @Override
     public int update(MembershipIdDTO membershipIdDTO) {
@@ -193,42 +194,55 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
         membershipIdDTO.setmId(keyHolder.getKey().intValue());
         return membershipIdDTO;
     }
+
     @Override
     public String getMembershipIdByYearAndMsId(String year, int msId) {
         String sql = "SELECT membership_id FROM membership_id WHERE fiscal_year = ? AND ms_id = ?";
         try {
-            return template.queryForObject(sql, new Object[]{year, msId}, String.class);
+            return template.queryForObject(sql, (rs, rowNum) -> rs.getString("membership_id"), year, msId);
         } catch (EmptyResultDataAccessException e) {
             return "none";
         } catch (DataAccessException e) {
-            logger.error("Unable to retrieve information: " + e.getMessage());
+            logger.error("Unable to retrieve information: {}", e.getMessage());
             new Dialogue_ErrorSQL(e, "Unable to retrieve information", "See below for details");
             return "";
         }
     }
+
     @Override
     public int getMembershipIdForNewestMembership(int year) {
         String sql = "SELECT MAX(membership_id) FROM membership_id WHERE fiscal_year = ? AND membership_id < 500";
         try {
-            Integer result = template.queryForObject(sql, new Object[]{year}, Integer.class);
-            return (result != null) ? result : 0;
+            return template.queryForObject(sql, (rs, rowNum) -> rs.getInt(1), year);
         } catch (DataAccessException e) {
-            logger.error("Unable to retrieve highest membership ID: " + e.getMessage());
-            // Handle or rethrow the exception as per your application's requirements
-            return 0;
+            logger.error("Unable to retrieve highest membership ID: {}", e.getMessage());
+            return 0; // Return 0 if an error occurs
         }
     }
+
     @Override
     public boolean membershipIdBlankRowExists(String msid) {
-        String sql = "SELECT EXISTS(SELECT * FROM membership_id WHERE fiscal_year = 0 AND MEMBERSHIP_ID = 0 AND ms_id != ?) AS new_tuple";
+        String sql = """
+        SELECT EXISTS(
+            SELECT * 
+            FROM membership_id 
+            WHERE fiscal_year = 0 
+              AND MEMBERSHIP_ID = 0 
+              AND ms_id != ?
+        ) AS new_tuple
+        """;
         try {
-            return template.queryForObject(sql, new Object[]{msid}, Boolean.class);
+            return Boolean.TRUE.equals(template.queryForObject(
+                    sql,
+                    (rs, rowNum) -> rs.getBoolean("new_tuple"),
+                    msid
+            ));
         } catch (DataAccessException e) {
-            logger.error("Unable to check if a blank membership_id row EXISTS: " + e.getMessage());
-            // Depending on your error handling, you might want to rethrow the exception or return a default value
+            logger.error("Unable to check if a blank membership_id row EXISTS: {}", e.getMessage());
             return false;
         }
     }
+
     @Override
     public void deleteBlankMembershipIdRow() {
         String sql = "DELETE FROM membership_id WHERE fiscal_year = 0 AND membership_id = 0";
@@ -240,6 +254,7 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
             // For example, rethrow it, log it, or return a status indicator
         }
     }
+
     @Override
     public int rowExists(MembershipIdDTO membershipIdDTO) {
         final String sql = """
@@ -252,12 +267,13 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
         try {
             int fiscalYear = Integer.parseInt(membershipIdDTO.getFiscalYear());
             int membershipId = Integer.parseInt(membershipIdDTO.getMembershipId());
-            return template.queryForObject(sql, new Object[]{fiscalYear, membershipId}, Integer.class);
+            return template.queryForObject(sql, (rs, rowNum) -> rs.getInt(1), fiscalYear, membershipId);
         } catch (DataAccessException e) {
-            logger.error("Error checking row existence: " + e.getMessage());
-            return 0; // or a different error handling strategy
+            logger.error("Error checking row existence: {}", e.getMessage());
+            return 0; // Return 0 in case of an error
         }
     }
+
     @Override
     public void updateMembershipId(int msId, int year, boolean value) {
         String query = """
@@ -272,20 +288,5 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
             logger.error("There was a problem with the UPDATE", e);
         }
     }
-    @Override
-    public Boolean currentMembershipIdExists(int msId) {
-        int currentYear = Year.now().getValue();
-        String sql = "SELECT EXISTS(SELECT * FROM membership_id WHERE fiscal_year = ? AND ms_id = ?)";
-        try {
-            return template.queryForObject(sql, new Object[]{currentYear, msId}, Boolean.class);
-        } catch (Exception e) {
-            logger.error("Unable to check if current membership ID exists", e);
-            // Handle exception as required
-            // For example, showing a dialog or rethrowing as a custom exception
-            // new Dialogue_ErrorSQL(e, "Unable to check if EXISTS", "See below for details");
-            return false;
-        }
-    }
-
 
 }
