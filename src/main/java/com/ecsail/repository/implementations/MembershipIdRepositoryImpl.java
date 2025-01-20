@@ -24,9 +24,9 @@ import java.util.List;
 
 public class MembershipIdRepositoryImpl implements MembershipIdRepository {
 
-    public static Logger logger = LoggerFactory.getLogger(MembershipIdRepository.class);
+    public static Logger logger = LoggerFactory.getLogger(MembershipIdRepositoryImpl.class);
     private final JdbcTemplate template;
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public MembershipIdRepositoryImpl() {
         this.template = new JdbcTemplate(BaseApplication.getDataSource());
@@ -164,7 +164,7 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
         try {
             return namedParameterJdbcTemplate.update(query, namedParameters);
         } catch (DataAccessException e) {
-            logger.error("Error updating MembershipIdDTO: " + e.getMessage());
+            logger.error("Error updating MembershipIdDTO: {}", e.getMessage());
             return -1;
         }
     }
@@ -180,18 +180,27 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
         try {
             template.update(sql, msId);
         } catch (DataAccessException e) {
-            logger.error("Unable to DELETE membership_id: " + e.getMessage());
+            logger.error("Unable to DELETE membership_id: {}", e.getMessage());
         }
     }
 
     @Override
     public MembershipIdDTO insert(MembershipIdDTO membershipIdDTO) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        String query = "INSERT INTO membership_id (FISCAL_YEAR, MS_ID, MEMBERSHIP_ID, RENEW, MEM_TYPE, SELECTED, LATE_RENEW) " +
-                "VALUES (:fiscalYear, :msId, :membershipId, :renew, :memType, :selected, :lateRenew)";
+        String query = """
+        INSERT INTO membership_id (
+            FISCAL_YEAR, MS_ID, MEMBERSHIP_ID, RENEW, MEM_TYPE, SELECTED, LATE_RENEW
+        ) VALUES (
+            :fiscalYear, :msId, :membershipId, :renew, :memType, :selected, :lateRenew
+        )
+    """;
         SqlParameterSource namedParameters = new BeanPropertySqlParameterSource(membershipIdDTO);
-        int affectedRows = namedParameterJdbcTemplate.update(query, namedParameters, keyHolder);
-        membershipIdDTO.setmId(keyHolder.getKey().intValue());
+        int rowsAffected = namedParameterJdbcTemplate.update(query, namedParameters, keyHolder);
+        if (rowsAffected > 0 && keyHolder.getKey() != null) {
+            membershipIdDTO.setmId(keyHolder.getKey().intValue());
+        } else {
+            throw new IllegalStateException("Failed to insert membership_id or retrieve generated key.");
+        }
         return membershipIdDTO;
     }
 
@@ -224,10 +233,10 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
     public boolean membershipIdBlankRowExists(String msid) {
         String sql = """
         SELECT EXISTS(
-            SELECT * 
-            FROM membership_id 
-            WHERE fiscal_year = 0 
-              AND MEMBERSHIP_ID = 0 
+            SELECT *
+            FROM membership_id
+            WHERE fiscal_year = 0
+              AND MEMBERSHIP_ID = 0
               AND ms_id != ?
         ) AS new_tuple
         """;
@@ -249,9 +258,7 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
         try {
             template.update(sql);
         } catch (DataAccessException e) {
-            logger.error("Unable to DELETE Blank Membership ID Row: " + e.getMessage());
-            // Depending on your error handling strategy, handle the exception here
-            // For example, rethrow it, log it, or return a status indicator
+            logger.error("Unable to DELETE Blank Membership ID Row: {}", e.getMessage());
         }
     }
 
@@ -259,7 +266,7 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
     public int rowExists(MembershipIdDTO membershipIdDTO) {
         final String sql = """
         SELECT EXISTS(
-            SELECT * FROM membership_id 
+            SELECT * FROM membership_id
             WHERE FISCAL_YEAR = ? AND MEMBERSHIP_ID = ?
         )
         """;
@@ -277,9 +284,9 @@ public class MembershipIdRepositoryImpl implements MembershipIdRepository {
     @Override
     public void updateMembershipId(int msId, int year, boolean value) {
         String query = """
-                   UPDATE membership_id 
-                   SET renew = ? 
-                   WHERE fiscal_year = ? 
+                   UPDATE membership_id
+                   SET renew = ?
+                   WHERE fiscal_year = ?
                    AND ms_id = ?
                    """;
         try {
