@@ -212,11 +212,14 @@ public class HBoxEmail extends HBox {
 
     private void setAddButtonListener(Button emailAdd) {
         emailAdd.setOnAction((event) -> {
-            BaseApplication.logger.info("Added new email entry for " + person.getNameWithInfo());
+            BaseApplication.logger.info("Added new email entry for {}", person.getNameWithInfo());
+            boolean existsPrimary = emailDTOS.stream()
+                    .anyMatch(emailDTO -> emailDTO.isPrimaryUseProperty().get());
+            BaseApplication.logger.info("settting existsPrimary: " + existsPrimary);
             EmailDTO emailDTO = emailRepository.insertEmail(new EmailDTO(
                     0,
                     person.getpId(),
-                    true,
+                    !existsPrimary,
                     "new email",
                     true));
             emailDTOS.add(emailDTO);
