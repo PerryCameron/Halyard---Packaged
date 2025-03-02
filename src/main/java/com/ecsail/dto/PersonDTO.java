@@ -45,7 +45,7 @@ public class PersonDTO {
         this.memberType = new SimpleIntegerProperty(memberType);
         this.firstName = new SimpleStringProperty("");
         this.lastName = new SimpleStringProperty("");
-        this.birthday = new SimpleStringProperty("");
+        this.birthday = new SimpleStringProperty("1900-01-01");
         this.occupation = new SimpleStringProperty("");
         this.business = new SimpleStringProperty("");
         this.active = new SimpleBooleanProperty(isActive);

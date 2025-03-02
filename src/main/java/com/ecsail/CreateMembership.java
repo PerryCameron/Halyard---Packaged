@@ -59,7 +59,7 @@ public class CreateMembership {
             task.setOnSucceeded(succeed -> {
                 @SuppressWarnings("unchecked")
                 MembershipListDTO membershipListDTO = ((Task<MembershipListDTO>) succeed.getSource()).getValue();
-                logger.info("Membership with msId=" + membershipListDTO.getMsId() + " Created");
+                logger.info("Membership with msId={} Created", membershipListDTO.getMsId());
                 BaseApplication.activeMemberships.add(membershipListDTO);
                 Launcher.createMembershipTabForRoster(membershipListDTO.getMembershipId(), membershipListDTO.getMsId());
                 BaseApplication.logger.info("Created membership");
