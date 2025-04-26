@@ -6,9 +6,17 @@ import javafx.beans.property.SimpleStringProperty;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.StringJoiner;
 
 public class StringTools {
+
+	public static String getBirthday(LocalDate birthday) {
+		if (birthday == null) {
+			return "1900-01-01"; // Default to "1900-01-01" when null
+		}
+		return birthday.toString();
+	}
 
 	public static String changeEmptyStringToZero(String input) {
 		if(input != null) {

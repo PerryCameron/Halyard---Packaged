@@ -1,5 +1,6 @@
 package com.ecsail.views.tabs.membership.people;
 
+import com.ecsail.StringTools;
 import com.ecsail.dto.MemoDTO;
 import com.ecsail.enums.MemberType;
 import com.ecsail.repository.implementations.PersonRepositoryImpl;
@@ -82,7 +83,7 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
 					comboBoxProperty.get().getValue().getCode(),
 					textFieldMap.get("First Name").getText(),
 					textFieldMap.get("Last Name").getText(),
-					getBirthday(datePickerProperty.get().getValue()),
+					StringTools.getBirthday(datePickerProperty.get().getValue()),
 					textFieldMap.get("Occupation").getText(),
 					textFieldMap.get("Business").getText(),
 					true));
@@ -118,13 +119,6 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
 //		setComboBoxItems();
 	}
 
-	private String getBirthday(LocalDate birthday) {
-		if (birthday == null) {
-			return "1900-01-01"; // Default to "1900-01-01" when null
-		}
-		return birthday.toString();
-	}
-
 	private Node addComboBox() {
 		HBox hBox = new HBox(); // first name
 		hBox.setPadding(new Insets(5, 15, 10, 60));  // first Name
@@ -150,6 +144,7 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
 		hBox.setPadding(new Insets(5, 15, 10, 60));  // first Name
 		DatePicker datePicker = new DatePicker();
 		datePicker.setPrefSize(240, 10);
+		datePicker.setPromptText("MM/DD/YYYY (defaults to 01/01/1900)");
 		vBox.getChildren().add(datePicker);
 		datePickerProperty.set(datePicker);
 		hBox.getChildren().addAll(addLabel("Birthday"), vBox);

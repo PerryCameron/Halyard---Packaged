@@ -3,6 +3,7 @@ package com.ecsail.views.tabs.membership.people;
 import com.ecsail.BaseApplication;
 import com.ecsail.HalyardPaths;
 import com.ecsail.Launcher;
+import com.ecsail.StringTools;
 import com.ecsail.dto.PersonDTO;
 import com.ecsail.repository.implementations.PersonRepositoryImpl;
 import com.ecsail.repository.interfaces.PersonRepository;
@@ -223,6 +224,7 @@ public class HBoxPerson extends HBox {
         // https://stackoverflow.com/questions/32346893/javafx-datepicker-not-updating-value
         // Apparently datepicker was broken after java 8 and then fixed in java 18
         // this is a work-around until I upgrade this to java 18+
+        birthdayDatePicker.setPromptText("MM/DD/YYYY (defaults to 01/01/1900)");
         birthdayDatePicker.setConverter(new StringConverter<>() {
             private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
@@ -255,7 +257,7 @@ public class HBoxPerson extends HBox {
                     birthdayDatePicker.getEditor().setText(birthdayDatePicker.getConverter().toString(birthdayDatePicker.getValue()));
                 }
                 LocalDate localDate = birthdayDatePicker.getValue();
-                personDTO.setBirthday(localDate.toString());
+                personDTO.setBirthday(StringTools.getBirthday(localDate));
                 personRepository.updatePerson(personDTO);
             }
         });
