@@ -113,8 +113,8 @@ tasks.register<Exec>("generateRuntime") {
 
     commandLine(
         "/Users/parrishcameron/.sdkman/candidates/java/17.0.11.fx-librca/bin/jlink",
-        "--module-path", "/Users/parrishcameron/.sdkman/candidates/java/17.0.11.fx-librca/jmods",
-        "--add-modules", "java.base,java.desktop,java.prefs,java.sql.rowset,javafx.controls,jdk.unsupported",
+        "--module-path", "/Users/parrishcameron/.sdkman/candidates/java/17.0.11.fx-librca/jmods:/Users/parrishcameron/.m2/repository/org/openjfx/javafx-controls/17/javafx-controls-17.jar:/Users/parrishcameron/.m2/repository/org/openjfx/javafx-fxml/17/javafx-fxml-17.jar:/Users/parrishcameron/.m2/repository/org/openjfx/javafx-media/17/javafx-media-17.jar",
+        "--add-modules", "java.base,java.desktop,java.prefs,java.sql.rowset,javafx.controls,javafx.fxml,javafx.media,java.net.http,jdk.crypto.ec,jdk.crypto.cryptoki",
         "--output", "build/runtime",
         "--strip-debug",
         "--compress", "2",
