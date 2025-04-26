@@ -119,13 +119,10 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
 	}
 
 	private String getBirthday(LocalDate birthday) {
-		String date;
-		if(birthday == null) {  /// we don't have to have a date
-			date = null;
-		} else {
-			date = birthday.toString();
+		if (birthday == null) {
+			return "1900-01-01"; // Default to "1900-01-01" when null
 		}
-		return date;
+		return birthday.toString();
 	}
 
 	private Node addComboBox() {
