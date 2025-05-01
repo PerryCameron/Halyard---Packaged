@@ -174,16 +174,20 @@ public class PersonRepositoryImpl implements PersonRepository {
 
     @Override
     public int getPersonAge(PersonDTO person) {
-        String query = "SELECT DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),(SELECT birthday FROM person WHERE p_id = ?))), '%Y')+0 AS AGE";
-        try {
-            return template.queryForObject(
-                    query,
-                    new Object[]{person.getpId()},
-                    Integer.class
-            );
-        } catch (DataAccessException e) {
-            new Dialogue_ErrorSQL(e, "Unable to retrieve information", "See below for details");
-            return 0; // Handle the exception as needed
+        if (person.getBirthday() != null && !person.getBirthday().isEmpty()) {
+            String query = "SELECT DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),(SELECT birthday FROM person WHERE p_id = ?))), '%Y')+0 AS AGE";
+            try {
+                return template.queryForObject(
+                        query,
+                        new Object[]{person.getpId()},
+                        Integer.class
+                );
+            } catch (DataAccessException e) {
+                new Dialogue_ErrorSQL(e, "Unable to retrieve information", "See below for details");
+                return 0; // Handle the exception as needed
+            }
+        } else {
+            return 0;
         }
     }
 
