@@ -53,6 +53,11 @@ public class MembershipTabModel {
         this.labels = new MemLabelsDTO();
     }
 
+    // helper method to get people by type.
+    public PersonDTO getPersonByType(int type) {
+            return people.stream().filter(personDTO -> personDTO.getMemberType() == type).findFirst().orElse(null);
+    }
+
     public TabPane getInformationTabPane() {
         return informationTabPane;
     }

@@ -314,4 +314,6 @@ public class HBoxPerson extends HBox {
     public TabPersonProperties getPropertiesTab() {
         return propertiesTab;
     }
+
+    public TabMembership getTabMembership() { return parent; }
 }  // class end

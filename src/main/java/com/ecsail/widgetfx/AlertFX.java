@@ -24,10 +24,6 @@ public class AlertFX {
                 double primaryY = BaseApplication.primaryStage.getY();
                 double primaryWidth = BaseApplication.primaryStage.getWidth();
                 double primaryHeight = BaseApplication.primaryStage.getHeight();
-
-
-
-
                 alertStage.setX(primaryX + (primaryWidth / 2) - (stageWidth / 2));
                 alertStage.setY(primaryY + (primaryHeight / 2) - (stageHeight / 2));
             }
