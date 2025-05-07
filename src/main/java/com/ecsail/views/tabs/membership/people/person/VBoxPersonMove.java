@@ -86,26 +86,25 @@ public class VBoxPersonMove extends VBox {
                 changeMembershipType(personTabPane, combo_box.getValue());
             }
             if (rb1.isSelected()) {
-                // makes sure this is not a primary person
-                if(person.getMemberType() != 1) {
-                    Optional<ButtonType> result = createConformation(
-                            "Remove person",
-                            "Remove person from membership",
-                            "Are you sure you want to remove " + person.getFullName() + " from this membership?\n\n" +
-                                    "It will leave this person's record free floating in the database, however "
-                                    + person.getNameWithInfo() + " can be looked back up in the People tab and reattached " +
-                                    "to this or another membership."
-                    );
-                    if (result.isPresent() && result.get() == ButtonType.OK) {
-                        // TODO set the secondary to primary if this person is a primary user
+                Optional<ButtonType> result = createConformation(
+                        "Remove person",
+                        "Remove person from membership",
+                        "Are you sure you want to remove " + person.getFullName() + " from this membership?\n\n" +
+                                "It will leave this person's record free floating in the database, however "
+                                + person.getNameWithInfo() + " can be looked back up in the People tab and reattached " +
+                                "to this or another membership."
+                );
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    if (person.getMemberType() != 1) {
                         personRepository.removePersonFromMembership(person);
                         parent.parent.getModel().getPeople().remove(person);
                         removeThisTab(personTabPane);
+                    } else {
+                        replacePrimaryOrSignalError(person, personTabPane, false);
                     }
-                } else // this is a primary person
-                    // is there a secondary?
-                    replacePrimaryOrSignalError(person, personTabPane, false);
+                }
             }
+
             if (rb2.isSelected()) {
                 Optional<ButtonType> result = createConformation(
                         "Delete person from database",
@@ -114,9 +113,6 @@ public class VBoxPersonMove extends VBox {
                         "Are you sure you want to delete " + person.getFullName() + " from this database?");
                 if (result.isPresent() && result.get() == ButtonType.OK) {
                     replacePrimaryOrSignalError(person, personTabPane, true);
-//                    personRepository.deletePerson(person);
-                    // TODO error check to make sure we are in membership view
-//                    removeThisTab(personTabPane);
                 }
             }
             if (rb3.isSelected()) {
@@ -256,6 +252,8 @@ public class VBoxPersonMove extends VBox {
 //            parent.parent.getModel().getPeople().remove(person);
             // in case you run this routine again
             this.person = secondary;
+            System.out.println("here is the person we changed to: " + secondary);
+            System.out.println("here was the original primary: " + this.person);
             // let's remove the primary tab
             personTabPane.getTabs().remove(primaryTab);
             // set the secondary to primary

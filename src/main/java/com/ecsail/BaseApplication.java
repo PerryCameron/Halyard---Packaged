@@ -56,19 +56,24 @@ public class BaseApplication extends Application implements Log {
     public static Stage primaryStage;
     public static String user = "membership";
     public static Label statusLabel;
+    public static boolean testMode = false;
 
     MainModel mainModel;
 
 
     public static void main(String[] args) {
+        if (args[0].equals("test")) testMode = true;
         launch(args);
     }
 
     @Override
     public void init() {
         setUpForFirstTime();
+        logger.info("Starting Halyard: Version {}", VersionUtil.getVersion());
+        if(!testMode)
         startFileLogger();
-        logger.info("Starting Halyard: Version " + VersionUtil.getVersion());
+        else
+            logger.info("Halyard: Running test mode");
         loadProperties();
     }
 
