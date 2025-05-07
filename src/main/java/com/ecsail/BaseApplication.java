@@ -53,7 +53,7 @@ public class BaseApplication extends Application implements Log {
     public static ArrayList<BoardPositionDTO> boardPositions;
     public static ConnectDatabase connect;
     public static String selectedYear;
-    public static Stage stage;
+    public static Stage primaryStage;
     public static String user = "membership";
     public static Label statusLabel;
 
@@ -105,7 +105,7 @@ public class BaseApplication extends Application implements Log {
 
     @Override
     public void start(Stage stage) {
-        BaseApplication.stage = stage;
+        BaseApplication.primaryStage = stage;
 
         BorderPane borderPane = new BorderPane();
 
@@ -166,7 +166,7 @@ public class BaseApplication extends Application implements Log {
     }
 
     public static void connectDatabase() {
-        connect = new ConnectDatabase(stage);
+        connect = new ConnectDatabase(primaryStage);
     }
 
     public static PortForwardingL getSSHConnection() {

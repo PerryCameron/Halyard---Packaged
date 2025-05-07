@@ -38,7 +38,7 @@ public class ProgressIndicatorWindow {
 
     public void show() {
         stage.show();
-        Stage ownerStage = BaseApplication.stage;
+        Stage ownerStage = BaseApplication.primaryStage;
         Bounds bounds = ownerStage.getScene().getRoot().getLayoutBounds();
         double centerX = bounds.getMinX() + bounds.getWidth() / 2.0;
         double centerY = bounds.getMinY() + bounds.getHeight() / 2.0;

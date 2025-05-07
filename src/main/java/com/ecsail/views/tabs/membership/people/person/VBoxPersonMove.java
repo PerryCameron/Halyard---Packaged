@@ -7,6 +7,7 @@ import com.ecsail.enums.MemberType;
 import com.ecsail.repository.interfaces.PersonRepository;
 import com.ecsail.views.tabs.membership.TabMembership;
 import com.ecsail.views.tabs.membership.people.HBoxPerson;
+import com.ecsail.widgetfx.AlertFX;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -25,7 +26,6 @@ public class VBoxPersonMove extends VBox {
         this.person = person;
         this.personRepository = parent.parent.getModel().getPersonRepository();
         TabPane personTabPane = parent.parent.getModel().getPeopleTabPane();
-
 
         // this is to allow a person to be removed from membership only called from TabMembership.class
         try {
@@ -153,6 +153,7 @@ public class VBoxPersonMove extends VBox {
 
     private Optional<ButtonType> createConformation(String title, String header, String content) {
         Alert conformation = new Alert(Alert.AlertType.CONFIRMATION);
+        AlertFX.tieAlertToStage(conformation, 600, 200);
         conformation.setTitle(title);
         conformation.setHeaderText(header);
         conformation.setContentText(content);
@@ -164,6 +165,7 @@ public class VBoxPersonMove extends VBox {
 
     private void createInformation(String s) {
         Alert error = new Alert(Alert.AlertType.ERROR);
+        AlertFX.tieAlertToStage(error, 400, 400);
         error.setTitle("Error");
         error.setHeaderText("Can not remove this person");
         error.setContentText(s);

@@ -34,7 +34,7 @@ public class StandardMenus implements Plugin {
     public void standardMenus() {
 
         Menu file = new Menu("File");
-        MenuItem createScript = Configure("Close Connection", x -> closeConnection(BaseApplication.stage), KeyCode.J);
+        MenuItem createScript = Configure("Close Connection", x -> closeConnection(BaseApplication.primaryStage), KeyCode.J);
         file.getItems().addAll(createScript);
 
         if (!isMac()) {

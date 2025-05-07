@@ -15,7 +15,7 @@ public class SaveFileChooser {
         fileChooser.getExtensionFilters().addAll(new ExtensionFilter(Description, extention));
         fileChooser.setInitialDirectory(new File(directory + "/"));
         fileChooser.setInitialFileName(fileName);
-        this.file = fileChooser.showSaveDialog(BaseApplication.stage);
+        this.file = fileChooser.showSaveDialog(BaseApplication.primaryStage);
 	}
 
 	public File getFile() {

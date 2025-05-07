@@ -21,8 +21,8 @@ public class Dialogue_RenewalForm extends Stage {
 	
 	public Dialogue_RenewalForm() {
 		this.selectedYear= String.valueOf(Year.now().getValue());
-		double centerXPosition = BaseApplication.stage.getX() + BaseApplication.stage.getWidth() / 2d;
-		double centerYPosition = BaseApplication.stage.getY() + BaseApplication.stage.getHeight() / 2d;
+		double centerXPosition = BaseApplication.primaryStage.getX() + BaseApplication.primaryStage.getWidth() / 2d;
+		double centerYPosition = BaseApplication.primaryStage.getY() + BaseApplication.primaryStage.getHeight() / 2d;
 		setOnShown(windowEvent -> {
 			setX(centerXPosition - getWidth() / 2d);
 			setY(centerYPosition - getHeight() / 2d);

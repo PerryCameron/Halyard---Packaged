@@ -13,7 +13,7 @@ public class LoadFileChooser {
         fileChooser.setTitle("Select Image");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.jpeg", "*.bmp"));
         fileChooser.setInitialDirectory(new File(directory + "/"));
-        this.file = fileChooser.showOpenDialog(BaseApplication.stage);
+        this.file = fileChooser.showOpenDialog(BaseApplication.primaryStage);
     }
 
     public File getFile() {
