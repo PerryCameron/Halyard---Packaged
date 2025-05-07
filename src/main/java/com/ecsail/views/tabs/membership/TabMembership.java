@@ -18,6 +18,7 @@ import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.apache.commons.io.output.ClosedOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,13 @@ public class TabMembership extends Tab {
 		super();
 		this.model = new MembershipTabModel(me);
 		this.setText(setTabLabel());
-        logger.info("Opening Membership tab for {}{}", model.getMembership().getMembershipInfo(), getPerson(MemberType.PRIMARY.getCode()).getNameWithInfo());
+		try {
+			String primaryPersonInfo = getPerson(MemberType.PRIMARY.getCode()).getNameWithInfo();
+			logger.info("Opening Membership tab for {}{}", model.getMembership().getMembershipInfo(), primaryPersonInfo);
+		} catch (Exception e) {
+            logger.error("Could not retrieve primary member info {}", e.getMessage());
+		}
+
 		////////// OBJECTS /////////////
 
 		var containerVBox = new VBox();
@@ -76,11 +83,12 @@ public class TabMembership extends Tab {
 		model.getPeopleTabPane().setPrefWidth(560);
 
         ////////// SETTING CONTENT /////////////////
-        
-		model.getPeopleTabPane().getTabs().add(new Tab("Primary", getPrimaryMember()));
-        if(hasPerson(MemberType.SECONDARY.getCode()))
+
+		if(model.hasPerson(MemberType.PRIMARY.getCode()))
+			model.getPeopleTabPane().getTabs().add(new Tab("Primary", getPrimaryMember()));
+        if(model.hasPerson(MemberType.SECONDARY.getCode()))
         	model.getPeopleTabPane().getTabs().add(new Tab("Secondary", getSecondaryMember()));
-		if(hasPerson(MemberType.DEPENDANT.getCode()))
+		if(model.hasPerson(MemberType.DEPENDANT.getCode()))
 			addDependentTabs();
 		model.getPeopleTabPane().getTabs().add(new Tab("Add", new VBoxAddPerson(this)));
 		model.getFiscalTabPane().getTabs().add(new Tab("Slip", new HBoxSlip(this)));
@@ -124,10 +132,6 @@ public class TabMembership extends Tab {
 		return model.getPeople().stream()
 				.filter(personDTO -> personDTO.getMemberType() == memberType)
 				.findFirst().orElse(null);
-	}
-	
-	private boolean hasPerson(int memberType) {
-		return model.getPeople().stream().anyMatch(person -> person.getMemberType() == memberType);
 	}
 
 	private HBoxPerson getSecondaryMember() {

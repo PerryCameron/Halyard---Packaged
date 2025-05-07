@@ -83,5 +83,17 @@ public class StringTools {
 		}
 		return result;
 	}
+
+	public static boolean isValidInteger(String msId) {
+		if (msId == null || msId.trim().isEmpty()) {
+			return false;
+		}
+		try {
+			Integer.parseInt(msId.trim());
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
 	
 }

@@ -53,6 +53,11 @@ public class MembershipTabModel {
         this.labels = new MemLabelsDTO();
     }
 
+    // helper method to see if person is in memory
+    public boolean hasPerson(int memberType) {
+        return people.stream().anyMatch(person -> person.getMemberType() == memberType);
+    }
+
     // helper method to get people by type.
     public PersonDTO getPersonByType(int type) {
             return people.stream().filter(personDTO -> personDTO.getMemberType() == type).findFirst().orElse(null);

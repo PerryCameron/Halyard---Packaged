@@ -2,6 +2,7 @@ package com.ecsail.views.tabs.membership.people.person;
 
 
 import com.ecsail.BaseApplication;
+import com.ecsail.StringTools;
 import com.ecsail.dto.PersonDTO;
 import com.ecsail.enums.MemberType;
 import com.ecsail.models.MembershipTabModel;
@@ -141,6 +142,7 @@ public class VBoxPersonMove extends VBox {
     }
 
     private void removeThisTab(TabPane personTabPane) {
+        if(personTabPane.getSelectionModel().getSelectedItem() != null)
         personTabPane.getTabs().remove(personTabPane.getSelectionModel().getSelectedItem());
     }
 
@@ -276,20 +278,26 @@ public class VBoxPersonMove extends VBox {
     }
 
     private void movePersonByMSidOrSignalError(String msId) {
+        if(!StringTools.isValidInteger(msId)) {
+            createInformation("MSID number format error", msId + " is not a valid MSID");
+            return;
+        }
+
         if(!membershipRepository.memberShipExists(Integer.parseInt(msId))) {
             createInformation("Cannot move this person","No membership with an MSID of " + msId + " found");
             return;
         }
 
         if (person.getMemberType() != 1) {
-            int oldMsid = person.getMsId();
+            // save msid in case we need it later
+            person.setOldMsid(person.getMsId());
+            // move them to dependent as default to prevent problems
             person.setMemberType(3);
-
-            person.setOldMsid(oldMsid);
-            // TODO make sure it is an integer and that this membership exists
+            // set our new MSID
             person.setMsId(Integer.parseInt(msId));
+            // update them in the database
             personRepository.updatePerson(person);
-            // TODO error check to make sure we are in membership view
+            // TODO error check to make sure we are in membership view (added a null check in the method)
             removeThisTab(model.getPeopleTabPane());
         } else {
             createInformation("Cannot remove this person",
