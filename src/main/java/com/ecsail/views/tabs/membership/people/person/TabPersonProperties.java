@@ -20,7 +20,6 @@ public class TabPersonProperties extends Tab implements Builder {
 		super("Properties");
 		this.parent = parent;
 		this.person = p;
-
 		this.personMove = new VBoxPersonMove(person, parent);
 		setContent(build());
 	}

@@ -1,7 +1,6 @@
 package com.ecsail.views.tabs.membership;
 
 
-import com.ecsail.BaseApplication;
 import com.ecsail.dto.MembershipListDTO;
 import com.ecsail.dto.PersonDTO;
 import com.ecsail.enums.MemberType;
@@ -33,10 +32,7 @@ public class TabMembership extends Tab {
 		super();
 		this.model = new MembershipTabModel(me);
 		this.setText(setTabLabel());
-		logger.info("Opening Membership tab for "
-				+ model.getMembership().getMembershipInfo()
-				+ getPerson(MemberType.PRIMARY.getCode()).getNameWithInfo()
-		);
+        logger.info("Opening Membership tab for {}{}", model.getMembership().getMembershipInfo(), getPerson(MemberType.PRIMARY.getCode()).getNameWithInfo());
 		////////// OBJECTS /////////////
 
 		var containerVBox = new VBox();

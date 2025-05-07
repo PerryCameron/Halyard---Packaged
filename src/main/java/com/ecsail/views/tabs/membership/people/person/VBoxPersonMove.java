@@ -12,12 +12,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import java.util.List;
 import java.util.Optional;
 
 // This class is for the options in the properties box inside the person tab
 public class VBoxPersonMove extends VBox {
-    private final PersonDTO person;
+    private PersonDTO person;
     final ComboBox<String> combo_box = new ComboBox<>();
     boolean calledFromMembershipTab = false;
     private final PersonRepository personRepository;
@@ -87,9 +86,8 @@ public class VBoxPersonMove extends VBox {
                 changeMembershipType(personTabPane, combo_box.getValue());
             }
             if (rb1.isSelected()) {
-                List<PersonDTO> people = personRepository.getPeople(person.getMsId());
-                // makes sure there is a secondary to take a primaries place
-                if(checkIfCanRemovePerson(person,people)) {
+                // makes sure this is not a primary person
+                if(person.getMemberType() != 1) {
                     Optional<ButtonType> result = createConformation(
                             "Remove person",
                             "Remove person from membership",
@@ -104,9 +102,9 @@ public class VBoxPersonMove extends VBox {
                         parent.parent.getModel().getPeople().remove(person);
                         removeThisTab(personTabPane);
                     }
-                } else
-                    createInformation(person.getFirstName() + " can not be removed because there is no secondary person to " +
-                        "take their place");
+                } else // this is a primary person
+                    // is there a secondary?
+                    replacePrimaryOrSignalError(person, personTabPane, false);
             }
             if (rb2.isSelected()) {
                 Optional<ButtonType> result = createConformation(
@@ -115,10 +113,10 @@ public class VBoxPersonMove extends VBox {
                                 + " from the database",
                         "Are you sure you want to delete " + person.getFullName() + " from this database?");
                 if (result.isPresent() && result.get() == ButtonType.OK) {
-                    personRepository.deletePerson(person);
-                    parent.parent.getModel().getPeople().remove(person);
+                    replacePrimaryOrSignalError(person, personTabPane, true);
+//                    personRepository.deletePerson(person);
                     // TODO error check to make sure we are in membership view
-                    removeThisTab(personTabPane);
+//                    removeThisTab(personTabPane);
                 }
             }
             if (rb3.isSelected()) {
@@ -147,13 +145,6 @@ public class VBoxPersonMove extends VBox {
         else // this is from people list view
             this.getChildren().addAll(hBox2, hBox3, hbox4);
     }
-
-    private boolean checkIfCanRemovePerson(PersonDTO person, List<PersonDTO> people) {
-        if(person.getMemberType() != 1) return true;
-        else
-            return people.stream().anyMatch(personDTO -> personDTO.getMemberType() == 2);
-    }
-
 
     private void removeThisTab(TabPane personTabPane) {
         Tab thisPersonTab = personTabPane.getSelectionModel().getSelectedItem();
@@ -247,6 +238,39 @@ public class VBoxPersonMove extends VBox {
         personTabPane.getSelectionModel().select(0);
         // set the combo box to hold correct values now that we have changed member type
         setComboBoxValues(1);
+    }
+
+    private void replacePrimaryOrSignalError(PersonDTO originalPrimary, TabPane personTabPane, boolean deletePrimary) {
+        Tab primaryTab = getTab(personTabPane, "Primary");
+        assert primaryTab != null;
+        PersonDTO secondary = personRepository.getPerson(this.person.getMsId(), 2);
+        if(secondary != null) {
+            // either delete or remove from membership
+            if(deletePrimary) {
+                personRepository.deletePerson(originalPrimary);
+            } else {
+                personRepository.removePersonFromMembership(originalPrimary);
+            }
+//            parent.parent.getModel().getPeople().remove(person);
+            // in case you run this routine again
+            this.person = secondary;
+            // let's remove the primary tab
+            personTabPane.getTabs().remove(primaryTab);
+            // set the secondary to primary
+            secondary.setMemberType(MemberType.PRIMARY.getCode());
+            // update them in the database
+            personRepository.updatePerson(secondary);
+            Tab secondaryTab = personTabPane.getTabs()
+                    .stream()
+                    .filter(tab -> "Secondary".equals(tab.getText()))
+                    .findFirst()
+                    .orElse(null);
+
+            if(secondaryTab != null) {
+                secondaryTab.setText("Primary");
+            }
+        } else
+        createInformation(this.person.getFirstName() + " can not be removed because they are the primary member, and there is no secondary to replace them");
     }
 
     // will select tab by text in tab
