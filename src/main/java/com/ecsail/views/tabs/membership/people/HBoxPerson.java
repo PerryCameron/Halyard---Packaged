@@ -22,10 +22,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
 import java.util.Objects;
 
 // TODO need to add ability to switch primary and secondary
@@ -36,7 +40,7 @@ public class HBoxPerson extends HBox {
     private final ObservableList<PersonDTO> people;  // this is only for updating people list when in people list mode
     TabPersonProperties propertiesTab; // this is here for a getter, so I can get to combobox
     private final PersonRepository personRepository = new PersonRepositoryImpl();
-
+    private static final Logger logger = LoggerFactory.getLogger(HBoxPerson.class);
 
     public HBoxPerson(PersonDTO p, TabMembership parent) {
         this.parent = parent;
@@ -215,10 +219,22 @@ public class HBoxPerson extends HBox {
         photo.setOnMouseEntered(en -> hboxPictureFrame.setStyle("-fx-background-color: #201ac9;"));
 
 
-        if (personDTO.getBirthday() != null) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDate date = LocalDate.parse(personDTO.getBirthday(), formatter);
-            birthdayDatePicker.setValue(date);
+        if (personDTO.getBirthday() != null && !personDTO.getBirthday().trim().isEmpty()) {
+            DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                    .appendPattern("[yyyy-MM-dd][MM/dd/yyyy][M/d/yyyy]")
+                    .parseLenient()
+                    .toFormatter(Locale.US);
+            try {
+                LocalDate date = LocalDate.parse(personDTO.getBirthday(), formatter);
+                birthdayDatePicker.setValue(date);
+                logger.info("HBoxPerson: Parsed birthday {} to LocalDate {}", personDTO.getBirthday(), date);
+            } catch (DateTimeParseException e) {
+                logger.warn("HBoxPerson: Failed to parse birthday '{}': {}", personDTO.getBirthday(), e.getMessage());
+                birthdayDatePicker.setValue(null);
+            }
+        } else {
+            logger.info("HBoxPerson: Birthday is null or empty for personDTO");
+            birthdayDatePicker.setValue(null);
         }
         // This is a hack I got from here
         // https://stackoverflow.com/questions/32346893/javafx-datepicker-not-updating-value

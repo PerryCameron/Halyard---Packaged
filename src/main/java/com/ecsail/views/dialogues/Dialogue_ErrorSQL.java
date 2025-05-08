@@ -1,5 +1,6 @@
 package com.ecsail.views.dialogues;
 
+import com.ecsail.widgetfx.AlertFX;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
@@ -17,6 +18,7 @@ public class Dialogue_ErrorSQL {
 		alert.setTitle("SQL Exception Dialog");
 		alert.setHeaderText(header);
 		alert.setContentText(content);
+		AlertFX.tieAlertToStage(alert, 400, 600);
 
 
 		// Create expandable Exception.

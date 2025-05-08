@@ -19,9 +19,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.Builder;
+import javafx.util.StringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -68,6 +73,51 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
         });
     }
 
+//    private Node addButtonBox() {
+//        HBox hBox = new HBox();
+//        Button addButton = new Button("Add");
+//        hBox.setAlignment(Pos.CENTER_RIGHT);
+//        hBox.setSpacing(25);
+//        hBox.setPadding(new Insets(5, 100, 5, 5));
+//        hBox.getChildren().addAll(addButton);
+//        addButton.setOnAction(event -> {
+//            Task<PersonDTO> task = new Task<>() {
+//                @Override
+//                protected PersonDTO call() {
+//                    return tabMembership.getModel().getPersonRepository().insertPerson(
+//                            new PersonDTO(
+//                                    tabMembership.getModel().getMembership().getMsId(),
+//                                    comboBoxProperty.get().getValue().getCode(),
+//                                    textFieldMap.get("First Name").getText(),
+//                                    textFieldMap.get("Last Name").getText(),
+//                                    StringTools.getBirthday(datePickerProperty.get().getValue()),
+//                                    textFieldMap.get("Occupation").getText(),
+//                                    textFieldMap.get("Business").getText(),
+//                                    true
+//                            )
+//                    );
+//                }
+//            };
+//            task.setOnSucceeded(e -> {
+//                Platform.runLater(() -> {
+//                    PersonDTO personDTO = task.getValue();
+//                    tabMembership.getModel().getPeople().add(personDTO);
+//                    logNewPerson(personDTO);
+//                    openNewPersonTab(personDTO);
+//                    clearAddMemberBox();
+//                    setComboBoxItems(); // Ensure ComboBox is updated
+//                });
+//            });
+//            task.setOnFailed(e -> {
+//                Platform.runLater(() -> {
+//                    new Dialogue_ErrorSQL((Exception) task.getException(), "Error adding person", "See below for details");
+//                });
+//            });
+//            new Thread(task).start();
+//        });
+//        return hBox;
+//    }
+
     private Node addButtonBox() {
         HBox hBox = new HBox();
         Button addButton = new Button("Add");
@@ -76,21 +126,70 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
         hBox.setPadding(new Insets(5, 100, 5, 5));
         hBox.getChildren().addAll(addButton);
         addButton.setOnAction(event -> {
+            // Log DatePicker state
+            logger.info("DatePicker state: text={}, value={}",
+                    datePickerProperty.get().getEditor().getText(),
+                    datePickerProperty.get().getValue());
+
+            // Validate inputs
+            String firstName = textFieldMap.get("First Name").getText();
+            String lastName = textFieldMap.get("Last Name").getText();
+            MemberType memberType = comboBoxProperty.get().getValue();
+            LocalDate birthday = datePickerProperty.get().getValue();
+            logger.info("Add button clicked: firstName={}, lastName={}, memberType={}, birthday={}",
+                    firstName, lastName, memberType, birthday);
+
+            // Validate required fields
+            StringBuilder errorMessage = new StringBuilder();
+            if (firstName.trim().isEmpty()) {
+                errorMessage.append("First Name is required.\n");
+            }
+            if (lastName.trim().isEmpty()) {
+                errorMessage.append("Last Name is required.\n");
+            }
+            if (memberType == null) {
+                errorMessage.append("Member Type is required.\n");
+            }
+            if (errorMessage.length() > 0) {
+                String finalMessage = errorMessage.toString();
+                Platform.runLater(() -> {
+                    new Dialogue_ErrorSQL(new IllegalArgumentException("Missing required fields"),
+                            "Invalid Input",
+                            finalMessage);
+                });
+                return;
+            }
+
+            // Validate birthday (optional)
+            if (birthday != null && birthday.isAfter(LocalDate.now())) {
+                Platform.runLater(() -> {
+                    new Dialogue_ErrorSQL(new IllegalArgumentException("Future birthday"),
+                            "Invalid Date",
+                            "Birthday cannot be in the future.");
+                });
+                return;
+            }
+
             Task<PersonDTO> task = new Task<>() {
                 @Override
                 protected PersonDTO call() {
-                    return tabMembership.getModel().getPersonRepository().insertPerson(
-                            new PersonDTO(
-                                    tabMembership.getModel().getMembership().getMsId(),
-                                    comboBoxProperty.get().getValue().getCode(),
-                                    textFieldMap.get("First Name").getText(),
-                                    textFieldMap.get("Last Name").getText(),
-                                    StringTools.getBirthday(datePickerProperty.get().getValue()),
-                                    textFieldMap.get("Occupation").getText(),
-                                    textFieldMap.get("Business").getText(),
-                                    true
-                            )
+                    String birthdayString = StringTools.getBirthday(birthday);
+                    logger.info("Inserting person with birthday string: {}", birthdayString);
+                    PersonDTO personDTO = new PersonDTO(
+                            tabMembership.getModel().getMembership().getMsId(),
+                            memberType.getCode(),
+                            firstName,
+                            lastName,
+                            birthdayString,
+                            textFieldMap.get("Occupation").getText(),
+                            textFieldMap.get("Business").getText(),
+                            true
                     );
+                    logger.info("PersonDTO before insert: birthday={}", personDTO.getBirthday());
+                    PersonDTO insertedDTO = tabMembership.getModel().getPersonRepository().insertPerson(personDTO);
+                    logger.info("PersonDTO after insert: p_id={}, birthday={}",
+                            insertedDTO.getpId(), insertedDTO.getBirthday());
+                    return insertedDTO;
                 }
             };
             task.setOnSucceeded(e -> {
@@ -100,7 +199,7 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
                     logNewPerson(personDTO);
                     openNewPersonTab(personDTO);
                     clearAddMemberBox();
-                    setComboBoxItems(); // Ensure ComboBox is updated
+                    setComboBoxItems();
                 });
             });
             task.setOnFailed(e -> {
@@ -155,13 +254,150 @@ public class VBoxAddPerson extends VBox implements Builder<VBox> {
         return hBox;
     }
 
+//    private Node addDatePicker() {
+//        HBox hBox = new HBox(); // first name
+//        VBox vBox = new VBox();
+//        hBox.setPadding(new Insets(5, 15, 10, 60));  // first Name
+//        DatePicker datePicker = new DatePicker();
+//        datePicker.setPrefSize(240, 10);
+//        datePicker.setPromptText("MM/DD/YYYY");
+//        vBox.getChildren().add(datePicker);
+//        datePickerProperty.set(datePicker);
+//        hBox.getChildren().addAll(addLabel("Birthday"), vBox);
+//        return hBox;
+//    }
+//private Node addDatePicker() {
+//    HBox hBox = new HBox();
+//    VBox vBox = new VBox();
+//    hBox.setPadding(new Insets(5, 15, 10, 60));
+//    DatePicker datePicker = new DatePicker();
+//    datePicker.setPrefSize(240, 10);
+//    datePicker.setPromptText("MM/DD/YYYY");
+//
+//    // Configure DateTimeFormatter for flexible parsing
+//    DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+//            .appendPattern("[M/d/yyyy][MM/dd/yyyy]") // Accept 1/1/2009 or 01/01/2009
+//            .parseLenient() // Allow lenient parsing
+//            .toFormatter(Locale.US); // Use US locale for consistency
+//    datePicker.setConverter(new StringConverter<LocalDate>() {
+//        @Override
+//        public String toString(LocalDate date) {
+//            return date != null ? formatter.format(date) : "";
+//        }
+//
+//        @Override
+//        public LocalDate fromString(String string) {
+//            if (string == null || string.trim().isEmpty()) {
+//                return null;
+//            }
+//            try {
+//                return LocalDate.parse(string, formatter);
+//            } catch (DateTimeParseException e) {
+//                logger.warn("Invalid date format: {}", string);
+//                return null; // Return null for invalid input
+//            }
+//        }
+//    });
+//
+//    vBox.getChildren().add(datePicker);
+//    datePickerProperty.set(datePicker);
+//    hBox.getChildren().addAll(addLabel("Birthday"), vBox);
+//    return hBox;
+//}
+
     private Node addDatePicker() {
-        HBox hBox = new HBox(); // first name
+        HBox hBox = new HBox();
         VBox vBox = new VBox();
-        hBox.setPadding(new Insets(5, 15, 10, 60));  // first Name
+        hBox.setPadding(new Insets(5, 15, 10, 60));
         DatePicker datePicker = new DatePicker();
         datePicker.setPrefSize(240, 10);
         datePicker.setPromptText("MM/DD/YYYY");
+        datePicker.setTooltip(new Tooltip("Enter date as MM/DD/YYYY, e.g., 01/01/2005"));
+
+        // Configure formatters
+        DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.US);
+        DateTimeFormatter parsingFormatter = new DateTimeFormatterBuilder()
+                .appendPattern("[M/d/yyyy][MM/dd/yyyy][M-d-yyyy][MM-dd-yyyy]")
+                .parseLenient()
+                .toFormatter(Locale.US);
+        StringConverter<LocalDate> converter = new StringConverter<>() {
+            @Override
+            public String toString(LocalDate date) {
+                String formatted = date != null ? displayFormatter.format(date) : "";
+                logger.info("DatePicker toString: LocalDate={} -> String={}", date, formatted);
+                return formatted;
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                logger.info("DatePicker fromString: Input={}", string);
+                if (string == null || string.trim().isEmpty()) {
+                    logger.info("DatePicker fromString: Returning null (empty input)");
+                    return null;
+                }
+                try {
+                    LocalDate date = LocalDate.parse(string, parsingFormatter);
+                    logger.info("DatePicker fromString: Parsed LocalDate={}", date);
+                    return date;
+                } catch (DateTimeParseException e) {
+                    logger.warn("DatePicker fromString: Invalid date format: {} - {}", string, e.getMessage());
+                    return null;
+                }
+            }
+        };
+        datePicker.setConverter(converter);
+
+        // Real-time validation for styling
+        datePicker.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+            logger.info("DatePicker editor text changed: oldValue={} -> newValue={}", oldValue, newValue);
+            if (!newValue.isEmpty()) {
+                try {
+                    LocalDate.parse(newValue, parsingFormatter);
+                    datePicker.getEditor().setStyle("");
+                } catch (DateTimeParseException e) {
+                    datePicker.getEditor().setStyle("-fx-border-color: red;");
+                }
+            } else {
+                datePicker.getEditor().setStyle("");
+            }
+        });
+
+        // Workaround for JavaFX DatePicker bug (JDK-8092295)
+        datePicker.focusedProperty().addListener((observable, wasFocused, isFocused) -> {
+            if (!isFocused) {
+                logger.info("DatePicker lost focus: text={}", datePicker.getEditor().getText());
+                try {
+                    LocalDate date = converter.fromString(datePicker.getEditor().getText());
+                    datePicker.setValue(date);
+                    logger.info("DatePicker focus lost: Set value={}", date);
+                } catch (DateTimeParseException e) {
+                    logger.warn("DatePicker focus lost: Invalid date format: {} - {}",
+                            datePicker.getEditor().getText(), e.getMessage());
+                    datePicker.getEditor().setText(converter.toString(datePicker.getValue()));
+                }
+            }
+        });
+
+        // Commit value on Enter
+        datePicker.setOnAction(event -> {
+            String text = datePicker.getEditor().getText();
+            logger.info("DatePicker onAction: Text={}", text);
+            if (!text.isEmpty()) {
+                try {
+                    LocalDate date = converter.fromString(text);
+                    datePicker.setValue(date);
+                    logger.info("DatePicker onAction: Set value={}", date);
+                } catch (DateTimeParseException e) {
+                    logger.warn("DatePicker onAction: Invalid date format: {} - {}", text, e.getMessage());
+                }
+            }
+        });
+
+        // Log value changes
+        datePicker.valueProperty().addListener((observable, oldValue, newValue) -> {
+            logger.info("DatePicker value changed: oldValue={} -> newValue={}", oldValue, newValue);
+        });
+
         vBox.getChildren().add(datePicker);
         datePickerProperty.set(datePicker);
         hBox.getChildren().addAll(addLabel("Birthday"), vBox);
