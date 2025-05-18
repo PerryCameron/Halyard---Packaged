@@ -57,9 +57,7 @@ public class BaseApplication extends Application implements Log {
     public static String user = "membership";
     public static Label statusLabel;
     public static boolean testMode = false;
-
     MainModel mainModel;
-
 
     public static void main(String[] args) {
         if (args.length > 0 && args[0].equals("test")) {
@@ -71,12 +69,14 @@ public class BaseApplication extends Application implements Log {
     @Override
     public void init() {
         setUpForFirstTime();
-        logger.info("Starting Halyard: Version {}", VersionUtil.getVersion());
+
         if(!testMode)
         startFileLogger();
         else
             logger.info("Halyard: Running test mode");
         loadProperties();
+        // log our version
+        logger.info("Starting Halyard: Version {}", VersionUtil.getVersion());
     }
 
     private static Properties properties = new Properties();
